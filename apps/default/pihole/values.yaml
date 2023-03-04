@@ -3,7 +3,7 @@ DNS2: null
 
 image:
   tag: "2023.02.2"
-  repository: ghcr.io/pi-hole/pihole@sha256:9abbf1c218f32a4084e614150a44714f046f73c40a9d2889a0e6edf01ff0a387
+  repository: ghcr.io/pi-hole/pihole
 
 replicaCount: 1
 strategyType: RollingUpdate
