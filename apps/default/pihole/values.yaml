@@ -1,0 +1,83 @@
+DNS1: null
+DNS2: null
+
+image:
+  tag: "2023.02.2"
+  repository: ghcr.io/pi-hole/pihole
+
+replicaCount: 1
+strategyType: RollingUpdate
+
+virtualHost: "pihole"
+hostname: pihole
+
+extraEnvVars:
+  PIHOLE_DNS_: "10.0.0.1;10.0.0.1;2606:4700:4700::1111;2606:4700:4700::1001"
+
+dnsmasq:
+  customSettings:
+    - rev-server=2a01:4b00:847b:6000::/64,10.0.0.1
+    - rev-server=10.0.0.0/24,10.0.0.1
+    - server=/local/10.0.0.1/
+
+monitoring:
+  podMonitor:
+    enabled: false
+  sidecar:
+    enabled: false
+    image:
+      tag: v0.3.0
+
+adlists:
+  - https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt
+  - https://v.firebog.net/hosts/Easylist.txt
+  - https://v.firebog.net/hosts/AdguardDNS.txt
+  - https://adaway.org/hosts.txt
+  - https://dbl.oisd.nl/
+
+blacklist:
+  - gb.ad.lgsmartad.com
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 500Mi
+  limits:
+    cpu: 500m
+    memory: 500Mi
+
+whitelist:
+  - delivery-cdn-cf.adswizz.com
+  - push.api.bbci.co.uk
+  - ichnaea.netflix.com
+  - fonts.gstatic.com
+  - wwww.av.com
+  - redirect.shurgard.eu
+
+persistentVolumeClaim:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  storageClass: local-path
+  resources:
+    requests:
+      storage: 2Gi
+
+serviceWeb:
+  loadBalancerIP: 10.1.10.42
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole-svc
+  type: LoadBalancer
+  http:
+    port: 80
+  https:
+    enabled: false
+
+serviceDns:
+  loadBalancerIP: 10.1.10.42
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole-svc
+  type: LoadBalancer
+
+serviceDHCP:
+  enabled: false

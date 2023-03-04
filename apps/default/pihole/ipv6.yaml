@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: pihole
+    meta.helm.sh/release-namespace: default
+    metallb.universe.tf/allow-shared-ip: pihole-svc
+  labels:
+    app: pihole
+    release: pihole
+  name: pihole-dns-udp-v6
+spec:
+  ipFamilies:
+    - IPv6
+  ipFamilyPolicy: SingleStack
+  loadBalancerIP: fdff:cafe::1
+  ports:
+    - name: dns-udp
+      port: 53
+      protocol: UDP
+      targetPort: dns-udp
+  selector:
+    app: pihole
+    release: pihole
+  type: LoadBalancer
