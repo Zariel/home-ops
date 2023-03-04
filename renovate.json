@@ -1,0 +1,6 @@
+{
+  "kubernetes": {
+    "fileMatch": ["\\.yaml$"]
+  }
+}
+
