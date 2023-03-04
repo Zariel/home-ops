@@ -1,0 +1,10 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: metallb
+spec:
+  interval: 60m
+  url: https://github.com/metallb/metallb
+  ref:
+    semver: "*"
