@@ -7,5 +7,4 @@ spec:
   interval: 60m
   url: https://github.com/metallb/metallb
   ref:
-    tag: v0.13.8
-    # semver: "*"
+    semver: "*"
