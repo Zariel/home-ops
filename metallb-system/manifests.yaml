@@ -7,5 +7,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: metallb
-  path: "config/manifests/metallb-native.yaml"
+  path: "config/native"
   prune: true
