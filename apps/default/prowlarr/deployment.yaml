@@ -57,9 +57,9 @@ spec:
               mountPath: /config
             - name: prowlar-backups
               mountPath: /tmp/prowlarr_backup
-          # livenessProbe:
-          #   httpGet:
-          #     path: /api/v1/health
-          #     port: web
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
