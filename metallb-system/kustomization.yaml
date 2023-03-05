@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - repository.yaml
   - manifests.yaml
+  - l2-ip-pools.yaml
