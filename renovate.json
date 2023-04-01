@@ -12,6 +12,7 @@
       "automerge": true
     }
   ],
+  "ignoreTests": true,
   "kubernetes": {
     "fileMatch": [
       "\\.yaml$"
