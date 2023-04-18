@@ -5,7 +5,7 @@ metadata:
     app: prowlarr
   name: prowlarr
   annotations:
-    metallb.universe.tf/loadBalancerIPs: 10.1.12.2
+    metallb.universe.tf/loadBalancerIPs: 10.1.12.2,fd43::5063
 spec:
   selector:
     app: prowlarr
