@@ -3,17 +3,34 @@ kind: Service
 metadata:
   labels:
     app: prowlarr
-  name: prowlarr
-  annotations:
-    metallb.universe.tf/loadBalancerIPs: 10.1.12.2,fd43::5063
+  name: prowlarr-v4
 spec:
   selector:
     app: prowlarr
   type: LoadBalancer
-  ipFamilyPolicy: RequireDualStack
+  loadBalancerIP: 10.1.12.2
   ipFamilies:
     - IPv4
+  ports:
+    - name: http
+      port: 80
+      targetPort: 9696
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: prowlarr
+  name: prowlarr-v6
+spec:
+  selector:
+    app: prowlarr
+  type: LoadBalancer
+  ipFamilies:
     - IPv6
+  ipFamilyPolicy: SingleStack
+  loadBalancerIP: fdff:cafe::3
   ports:
     - name: http
       port: 80
