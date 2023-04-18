@@ -4,11 +4,15 @@ metadata:
   labels:
     app: prowlarr
   name: prowlarr
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 10.1.12.2
 spec:
   selector:
     app: prowlarr
   type: LoadBalancer
-  loadBalancerIP: 10.1.12.2
+  ipFamilies:
+    - IPv4
+    - IPv6
   ports:
     - name: http
       port: 80
