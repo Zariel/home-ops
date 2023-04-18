@@ -10,6 +10,7 @@ spec:
   selector:
     app: prowlarr
   type: LoadBalancer
+  ipFamilyPolicy: RequireDualStack
   ipFamilies:
     - IPv4
     - IPv6
