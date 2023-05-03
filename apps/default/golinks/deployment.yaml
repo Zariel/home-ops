@@ -34,7 +34,7 @@ spec:
             claimName: golinks-data
       containers:
         - name: golinks
-          image: ghcr.io/tailscale/golink:main@sha256:9fd359997306e566dcc518b343edbccb8015feb41ec14f6724b1c80d0eab3ed5
+          image: ghcr.io/tailscale/golink:main@sha256:674741109d25c124451dd56d69f82d1342e8526a390dc21c6c4b0b5948541bc8
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsNonRoot: true
