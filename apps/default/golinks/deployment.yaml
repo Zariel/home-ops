@@ -44,7 +44,7 @@ spec:
               memory: "512Mi"
               cpu: "500m"
           ports:
-            - containerPort: 8080
+            - containerPort: 80
               name: web
           volumeMounts:
             - name: golinks-data
