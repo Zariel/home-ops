@@ -36,7 +36,7 @@ spec:
           emptyDir: {}
       containers:
         - name: prowlarr
-          image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:ffb9ec9bf6561a43f0219209782c111d5519f825cc00936075eb5bf558f11caa
+          image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:22bbc9ab7ee40d413bc18d666df91bcdeeeb801e99105de73c8c76410bd88f2e
           imagePullPolicy: "IfNotPresent"
           env:
             - name: COMPlus_EnableDiagnostics
