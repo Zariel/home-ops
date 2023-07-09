@@ -34,9 +34,6 @@ spec:
             claimName: prowlarr-config
         - name: prowlar-backups
           emptyDir: {}
-        - name: v8-defs
-          configMap:
-            name: v8-defs
       containers:
         - name: prowlarr
           image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:0239381e1e358a7c9ee0521f512ae65f3aeca4550dcf5b3c0aee91fba7b2bd4a
@@ -60,8 +57,6 @@ spec:
               mountPath: /config
             - name: prowlar-backups
               mountPath: /tmp/prowlarr_backup
-            - name: v8-defs
-              mountPath: /config/Definitions/Custom
           livenessProbe:
             httpGet:
               path: /ping
