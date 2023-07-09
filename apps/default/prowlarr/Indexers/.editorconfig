@@ -1,0 +1,15 @@
+root=true
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+# With more recent updates Visual Studio 2017 supports EditorConfig files out of the box
+# Visual Studio Code needs an extension: https://github.com/editorconfig/editorconfig-vscode
+# For emacs, vim, np++ and other editors, see here: https://github.com/editorconfig
+###############################
+# Core EditorConfig Options   #
+###############################
+# All files
+[*.yml]
+indent_style=space
+indent_size=2
+insert_final_newline=true
+charset=utf-8
+trim_trailing_whitespace=true
