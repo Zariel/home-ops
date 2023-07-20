@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: radarr
+  name: radarr-v4
+spec:
+  selector:
+    app: radarr
+  type: LoadBalancer
+  loadBalancerIP: 10.1.13.2
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      port: 80
+      targetPort: 7878
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: radarr
+  name: radarr-v6
+spec:
+  selector:
+    app: radarr
+  type: LoadBalancer
+  ipFamilies:
+    - IPv6
+  ipFamilyPolicy: SingleStack
+  loadBalancerIP: fdff:cafe::4
+  ports:
+    - name: http
+      port: 80
+      targetPort: 7878
+      protocol: TCP
