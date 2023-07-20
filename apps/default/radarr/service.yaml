@@ -8,7 +8,7 @@ spec:
   selector:
     app: radarr
   type: LoadBalancer
-  loadBalancerIP: 10.1.13.2
+  loadBalancerIP: 10.1.12.3
   ipFamilies:
     - IPv4
   ports:
