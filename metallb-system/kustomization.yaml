@@ -4,3 +4,4 @@ resources:
   - repository.yaml
   - manifests.yaml
   - l2-ip-pools.yaml
+  - namespace.yaml
