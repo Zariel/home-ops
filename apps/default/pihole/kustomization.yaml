@@ -4,7 +4,6 @@ namespace: default
 resources:
   - repository.yaml
   - release.yaml
-  - ipv6.yaml
 configMapGenerator:
   - name: pihole-values
     files:

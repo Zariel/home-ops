@@ -16,23 +16,3 @@ spec:
       port: 80
       targetPort: 9696
       protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: prowlarr
-  name: prowlarr-v6
-spec:
-  selector:
-    app: prowlarr
-  type: LoadBalancer
-  ipFamilies:
-    - IPv6
-  ipFamilyPolicy: SingleStack
-  loadBalancerIP: fdff:cafe::3
-  ports:
-    - name: http
-      port: 80
-      targetPort: 9696
-      protocol: TCP

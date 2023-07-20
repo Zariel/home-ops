@@ -7,4 +7,3 @@ spec:
   avoidBuggyIPs: true
   addresses:
     - 10.1.0.0/16
-    - fdff:cafe::0/64

@@ -12,11 +12,10 @@ virtualHost: "pihole"
 hostname: pihole
 
 extraEnvVars:
-  PIHOLE_DNS_: "10.0.0.1;10.0.0.1;2606:4700:4700::1111;2606:4700:4700::1001"
+  PIHOLE_DNS_: "10.0.0.1;10.0.0.1"
 
 dnsmasq:
   customSettings:
-    - rev-server=2a01:4b00:847b:6000::/64,10.0.0.1
     - rev-server=10.0.0.0/24,10.0.0.1
     - server=/local/10.0.0.1/
 

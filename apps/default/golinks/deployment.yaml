@@ -72,23 +72,3 @@ spec:
       port: 80
       targetPort: web
       protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: golinks-v6
-  labels:
-    app: golinks
-spec:
-  selector:
-    app: golinks
-  type: LoadBalancer
-  ipFamilies:
-    - IPv6
-  ipFamilyPolicy: SingleStack
-  loadBalancerIP: fdff:cafe::2
-  ports:
-    - name: http
-      port: 80
-      targetPort: web
-      protocol: TCP
