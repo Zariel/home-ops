@@ -20,7 +20,6 @@ spec:
           securityContext:
             runAsUser: 1001
             runAsNonRoot: true
-            readOnlyRootFilesystem: true
           ports:
             - containerPort: 5432
           volumeMounts:
