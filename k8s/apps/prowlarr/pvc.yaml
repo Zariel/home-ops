@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+  name: prowlarr-config
+spec:
+  volumeMode: Filesystem
+  storageClassName: smb
+  resources:
+    requests:
+      storage: 512Mi
+  accessModes:
+    - ReadWriteOnce
