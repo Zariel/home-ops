@@ -4,5 +4,6 @@ commonLabels:
   app: metallb
 namespace: metallb-system
 resources:
+  - ../../metallb-system
   - github.com/metallb/metallb/config/native?ref=v0.13.10
   - l2-ip-pools.yaml
