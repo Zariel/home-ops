@@ -15,6 +15,10 @@ spec:
       containers:
         - name: postgres
           image: postgres:15@sha256:ad126c2b7482bf0ea4f90c2cbb9ab1dfec41ab58d8bef773273a3a1733ad6af0
+          securityContext:
+            runAsUser: 1001
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
           ports:
             - containerPort: 5432
           volumeMounts:
