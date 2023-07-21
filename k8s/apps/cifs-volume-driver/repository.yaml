@@ -19,7 +19,7 @@ metadata:
   name: kubernetes-cifs-volumedriver
 spec:
   interval: 10m
-  targetNamespace: default
+  targetNamespace: holywoo-system
   sourceRef:
     kind: GitRepository
     name: kubernetes-cifs-volumedriver
