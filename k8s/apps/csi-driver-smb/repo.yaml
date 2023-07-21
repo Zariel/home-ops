@@ -1,28 +1,28 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: kubernetes-cifs-volumedriver
+  name: csi-drvier-smb
 spec:
   interval: 10m
-  url: https://github.com/juliohm1978/kubernetes-cifs-volumedriver.git
+  url: https://github.com/kubernetes-csi/csi-driver-smb.git
   ref:
     branch: master
   ignore: |
     # exclude all
     /*
-    # include install
-    !/install.yaml
+    # include
+    !/deploy/**/*.yaml
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: kubernetes-cifs-volumedriver
+  name: csi-drvier-smb
 spec:
   interval: 10m
-  targetNamespace: holywoo-system
+  targetNamespace: kube-system
   sourceRef:
     kind: GitRepository
-    name: kubernetes-cifs-volumedriver
-  path: "/"
+    name: csi-drvier-smb
+  path: "/deploy/v1.11.0"
   prune: true
   timeout: 1m
