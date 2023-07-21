@@ -5,7 +5,8 @@ commonLabels:
   app: postgres
 resources:
   - service.yaml
-  - statefulset.yaml
+  - pvc.yaml
+  - deployment.yaml
 secretGenerator:
   - name: postgres
     literals:

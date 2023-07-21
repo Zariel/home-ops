@@ -1,18 +1,17 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: postgres
 spec:
   selector:
     matchLabels:
       app: postgres
-  serviceName: postgressql
-  replicas: 1
   template:
     spec:
-      tolerations:
-        - key: "kubernetes.io/arch=arm64"
-          effect: "NoSchedule"
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data
       containers:
         - name: postgres
           image: postgres:15@sha256:ad126c2b7482bf0ea4f90c2cbb9ab1dfec41ab58d8bef773273a3a1733ad6af0
@@ -21,6 +20,10 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /data
+          resources:
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
@@ -29,14 +32,3 @@ spec:
                   key: POSTGRES_PASSWORD
             - name: PGDATA
               value: /data/pgdata
-  volumeClaimTemplates:
-    - metadata:
-        name: postgres-data
-      spec:
-        volumeMode: Filesystem
-        storageClassName: smb
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 16Gi
