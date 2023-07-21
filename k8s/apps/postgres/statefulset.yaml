@@ -10,6 +10,9 @@ spec:
   replicas: 1
   template:
     spec:
+      tolerations:
+        - key: "kubernetes.io/arch=arm64"
+          effect: "NoSchedule"
       containers:
         - name: postgres
           image: postgres:15@sha256:ad126c2b7482bf0ea4f90c2cbb9ab1dfec41ab58d8bef773273a3a1733ad6af0
