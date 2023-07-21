@@ -7,6 +7,9 @@ metadata:
 spec:
   volumeMode: Filesystem
   storageClassName: smb
+  mountOptions:
+    - dir_mode=0700
+    - file_mode=0700
   resources:
     requests:
       storage: 16Gi
