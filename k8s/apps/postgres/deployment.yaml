@@ -8,6 +8,8 @@ spec:
       app: postgres
   template:
     spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
