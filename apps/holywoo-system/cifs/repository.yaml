@@ -3,7 +3,7 @@ kind: GitRepository
 metadata:
   name: kubernetes-cifs-volumedriver
 spec:
-  interval: 24h
+  interval: 10m
   url: https://github.com/juliohm1978/kubernetes-cifs-volumedriver.git
   ref:
     branch: master
@@ -18,7 +18,7 @@ kind: Kustomization
 metadata:
   name: kubernetes-cifs-volumedriver
 spec:
-  interval: 24h
+  interval: 10m
   targetNamespace: default
   sourceRef:
     kind: GitRepository
