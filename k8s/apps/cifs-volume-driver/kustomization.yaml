@@ -4,4 +4,5 @@ commonLabels:
   app: cifs-volume-driver
 namespace: holywoo-system
 resources:
+  - namespace.yaml
   - repository.yaml
