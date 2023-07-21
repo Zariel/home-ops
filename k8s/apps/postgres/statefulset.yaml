@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgressql
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15@sha256:ad126c2b7482bf0ea4f90c2cbb9ab1dfec41ab58d8bef773273a3a1733ad6af0
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /data
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /data/pgdata
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        volumeMode: Filesystem
+        storageClassName: smb
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 16Gi

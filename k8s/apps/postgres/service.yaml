@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgressql
+spec:
+  selector:
+    app: postgres
+  type: LoadBalancer
+  loadBalancerIP: 10.1.20.2
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: sql
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
