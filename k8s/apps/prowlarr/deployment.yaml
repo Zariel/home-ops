@@ -17,6 +17,8 @@ spec:
             claimName: prowlarr-config
         - name: prowlar-backups
           emptyDir: {}
+        - name: tmp
+          emptyDir: {}
       containers:
         - name: prowlarr
           image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:461c5440e4aa0e0dbaa883db71cb5529fcaed84f0e2c793ccd8d4029c7782873
@@ -40,6 +42,8 @@ spec:
               mountPath: /config
             - name: prowlar-backups
               mountPath: /tmp/prowlarr_backup
+            - name: tmp
+              mountPath: /tmp
           livenessProbe:
             httpGet:
               path: /ping

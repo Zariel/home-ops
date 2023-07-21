@@ -9,6 +9,6 @@ spec:
   storageClassName: smb
   resources:
     requests:
-      storage: 512Mi
+      storage: 1Gi
   accessModes:
     - ReadWriteOnce
