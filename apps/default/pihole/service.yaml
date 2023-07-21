@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pihole
+  name: pihole-web-v4
+spec:
+  selector:
+    app: pihole
+  type: LoadBalancer
+  loadBalancerIP: 10.1.10.42
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      port: 80
+      targetPort: web
+      protocol: TCP

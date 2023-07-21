@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+spec:
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: pihole-config
+      containers:
+        - name: pihole
+          image: ghcr.io/pi-hole/pihole:latest@sha256:8bc45afe1625487aef62859a5bf02f3d7b3429e480f4e29e4689635ab86ec312
+          imagePullPolicy: "IfNotPresent"
+          # securityContext:
+          # readOnlyRootFilesystem: true
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - mountPath: /etc/pihole/adlists.list
+              name: config
+              subPath: adlist.txt
+          env:
+            - name: WEB_PORT
+              value: "80"
+            - name: VIRTUAL_HOST
+              value: pihole
+            - name: WEBPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: pihole-password
+            - name: PIHOLE_DNS_
+              value: 10.0.0.1;10.0.0.1
+          ports:
+            - containerPort: 80
+              name: web
+            - containerPort: 53
+              name: dns
+              protocol: UDP
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /admin/index.php
+              port: web
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5

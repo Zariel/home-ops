@@ -1,12 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
+commonLabels:
+  app: pihole
 resources:
-  - repository.yaml
-  - release.yaml
+  - deployment.yaml
+  - service.yaml
 configMapGenerator:
-  - name: pihole-values
+  - name: pihole-config
     files:
-      - values.yaml=values.yaml
-configurations:
-  - kustomizeconfig.yaml
+      - adlist.txt=config/adlist.txt
+secretGenerator:
+  - name: pihole-password
+    literals:
+      - password=anthem
