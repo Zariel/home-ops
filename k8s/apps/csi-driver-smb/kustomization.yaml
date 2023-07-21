@@ -5,3 +5,4 @@ commonLabels:
 namespace: kube-system
 resources:
   - repo.yaml
+  - storageclass.yaml
