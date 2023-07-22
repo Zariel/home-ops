@@ -12,9 +12,6 @@ spec:
         app: prowlarr
     spec:
       volumes:
-        - name: prowlar-config
-          persistentVolumeClaim:
-            claimName: prowlarr-config
         - name: prowlar-backups
           emptyDir: {}
         - name: tmp
@@ -38,8 +35,6 @@ spec:
             - containerPort: 9696
               name: web
           volumeMounts:
-            - name: prowlar-config
-              mountPath: /config
             - name: prowlar-backups
               mountPath: /tmp/prowlarr_backup
             - name: tmp
