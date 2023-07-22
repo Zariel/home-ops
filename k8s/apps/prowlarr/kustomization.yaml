@@ -4,6 +4,9 @@ namespace: default
 commonLabels:
   app: prowlarr
 resources:
-  - pvc.yaml
   - deployment.yaml
   - service.yaml
+configMapGenerator:
+  - name: prowlarr-config
+    files:
+      - config.xml=files/config.xml

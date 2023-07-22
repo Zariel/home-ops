@@ -1,0 +1,24 @@
+<Config>
+  <LogLevel>info</LogLevel>
+  <UrlBase></UrlBase>
+  <Branch>develop</Branch>
+  <ApiKey>62948d5292a043b3806be65e5b8e975b</ApiKey>
+  <AuthenticationMethod>External</AuthenticationMethod>
+  <AuthenticationRequired>0</AuthenticationRequired>
+  <InstanceName>Prowlarr</InstanceName>
+  <PostgresUser>holywoo</PostgresUser>
+  <PostgresPassword>horse</PostgresPassword>
+  <PostgresPort>5432</PostgresPort>
+  <PostgresHost>10.0.6.196</PostgresHost>
+  <PostgresMainDb>prowlarr-main</PostgresMainDb>
+  <PostgresLogDb>prowlarr-logs</PostgresLogDb>
+  <Port>5432</Port>
+  <BindAddress>*</BindAddress>
+  <LaunchBrowser>False</LaunchBrowser>
+  <EnableSsl>False</EnableSsl>
+  <SslPort>6969</SslPort>
+  <SslCertPath></SslCertPath>
+  <SslCertPassword></SslCertPassword>
+  <UpdateMechanism>Docker</UpdateMechanism>
+  <AnalyticsEnabled>False</AnalyticsEnabled>
+</Config>
