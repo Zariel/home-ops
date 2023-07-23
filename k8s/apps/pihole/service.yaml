@@ -4,6 +4,7 @@ metadata:
   name: pihole-tcp-v4
   annotations:
     metallb.universe.tf/allow-shared-ip: pihole
+    external-dns.alpha.kubernetes.io/hostname: pihole.k8s.holywoo.cbannister.xyz
 spec:
   selector:
     app: pihole
