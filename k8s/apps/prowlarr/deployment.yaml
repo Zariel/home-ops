@@ -45,6 +45,7 @@ spec:
             - name: prowlarr-config
               mountPath: /config/config.xml
               subPath: config.xml
+              readOnly: false
           livenessProbe:
             httpGet:
               path: /ping
