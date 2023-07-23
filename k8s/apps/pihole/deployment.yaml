@@ -53,8 +53,9 @@ spec:
             - containerPort: 80
               name: web
             - containerPort: 53
-              name: dns
               protocol: UDP
+            - containerPort: 53
+              protocol: TCP
           livenessProbe:
             failureThreshold: 10
             httpGet:

@@ -16,6 +16,10 @@ spec:
       port: 80
       targetPort: web
       protocol: TCP
+    - name: dns
+      port: 53
+      targetPort: 53
+      protocol: TCP
 ---
 apiVersion: v1
 kind: Service
@@ -31,7 +35,7 @@ spec:
   ipFamilies:
     - IPv4
   ports:
-    - name: http
+    - name: dns
       port: 53
-      targetPort: dns
+      targetPort: 53
       protocol: UDP
