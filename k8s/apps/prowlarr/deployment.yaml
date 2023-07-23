@@ -11,6 +11,7 @@ spec:
       labels:
         app: prowlarr
     spec:
+      hostname: prowlarr
       volumes:
         - name: prowlar-backups
           emptyDir: {}
