@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pihole-db
+spec:
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 16Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

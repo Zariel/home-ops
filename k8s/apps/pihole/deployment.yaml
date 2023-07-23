@@ -15,6 +15,12 @@ spec:
         - name: config
           configMap:
             name: pihole-config
+        - name: pihole-db
+          persistentVolumeClaim:
+            claimName: pihole-db
+      hostname: pihole
+      nodeSelector:
+        kubernetes.io/arch: amd64
       containers:
         - name: pihole
           image: ghcr.io/pi-hole/pihole:latest@sha256:8bc45afe1625487aef62859a5bf02f3d7b3429e480f4e29e4689635ab86ec312
@@ -26,6 +32,8 @@ spec:
               memory: "512Mi"
               cpu: "500m"
           volumeMounts:
+            - mountPath: /etc/pihole
+              name: pihole-db
             - mountPath: /etc/pihole/adlists.list
               name: config
               subPath: adlist.txt
