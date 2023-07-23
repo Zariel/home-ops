@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: pihole
-  name: pihole-web-v4
+  name: pihole-tcp-v4
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole
 spec:
   selector:
     app: pihole
@@ -20,9 +20,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: pihole
-  name: pihole-dns-udp-v4
+  name: pihole-udp-v4
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole
 spec:
   selector:
     app: pihole
