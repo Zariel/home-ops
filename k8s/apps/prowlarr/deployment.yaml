@@ -19,6 +19,21 @@ spec:
         - name: prowlarr-config
           configMap:
             name: prowlarr-config
+        - name: config
+          emptyDir: {}
+      initContainers:
+        - name: setup-config
+          image: busybox
+          securityContext:
+            runAsUser: 568
+            runAsNonRoot: true
+          command:
+            ["/bin/sh", "-c", "cp /config/config.xml /opt/prowlarr/config.xml"]
+          volumeMounts:
+            - name: prowlarr-config
+              mountPath: /config
+            - name: config
+              mountPath: /opt/prowlarr
       containers:
         - name: prowlarr
           image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:461c5440e4aa0e0dbaa883db71cb5529fcaed84f0e2c793ccd8d4029c7782873
@@ -42,7 +57,7 @@ spec:
               mountPath: /tmp/prowlarr_backup
             - name: tmp
               mountPath: /tmp
-            - name: prowlarr-config
+            - name: config
               mountPath: /config/config.xml
               subPath: config.xml
               readOnly: false
