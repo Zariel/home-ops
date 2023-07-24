@@ -10,7 +10,6 @@ spec:
     app: pihole
   type: LoadBalancer
   loadBalancerIP: 10.1.10.42
-  externalTrafficPolicy: Local
   ipFamilies:
     - IPv4
   ports:
@@ -32,7 +31,6 @@ metadata:
 spec:
   selector:
     app: pihole
-  externalTrafficPolicy: Local
   type: LoadBalancer
   loadBalancerIP: 10.1.10.42
   ipFamilies:
