@@ -37,7 +37,7 @@ spec:
               mountPath: /opt/prowlarr
       containers:
         - name: prowlarr
-          image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:461c5440e4aa0e0dbaa883db71cb5529fcaed84f0e2c793ccd8d4029c7782873
+          image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:d94c2b25d30503ae2f62b342f3aab0f71ac45ebba669357c7ce5ca586f88470c
           imagePullPolicy: "IfNotPresent"
           env:
             - name: COMPlus_EnableDiagnostics
