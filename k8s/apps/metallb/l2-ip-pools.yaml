@@ -6,3 +6,11 @@ spec:
   avoidBuggyIPs: true
   addresses:
     - 10.1.0.0/16
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: local
+spec:
+  ipAddressPools:
+    - local
