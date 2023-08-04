@@ -5,3 +5,4 @@ commonLabels:
   app: cilium
 resources:
   - l2.yaml
+  - lb-pool.yaml
