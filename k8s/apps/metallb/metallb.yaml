@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: metallb
+  namespace: default
+spec:
+  interval: 5m
+  url: https://github.com/metallb/metallb.git
+  ref:
+    tag: v0.13.10
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: metallb
+  namespace: default
+spec:
+  interval: 10m
+  targetNamespace: metallb-system
+  sourceRef:
+    kind: GitRepository
+    name: metallb
+    namespace: default
+  path: "./config/manifests/metallb-native.yaml"
+  prune: true
+  timeout: 1m
