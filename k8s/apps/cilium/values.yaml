@@ -1,5 +1,10 @@
 cluster:
   name: default
+hubble:
+  relay:
+    enabled: true
+  ui:
+    enabled: false
 ipam:
   mode: cluster-pool
   operator:
