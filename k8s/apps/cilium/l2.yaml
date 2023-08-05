@@ -9,3 +9,11 @@ spec:
         operator: DoesNotExist
   externalIPs: true
   loadBalancerIPs: true
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: local-lb-pool
+spec:
+  cidrs:
+    - cidr: "10.1.0.0/16"
