@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lidarr
+spec:
+  selector:
+    matchLabels:
+      app: lidarr
+  template:
+    metadata:
+      labels:
+        app: lidarr
+    spec:
+      hostname: lidarr
+      volumes:
+        - name: lidarr-backups
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: lidarr-config
+          configMap:
+            name: lidarr-config
+        - name: config
+          emptyDir: {}
+      initContainers:
+        - name: setup-config
+          image: busybox
+          securityContext:
+            runAsUser: 568
+            runAsNonRoot: true
+          command:
+            ["/bin/sh", "-c", "cp /config/config.xml /opt/lidarr/config.xml"]
+          volumeMounts:
+            - name: lidarr-config
+              mountPath: /config
+            - name: config
+              mountPath: /opt/lidarr
+      containers:
+        - name: lidarr
+          image: ghcr.io/onedr0p/lidarr-develop:rolling@sha256:58ccc58f345c48645b81327989cb0b6b498e2894f59c6cec3be25707c8aa022d
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: COMPlus_EnableDiagnostics
+              value: "0"
+          securityContext:
+            runAsUser: 568
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8686
+              name: web
+          volumeMounts:
+            - name: lidarr-backups
+              mountPath: /tmp/lidarr_backup
+            - name: tmp
+              mountPath: /tmp
+            - name: config
+              mountPath: /config/config.xml
+              subPath: config.xml
+              readOnly: false
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
