@@ -22,6 +22,9 @@ spec:
             name: lidarr-config
         - name: config
           emptyDir: {}
+        - name: lidarr-music-horsepc
+          persistentVolumeClaim:
+            claimName: lidarr-music-horsepc
       initContainers:
         - name: setup-config
           image: busybox
@@ -62,6 +65,8 @@ spec:
               mountPath: /config/config.xml
               subPath: config.xml
               readOnly: false
+            - name: lidarr-music-horsepc
+              mountPath: /data/media/music
           livenessProbe:
             httpGet:
               path: /ping
