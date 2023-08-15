@@ -25,6 +25,9 @@ spec:
         - name: lidarr-music-horsepc
           persistentVolumeClaim:
             claimName: lidarr-music-horsepc
+        - name: horsepc-sabnzbd-complete
+          persistentVolumeClaim:
+            claimName: horsepc-sabnzbd-complete
       initContainers:
         - name: setup-config
           image: busybox
@@ -67,6 +70,9 @@ spec:
               readOnly: false
             - name: lidarr-music-horsepc
               mountPath: /data/media/music
+            - name: horsepc-sabnzbd-complete
+              mountPath: /data/usenet/
+              subPath: lidarr
           livenessProbe:
             httpGet:
               path: /ping
