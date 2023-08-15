@@ -34,10 +34,10 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: horsepc-sabnzb-complete
+  name: horsepc-sabnzbd-complete
 spec:
   volumeMode: Filesystem
-  volumeName: horsepc-sab-complete
+  volumeName: horsepc-sabnzbd-complete
   storageClassName: smb-horsepc
   resources:
     requests:
