@@ -17,7 +17,7 @@
   <PostgresUser>holywoo</PostgresUser>
   <PostgresPassword>horse</PostgresPassword>
   <PostgresPort>5432</PostgresPort>
-  <PostgresHost>10.0.6.196</PostgresHost>
+  <PostgresHost>postgres.holywoo.cbannister.xyz</PostgresHost>
   <PostgresMainDb>lidarr-main</PostgresMainDb>
   <PostgresLogDb>lidarr-logs</PostgresLogDb>
 </Config>
