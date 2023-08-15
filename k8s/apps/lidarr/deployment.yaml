@@ -71,7 +71,7 @@ spec:
             - name: lidarr-music-horsepc
               mountPath: /data/media/music
             - name: horsepc-sabnzbd-complete
-              mountPath: /data/usenet/
+              mountPath: /data/usenet/complete/lidarr
               subPath: lidarr
           livenessProbe:
             httpGet:
