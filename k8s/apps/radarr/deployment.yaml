@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: radarr
-          image: ghcr.io/onedr0p/radarr:rolling@sha256:9f60b50471dd019da1d3823ae817ecbae0701bb5168ee57cb21ccd18f065f3fe
+          image: ghcr.io/onedr0p/radarr:rolling@sha256:4a51f4903789b9f2263d2a8390e5044e45b4c4553b97fa68840eed2215541303
           imagePullPolicy: "IfNotPresent"
           env:
             - name: COMPlus_EnableDiagnostics
