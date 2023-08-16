@@ -72,7 +72,7 @@ spec:
               subPath: config.xml
               readOnly: false
             - name: lidarr-media-covers
-              mountPath: /config/MediaCovers
+              mountPath: /config/MediaCover
               readOnly: false
             - name: lidarr-music-horsepc
               mountPath: /data/media/music
