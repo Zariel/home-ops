@@ -68,8 +68,7 @@ spec:
             - name: tmp
               mountPath: /tmp
             - name: config
-              mountPath: /config/config.xml
-              subPath: config.xml
+              mountPath: /config
               readOnly: false
             - name: lidarr-media-covers
               mountPath: /config/MediaCover
