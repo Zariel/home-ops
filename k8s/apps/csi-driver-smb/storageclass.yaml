@@ -14,7 +14,11 @@ parameters:
 reclaimPolicy: Delete # available values: Delete, Retain
 volumeBindingMode: Immediate
 mountOptions:
-  - dir_mode=0700
-  - file_mode=0700
-  - uid=1001
-  - gid=1001
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=568
+  - gid=568
+  - noperm
+  - mfsymlinks
+  - cache=strict
+  - noserverino # required to prevent data corruption

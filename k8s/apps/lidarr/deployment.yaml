@@ -28,6 +28,9 @@ spec:
         - name: horsepc-sabnzbd-complete
           persistentVolumeClaim:
             claimName: horsepc-sabnzbd-complete
+        - name: lidarr-media-covers
+          persistentVolumeClaim:
+            claimName: lidarr-media-covers
       initContainers:
         - name: setup-config
           image: busybox
@@ -67,6 +70,9 @@ spec:
             - name: config
               mountPath: /config/config.xml
               subPath: config.xml
+              readOnly: false
+            - name: lidarr-media-covers
+              mountPath: /config/MediaCovers
               readOnly: false
             - name: lidarr-music-horsepc
               mountPath: /data/media/music
