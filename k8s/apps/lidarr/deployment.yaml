@@ -78,9 +78,15 @@ spec:
             - name: horsepc-sabnzbd-complete
               mountPath: /data/usenet/complete/lidarr
               subPath: lidarr
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: web
           livenessProbe:
             httpGet:
               path: /ping
               port: web
             initialDelaySeconds: 10
             periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
