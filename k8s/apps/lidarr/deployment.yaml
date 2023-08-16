@@ -54,8 +54,8 @@ spec:
             readOnlyRootFilesystem: true
           resources:
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: 2Gi
+              cpu: 2000m
           ports:
             - containerPort: 8686
               name: web
