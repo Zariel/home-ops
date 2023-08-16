@@ -49,8 +49,10 @@ spec:
           image: ghcr.io/onedr0p/lidarr-develop:rolling@sha256:58ccc58f345c48645b81327989cb0b6b498e2894f59c6cec3be25707c8aa022d
           imagePullPolicy: "IfNotPresent"
           env:
-            - name: COMPlus_EnableDiagnostics
+            - name: DOTNET_EnableDiagnostics
               value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
           securityContext:
             runAsUser: 568
             runAsNonRoot: true
