@@ -24,7 +24,7 @@ spec:
             path: /mnt/bighorse/arr
       containers:
         - name: sonarr
-          image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:049dd53172aa811e3bddab9ea907b8a496661c7c232b64ee5f3dde6a80bca93f
+          image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:1a218003d4bd88761aaf1c0a79f19e21167be1ba69a05156c03075f307a85a95
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
