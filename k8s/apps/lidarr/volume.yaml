@@ -48,19 +48,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: lidarr-media-covers
-spec:
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: smb-horsepc
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: lidarr-config
 spec:
   storageClassName: bighorse-nfs
