@@ -1,0 +1,5 @@
+storageClass:
+  name: bighorse-nfs
+nfs:
+  server: truenas.holywoo.cbannister.xyz
+  path: /k8s
