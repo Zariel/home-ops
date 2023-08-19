@@ -13,13 +13,8 @@ spec:
     spec:
       hostname: lidarr
       volumes:
-        - name: lidarr-backups
-          emptyDir: {}
         - name: tmp
           emptyDir: {}
-        - name: lidarr-config
-          configMap:
-            name: lidarr-config
         - name: config
           persistentVolumeClaim:
             claimName: lidarr-config

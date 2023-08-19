@@ -7,7 +7,3 @@ resources:
   - deployment.yaml
   - service.yaml
   - volume.yaml
-configMapGenerator:
-  - name: lidarr-config
-    files:
-      - config.xml=files/config.xml
