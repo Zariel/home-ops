@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+spec:
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      hostname: sonarr
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: config
+          persistentVolumeClaim:
+            claimName: sonarr-config
+        - name: arr-media
+          nfs:
+            server: truenas.holywoo.cbannister.xyz
+            path: /mnt/bighorse/arr
+      containers:
+        - name: sonarr
+          image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:049dd53172aa811e3bddab9ea907b8a496661c7c232b64ee5f3dde6a80bca93f
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 586
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: 8192Mi
+              cpu: 4000m
+          ports:
+            - containerPort: 8989
+              name: web
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: config
+              mountPath: /config
+              readOnly: false
+            - name: arr-media
+              mountPath: /data
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: web
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
