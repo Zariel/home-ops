@@ -26,7 +26,8 @@ spec:
     # make sure this value is unique for every share in the cluster
     volumeHandle: bighorse#lidarr#music
     volumeAttributes:
-      source: //truenas/music/lidarr
+      source: //truenas/music
+      subPath: lidarr
     nodeStageSecretRef:
       name: smb-bighorse
       namespace: default
