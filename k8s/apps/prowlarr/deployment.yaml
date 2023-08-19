@@ -13,37 +13,23 @@ spec:
     spec:
       hostname: prowlarr
       volumes:
-        - name: prowlar-backups
-          emptyDir: {}
         - name: tmp
           emptyDir: {}
-        - name: prowlarr-config
-          configMap:
-            name: prowlarr-config
         - name: config
-          emptyDir: {}
-      initContainers:
-        - name: setup-config
-          image: busybox
-          securityContext:
-            runAsUser: 568
-            runAsNonRoot: true
-          command:
-            ["/bin/sh", "-c", "cp /config/config.xml /opt/prowlarr/config.xml"]
-          volumeMounts:
-            - name: prowlarr-config
-              mountPath: /config
-            - name: config
-              mountPath: /opt/prowlarr
+          persistentVolumeClaim:
+            claimName: prowlarr-config
       containers:
         - name: prowlarr
           image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:049dd53172aa811e3bddab9ea907b8a496661c7c232b64ee5f3dde6a80bca93f
           imagePullPolicy: "IfNotPresent"
           env:
-            - name: COMPlus_EnableDiagnostics
+            - name: DOTNET_EnableDiagnostics
               value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
           securityContext:
             runAsUser: 568
+            runAsGroup: 586
             runAsNonRoot: true
             readOnlyRootFilesystem: true
           resources:
@@ -54,13 +40,10 @@ spec:
             - containerPort: 9696
               name: web
           volumeMounts:
-            - name: prowlar-backups
-              mountPath: /tmp/prowlarr_backup
             - name: tmp
               mountPath: /tmp
             - name: config
-              mountPath: /config/config.xml
-              subPath: config.xml
+              mountPath: /config
               readOnly: false
           livenessProbe:
             httpGet:
