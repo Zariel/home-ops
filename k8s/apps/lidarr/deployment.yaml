@@ -22,9 +22,9 @@ spec:
             name: lidarr-config
         - name: config
           emptyDir: {}
-        - name: lidarr-music-horsepc
+        - name: lidarr-music-bighorse
           persistentVolumeClaim:
-            claimName: lidarr-music-horsepc
+            claimName: lidarr-music-bighorse
         - name: horsepc-sabnzbd-complete
           persistentVolumeClaim:
             claimName: horsepc-sabnzbd-complete
@@ -55,6 +55,7 @@ spec:
               value: "1"
           securityContext:
             runAsUser: 568
+            runAsGroup: 586
             runAsNonRoot: true
             readOnlyRootFilesystem: true
           resources:
@@ -75,7 +76,7 @@ spec:
             - name: lidarr-media-covers
               mountPath: /config/MediaCover
               readOnly: false
-            - name: lidarr-music-horsepc
+            - name: lidarr-music-bighorse
               mountPath: /data/media/music
             - name: horsepc-sabnzbd-complete
               mountPath: /data/usenet/complete/lidarr
