@@ -21,29 +21,14 @@ spec:
           configMap:
             name: lidarr-config
         - name: config
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: lidarr-config
         - name: lidarr-music-bighorse
           persistentVolumeClaim:
             claimName: lidarr-music-bighorse
         - name: horsepc-sabnzbd-complete
           persistentVolumeClaim:
             claimName: horsepc-sabnzbd-complete
-        - name: lidarr-media-covers
-          persistentVolumeClaim:
-            claimName: lidarr-media-covers
-      initContainers:
-        - name: setup-config
-          image: busybox
-          securityContext:
-            runAsUser: 568
-            runAsNonRoot: true
-          command:
-            ["/bin/sh", "-c", "cp /config/config.xml /opt/lidarr/config.xml"]
-          volumeMounts:
-            - name: lidarr-config
-              mountPath: /config
-            - name: config
-              mountPath: /opt/lidarr
       containers:
         - name: lidarr
           image: ghcr.io/onedr0p/lidarr-develop:rolling@sha256:58ccc58f345c48645b81327989cb0b6b498e2894f59c6cec3be25707c8aa022d
@@ -69,15 +54,10 @@ spec:
             - containerPort: 8686
               name: web
           volumeMounts:
-            - name: lidarr-backups
-              mountPath: /tmp/lidarr_backup
             - name: tmp
               mountPath: /tmp
             - name: config
               mountPath: /config
-              readOnly: false
-            - name: lidarr-media-covers
-              mountPath: /config/MediaCover
               readOnly: false
             - name: lidarr-music-bighorse
               mountPath: /data/media/music
