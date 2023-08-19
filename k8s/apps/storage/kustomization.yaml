@@ -5,4 +5,3 @@ commonLabels:
   app: storage
 resources:
   - horsepc.yaml
-  - bighorse.yaml
