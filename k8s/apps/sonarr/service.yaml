@@ -8,7 +8,7 @@ spec:
   selector:
     app: sonarr
   type: LoadBalancer
-  loadBalancerIP: 10.1.12.2
+  loadBalancerIP: 10.1.12.5
   ipFamilies:
     - IPv4
   ports:
