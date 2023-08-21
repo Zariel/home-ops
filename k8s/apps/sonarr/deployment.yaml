@@ -26,8 +26,7 @@ spec:
         runAsUser: 568
         runAsGroup: 586
         fsGroup: 586
-        runAsNonRoot: true
-        readOnlyRootFilesystem: true
+        fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: sonarr
           image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:1a218003d4bd88761aaf1c0a79f19e21167be1ba69a05156c03075f307a85a95
