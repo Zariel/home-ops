@@ -4,6 +4,8 @@ metadata:
   labels:
     app: radarr
   name: radarr-v4
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: radarr.k8s.holywoo.cbannister.xyz
 spec:
   selector:
     app: radarr
