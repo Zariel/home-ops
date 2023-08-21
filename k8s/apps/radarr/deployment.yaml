@@ -42,7 +42,7 @@ spec:
               value: postgres.holywoo.cbannister.xyz
             - name: RADARR__POSTGRES_MAIN_DB
               value: radarr-main
-            - name: RADARR__POSTGRES_LOGS_DB
+            - name: RADARR__POSTGRES_LOG_DB
               value: radarr-logs
             - name: RADARR__POSTGRES_USER
               value: holywoo
