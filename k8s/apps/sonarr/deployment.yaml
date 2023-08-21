@@ -44,7 +44,7 @@ spec:
               memory: 8192Mi
               cpu: 4000m
           ports:
-            - containerPort: 6969
+            - containerPort: 8989
               name: web
           volumeMounts:
             - name: tmp
