@@ -13,27 +13,70 @@ spec:
       labels:
         app: radarr
     spec:
+      hostname: radarr
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: config
+          persistentVolumeClaim:
+            claimName: radarr-config
+        - name: arr-media
+          nfs:
+            server: truenas.holywoo.cbannister.xyz
+            path: /mnt/bighorse/arr
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 586
+        fsGroup: 586
+        fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: radarr
-          image: ghcr.io/onedr0p/radarr:rolling@sha256:4a51f4903789b9f2263d2a8390e5044e45b4c4553b97fa68840eed2215541303
+          image: ghcr.io/onedr0p/radarr-develop:rolling@sha256:1e0398f1371395e7452df3302c6ac3157638f394b29dbb79e1afc36c1214438b
           imagePullPolicy: "IfNotPresent"
           env:
-            - name: COMPlus_EnableDiagnostics
+            - name: DOTNET_EnableDiagnostics
               value: "0"
-          securityContext:
-            runAsUser: 568
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
+            - name: DOTNET_gcServer
+              value: "1"
+            - name: RADARR__POSTGRES_HOST
+              value: postgres.holywoo.cbannister.xyz
+            - name: RADARR__POSTGRES_MAIN_DB
+              value: radarr-main
+            - name: RADARR__POSTGRES_LOGS_DB
+              value: radarr-logs
+            - name: RADARR__POSTGRES_USER
+              value: holywoo
+            - name: RADARR__POSTGRES_PASSWORD
+              value: horse
           resources:
-            limits:
+            requests:
               memory: "512Mi"
               cpu: "500m"
+            limits:
+              memory: 8192Mi
+              cpu: 4000m
           ports:
             - containerPort: 7878
               name: web
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: config
+              mountPath: /config
+              readOnly: false
+            - name: arr-media
+              mountPath: /data
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: web
+            failureThreshold: 30
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /ping
               port: web
             initialDelaySeconds: 10
             periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
