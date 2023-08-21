@@ -29,7 +29,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: sonarr
-          image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:1a218003d4bd88761aaf1c0a79f19e21167be1ba69a05156c03075f307a85a95
+          image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:1e0398f1371395e7452df3302c6ac3157638f394b29dbb79e1afc36c1214438b
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
