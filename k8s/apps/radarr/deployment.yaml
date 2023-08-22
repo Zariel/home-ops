@@ -21,9 +21,8 @@ spec:
           persistentVolumeClaim:
             claimName: radarr-config
         - name: arr-media
-          nfs:
-            server: truenas.holywoo.cbannister.xyz
-            path: /mnt/bighorse/arr
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -71,7 +70,7 @@ spec:
             httpGet:
               path: /ping
               port: web
-            failureThreshold: 30
+            failureThreshold: 6
             periodSeconds: 10
           livenessProbe:
             httpGet:
