@@ -10,7 +10,7 @@ spec:
   selector:
     app: sabnzbd
   type: LoadBalancer
-  loadBalancerIP: 10.1.12.5
+  loadBalancerIP: 10.1.12.6
   ipFamilies:
     - IPv4
   ports:
