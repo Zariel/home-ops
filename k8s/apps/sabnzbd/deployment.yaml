@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sabnzbd
+  labels:
+    app: sabnzbd
+spec:
+  selector:
+    matchLabels:
+      app: sabnzbd
+  template:
+    metadata:
+      labels:
+        app: sabnzbd
+    spec:
+      hostname: sabnzbd
+      volumes:
+        - name: incomplete
+          emptyDir: {}
+        - name: config
+          persistentVolumeClaim:
+            claimName: sabnzbd-config
+        - name: arr-media
+          nfs:
+            server: truenas.holywoo.cbannister.xyz
+            path: /mnt/bighorse/arr
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 586
+        fsGroup: 586
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: sabnzbd
+          image: ghcr.io/onedr0p/sadnzbd:rolling@sha256:aff676e3c234f7a4493c75813e296c347c02b6e5374acd1858f8244ea44f2b4a
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: 8192Mi
+              cpu: 4000m
+          ports:
+            - containerPort: 8080
+              name: web
+          volumeMounts:
+            - name: incomplete
+              mountPath: /tmp/incomplete
+            - name: config
+              mountPath: /config
+              readOnly: false
+            - name: arr-media
+              mountPath: /data
+          startupProbe:
+            httpGet:
+              path: /api?mode=version
+              port: web
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api?mode=version
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
