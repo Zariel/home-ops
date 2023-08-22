@@ -28,10 +28,6 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
-      initContainers:
-        - name: setup
-          image: busybox
-          command: ["mkdir", "/data"]
       containers:
         - name: sonarr
           image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:1e0398f1371395e7452df3302c6ac3157638f394b29dbb79e1afc36c1214438b
