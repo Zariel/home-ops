@@ -33,6 +33,17 @@ spec:
         - name: sabnzbd
           image: ghcr.io/onedr0p/sabnzbd:rolling@sha256:aff676e3c234f7a4493c75813e296c347c02b6e5374acd1858f8244ea44f2b4a
           imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: SABNZBD__HOST_WHITELIST_ENTRIES
+              value: >-
+                sabnzbd,
+                sabnzbd.default,
+                sabnzbd.default.svc,
+                sabnzbd.default.svc.cluster,
+                sabnzbd.default.svc.cluster.local,
+                sabnzbd.k8s.holywoo.cbannister.xyz
           resources:
             requests:
               memory: "512Mi"
