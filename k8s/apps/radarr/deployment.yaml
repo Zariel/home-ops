@@ -26,9 +26,10 @@ spec:
             path: /mnt/bighorse/arr
       securityContext:
         runAsUser: 568
-        runAsGroup: 586
-        fsGroup: 586
+        runAsGroup: 568
+        fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
       containers:
         - name: radarr
           image: ghcr.io/onedr0p/radarr-develop:rolling@sha256:f2044d2e8bd2e8d24e8a79f051404be80400f450a94b4c481cbc93cfeffbe745

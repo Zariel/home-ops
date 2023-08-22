@@ -18,6 +18,12 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: prowlarr-config
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
       containers:
         - name: prowlarr
           image: ghcr.io/onedr0p/prowlarr-develop:rolling@sha256:b17b18507fde48c020c49d3f632178d07cc7e9f17056abf9ec50d30ae63d6f6d
@@ -27,11 +33,6 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 586
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
           resources:
             limits:
               memory: "512Mi"

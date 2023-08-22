@@ -26,9 +26,10 @@ spec:
             path: /mnt/bighorse/arr
       securityContext:
         runAsUser: 568
-        runAsGroup: 586
-        fsGroup: 586
+        runAsGroup: 568
+        fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
       containers:
         - name: sabnzbd
           image: ghcr.io/onedr0p/sabnzbd:rolling@sha256:aff676e3c234f7a4493c75813e296c347c02b6e5374acd1858f8244ea44f2b4a

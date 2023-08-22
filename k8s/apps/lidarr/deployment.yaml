@@ -24,6 +24,12 @@ spec:
         - name: horsepc-sabnzbd-complete
           persistentVolumeClaim:
             claimName: horsepc-sabnzbd-complete
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
       containers:
         - name: lidarr
           image: ghcr.io/onedr0p/lidarr-develop:rolling@sha256:e2c5b6474d1259080e3bc9324e5483618777f58b327a0c696fdfcd0ffaefe16c
@@ -33,11 +39,6 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 586
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
           resources:
             requests:
               cpu: 1000m
