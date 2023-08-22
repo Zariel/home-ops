@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bighorse-arr-media
+spec:
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  capacity:
+    storage: 1000Gi
+  nfs:
+    server: truenas.holywoo.cbannister.xyz
+    path: /mnt/bighorse/arr
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bighorse-arr-media
+spec:
+  volumeMode: Filesystem
+  volumeName: bighorse-arr-media
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+  accessModes:
+    - ReadWriteMany

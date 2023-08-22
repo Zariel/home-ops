@@ -19,9 +19,8 @@ spec:
           persistentVolumeClaim:
             claimName: sonarr-config
         - name: arr-media
-          nfs:
-            server: truenas.holywoo.cbannister.xyz
-            path: /mnt/bighorse/arr
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
       securityContext:
         runAsUser: 568
         runAsGroup: 568
