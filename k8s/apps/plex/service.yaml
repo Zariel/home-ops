@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dplex-v4
+  name: plex-v4
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: dplex.k8s.holywoo.cbannister.xyz
+    external-dns.alpha.kubernetes.io/hostname: plex.k8s.holywoo.cbannister.xyz
 spec:
   selector:
-    app: dplex
+    app: plex
   type: LoadBalancer
   loadBalancerIP: 10.1.12.7
   ipFamilies:
