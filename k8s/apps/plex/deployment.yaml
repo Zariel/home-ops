@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+spec:
+  selector:
+    matchLabels:
+      app: plex
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+        - name: transcode
+          emptyDir: {}
+        - name: config
+          persistentVolumeClaim:
+            claimName: plex-config
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+            readOnly: true
+      containers:
+        - name: plex
+          image: ghcr.io/onedr0p/plex:rolling@sha256:805ad80226d54f03c21efe84979558e7c3d0b07f345b9c929ff11de8cc216151
+          resources:
+            limits:
+              memory: "8096Mi"
+              cpu: "4000m"
+          ports:
+            - containerPort: 32400
+              name: web
+          volumeMounts:
+            - name: transcode
+              mountPath: /transcode
+            - name: config
+              mountPath: /config
+            - name: arr-media
+              mountPath: /data
