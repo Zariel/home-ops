@@ -4,7 +4,7 @@ prometheus:
     loadBalancerIP: 10.1.12.10
     port: 80
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: prowlarr.k8s.holywoo.cbannister.xyz
+      external-dns.alpha.kubernetes.io/hostname: prometheus.k8s.holywoo.cbannister.xyz
 grafana:
   service:
     type: LoadBalancer
