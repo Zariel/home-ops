@@ -12,3 +12,10 @@ grafana:
     port: 80
     annotations:
       external-dns.alpha.kubernetes.io/hostname: grafana.k8s.holywoo.cbannister.xyz
+alertmanager:
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 10.1.12.12
+    port: 80
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: alertmanager.k8s.holywoo.cbannister.xyz
