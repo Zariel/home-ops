@@ -5,6 +5,7 @@ commonLabels:
   app: recyclarr
 resources:
   - deployment.yaml
+  - pvc.yaml
 configMapGenerator:
   - name: recyclarr-config
     files:
