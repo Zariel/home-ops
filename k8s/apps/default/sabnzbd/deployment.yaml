@@ -63,6 +63,11 @@ spec:
               readOnly: false
             - name: arr-media
               mountPath: /data
+          lifecycle:
+            preStop:
+              httpGet:
+                path: /api?mode=shutdown
+                port: web
           startupProbe:
             httpGet:
               path: /api?mode=version
