@@ -23,7 +23,12 @@ sonarr:
           enabled: true
         upgrade:
           allowed: true
-          until_score: 10000
+        min_format_score: 0
+      - name: BLURAY-2160p
+        reset_unmatched_scores:
+          enabled: true
+        upgrade:
+          allowed: true
         min_format_score: 0
 
     # Custom Formats
@@ -45,14 +50,19 @@ sonarr:
           - 17e889ce13117940092308f48b48b45b # HLG
           - 2a7e3be05d3861d6df7171ec74cad727 # PQ
 
-          # DV (WEBDL)
-          # The next line is uncommented by default, and ensures that releases with Dolby Vision
-          # will only be grabbed if they have HDR10 fallback. You can comment the line out if you do
-          # not need HDR10 fallback
-          - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
-
-          # HDR10Plus Boost - Uncomment the next line if any of your devices DO support HDR10+
-          # - 0dad0a507451acddd754fe6dc3a7f5e7  # HDR10Plus Boost
+          # audio
+          - 0d7824bb924701997f874e7ff7d4844a # TrueHD ATMOS
+          - 9d00418ba386a083fbf4d58235fc37ef # DTS X
+          - b6fbafa7942952a13e17e2b1152b539a # ATMOS
+          - 4232a509ce60c4e208d13825b7c06264 # DD+ ATMOS
+          - 1808e4b9cee74e064dfae3f1db99dbfe # TrueHD
+          - c429417a57ea8c41d57e6990a8b0033f # DTS-HD-MA
+          - 851bd64e04c9374c51102be3dd9ae4cc # FLAC
+          - 30f70576671ca933adbdcfc736a69718 # PCM
+          - 63487786a8b01b7f20dd2bc90dd4a477 # DD+
+          - 5964f2a8b3be407d083498e4459d05d0 # DTS
+          - a50b8a0c62274a7c38b09a9619ba9d86 # AAC
+          - dbe00161b08a25ac6154c55f95e6318d # DD
 
           # Unwanted UHD
           - 85c61753df5da1fb2aab6f2a47426b09 # BR-DISK
@@ -92,9 +102,17 @@ sonarr:
           - d2d299244a92b8a52d4921ce3897a256 # UHD Streaming Cut
 
           # HQ Source Groups
+          # remux
+          - 9965a052eb87b0d10313b1cea89eb451 # Remux Tier 01
+          - 8a1d0c3d7497e741736761a1da866a2e # Remux Tier 02
+          # bluray
+          - d6819cba26b1a6508138d25fb5e32293 # HD Bluray Tier 01
+          - c2216b7b8aa545dc1ce8388c618f8d57 # HD Bluray Tier 02
+          # web
           - e6258996055b9fbab7e9cb2f75819294 # WEB Tier 01
           - 58790d4e2fdcd9733aa7ae68ba2bb503 # WEB Tier 02
           - d84935abd3f8556dcd51d4f27e22d0a6 # WEB Tier 03
           - d0c516558625b04b363fa6c5c2c7cfd4 # WEB Scene
         quality_profiles:
+          - name: BLURAY-2160p
           - name: WEBDL-2160p
