@@ -16,12 +16,14 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
+      nodeSelector:
+        nas: local
       volumes:
         - name: transcode
           emptyDir: {}
         - name: config
           persistentVolumeClaim:
-            claimName: plex-config
+            claimName: plex-config-local
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
