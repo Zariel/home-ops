@@ -32,6 +32,8 @@ spec:
           env:
             - name: TZ
               value: Europe/London
+            - name: ADVERTISE_IP
+              value: "http://plex.k8s.holywoo.cbannister.xyz:32400/"
           resources:
             limits:
               memory: "8096Mi"
