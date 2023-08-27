@@ -37,9 +37,11 @@ spec:
             - name: ADVERTISE_IP
               value: http://10.1.12.7:80/
           resources:
+            requests:
+              cpu: 4000m
+              memory: 8096Mi
             limits:
-              memory: "8096Mi"
-              cpu: "4000m"
+              memory: 8096Mi
           ports:
             - containerPort: 32400
               name: web
