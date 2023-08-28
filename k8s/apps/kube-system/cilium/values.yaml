@@ -21,3 +21,8 @@ serviceAccounts:
     name: cilium-operator
 tunnel: vxlan
 devices: ens+,
+l2announcements:
+  enabled: true
+k8sClientRateLimit:
+  qps: 30
+  burst: 50
