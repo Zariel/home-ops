@@ -20,3 +20,4 @@ serviceAccounts:
   operator:
     name: cilium-operator
 tunnel: vxlan
+devices: ens+,
