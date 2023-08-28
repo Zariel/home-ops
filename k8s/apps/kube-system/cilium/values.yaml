@@ -20,7 +20,7 @@ serviceAccounts:
   operator:
     name: cilium-operator
 tunnel: vxlan
-devices: ens+,
+devices: ens+
 l2announcements:
   enabled: true
 k8sClientRateLimit:
