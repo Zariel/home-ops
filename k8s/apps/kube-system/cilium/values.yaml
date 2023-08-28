@@ -9,7 +9,7 @@ ipam:
   mode: cluster-pool
   operator:
     clusterPoolIPv4PodCIDRList: 10.42.0.0/16
-k8sServiceHost: 10.100.0.10
+k8sServiceHost: 10.0.4.147
 k8sServicePort: 6443
 kubeProxyReplacement: strict
 operator:

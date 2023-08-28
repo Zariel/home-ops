@@ -21,7 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: cilium
-      interval: 1m
+      interval: 5m
   valuesFrom:
     - kind: ConfigMap
       name: cilium-values
