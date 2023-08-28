@@ -32,7 +32,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: lidarr
-          image: ghcr.io/onedr0p/lidarr-develop:rolling@sha256:e2c5b6474d1259080e3bc9324e5483618777f58b327a0c696fdfcd0ffaefe16c
+          image: ghcr.io/onedr0p/lidarr-develop:rolling@sha256:f32d036b4ccfd62f9b7793fff1ddace0d2bb2a553e3febf1440f9bcaa3d9860b
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
