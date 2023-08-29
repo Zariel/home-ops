@@ -31,7 +31,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: radarr
-          image: ghcr.io/onedr0p/radarr-develop:rolling@sha256:f2044d2e8bd2e8d24e8a79f051404be80400f450a94b4c481cbc93cfeffbe745
+          image: ghcr.io/onedr0p/radarr-develop:rolling@sha256:f62b8d569fafe0068755c1e080c17646fba7829c19c860a34679e7a7a1178227
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
