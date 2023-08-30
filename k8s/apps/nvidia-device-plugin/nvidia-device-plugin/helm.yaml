@@ -23,4 +23,7 @@ spec:
         name: nvdp
       interval: 30m
   values:
-    config.name: nvidia-device-plugin-config
+    config:
+      name: nvidia-device-plugin-config
+    gfd:
+      enabled: true

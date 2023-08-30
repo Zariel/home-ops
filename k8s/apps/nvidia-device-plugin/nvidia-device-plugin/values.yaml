@@ -1,2 +1,7 @@
-gfd:
-  enabled: true
+version: v1
+flags:
+  failOnInitError: true
+  plugin:
+    passDeviceSpecs: false
+    deviceListStrategy: envvar
+    deviceIDStrategy: uuid
