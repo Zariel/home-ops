@@ -43,6 +43,7 @@ spec:
               nvidia.com/gpu: 1
             limits:
               memory: 8096Mi
+              nvidia.com/gpu: 1
           ports:
             - containerPort: 32400
               name: web
