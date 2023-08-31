@@ -36,6 +36,8 @@ spec:
               value: Europe/London
             - name: ADVERTISE_IP
               value: http://10.1.12.7:80,http://plex.k8s.holywoo.cbannister.xyz:80
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: all
           resources:
             requests:
               cpu: 4000m
