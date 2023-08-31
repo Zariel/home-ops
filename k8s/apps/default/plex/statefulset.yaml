@@ -1,8 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: plex
 spec:
+  serviceName: plex-v4
+  replicas: 1
   selector:
     matchLabels:
       app: plex
