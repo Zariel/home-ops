@@ -1,0 +1,12 @@
+k8s:
+  vars:
+    ansible_user: chris
+  children:
+    control_plane:
+      hosts:
+        k8s-0:
+          ansible_host: 192.168.42.10
+        k8s-1:
+          ansible_host: 192.168.42.11
+        k8s-2:
+          ansible_host: 192.168.42.12
