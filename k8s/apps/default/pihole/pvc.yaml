@@ -3,10 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: pihole-db
 spec:
-  storageClassName: local-path
+  storageClassName: bighorse-nfs
   resources:
     requests:
-      storage: 16Gi
+      storage: 2Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
