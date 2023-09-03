@@ -5,7 +5,6 @@ metadata:
 spec:
   loadBalancerIPs: true
   interfaces:
-    - ^ens[0-9]+
     - ^eno[0-9]+
 ---
 apiVersion: "cilium.io/v2alpha1"
