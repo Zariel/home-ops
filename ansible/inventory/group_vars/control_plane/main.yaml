@@ -8,7 +8,7 @@ k3s_server:
   docker: false
   flannel-backend: "none" # quote
   disable:
-    # - coredns
+    - coredns
     - flannel
     - local-storage
     - metrics-server
