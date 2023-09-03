@@ -6,3 +6,4 @@ resources:
   - ./csi-driver-smb
   - ./nfs-provisioner
   - ./metrics-server
+  - ./descheduler
