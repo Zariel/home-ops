@@ -4,3 +4,4 @@ namespace: flux-system
 resources:
   - ./repos/cilium.yaml
   - ./repos/ingress-nginx.yaml
+  - ./repos/metrics-server.yaml
