@@ -1,4 +1,3 @@
----
 # https://github.com/kevincoakley/ansible-role-k8s-rolling-update
 - name: Cluster update rollout
   hosts: all
@@ -14,7 +13,7 @@
     - name: Details
       ansible.builtin.command: "kubectl get node {{ inventory_hostname }} -o json"
       register: kubectl_get_node
-      delegate_to: "{{ groups['master'][0] }}"
+      delegate_to: "{{ groups['control_plane'][0] }}"
       failed_when: false
       changed_when: false
 
@@ -27,7 +26,7 @@
       block:
         - name: Cordon
           ansible.builtin.command: "kubectl cordon {{ inventory_hostname }}"
-          delegate_to: "{{ groups['master'][0] }}"
+          delegate_to: "{{ groups['control_plane'][0] }}"
           changed_when: false
 
         - name: Wait to cordon
@@ -35,13 +34,13 @@
           register: wait_for_cordon
           retries: 10
           delay: 10
-          delegate_to: "{{ groups['master'][0] }}"
+          delegate_to: "{{ groups['control_plane'][0] }}"
           changed_when: false
           until: (wait_for_cordon['stdout'] | from_json).spec.unschedulable
 
         - name: Drain
           ansible.builtin.command: "kubectl drain --ignore-daemonsets --delete-emptydir-data --force {{ inventory_hostname }}"
-          delegate_to: "{{ groups['master'][0] }}"
+          delegate_to: "{{ groups['control_plane'][0] }}"
           changed_when: false
 
         - name: Update
@@ -63,13 +62,13 @@
 
         - name: Uncordon
           ansible.builtin.command: "kubectl uncordon {{ inventory_hostname }}"
-          delegate_to: "{{ groups['master'][0] }}"
+          delegate_to: "{{ groups['control_plane'][0] }}"
           changed_when: false
 
         - name: Wait to uncordon
           ansible.builtin.command: "kubectl get node {{ inventory_hostname }} -o json"
           retries: 10
           delay: 10
-          delegate_to: "{{ groups['master'][0] }}"
+          delegate_to: "{{ groups['control_plane'][0] }}"
           changed_when: false
           until: not (kubectl_get_node['stdout'] | from_json).spec.unschedulable is defined
