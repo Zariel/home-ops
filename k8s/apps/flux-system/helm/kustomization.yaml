@@ -6,3 +6,4 @@ resources:
   - ./repos/ingress-nginx.yaml
   - ./repos/metrics-server.yaml
   - ./repos/descheduler.yaml
+  - ./repos/rook.yaml
