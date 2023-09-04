@@ -1,14 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: plex-v4
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: plex.k8s.holywoo.cbannister.xyz
+  name: plex
 spec:
   selector:
     app: plex
-  type: LoadBalancer
-  loadBalancerIP: 10.1.12.7
+  type: ClusterIP
   ipFamilies:
     - IPv4
   ports:
