@@ -1,3 +1,4 @@
+namespaceOverride: monitoring
 prometheus:
   ingress:
     enabled: true

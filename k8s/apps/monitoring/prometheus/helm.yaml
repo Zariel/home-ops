@@ -13,7 +13,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
-        namespace: flux-ssytem
+        namespace: flux-system
       interval: 30m
   valuesFrom:
     - kind: ConfigMap
