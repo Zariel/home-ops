@@ -8,6 +8,17 @@ spec:
   selector:
     matchLabels:
       app: plex
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: ceph-block
+        volumeMode: Filesystem
   template:
     metadata:
       labels:
@@ -23,9 +34,6 @@ spec:
       volumes:
         - name: transcode
           emptyDir: {}
-        - name: config
-          persistentVolumeClaim:
-            claimName: plex-config-local
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -46,10 +54,10 @@ spec:
             requests:
               cpu: 4000m
               memory: 8096Mi
-              nvidia.com/gpu: 1
+              nvidia.com/gpu: "1"
             limits:
               memory: 8096Mi
-              nvidia.com/gpu: 1
+              nvidia.com/gpu: "1"
           ports:
             - containerPort: 32400
               name: web

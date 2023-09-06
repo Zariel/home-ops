@@ -6,5 +6,4 @@ commonLabels:
 resources:
   - statefulset.yaml
   - service.yaml
-  - volume.yaml
   - ingress.yaml
