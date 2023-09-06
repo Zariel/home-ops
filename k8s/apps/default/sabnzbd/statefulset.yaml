@@ -17,7 +17,7 @@ spec:
         resources:
           requests:
             storage: 2Gi
-        volumeMode: Block
+        volumeMode: Filesystem
         accessModes:
           - ReadWriteOnce
   template:
