@@ -26,6 +26,8 @@ spec:
     keepHistory: false
   values:
     csi:
+      enableCSIHostNetwork: false
+      enableCephfsDriver: false
       csiAddons:
         enabled: true
       # Set when encryption/compression is enabled

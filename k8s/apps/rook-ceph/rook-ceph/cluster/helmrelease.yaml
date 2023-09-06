@@ -36,6 +36,28 @@ spec:
           path: /
     toolbox:
       enabled: true
+
+    resources:
+      mgr:
+        limits:
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+      mon:
+        limits:
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+      osd:
+        limits:
+          cpu: "1000m"
+          memory: "2Gi"
+        requests:
+          cpu: "1000m"
+          memory: "2Gi"
+
     configOverride: |
       [global]
       bdev_enable_discard = true
@@ -55,7 +77,7 @@ spec:
             enabled: true
           requireMsgr2: true
       crashCollector:
-        disable: false
+        disable: true
       dashboard:
         enabled: true
         urlPrefix: /
