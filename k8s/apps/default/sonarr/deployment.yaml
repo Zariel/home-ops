@@ -13,11 +13,6 @@ spec:
     spec:
       hostname: sonarr
       volumes:
-        - name: tmp
-          emptyDir: {}
-        - name: config
-          persistentVolumeClaim:
-            claimName: sonarr-config
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -36,22 +31,30 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
+            - name: SONARR__POSTGRES_HOST
+              value: postgres
+            - name: SONARR__POSTGRES_MAIN_DB
+              value: sonarr-main
+            - name: SONARR__POSTGRES_LOG_DB
+              value: sonarr-log
+            - name: SONARR__POSTGRES_USER
+              value: holywoo
+            - name: SONARR__POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
           resources:
             requests:
               memory: "512Mi"
               cpu: "500m"
             limits:
-              memory: 8192Mi
+              memory: 1024Mi
               cpu: 4000m
           ports:
             - containerPort: 8989
               name: web
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-            - name: config
-              mountPath: /config
-              readOnly: false
             - name: arr-media
               mountPath: /data
           startupProbe:

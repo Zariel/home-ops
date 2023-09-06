@@ -15,11 +15,6 @@ spec:
     spec:
       hostname: radarr
       volumes:
-        - name: tmp
-          emptyDir: {}
-        - name: config
-          persistentVolumeClaim:
-            claimName: radarr-config
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -47,7 +42,10 @@ spec:
             - name: RADARR__POSTGRES_USER
               value: holywoo
             - name: RADARR__POSTGRES_PASSWORD
-              value: horse
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
           resources:
             requests:
               memory: "512Mi"
@@ -59,11 +57,6 @@ spec:
             - containerPort: 7878
               name: web
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-            - name: config
-              mountPath: /config
-              readOnly: false
             - name: arr-media
               mountPath: /data
           startupProbe:

@@ -6,4 +6,4 @@ commonLabels:
 resources:
   - deployment.yaml
   - service.yaml
-  - volumes.yaml
+  - ingress.yaml

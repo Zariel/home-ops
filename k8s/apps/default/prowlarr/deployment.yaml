@@ -13,8 +13,6 @@ spec:
     spec:
       hostname: prowlarr
       volumes:
-        - name: tmp
-          emptyDir: {}
         - name: config
           persistentVolumeClaim:
             claimName: prowlarr-config
@@ -33,16 +31,27 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
+            - name: PROWLARR__POSTGRES_HOST
+              value: postgres
+            - name: PROWLARR__POSTGRES_MAIN_DB
+              value: prowlarr-main
+            - name: PROWLARR__POSTGRES_LOG_DB
+              value: prowlarr-log
+            - name: PROWLARR__POSTGRES_USER
+              value: holywoo
+            - name: PROWLARR__POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
           resources:
-            limits:
+            requests:
               memory: "512Mi"
               cpu: "500m"
           ports:
             - containerPort: 9696
               name: web
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
             - name: config
               mountPath: /config
               readOnly: false
