@@ -32,7 +32,7 @@ spec:
       dashboard:
         ingressClassName: internal
         host:
-          name: &host rook.holywoo.cbanister.xyz
+          name: &host rook.holywoo.cbannister.xyz
           path: /
     toolbox:
       enabled: true
