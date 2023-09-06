@@ -37,33 +37,32 @@ spec:
     toolbox:
       enabled: true
 
-    resources:
-      mgr:
-        limits:
-          memory: "1Gi"
-        requests:
-          cpu: "500m"
-          memory: "1Gi"
-      mon:
-        limits:
-          memory: "1Gi"
-        requests:
-          cpu: "500m"
-          memory: "1Gi"
-      osd:
-        limits:
-          cpu: "1000m"
-          memory: "2Gi"
-        requests:
-          cpu: "1000m"
-          memory: "2Gi"
-
     configOverride: |
       [global]
       bdev_enable_discard = true
       bdev_async_discard = true
       osd_class_update_on_start = false
     cephClusterSpec:
+      resources:
+        mgr:
+          limits:
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        mon:
+          limits:
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        osd:
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
       mgr:
         modules:
           - name: pg_autoscaler # This is already enabled by default, but needs to be here so that we don't override the default behavior.
