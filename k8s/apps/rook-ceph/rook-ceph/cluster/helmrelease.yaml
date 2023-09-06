@@ -42,6 +42,12 @@ spec:
       bdev_async_discard = true
       osd_class_update_on_start = false
     cephClusterSpec:
+      mgr:
+        modules:
+          - name: pg_autoscaler # This is already enabled by default, but needs to be here so that we don't override the default behavior.
+            enabled: true
+          - name: rook # This enables the rook module.
+            enabled: true
       network:
         provider: host
         connections:
