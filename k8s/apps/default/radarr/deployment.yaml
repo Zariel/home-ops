@@ -34,7 +34,7 @@ spec:
             - name: DOTNET_gcServer
               value: "1"
             - name: RADARR__POSTGRES_HOST
-              value: postgres.holywoo.cbannister.xyz
+              value: postgres
             - name: RADARR__POSTGRES_MAIN_DB
               value: radarr-main
             - name: RADARR__POSTGRES_LOG_DB
