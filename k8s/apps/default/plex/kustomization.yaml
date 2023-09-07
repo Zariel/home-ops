@@ -6,4 +6,3 @@ commonLabels:
 resources:
   - statefulset.yaml
   - service.yaml
-  - ingress.yaml
