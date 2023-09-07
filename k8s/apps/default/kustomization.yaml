@@ -7,7 +7,6 @@ resources:
   - ./jellyfin
   - ./lidarr
   - ./pihole
-  - ./plex
   - ./prowlarr
   - ./radarr
   - ./recyclarr
