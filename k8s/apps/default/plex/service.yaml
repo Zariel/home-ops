@@ -4,11 +4,11 @@ metadata:
   name: plex
   annotations:
     external-dns.alpha.kubernetes.io/hostname: plex.holywoo.cbannister.xyz
+    io.cilium/lb-ipam-ips: 192.168.42.203
 spec:
   selector:
     app: plex
   type: LoadBalancer
-  LoadBalancerIP: 192.168.42.203
   ipFamilies:
     - IPv4
   ports:
