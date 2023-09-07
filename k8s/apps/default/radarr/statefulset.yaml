@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: radarr
   labels:
@@ -8,6 +8,18 @@ spec:
   selector:
     matchLabels:
       app: radarr
+  serviceName: radarr
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteONce
+        storageClassName: ceph-block
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
   template:
     metadata:
       labels:
@@ -56,6 +68,8 @@ spec:
             - containerPort: 7878
               name: web
           volumeMounts:
+            - name: config
+              mountPath: /config
             - name: arr-media
               mountPath: /data
           startupProbe:
