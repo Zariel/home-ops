@@ -14,7 +14,7 @@ spec:
         name: config
       spec:
         accessModes:
-          - ReadWriteONce
+          - ReadWriteOnce
         storageClassName: ceph-block
         volumeMode: Filesystem
         resources:
