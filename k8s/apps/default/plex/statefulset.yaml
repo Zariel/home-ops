@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: plex
 spec:
-  serviceName: plex-v4
+  serviceName: plex
   replicas: 1
   selector:
     matchLabels:
