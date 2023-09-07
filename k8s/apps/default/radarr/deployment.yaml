@@ -49,10 +49,9 @@ spec:
           resources:
             requests:
               memory: "512Mi"
-              cpu: "500m"
+              cpu: "2048Mi"
             limits:
-              memory: 8192Mi
-              cpu: 4000m
+              memory: "2048Mi"
           ports:
             - containerPort: 7878
               name: web
