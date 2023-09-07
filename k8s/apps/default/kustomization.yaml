@@ -4,7 +4,6 @@ namespace: default
 resources:
   - ./externaldns
   - ./golinks
-  - ./jellyfin
   - ./lidarr
   - ./pihole
   - ./plex
