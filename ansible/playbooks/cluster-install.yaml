@@ -27,6 +27,18 @@
       vars:
         k3s_state: installed
 
+    - name: Nvidia GPU
+      when: nvidia_gpu
+      block:
+        - name: Nvidia GPU | Fix k3s containerd config
+          notify: Restart k3s
+          ansible.builtin.copy:
+            src: files/k3s-containerd-config.tmpl
+            dest: /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
+            owner: root
+            group: root
+            mode: "0644"
+
     - name: Wait for custom manifests to rollout
       when:
         - k3s_primary_control_node
@@ -70,3 +82,9 @@
     - name: Cruft
       when: k3s_primary_control_node
       ansible.builtin.include_tasks: tasks/cruft.yaml
+
+  handlers:
+    - name: Restart k3s
+      ansible.builtin.service:
+        name: k3s
+        state: restarted
