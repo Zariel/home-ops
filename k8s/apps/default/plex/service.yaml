@@ -5,7 +5,8 @@ metadata:
 spec:
   selector:
     app: plex
-  type: ClusterIP
+  type: LoadBalancer
+  LoadBalancerIP: 192.168.42.203
   ipFamilies:
     - IPv4
   ports:
