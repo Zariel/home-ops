@@ -36,7 +36,7 @@ spec:
             - name: PROWLARR__POSTGRES_MAIN_DB
               value: prowlarr-main
             - name: PROWLARR__POSTGRES_LOG_DB
-              value: prowlarr-log
+              value: prowlarr-logs
             - name: PROWLARR__POSTGRES_USER
               value: holywoo
             - name: PROWLARR__POSTGRES_PASSWORD
