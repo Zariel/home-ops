@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jellyfin
+spec:
+  serviceName: jellyfin
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        storageClassName: ceph-block
+        volumeMode: Filesystem
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+      nodeSelector:
+        nas: local
+      volumes:
+        - name: transcode
+          emptyDir: {}
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+            readOnly: true
+      containers:
+        - name: jellyfin
+          image: ghcr.io/onedr0p/jellyfin:rolling@sha256:1ef614db6a4c589777eb48bc9004d573b9c09f0d6d573a509041c6060f3a956b
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: all
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "compute,video,utility"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 4096Mi
+              nvidia.com/gpu: "1"
+            limits:
+              memory: 4096Mi
+              nvidia.com/gpu: "1"
+          ports:
+            - containerPort: 8096
+              name: web
+            - containerPort: 1900
+              name: discovery-1
+              protocol: UDP
+            - containerPort: 7359
+              name: discovery-2
+              protocol: UDP
+          volumeMounts:
+            - name: transcode
+              mountPath: /transcode
+            - name: config
+              mountPath: /config
+            - name: arr-media
+              mountPath: /data
