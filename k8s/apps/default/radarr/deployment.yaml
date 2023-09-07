@@ -48,8 +48,8 @@ spec:
                   key: password
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "2048Mi"
+              cpu: "512m"
+              memory: "2048Mi"
             limits:
               memory: "2048Mi"
           ports:
