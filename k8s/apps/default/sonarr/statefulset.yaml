@@ -1,11 +1,23 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: sonarr
 spec:
   selector:
     matchLabels:
       app: sonarr
+  serviceName: sonarr
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-block
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
   template:
     metadata:
       labels:
@@ -36,7 +48,7 @@ spec:
             - name: SONARR__POSTGRES_MAIN_DB
               value: sonarr-main
             - name: SONARR__POSTGRES_LOG_DB
-              value: sonarr-log
+              value: sonarr-logs
             - name: SONARR__POSTGRES_USER
               value: holywoo
             - name: SONARR__POSTGRES_PASSWORD
@@ -56,6 +68,8 @@ spec:
           volumeMounts:
             - name: arr-media
               mountPath: /data
+            - name: config
+              mountPath: /config
           startupProbe:
             httpGet:
               path: /ping

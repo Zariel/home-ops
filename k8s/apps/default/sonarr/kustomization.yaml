@@ -4,6 +4,6 @@ namespace: default
 commonLabels:
   app: sonarr
 resources:
-  - deployment.yaml
+  - statefulset.yaml
   - service.yaml
   - ingress.yaml
