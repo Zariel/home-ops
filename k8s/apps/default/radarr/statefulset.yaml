@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: radarr
   labels:
@@ -8,6 +8,18 @@ spec:
   selector:
     matchLabels:
       app: radarr
+  serviceName: radarr
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-block
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
   template:
     metadata:
       labels:
@@ -15,11 +27,6 @@ spec:
     spec:
       hostname: radarr
       volumes:
-        - name: tmp
-          emptyDir: {}
-        - name: config
-          persistentVolumeClaim:
-            claimName: radarr-config
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -39,7 +46,7 @@ spec:
             - name: DOTNET_gcServer
               value: "1"
             - name: RADARR__POSTGRES_HOST
-              value: postgres.holywoo.cbannister.xyz
+              value: postgres
             - name: RADARR__POSTGRES_MAIN_DB
               value: radarr-main
             - name: RADARR__POSTGRES_LOG_DB
@@ -47,23 +54,22 @@ spec:
             - name: RADARR__POSTGRES_USER
               value: holywoo
             - name: RADARR__POSTGRES_PASSWORD
-              value: horse
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "500m"
+              cpu: "512m"
+              memory: "2048Mi"
             limits:
-              memory: 8192Mi
-              cpu: 4000m
+              memory: "2048Mi"
           ports:
             - containerPort: 7878
               name: web
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
             - name: config
               mountPath: /config
-              readOnly: false
             - name: arr-media
               mountPath: /data
           startupProbe:

@@ -3,14 +3,11 @@ kind: Service
 metadata:
   labels:
     app: radarr
-  name: radarr-v4
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: radarr.k8s.holywoo.cbannister.xyz
+  name: radarr
 spec:
   selector:
     app: radarr
-  type: LoadBalancer
-  loadBalancerIP: 10.1.12.3
+  type: ClusterIP
   ipFamilies:
     - IPv4
   ports:

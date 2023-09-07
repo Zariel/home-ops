@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: sabnzbd
   labels:
@@ -8,6 +8,18 @@ spec:
   selector:
     matchLabels:
       app: sabnzbd
+  serviceName: sabnzbd
+  volumeClaimTemplates:
+    - metadata:
+        name: sabnzbd-config
+      spec:
+        storageClassName: ceph-block
+        resources:
+          requests:
+            storage: 2Gi
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
   template:
     metadata:
       labels:
@@ -17,9 +29,6 @@ spec:
       volumes:
         - name: incomplete
           emptyDir: {}
-        - name: config
-          persistentVolumeClaim:
-            claimName: sabnzbd-config
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -45,7 +54,7 @@ spec:
                 sabnzbd.default.svc,
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
-                sabnzbd.k8s.holywoo.cbannister.xyz
+                sabnzbd.holywoo.cbannister.xyz
           resources:
             requests:
               memory: 8192Mi
@@ -58,7 +67,7 @@ spec:
           volumeMounts:
             - name: incomplete
               mountPath: /tmp/incomplete
-            - name: config
+            - name: sabnzbd-config
               mountPath: /config
               readOnly: false
             - name: arr-media

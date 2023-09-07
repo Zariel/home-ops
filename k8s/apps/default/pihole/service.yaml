@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: pihole-v4
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: pihole.k8s.holywoo.cbannister.xyz
+    external-dns.alpha.kubernetes.io/hostname: pihole.holywoo.cbannister.xyz
 spec:
   selector:
     app: pihole
   type: LoadBalancer
-  loadBalancerIP: 10.1.10.42
+  loadBalancerIP: 192.168.42.53
   ipFamilies:
     - IPv4
   ports:

@@ -1,16 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: prowlarr-v4
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: prowlarr.k8s.holywoo.cbannister.xyz
+  name: prowlarr
 spec:
   selector:
     app: prowlarr
-  type: LoadBalancer
-  loadBalancerIP: 10.1.12.2
-  ipFamilies:
-    - IPv4
+  type: ClusterIP
   ports:
     - name: http
       port: 80

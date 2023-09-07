@@ -3,14 +3,10 @@ kind: CiliumL2AnnouncementPolicy
 metadata:
   name: l2-announcement
 spec:
-  nodeSelector:
-    matchExpressions:
-      - key: node-role.kubernetes.io/control-plane
-        operator: DoesNotExist
-  externalIPs: true
   loadBalancerIPs: true
   interfaces:
-    - ^ens[0-9]+
+    - ^eno[0-9]+
+    - ^enp[0-9]+
 ---
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
@@ -18,4 +14,4 @@ metadata:
   name: local-lb-pool
 spec:
   cidrs:
-    - cidr: "10.1.0.0/16"
+    - cidr: 192.168.42.0/24

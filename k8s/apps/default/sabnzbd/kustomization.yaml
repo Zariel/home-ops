@@ -4,6 +4,6 @@ namespace: default
 commonLabels:
   app: sabnzbd
 resources:
-  - deployment.yaml
+  - statefulset.yaml
   - service.yaml
-  - volume.yaml
+  - ingress.yaml

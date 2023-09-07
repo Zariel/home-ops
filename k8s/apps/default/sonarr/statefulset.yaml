@@ -1,11 +1,23 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: sonarr
 spec:
   selector:
     matchLabels:
       app: sonarr
+  serviceName: sonarr
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-block
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
   template:
     metadata:
       labels:
@@ -13,11 +25,6 @@ spec:
     spec:
       hostname: sonarr
       volumes:
-        - name: tmp
-          emptyDir: {}
-        - name: config
-          persistentVolumeClaim:
-            claimName: sonarr-config
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -36,24 +43,33 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
+            - name: SONARR__POSTGRES_HOST
+              value: postgres
+            - name: SONARR__POSTGRES_MAIN_DB
+              value: sonarr-main
+            - name: SONARR__POSTGRES_LOG_DB
+              value: sonarr-logs
+            - name: SONARR__POSTGRES_USER
+              value: holywoo
+            - name: SONARR__POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "500m"
+              cpu: "512m"
+              memory: "2024Mi"
             limits:
-              memory: 8192Mi
-              cpu: 4000m
+              memory: 2024Mi
           ports:
             - containerPort: 8989
               name: web
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-            - name: config
-              mountPath: /config
-              readOnly: false
             - name: arr-media
               mountPath: /data
+            - name: config
+              mountPath: /config
           startupProbe:
             httpGet:
               path: /ping

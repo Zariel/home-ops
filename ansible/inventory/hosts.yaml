@@ -1,0 +1,30 @@
+k8s:
+  vars:
+    ansible_user: chris
+    nvidia_gpu: false
+  children:
+    control_plane:
+      hosts:
+        k8s-0:
+          ansible_host: 192.168.42.10
+          ceph_drives:
+            - /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNF0W500321X
+        k8s-1:
+          ansible_host: 192.168.42.11
+          ceph_drives:
+            - /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNX1W422786N
+        k8s-2:
+          ansible_host: 192.168.42.12
+          ceph_drives:
+            - /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNX1W545418F
+    worker:
+      hosts:
+        k8s-3:
+          ansible_host: 192.168.42.13
+          nvidia_gpu: true
+          ceph_drives:
+            - /dev/disk/by-id/nvme-Samsung_SSD_980_1TB_S649NL0W389115D
+        k8s-4:
+          ansible_host: 192.168.42.14
+          ceph_drives:
+            - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
