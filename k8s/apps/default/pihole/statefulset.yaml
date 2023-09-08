@@ -1,11 +1,23 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: pihole
 spec:
   selector:
     matchLabels:
       app: pihole
+  serviceName: pihole
+  volumeClaimTemplates:
+    - metadata:
+        name: pihole-db
+      spec:
+        storageClassName: ceph-block
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
   template:
     metadata:
       labels:
@@ -15,9 +27,6 @@ spec:
         - name: config
           configMap:
             name: pihole-config
-        - name: pihole-db
-          persistentVolumeClaim:
-            claimName: pihole-db
       hostname: pihole
       nodeSelector:
         kubernetes.io/arch: amd64
