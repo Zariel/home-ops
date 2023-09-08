@@ -8,3 +8,4 @@ resources:
   - ./repos/descheduler.yaml
   - ./repos/rook.yaml
   - ./repos/prometheus-community.yaml
+  - ./repos/bjw-s.yaml
