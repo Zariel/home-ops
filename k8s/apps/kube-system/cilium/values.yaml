@@ -43,7 +43,9 @@ hubble:
     ingress:
       enabled: true
       className: internal
-      hosts: hubble.holywoo.cbannister.xyz
+      hosts:
+        - hubble.holywoo.cbannister.xyz
+
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.32.0.0/16
