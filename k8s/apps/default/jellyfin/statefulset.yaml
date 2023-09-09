@@ -52,10 +52,8 @@ spec:
             requests:
               cpu: 250m
               memory: 4096Mi
-              nvidia.com/gpu: "1"
             limits:
               memory: 4096Mi
-              nvidia.com/gpu: "1"
           ports:
             - containerPort: 8096
               name: web

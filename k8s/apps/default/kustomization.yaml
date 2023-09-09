@@ -13,3 +13,4 @@ resources:
   - ./sabnzbd
   - ./sonarr
   - ./storage
+  - ./jellyfin
