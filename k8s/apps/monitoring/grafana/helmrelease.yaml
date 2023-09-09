@@ -112,7 +112,7 @@ spec:
             uid: prometheus
             access: proxy
             url: http://prometheus-operated.monitoring.svc.cluster.local:9090
-            isDefault: true
+            # isDefault: true
             jsonData:
               implementation: prometheus
           - name: Alertmanager
