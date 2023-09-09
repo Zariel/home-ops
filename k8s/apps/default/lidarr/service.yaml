@@ -1,14 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lidarr-v4
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: lidarr.k8s.holywoo.cbannister.xyz
+  name: lidarr
 spec:
   selector:
     app: lidarr
-  type: LoadBalancer
-  loadBalancerIP: 10.1.12.4
+  type: ClusterIP
   ipFamilies:
     - IPv4
   ports:

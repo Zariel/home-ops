@@ -4,6 +4,7 @@ namespace: default
 commonLabels:
   app: lidarr
 resources:
-  - deployment.yaml
   - service.yaml
   - volume.yaml
+  - statefulset.yaml
+  - ingress.yaml

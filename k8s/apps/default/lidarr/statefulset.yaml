@@ -1,11 +1,23 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: lidarr
 spec:
   selector:
     matchLabels:
       app: lidarr
+  serviceName: lidarr
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-block
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
   template:
     metadata:
       labels:
@@ -13,17 +25,12 @@ spec:
     spec:
       hostname: lidarr
       volumes:
-        - name: tmp
-          emptyDir: {}
-        - name: config
-          persistentVolumeClaim:
-            claimName: lidarr-config
         - name: lidarr-music-bighorse
           persistentVolumeClaim:
             claimName: lidarr-music-bighorse
-        - name: horsepc-sabnzbd-complete
+        - name: arr-media
           persistentVolumeClaim:
-            claimName: horsepc-sabnzbd-complete
+            claimName: bighorse-arr-media
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -39,27 +46,37 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
+            - name: LIDARR__POSTGRES_HOST
+              value: postgres.holywoo.cbannister.xyz
+            - name: LIDARR__POSTGRES_MAIN_DB
+              value: lidarr-main
+            - name: LIDARR__POSTGRES_LOG_DB
+              value: lidarr-logs
+            - name: LIDARR__POSTGRES_USER
+              value: holywoo
+            - name: LIDARR__POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
           resources:
             requests:
-              cpu: 1000m
+              cpu: 100m
               memory: 1Gi
             limits:
-              memory: 4Gi
-              cpu: 5000m
+              memory: 1Gi
           ports:
             - containerPort: 8686
               name: web
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
             - name: config
               mountPath: /config
               readOnly: false
             - name: lidarr-music-bighorse
               mountPath: /data/media/music
-            - name: horsepc-sabnzbd-complete
+            - name: arr-media
               mountPath: /data/usenet/complete/lidarr
-              subPath: lidarr
+              subPath: usenet/complete/lidarr
           startupProbe:
             httpGet:
               path: /ping
