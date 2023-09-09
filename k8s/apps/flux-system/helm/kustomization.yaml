@@ -9,3 +9,4 @@ resources:
   - ./repos/rook.yaml
   - ./repos/prometheus-community.yaml
   - ./repos/bjw-s.yaml
+  - ./repos/grafana.yaml
