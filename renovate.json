@@ -1,14 +1,28 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranches": [ "main" ],
+  "baseBranches": [
+    "main"
+  ],
   "repositories": [
     "zariel/holywoo"
   ],
   "automerge": true,
   "ignoreTests": true,
-  "kubernetes": {
+  "flux": {
     "fileMatch": [
-      "\\.yaml$"
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
+    ]
+  },
+  "helm-values": {
+    "fileMatch": [
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
+    ]
+  },
+  "k8s": {
+    "fileMatch": [
+      "(^|/)\\.taskfiles/.+\\.ya?ml(\\.j2)?$",
+      "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
     ]
   }
 }
