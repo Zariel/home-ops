@@ -36,12 +36,7 @@ prometheus:
             requests:
               storage: 20Gi
 grafana:
-  ingress:
-    enabled: true
-    ingressClassName: internal
-    pathType: Prefix
-    hosts:
-      - grafana.holywoo.cbannister.xyz
+  enabled: false
 alertmanager:
   enabled: false
   ingress:
