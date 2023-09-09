@@ -29,6 +29,9 @@ prometheus:
       volumeClaimTemplate:
         spec:
           storageClassName: ceph-block
+          volumeMode: Filesystem
+          accessModes:
+            - ReadWriteOnce
           resources:
             requests:
               storage: 20Gi
