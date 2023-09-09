@@ -13,4 +13,3 @@ resources:
   - ./sabnzbd
   - ./sonarr
   - ./storage
-  - ./home-assistant
