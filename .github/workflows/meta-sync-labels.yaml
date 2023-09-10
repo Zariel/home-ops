@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
         with:
-          token: "${{ steps.generate-token.outputs.token }}"
+          token: "{{ secrets.GITHUB_TOKEN }}"
 
       - name: Sync Labels
         uses: EndBug/label-sync@da00f2c11fdb78e4fae44adac2fdd713778ea3e8 # renovate: tag=v2.3.2
