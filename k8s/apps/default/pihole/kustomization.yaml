@@ -6,6 +6,7 @@ commonLabels:
 resources:
   - statefulset.yaml
   - service.yaml
+  - ingress.yaml
 configMapGenerator:
   - name: pihole-config
     files:

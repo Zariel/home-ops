@@ -27,9 +27,13 @@ spec:
         - name: config
           configMap:
             name: pihole-config
-      hostname: pihole
-      nodeSelector:
-        kubernetes.io/arch: amd64
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: pihole
       containers:
         - name: pihole
           image: ghcr.io/pi-hole/pihole:latest@sha256:8bc45afe1625487aef62859a5bf02f3d7b3429e480f4e29e4689635ab86ec312

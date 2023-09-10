@@ -5,6 +5,5 @@ commonLabels:
   app: lidarr
 resources:
   - service.yaml
-  - volume.yaml
   - statefulset.yaml
   - ingress.yaml
