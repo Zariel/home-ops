@@ -7,3 +7,4 @@ resources:
   - ./unpoller
   - ./grafana
   - ./kube-state-metrics
+  - ./node-exporter
