@@ -10,3 +10,4 @@ resources:
   - ./prometheus-community.yaml
   - ./bjw-s.yaml
   - ./grafana.yaml
+  - ./jetstack.yaml
