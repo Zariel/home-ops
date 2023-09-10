@@ -4,6 +4,8 @@ bandwidthManager:
   bbr: true
 bpf:
   masquerade: true
+  vlans:
+    - 0
 bgp:
   enabled: false
 cluster:
