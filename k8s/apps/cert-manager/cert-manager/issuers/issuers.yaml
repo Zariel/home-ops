@@ -13,7 +13,7 @@ spec:
       - dns01:
           cloudflare:
             email: *email
-            apiKeySecretRef:
+            apiTokenSecretRef:
               name: certmanager-cloudflare
               key: api-key
         selector:
@@ -34,7 +34,7 @@ spec:
       - dns01:
           cloudflare:
             email: *email
-            apiKeySecretRef:
+            apiTokenSecretRef:
               name: certmanager-cloudflare
               key: api-key
         selector:
