@@ -59,6 +59,8 @@ spec:
           namespace: network
           namespaceSelector:
             any: true
+      extraArgs:
+        default-ssl-certificate: network/cbannister-xyz-tls
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname

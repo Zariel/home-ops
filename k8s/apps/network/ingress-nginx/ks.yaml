@@ -1,0 +1,35 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nginx-certificates
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cert-manager-issuers
+  path: ./k8s/apps/network/ingress-nginx/certificates
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nginx-internal
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: nginx-certificates
+  path: ./k8s/apps/network/ingress-nginx/internal
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m

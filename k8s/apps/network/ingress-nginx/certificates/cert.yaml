@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cbannister-xyz
+  namespace: networking
+spec:
+  secretName: cbannister-xyz-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: cbannister.zyz
+  dnsNames:
+    - holywoo.cbannister.zyz
+    - "*.holywoo.cbannister.zyz"
