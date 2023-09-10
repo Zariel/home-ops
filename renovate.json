@@ -18,9 +18,8 @@
       "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
     ]
   },
-  "k8s": {
+  "kubernetes": {
     "fileMatch": [
-      "(^|/)\\.taskfiles/.+\\.ya?ml(\\.j2)?$",
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
       "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
     ]
