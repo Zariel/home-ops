@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: cbannister-xyz-tls
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-production
     kind: ClusterIssuer
   commonName: holywoo.cbannister.xyz
   dnsNames:
