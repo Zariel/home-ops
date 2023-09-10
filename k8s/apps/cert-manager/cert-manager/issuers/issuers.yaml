@@ -29,7 +29,7 @@ spec:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     email: &email c.bannister@gmail.com
     privateKeySecretRef:
-      name: letsencrypt-production
+      name: letsencrypt-staging
     solvers:
       - dns01:
           cloudflare:
