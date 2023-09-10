@@ -6,6 +6,9 @@ on:
     branches: ["main"]
     paths: [".github/labels.yaml"]
 
+permissions:
+  issues: write
+
 jobs:
   labels:
     name: Sync Labels
