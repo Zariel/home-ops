@@ -26,6 +26,10 @@ spec:
   values:
     kind: Deployment
     schedule: "*/5 * * * *"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi
     deschedulerPolicy:
       strategies:
         RemovePodsHavingTooManyRestarts:
