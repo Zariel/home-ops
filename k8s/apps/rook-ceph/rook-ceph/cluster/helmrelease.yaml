@@ -34,6 +34,9 @@ spec:
         host:
           name: &host rook.holywoo.cbannister.xyz
           path: /
+        tls:
+          host:
+            - *host
     toolbox:
       enabled: true
 

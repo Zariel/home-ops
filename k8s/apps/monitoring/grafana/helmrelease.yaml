@@ -222,8 +222,10 @@ spec:
     ingress:
       enabled: true
       ingressClassName: internal
-      hosts:
+      hosts: &hosts
         - grafana.holywoo.cbannister.xyz
+      tls:
+        - hosts: *hosts
     persistence:
       enabled: false
     testFramework:

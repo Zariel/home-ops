@@ -7,8 +7,10 @@ prometheus:
     enabled: true
     ingressClassName: internal
     pathType: Prefix
-    hosts:
+    hosts: &hosts
       - prometheus.holywoo.cbannister.xyz
+    tls:
+      hosts: *hosts
   prometheusSpec:
     replicas: 2
     replicaExternalLabelName: __replica__
