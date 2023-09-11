@@ -1,12 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranches": [
-    "main"
+  "extends": [
+    // "config:base",
+    "docker:enableMajor",
+    ":disableRateLimiting",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":automergeDigest",
+    ":automergePatch",
+    ":automergeMinor",
+    ":automergeBranch",
   ],
-  "repositories": [
-    "zariel/holywoo"
-  ],
-  "automerge": true,
   "ignoreTests": true,
   "flux": {
     "fileMatch": [
