@@ -44,16 +44,3 @@ spec:
       storage: 1000Gi
   accessModes:
     - ReadWriteOnce
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lidarr-config
-spec:
-  storageClassName: bighorse-nfs
-  resources:
-    requests:
-      storage: 2Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
