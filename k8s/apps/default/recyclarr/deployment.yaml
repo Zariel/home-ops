@@ -27,7 +27,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: recyclarr
-          image: ghcr.io/recyclarr/recyclarr:latest@sha256:2819a8722116225db1101d94fd6c9ccaa8b30ad95e0c969a7459a03e21bf011b
+          image: ghcr.io/recyclarr/recyclarr:latest@sha256:d91e16a6eb6d1ba3f7a064a086be73626d1ff745e95edb543fc10a69b5c2f8b4
           imagePullPolicy: IfNotPresent
           env:
             - name: DOTNET_EnableDiagnostics
