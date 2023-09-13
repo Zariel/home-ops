@@ -26,7 +26,8 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
       containers:
-        - name: recyclarr
+        - &container
+          name: recyclarr
           image: ghcr.io/recyclarr/recyclarr:latest@sha256:d91e16a6eb6d1ba3f7a064a086be73626d1ff745e95edb543fc10a69b5c2f8b4
           imagePullPolicy: IfNotPresent
           env:
@@ -49,3 +50,8 @@ spec:
               subPath: recyclarr.yml
               mountPath: /config/recyclarr.yml
               readOnly: true
+      initContainers:
+        - <<: *container
+          name: recyclarr-sync
+          args:
+            - sync
