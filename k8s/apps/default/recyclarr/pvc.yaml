@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: recyclarr-config
 spec:
-  storageClassName: bighorse-nfs
+  storageClassName: ceph-block
   resources:
     requests:
       storage: 1Gi
