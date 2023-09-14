@@ -199,7 +199,7 @@ radarr:
           - f700d29429c023a5734505e77daeaea7 # DV (FEL)
           - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
           - 90cedc1fea7ea5d11298bebd3d1d3223 # EVO (no WEBDL)
-          - b17886cb4158d9fea189859409975758 # HDR10+ Boost
+          # - b17886cb4158d9fea189859409975758 # HDR10+ Boost
           - 73613461ac2cea99d52c4cd6e177ab82 # HFR
           - c465ccc73923871b3eb1802042331306 # Line/Mic Dubbed
           - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
