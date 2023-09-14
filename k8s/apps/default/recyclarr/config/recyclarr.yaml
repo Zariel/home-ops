@@ -2,7 +2,7 @@
 sonarr:
   sonarr:
     base_url: http://sonarr.default.svc.cluster.local
-    api_key: b4697eeebfd240329d1e2a7ba70c3764
+    api_key: 2cc09d738a6d4c9a883d4fd6852c8095
 
     # Quality Definition
     # This section defines the Quality Definitions that will be used in your Sonarr instance
