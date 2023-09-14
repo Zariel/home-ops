@@ -122,6 +122,7 @@ radarr:
     api_key: b59c16e533c5420fad5145baab8348d6
 
     replace_existing_custom_formats: true
+    delete_old_custom_formats: true
     custom_formats:
       - trash_ids:
           # Audio Advanced #1
