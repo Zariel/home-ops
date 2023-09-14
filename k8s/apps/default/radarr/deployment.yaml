@@ -1,36 +1,26 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: lidarr
+  name: radarr
+  labels:
+    app: radarr
 spec:
   selector:
     matchLabels:
-      app: lidarr
-  serviceName: lidarr
-  volumeClaimTemplates:
-    - metadata:
-        name: config
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-block
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 1Gi
+      app: radarr
   template:
     metadata:
       labels:
-        app: lidarr
+        app: radarr
     spec:
-      hostname: lidarr
+      hostname: radarr
       volumes:
-        - name: lidarr-music-bighorse
-          persistentVolumeClaim:
-            claimName: lidarr-music-bighorse
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
+        - name: config
+          persistentVolumeClaim:
+            claimName: radarr-config
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -38,45 +28,41 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
       containers:
-        - name: lidarr
-          image: ghcr.io/onedr0p/lidarr-develop:rolling@sha256:36ef4f94062be2aebde213ab2d1477f37bbb9557d5f893061a6530bb96150186
+        - name: radarr
+          image: ghcr.io/onedr0p/radarr-develop:rolling@sha256:10a6c584b77dbd447df5f6c3f9fd55466c67b1734ded718b89a38e92bfbae197
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
-            - name: LIDARR__POSTGRES_HOST
-              value: postgres.holywoo.cbannister.xyz
-            - name: LIDARR__POSTGRES_MAIN_DB
-              value: lidarr-main
-            - name: LIDARR__POSTGRES_LOG_DB
-              value: lidarr-logs
-            - name: LIDARR__POSTGRES_USER
+            - name: RADARR__POSTGRES_HOST
+              value: postgres
+            - name: RADARR__POSTGRES_MAIN_DB
+              value: radarr-main
+            - name: RADARR__POSTGRES_LOG_DB
+              value: radarr-logs
+            - name: RADARR__POSTGRES_USER
               value: holywoo
-            - name: LIDARR__POSTGRES_PASSWORD
+            - name: RADARR__POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres
                   key: password
           resources:
             requests:
-              cpu: 100m
-              memory: 1Gi
+              cpu: "512m"
+              memory: "2048Mi"
             limits:
-              memory: 1Gi
+              memory: "2048Mi"
           ports:
-            - containerPort: 8686
+            - containerPort: 7878
               name: web
           volumeMounts:
             - name: config
               mountPath: /config
-              readOnly: false
-            - name: lidarr-music-bighorse
-              mountPath: /data/media/music
             - name: arr-media
-              mountPath: /data/usenet/complete/lidarr
-              subPath: usenet/complete/lidarr
+              mountPath: /data
           startupProbe:
             httpGet:
               path: /ping

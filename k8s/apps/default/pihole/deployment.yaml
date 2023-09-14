@@ -1,23 +1,11 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: pihole
 spec:
   selector:
     matchLabels:
       app: pihole
-  serviceName: pihole
-  volumeClaimTemplates:
-    - metadata:
-        name: pihole-db
-      spec:
-        storageClassName: ceph-block
-        volumeMode: Filesystem
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
   template:
     metadata:
       labels:
@@ -27,6 +15,9 @@ spec:
         - name: config
           configMap:
             name: pihole-config
+        - name: etc-pihole
+          persistentVolumeClaim:
+            claimName: pihole-config
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -46,10 +37,13 @@ spec:
               cpu: "500m"
           volumeMounts:
             - mountPath: /etc/pihole
-              name: pihole-db
+              name: etc-pihole
             - mountPath: /etc/pihole/adlists.list
               name: config
               subPath: adlist.txt
+            - mountPath: /etc/pihole/blacklist.txt
+              name: config
+              subPath: blacklist.txt
           env:
             - name: WEB_PORT
               value: "80"
