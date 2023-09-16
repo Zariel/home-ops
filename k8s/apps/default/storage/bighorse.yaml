@@ -13,6 +13,8 @@ spec:
   nfs:
     server: truenas.holywoo.cbannister.xyz
     path: /mnt/bighorse/arr
+  mountOptions:
+    - nconnect=2
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
