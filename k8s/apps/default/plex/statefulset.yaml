@@ -38,10 +38,8 @@ spec:
           persistentVolumeClaim:
             claimName: bighorse-arr-media
             readOnly: true
-      hostname: plex.holywoo.cbannister.xyz
       containers:
         - name: plex
-          hostname: plex.holywoo.cbannister.xyz
           image: ghcr.io/onedr0p/plex:rolling@sha256:e2fa39779d5fe7f10ee92b9c2fc492113c3a397d3ce5032152e0cb6d557a295c
           env:
             - name: TZ
