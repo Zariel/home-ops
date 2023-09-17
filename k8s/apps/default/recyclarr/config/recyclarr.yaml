@@ -244,3 +244,15 @@ radarr:
           - 90a6f9a284dff5103f6346090e6280c8 # LQ
           - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
           - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
+      - quality_profiles:
+          - name: UHD - Test
+            score: 2750
+        trash_ids:
+          - dcf3ec6938fa32445f590a4da84256cd # DTS-HD MA
+          - 3cafb66171b47f226146a0770576870f # TrueHD
+      - quality_profiles:
+          - name: UHD - Test
+            score: 2650
+        trash_ids:
+          - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
+          - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
