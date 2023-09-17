@@ -1,6 +1,15 @@
 name: Renovate
 on:
   workflow_dispatch:
+    inputs:
+      dryRun:
+        description: Dry-Run
+        default: "false"
+        required: false
+      logLevel:
+        description: Log-Level
+        default: debug
+        required: false
   schedule:
     - cron: "0 0 * * *" # Every day at midnight
   push:
