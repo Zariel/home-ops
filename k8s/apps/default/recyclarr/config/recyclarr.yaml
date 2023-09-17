@@ -124,7 +124,9 @@ radarr:
     replace_existing_custom_formats: true
     delete_old_custom_formats: true
     custom_formats:
-      - trash_ids:
+      - quality_profiles:
+          - name: UHD - Test
+        trash_ids:
           # Audio Advanced #1
           - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
           - 185f1dd7264c4562b9022d963ac37424 # DD+
