@@ -4,7 +4,7 @@ namespace: monitoring
 commonLabels:
   app: prometheus
 resources:
-  - helm.yaml
+  - helmrelease.yaml
 configMapGenerator:
   - name: kube-prometheus-stack-values
     files:

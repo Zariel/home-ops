@@ -5,7 +5,7 @@ commonLabels:
   app: cilium
 resources:
   - l2.yaml
-  - helm.yaml
+  - helmrelease.yaml
 configMapGenerator:
   - name: cilium-values
     files:

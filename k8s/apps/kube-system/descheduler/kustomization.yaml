@@ -3,4 +3,4 @@ kind: Kustomization
 commonLabels:
   app: descheduler
 resources:
-  - helm.yaml
+  - helmrelease.yaml

@@ -4,4 +4,4 @@ commonLabels:
   app: metrics-server
 namespace: default
 resources:
-  - helm.yaml
+  - helmrelease.yaml

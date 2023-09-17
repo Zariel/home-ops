@@ -3,7 +3,7 @@ kind: Kustomization
 commonLabels:
   app: nfs-subdir-external-provisioner
 resources:
-  - helm.yaml
+  - helmrelease.yaml
 namespace: kube-system
 configMapGenerator:
   - name: nfs-subdir-external-provisioner-values
