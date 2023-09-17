@@ -3,7 +3,7 @@ kind: HelmRelease
 metadata:
   name: cilium
 spec:
-  interval: 5m
+  interval: 30m
   targetNamespace: kube-system
   releaseName: cilium
   chart:
@@ -14,7 +14,6 @@ spec:
         kind: HelmRepository
         name: cilium
         namespace: flux-system
-      interval: 5m
   valuesFrom:
     - kind: ConfigMap
       name: cilium-values
