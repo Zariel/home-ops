@@ -6,6 +6,8 @@ spec:
   selector:
     matchLabels:
       app: lidarr
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

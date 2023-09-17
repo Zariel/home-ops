@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: radarr
+    strategy:
+      type: Recreate
     spec:
       hostname: radarr
       volumes:

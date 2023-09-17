@@ -6,6 +6,8 @@ spec:
   selector:
     matchLabels:
       app: sonarr
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
