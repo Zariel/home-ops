@@ -6,12 +6,12 @@ spec:
   selector:
     matchLabels:
       app: pihole
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: pihole
-    strategy:
-      type: Recreate
     spec:
       volumes:
         - name: config
