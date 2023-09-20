@@ -13,3 +13,4 @@ resources:
   - ./sonarr
   - ./storage
   - ./jellyfin
+  - ./meshcentral
