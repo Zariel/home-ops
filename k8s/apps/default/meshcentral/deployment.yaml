@@ -28,6 +28,9 @@ spec:
         - name: meshcentral
           image: ghcr.io/ylianst/meshcentral:latest@sha256:0247baf14d77b5f1a71408e5c39d99b28f757c48f71d119c40d6a8ee45d4c84d
           imagePullPolicy: "IfNotPresent"
+          command:
+            - bash
+            - /opt/meshcentral/startup.sh
           env:
             - name: REVERSE_PROXY
               value: 192.168.42.200
