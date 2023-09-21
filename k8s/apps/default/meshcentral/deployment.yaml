@@ -42,7 +42,7 @@ spec:
             limits:
               memory: 2024Mi
           ports:
-            - containerPort: 80
+            - containerPort: 443
               name: web
           volumeMounts:
             - name: config
