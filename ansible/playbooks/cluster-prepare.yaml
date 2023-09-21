@@ -14,6 +14,34 @@
           community.general.timezone:
             name: "Europe/London"
 
+    - name: User Configuration
+      block:
+        - name: User Configuration | SSH keys
+          ansible.posix.authorized_key:
+            user: "{{ ansible_user }}"
+            key: "https://github.com/Zariel.keys"
+        - name: User Configuration | Silence login
+          ansible.builtin.file:
+            dest: "{{ '/home/' + ansible_user if ansible_user != 'root' else '/root' }}/.hushlogin"
+            state: touch
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: "0644"
+            modification_time: preserve
+            access_time: preserve
+        - name: User Configuration | Add user to sudoers
+          when: ansible_user != 'root'
+          ansible.builtin.copy:
+            content: "{{ ansible_user }} ALL=(ALL:ALL) NOPASSWD:ALL"
+            dest: "/etc/sudoers.d/{{ ansible_user }}"
+            owner: root
+            group: root
+            mode: "0440"
+        - name: User Configuration | Bash shell (1)
+          ansible.builtin.user:
+            name: "{{ ansible_user }}"
+            shell: /usr/bin/bash
+
     - name: Packages
       block:
         - name: Packages | Add non-free repository
