@@ -8,3 +8,7 @@ resources:
   - service.yaml
   - ingress.yaml
   - volumes.yaml
+configMapGenerator:
+  - name: meshcentral
+    files:
+      - config.json=files/config.json

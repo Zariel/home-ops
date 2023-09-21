@@ -15,9 +15,12 @@ spec:
     spec:
       hostname: meshcentral
       volumes:
-        - name: config
+        - name: storage
           persistentVolumeClaim:
             claimName: meshcentral-config
+        - name: config
+          configMap:
+            name: meshcentral
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -29,15 +32,15 @@ spec:
           image: ghcr.io/ylianst/meshcentral:latest@sha256:0247baf14d77b5f1a71408e5c39d99b28f757c48f71d119c40d6a8ee45d4c84d
           imagePullPolicy: "IfNotPresent"
           command:
-            - bash
-            - /opt/meshcentral/startup.sh
+            - node
+            - meshcentral/meshcentral
+            - --configfile
+            - /opt/config.json
           env:
             - name: REVERSE_PROXY
               value: 192.168.42.200
             - name: HOSTNAME
               value: meshcentral.holywoo.cbannister.xyz
-            - name: USE_MONGODB
-              value: "false"
           resources:
             requests:
               cpu: "512m"
@@ -49,14 +52,17 @@ spec:
               name: web
           volumeMounts:
             - name: config
+              mountPath: /opt/config.json
+              subPath: config.json
+            - name: storage
               mountPath: /opt/meshcentral/meshcentral-data
               subPath: meshcentral-data
-            - name: config
+            - name: storage
               mountPath: /opt/meshcentral/meshcentral-files
               subPath: meshcentral-files
-            - name: config
+            - name: storage
               mountPath: /opt/meshcentral/meshcentral-backups
               subPath: meshcentral-backups
-            - name: config
+            - name: storage
               mountPath: /opt/meshcentral/meshcentral-web
               subPath: meshcentral-web
