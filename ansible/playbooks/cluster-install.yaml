@@ -27,6 +27,20 @@
       vars:
         k3s_state: installed
 
+    - name: K3s Shutdown Fix
+      block:
+        - name: K3s Shutdown Fix | Service file
+          ansible.builtin.copy:
+            src: files/shutdown-k3s.service
+            dest: /etc/systemd/system/shutdown-k3s.service
+            owner: root
+            group: root
+            mode: "0644"
+        - name: K3s Shutdown Fix | Enable Service
+          ansible.builtin.service:
+            name: shutdown-k3s
+            enabled: true
+
     - name: Nvidia GPU
       when: nvidia_gpu
       block:
