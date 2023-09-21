@@ -44,6 +44,8 @@ spec:
           ports:
             - containerPort: 443
               name: web
+            - containerPort: 4433
+              name: amt
           volumeMounts:
             - name: config
               mountPath: /opt/config.json
