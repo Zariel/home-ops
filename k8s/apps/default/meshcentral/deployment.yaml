@@ -21,12 +21,6 @@ spec:
         - name: config
           configMap:
             name: meshcentral
-      securityContext:
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
-        runAsNonRoot: true
       containers:
         - name: meshcentral
           image: ghcr.io/ylianst/meshcentral:latest@sha256:0247baf14d77b5f1a71408e5c39d99b28f757c48f71d119c40d6a8ee45d4c84d
