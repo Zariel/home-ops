@@ -13,3 +13,4 @@ resources:
   - ./jetstack.yaml
   - ./nvidia-device-plugin.yaml
   - ./nfs-subdir-external-provisioner.yaml
+  - ./coredns.yaml

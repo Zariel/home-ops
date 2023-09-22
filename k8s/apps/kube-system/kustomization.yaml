@@ -7,3 +7,4 @@ resources:
   - ./nfs-provisioner
   - ./metrics-server
   - ./descheduler
+  - ./coredns
