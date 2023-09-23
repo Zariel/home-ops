@@ -24,6 +24,7 @@ metadata:
 spec:
   dependsOn:
     - name: cert-manager
+      namespace: flux-system
   path: ./k8s/apps/cert-manager/cert-manager/issuers
   prune: true
   sourceRef:
