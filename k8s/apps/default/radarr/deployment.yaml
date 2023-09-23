@@ -8,12 +8,12 @@ spec:
   selector:
     matchLabels:
       app: radarr
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: radarr
-    strategy:
-      type: Recreate
     spec:
       hostname: radarr
       volumes:

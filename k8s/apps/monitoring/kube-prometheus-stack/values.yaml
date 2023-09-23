@@ -10,7 +10,7 @@ prometheus:
     hosts: &hosts
       - prometheus.holywoo.cbannister.xyz
     tls:
-      hosts: *hosts
+      - hosts: *hosts
   prometheusSpec:
     replicas: 2
     replicaExternalLabelName: __replica__
