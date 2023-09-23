@@ -48,7 +48,7 @@ hubble:
       hosts: &hosts
         - hubble.holywoo.cbannister.xyz
       tls:
-        hosts: *hosts
+        - hosts: *hosts
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.32.0.0/16
