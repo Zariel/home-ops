@@ -54,7 +54,7 @@ spec:
           - name: prometheus
             parameters: 0.0.0.0:9153
           - name: forward
-            parameters: 192.168.42.1
+            parameters: . 192.168.42.1
           - name: cache
             parameters: 30
           - name: loop
