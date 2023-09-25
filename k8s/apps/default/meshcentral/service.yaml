@@ -13,3 +13,7 @@ spec:
       port: 80
       targetPort: web
       protocol: TCP
+    - name: amt
+      port: 4433
+      targetPort: amt
+      protocol: TCP
