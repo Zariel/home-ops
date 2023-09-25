@@ -2,9 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: meshcentral
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-ssl-verify: off
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
 spec:
   ingressClassName: internal
   rules:
