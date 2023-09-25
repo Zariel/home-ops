@@ -6,7 +6,7 @@
         },
         "TrustedProxy": "192.168.42.200",
         "cert": "meshcentral.holywoo.cbannister.xyz",
-        "_WANonly": true,
+        "WANonly": true,
         "_LANonly": true,
         "_sessionKey": "MyReallySecretPassword1",
         "port": 443,
@@ -14,7 +14,7 @@
         "redirPort": 80,
         "_redirAliasPort": 80,
         "AgentPong": 300,
-        "TLSOffload": false,
+        "TLSOffload": true,
         "SelfUpdate": false,
         "AllowFraming": false,
         "WebRTC": false
