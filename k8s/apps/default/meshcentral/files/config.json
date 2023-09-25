@@ -7,7 +7,7 @@
         "TrustedProxy": "192.168.42.200",
         "cert": "meshcentral.holywoo.cbannister.xyz",
         "WANonly": true,
-        "_LANonly": true,
+        "LANonly": true,
         "_sessionKey": "MyReallySecretPassword1",
         "port": 443,
         "_aliasPort": 443,
