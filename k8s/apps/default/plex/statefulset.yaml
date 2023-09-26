@@ -40,7 +40,7 @@ spec:
             readOnly: true
       containers:
         - name: plex
-          image: ghcr.io/onedr0p/plex-beta:rolling@sha256:024e4482f044ca4f4f386cfa83250da53064894d21c102a21c67142beed90fba
+          image: ghcr.io/onedr0p/plex-beta:rolling@sha256:da7a81f1c5db8eb3f83803b40aaad64853b0e9a374bbc1ca59a37a1ce2afe1ad
           env:
             - name: TZ
               value: Europe/London
