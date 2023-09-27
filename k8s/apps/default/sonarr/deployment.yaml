@@ -29,7 +29,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: sonarr
-          image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:7a68c603ddf3a358aef9a9b8ebcbbce54d30039c405ec5885d0de9d558057362
+          image: ghcr.io/onedr0p/sonarr-develop:rolling@sha256:8faffe81ec2ae2339c9c379bd4381815e047c5a14845380c03b97f523bde4507
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
