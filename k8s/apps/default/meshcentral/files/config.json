@@ -4,7 +4,7 @@
         "plugins": {
             "enabled": false
         },
-        "TrustedProxy": "192.168.42.200",
+        "_TrustedProxy": "192.168.42.200",
         "cert": "meshcentral.holywoo.cbannister.xyz",
         "_WANonly": true,
         "_LANonly": true,
@@ -14,7 +14,7 @@
         "redirPort": 80,
         "_redirAliasPort": 80,
         "AgentPong": 300,
-        "TLSOffload": true,
+        "TLSOffload": false,
         "SelfUpdate": false,
         "AllowFraming": false,
         "WebRTC": false
