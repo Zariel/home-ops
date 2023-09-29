@@ -8,3 +8,4 @@ resources:
   - ./metrics-server
   - ./descheduler
   - ./coredns
+  - ./reflector

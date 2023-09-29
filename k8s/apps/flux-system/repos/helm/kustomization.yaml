@@ -14,3 +14,4 @@ resources:
   - ./nvidia-device-plugin.yaml
   - ./nfs-subdir-external-provisioner.yaml
   - ./coredns.yaml
+  - ./emberstack.yaml

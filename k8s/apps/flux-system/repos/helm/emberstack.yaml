@@ -1,9 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: bjw-s
+  name: emberstack
   namespace: flux-system
 spec:
-  type: oci
   interval: 2h
-  url: oci://ghcr.io/bjw-s/helm
+  url: https://emberstack.github.io/helm-charts
