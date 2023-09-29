@@ -27,7 +27,7 @@
             "NewAccounts": true,
             "localSessionRecording": false,
             "_userNameIsEmail": true,
-            "_certUrl": "my.reverse.proxy"
+            "certUrl": "meshcentral.holywoo.cbannister.xyz"
         }
     }
 }
