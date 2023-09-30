@@ -54,9 +54,28 @@ spec:
           - name: prometheus
             parameters: 0.0.0.0:9153
           - name: forward
-            parameters: . /etc/resolv.conf
+            parameters: . 192.168.42.1
           - name: cache
             parameters: 30
+          - name: loop
+          - name: reload
+          - name: loadbalance
+      - zones:
+          - zone: holywoo.cbannister.xyz
+            scheme: dns://
+            use_tcp: true
+        port: 53
+        plugins:
+          - name: log
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: holywoo.cbannister.xyz 192.168.42.53
           - name: loop
           - name: reload
           - name: loadbalance
