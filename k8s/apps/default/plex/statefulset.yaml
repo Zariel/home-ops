@@ -38,6 +38,9 @@ spec:
           persistentVolumeClaim:
             claimName: bighorse-arr-media
             readOnly: true
+        - name: tls
+          secret:
+            secretName: cbannister-xyz-tls
       containers:
         - name: plex
           image: ghcr.io/onedr0p/plex-beta:rolling@sha256:a9474ff865f654cee7069357ce52469ab2929abdc1133568ba07b5fe83d09e9f
@@ -70,3 +73,6 @@ spec:
               mountPath: /config
             - name: arr-media
               mountPath: /data
+            - name: tls
+              mountPath: /etc/ssl/certs
+              readOnly: true
