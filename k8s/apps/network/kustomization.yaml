@@ -4,3 +4,4 @@ resources:
   - ./ns.yaml
   - ./ingress-nginx/ks.yaml
   - ./external-dns
+  - ./pihole
