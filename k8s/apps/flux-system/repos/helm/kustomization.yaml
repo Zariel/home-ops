@@ -16,3 +16,4 @@ resources:
   - ./coredns.yaml
   - ./emberstack.yaml
   - ./bitnami.yaml
+  - ./cloudnative-pg.yaml
