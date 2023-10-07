@@ -43,7 +43,7 @@ spec:
             secretName: cbannister-xyz-tls
       containers:
         - name: plex
-          image: ghcr.io/onedr0p/plex-beta:rolling@sha256:274c8a7700cd2a050e5b9dee07b7faef85078de4da3b4ff2db22e328b2e8a6d1
+          image: ghcr.io/onedr0p/plex-beta:rolling@sha256:4128b7af3d6016b4d6518b02694005c706158524c3f8d0358f816b00f0617ae4
           env:
             - name: TZ
               value: Europe/London
