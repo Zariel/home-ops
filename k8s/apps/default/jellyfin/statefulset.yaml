@@ -40,7 +40,7 @@ spec:
             readOnly: true
       containers:
         - name: jellyfin
-          image: ghcr.io/onedr0p/jellyfin:rolling@sha256:e8261917f46218861abc990d65959a799610ee336e215a3661cb16bb2b7ad7aa
+          image: ghcr.io/onedr0p/jellyfin:rolling@sha256:18afced0486212be536e7bf61c2ca788a062537b583f6198d8e7908146dcba18
           env:
             - name: TZ
               value: Europe/London
