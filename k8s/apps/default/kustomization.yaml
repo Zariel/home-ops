@@ -12,3 +12,4 @@ resources:
   - ./storage
   - ./jellyfin
   - ./meshcentral
+  - ./readarr

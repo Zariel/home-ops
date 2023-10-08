@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readarr
+spec:
+  selector:
+    matchLabels:
+      app: readarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: readarr
+    spec:
+      hostname: readarr
+      volumes:
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: config
+          persistentVolumeClaim:
+            claimName: readarr-config
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      containers:
+        - name: readarr
+          image: ghcr.io/onedr0p/readarr-develop:0.3.6.2232
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
+            - name: READARR__POSTGRES_HOST
+              value: postgres
+            - name: READARR__POSTGRES_USER
+              value: holywoo
+            - name: READARR__POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
+            - name: READARR__POSTGRES_MAIN_DB
+              value: readarr-main
+            - name: READARR__POSTGRES_LOG_DB
+              value: readarr-logs
+            - name: READARR__POSTGRES_CACHE_DB
+              value: readarr-cache
+          resources:
+            requests:
+              cpu: "512m"
+              memory: "2024Mi"
+            limits:
+              memory: 2024Mi
+          ports:
+            - containerPort: 8787
+              name: web
+          volumeMounts:
+            - name: arr-media
+              mountPath: /data
+            - name: config
+              mountPath: /config
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: web
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
