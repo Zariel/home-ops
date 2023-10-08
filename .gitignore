@@ -1,1 +1,16 @@
 .envrc
+*.agekey
+.DS_Store
+Thumbs.db
+.private/
+.venv/
+.terraform
+*.tfvars
+.decrypted~*
+*.agekey
+*.pub
+*.key
+*.pem
+kubeconfig*
+config.xml
+
