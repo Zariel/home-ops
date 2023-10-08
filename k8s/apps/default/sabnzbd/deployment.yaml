@@ -35,7 +35,7 @@ spec:
         nas: remote
       containers:
         - name: sabnzbd
-          image: ghcr.io/onedr0p/sabnzbd:rolling@sha256:5f573118a91bed154524bdc7d52425848c2a9a7edda456e4c69a0208f0ce8366
+          image: ghcr.io/onedr0p/sabnzbd:4.1.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
