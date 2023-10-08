@@ -14,5 +14,5 @@ configMapGenerator:
       - adlist.txt=config/adlist.txt
 secretGenerator:
   - name: pihole-password
-    literals:
-      - password=anthem
+    files:
+      - password=config/password.sops.txt

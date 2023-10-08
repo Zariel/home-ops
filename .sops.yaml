@@ -5,7 +5,7 @@ creation_rules:
     key_groups:
       - age:
           - age1865axnecqy9eccq9fzhpwkz3nkf0sxfeurva6rquyktplhzssv2s32kv5w
-  - path_regex: k8s/.*\.sops\.(env|ini|json|toml)
+  - path_regex: k8s/.*\.sops\.(env|ini|json|toml|txt)
     key_groups:
       - age:
           - age1865axnecqy9eccq9fzhpwkz3nkf0sxfeurva6rquyktplhzssv2s32kv5w
