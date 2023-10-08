@@ -1,5 +1,3 @@
-.envrc
-*.agekey
 .DS_Store
 Thumbs.db
 .private/
