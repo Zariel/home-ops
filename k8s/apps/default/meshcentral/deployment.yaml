@@ -26,7 +26,7 @@ spec:
             secretName: cbannister-xyz-tls
       containers:
         - name: meshcentral
-          image: ghcr.io/ylianst/meshcentral:latest@sha256:0247baf14d77b5f1a71408e5c39d99b28f757c48f71d119c40d6a8ee45d4c84d
+          image: ghcr.io/ylianst/meshcentral:latest@sha256:6a2f0edc257542bf40f169fbc0e2fd5951623df5296131bc0a59e64cd2462dc5
           imagePullPolicy: "IfNotPresent"
           command:
             - node
