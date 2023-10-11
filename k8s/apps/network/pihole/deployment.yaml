@@ -20,9 +20,6 @@ spec:
         - name: etc-pihole
           persistentVolumeClaim:
             claimName: pihole-config
-        - name: password
-          secret:
-            secretName: pihole-password
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -49,8 +46,6 @@ spec:
             - mountPath: /etc/pihole/blacklist.txt
               name: config
               subPath: blacklist.txt
-            - mountPath: /tmp/secret
-              name: password
           env:
             - name: WEB_PORT
               value: "80"
