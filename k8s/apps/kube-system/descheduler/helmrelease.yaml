@@ -50,7 +50,7 @@ spec:
                 - Pending
                 - PodInitializing
                 - ContainerCreating
-              maxPodLifeTimeSeconds: 3600
+              maxPodLifeTimeSeconds: 600
         RemoveFailedPods:
           enabled: true
           params:
