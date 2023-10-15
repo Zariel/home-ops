@@ -48,13 +48,7 @@ hubble:
       tls:
         - hosts: *hosts
 ipam:
-  mode: cluster-pool
-  operator:
-    clusterPoolIPv4PodCIDRList:
-      - 10.32.0.0/16
-      - 2a01:4b00:847b:6042:cafe:1::/96
-    clusterPoolIPv4MaskSize: 24
-    clusterPoolIPv6MaskSize: 112
+  mode: kubernetes
 ipv4:
   enabled: true
 ipv6:
