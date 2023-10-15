@@ -4,8 +4,6 @@ bandwidthManager:
   bbr: true
 bpf:
   masquerade: true
-  vlans:
-    - 0
 bgp:
   enabled: false
 cluster:
@@ -50,13 +48,23 @@ hubble:
       tls:
         - hosts: *hosts
 ipam:
-  mode: kubernetes
+  mode: cluster-pool
+  operator:
+    clusterPoolIPv4PodCIDRList:
+      - 10.32.0.0/16
+      - 2a01:4b00:847b:6042:cafe:1::/96
+    clusterPoolIPv4MaskSize: 24
+    clusterPoolIPv6MaskSize: 112
+ipv4:
+  enabled: true
+ipv6:
+  enabled: true
+extraArgs:
+  - --enable-ipv6-ndp
+enableIPv6Masquerade: false
 ipv4NativeRoutingCIDR: 10.32.0.0/16
 k8sServiceHost: 192.168.42.254
 k8sServicePort: 6443
-ipv6:
-  enabled: false
-# ipv6NativeRoutingCIDR: 2a01:4b00:847b:6000::/54
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:

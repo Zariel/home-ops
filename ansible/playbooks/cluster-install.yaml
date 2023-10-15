@@ -20,13 +20,6 @@
         k3s_server_manifests_templates: []
         k3s_server_manifests_urls: []
 
-    - name: Install Kubernetes
-      ansible.builtin.include_role:
-        name: xanmanning.k3s
-        public: true
-      vars:
-        k3s_state: installed
-
     - name: K3s Shutdown Fix
       block:
         - name: K3s Shutdown Fix | Service file
@@ -41,9 +34,23 @@
             name: shutdown-k3s
             enabled: true
 
+    - name: Install Kubernetes
+      ansible.builtin.include_role:
+        name: xanmanning.k3s
+        public: true
+      vars:
+        k3s_state: installed
+
     - name: Nvidia GPU
       when: nvidia_gpu
       block:
+        - name: Nvidia GPU | Containerd Dir
+          ansible.builtin.file:
+            path: /var/lib/rancher/k3s/agent/etc/containerd
+            state: directory
+            owner: root
+            group: root
+            mode: "0755"
         - name: Nvidia GPU | Fix k3s containerd config
           notify: Restart k3s
           ansible.builtin.copy:
@@ -68,6 +75,9 @@
         wait_timeout: 360
       loop:
         - { name: cilium, kind: HelmChart, namespace: kube-system }
+        - { name: policy, kind: CiliumL2AnnouncementPolicy }
+        - { name: pool, kind: CiliumLoadBalancerIPPool }
+
         - {
             name: podmonitors.monitoring.coreos.com,
             kind: CustomResourceDefinition,

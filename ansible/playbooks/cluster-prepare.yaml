@@ -119,6 +119,29 @@
             dest: /etc/systemd/networkd.conf
             regexp: ManageForeignRoutes
             line: ManageForeignRoutes=no
+        - name: Network Configuration
+          notify: Reboot
+          ansible.builtin.copy:
+            dest: /etc/network/interfaces
+            owner: root
+            group: root
+            mode: "0644"
+            content: |
+              # This file describes the network interfaces available on your system
+              # and how to activate them. For more information, see interfaces(5).
+
+              source /etc/network/interfaces.d/*
+
+              # The loopback network interface
+              auto lo
+              iface lo inet loopback
+
+              auto {{ interface }}
+              allow-hotplug {{ interface }}
+              iface {{ interface }} inet dhcp
+              iface {{interface}} inet6 static
+                  address {{ ipv6 }}/128
+                  gateway 2a01:4b00:847b:6042/64
 
     - name: System Configuration
       notify: Reboot
