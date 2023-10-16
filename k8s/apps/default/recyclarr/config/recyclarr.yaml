@@ -2,7 +2,7 @@
 sonarr:
   sonarr:
     base_url: http://sonarr.default.svc.cluster.local
-    api_key: 2cc09d738a6d4c9a883d4fd6852c8095
+    api_key: e5434fb6e4c04bc5a797103d41714d38
 
     # Quality Definition
     # This section defines the Quality Definitions that will be used in your Sonarr instance
@@ -119,7 +119,7 @@ sonarr:
 radarr:
   radarr:
     base_url: http://radarr.default.svc.cluster.local
-    api_key: b59c16e533c5420fad5145baab8348d6
+    api_key: 160014e59d544b86b6a738770abd044f
 
     quality_profiles:
       - name: &bluray BLURAY-2160p
