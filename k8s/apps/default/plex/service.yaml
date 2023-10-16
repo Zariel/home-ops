@@ -15,3 +15,7 @@ spec:
       port: 80
       targetPort: web
       protocol: TCP
+    - name: plex
+      port: 32400
+      targetPort: web
+      protocol: TCP
