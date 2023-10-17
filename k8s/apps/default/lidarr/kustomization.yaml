@@ -8,3 +8,10 @@ resources:
   - deployment.yaml
   - ingress.yaml
   - volume.yaml
+secretGenerator:
+  - name: smb-bighorse
+    type: Opaque
+    literals:
+      - username=k8s
+    files:
+      - password=secret/password.sops.txt
