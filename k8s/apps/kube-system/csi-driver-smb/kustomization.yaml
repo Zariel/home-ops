@@ -4,8 +4,3 @@ commonLabels:
   app: csi-driver-smb
 resources:
   - repo.yaml
-  - storageclass.yaml
-secretGenerator:
-  - name: smb-horsepc
-    literals:
-      - chris=anthem
