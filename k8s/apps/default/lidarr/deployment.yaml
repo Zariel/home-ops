@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lidarr
+spec:
+  selector:
+    matchLabels:
+      app: lidarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: lidarr
+    spec:
+      hostname: lidarr
+      volumes:
+        - name: lidarr-music-bighorse
+          persistentVolumeClaim:
+            claimName: lidarr-music-bighorse
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: config
+          persistentVolumeClaim:
+            claimName: lidarr-config
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      containers:
+        - name: lidarr
+          image: ghcr.io/onedr0p/lidarr-develop:1.4.5.3639
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
+            - name: LIDARR__POSTGRES_HOST
+              value: postgres.holywoo.cbannister.xyz
+            - name: LIDARR__POSTGRES_MAIN_DB
+              value: lidarr-main
+            - name: LIDARR__POSTGRES_LOG_DB
+              value: lidarr-logs
+            - name: LIDARR__POSTGRES_USER
+              value: holywoo
+            - name: LIDARR__POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 2Gi
+            limits:
+              memory: 2Gi
+          ports:
+            - containerPort: 8686
+              name: web
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: false
+            - name: lidarr-music-bighorse
+              mountPath: /data/media/music
+            - name: arr-media
+              mountPath: /data/usenet/complete/lidarr
+              subPath: usenet/complete/lidarr
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: web
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5

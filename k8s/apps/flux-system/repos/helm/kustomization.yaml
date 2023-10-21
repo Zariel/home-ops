@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: flux-system
+resources:
+  - ./cilium.yaml
+  - ./ingress-nginx.yaml
+  - ./metrics-server.yaml
+  - ./descheduler.yaml
+  - ./rook.yaml
+  - ./prometheus-community.yaml
+  - ./bjw-s.yaml
+  - ./grafana.yaml
+  - ./jetstack.yaml
+  - ./nvidia-device-plugin.yaml
+  - ./nfs-subdir-external-provisioner.yaml
+  - ./coredns.yaml
+  - ./emberstack.yaml
+  - ./bitnami.yaml
+  - ./cloudnative-pg.yaml

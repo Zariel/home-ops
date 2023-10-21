@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meshcentral
+spec:
+  selector:
+    matchLabels:
+      app: meshcentral
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: meshcentral
+    spec:
+      hostname: meshcentral
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: meshcentral-config
+        - name: config
+          configMap:
+            name: meshcentral
+        - name: cert
+          secret:
+            secretName: cbannister-xyz-tls
+      containers:
+        - name: meshcentral
+          image: ghcr.io/ylianst/meshcentral:latest@sha256:28c5499d342da286d4b9904a8dad0ed02ad85f2455fae8186658d2323d6223d6
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - node
+            - meshcentral/meshcentral
+            - --configfile
+            - /opt/config.json
+          env:
+            - name: HOSTNAME
+              value: meshcentral.holywoo.cbannister.xyz
+          resources:
+            requests:
+              cpu: "512m"
+              memory: "2024Mi"
+            limits:
+              memory: 2024Mi
+          ports:
+            - containerPort: 443
+              name: web
+            - containerPort: 4433
+              name: amt
+          volumeMounts:
+            - name: config
+              mountPath: /opt/config.json
+              subPath: config.json
+            - name: storage
+              mountPath: /opt/meshcentral/meshcentral-data
+              subPath: meshcentral-data
+            - name: storage
+              mountPath: /opt/meshcentral/meshcentral-files
+              subPath: meshcentral-files
+            - name: storage
+              mountPath: /opt/meshcentral/meshcentral-backups
+              subPath: meshcentral-backups
+            - name: storage
+              mountPath: /opt/meshcentral/meshcentral-web
+              subPath: meshcentral-web
+            - name: cert
+              mountPath: /opt/meshcentral/meshcentral-data/webserver-cert-public.crt
+              subPath: tls.crt
+            - name: cert
+              mountPath: /opt/meshcentral/meshcentral-data/webserver-cert-private.key
+              subPath: tls.key

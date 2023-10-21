@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+spec:
+  selector:
+    matchLabels:
+      app: prowlarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      hostname: prowlarr
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: prowlarr-config
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      containers:
+        - name: prowlarr
+          image: ghcr.io/onedr0p/prowlarr-develop:1.9.4.4039
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
+            - name: PROWLARR__POSTGRES_HOST
+              value: postgres
+            - name: PROWLARR__POSTGRES_MAIN_DB
+              value: prowlarr-main
+            - name: PROWLARR__POSTGRES_LOG_DB
+              value: prowlarr-logs
+            - name: PROWLARR__POSTGRES_USER
+              value: holywoo
+            - name: PROWLARR__POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: password
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 9696
+              name: web
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: false
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: web
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5

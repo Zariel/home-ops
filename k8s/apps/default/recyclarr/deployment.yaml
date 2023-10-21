@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recyclarr
+spec:
+  selector:
+    matchLabels:
+      app: recyclarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: recyclarr
+    spec:
+      hostname: recyclarr
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: recyclarr-config
+        - name: recyclarr-yml
+          configMap:
+            name: recyclarr-config
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      containers:
+        - &container
+          name: recyclarr
+          image: ghcr.io/recyclarr/recyclarr:latest@sha256:02add40feae0569401b5020528e06419b47046723d0bb4bef1e82325e9eefdad
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 10m
+            limits:
+              memory: 200Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: false
+            - name: recyclarr-yml
+              subPath: recyclarr.yml
+              mountPath: /config/recyclarr.yml
+              readOnly: true
+      initContainers:
+        - <<: *container
+          name: recyclarr-sync
+          args:
+            - sync

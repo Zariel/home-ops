@@ -1,0 +1,33 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Ylianst/MeshCentral/master/meshcentral-config-schema.json",
+    "settings": {
+        "plugins": {
+            "enabled": false
+        },
+        "_TrustedProxy": "192.168.42.200",
+        "cert": "meshcentral.holywoo.cbannister.xyz",
+        "_WANonly": true,
+        "_LANonly": true,
+        "_sessionKey": "MyReallySecretPassword1",
+        "port": 443,
+        "_aliasPort": 443,
+        "redirPort": 80,
+        "_redirAliasPort": 80,
+        "AgentPong": 300,
+        "TLSOffload": false,
+        "SelfUpdate": false,
+        "AllowFraming": false,
+        "WebRTC": false
+    },
+    "domains": {
+        "": {
+            "_title": "MyServer",
+            "_title2": "Servername",
+            "minify": true,
+            "NewAccounts": true,
+            "localSessionRecording": false,
+            "_userNameIsEmail": true,
+            "certUrl": "holywoo.cbannister.xyz"
+        }
+    }
+}

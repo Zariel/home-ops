@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sabnzbd
+  labels:
+    app: sabnzbd
+spec:
+  selector:
+    matchLabels:
+      app: sabnzbd
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sabnzbd
+    spec:
+      hostname: sabnzbd
+      volumes:
+        - name: incomplete
+          emptyDir: {}
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: config
+          persistentVolumeClaim:
+            claimName: sabnzbd-config
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      nodeSelector:
+        nas: remote
+      containers:
+        - name: sabnzbd
+          image: ghcr.io/onedr0p/sabnzbd:4.1.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: SABNZBD__HOST_WHITELIST_ENTRIES
+              value: >-
+                sabnzbd,
+                sabnzbd.default,
+                sabnzbd.default.svc,
+                sabnzbd.default.svc.cluster,
+                sabnzbd.default.svc.cluster.local,
+                sabnzbd.holywoo.cbannister.xyz
+          resources:
+            requests:
+              memory: 8192Mi
+              cpu: 2000m
+            limits:
+              memory: 8192Mi
+          ports:
+            - containerPort: 8080
+              name: web
+          volumeMounts:
+            - name: incomplete
+              mountPath: /tmp/incomplete
+            - name: config
+              mountPath: /config
+              readOnly: false
+            - name: arr-media
+              mountPath: /data
+          startupProbe:
+            httpGet:
+              path: /api?mode=version
+              port: web
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api?mode=version
+              port: web
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: readarr
+spec:
+  ingressClassName: internal
+  rules:
+    - host: &host readarr.holywoo.cbannister.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: readarr
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - *host

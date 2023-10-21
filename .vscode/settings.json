@@ -1,0 +1,11 @@
+{
+    "yaml.schemas": {
+        "Kubernetes": [
+            "deploy*.yaml",
+            "volume*.yaml",
+            "service*.yaml"
+        ],
+        "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.22.4-standalone-strict/all.json": "file:///Users/chrisb/dev/holywoo/k8s/apps/prometheus/ns.yaml",
+        "https://raw.githubusercontent.com/recyclarr/recyclarr/master/schemas/config-schema.json": "file:///Users/chrisb/dev/holywoo/k8s/apps/default/recyclarr/config/recyclarr.yaml"
+    }
+}

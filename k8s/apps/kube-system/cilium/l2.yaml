@@ -1,0 +1,17 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: l2-announcement
+spec:
+  loadBalancerIPs: true
+  interfaces:
+    - ^eno[0-9]+
+    - ^enp[0-9]+
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: local-lb-pool
+spec:
+  cidrs:
+    - cidr: 192.168.42.0/24
