@@ -4,6 +4,8 @@ metadata:
   name: plex
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Real-IP $remote_addr;
 spec:
   ingressClassName: internal
   rules:
