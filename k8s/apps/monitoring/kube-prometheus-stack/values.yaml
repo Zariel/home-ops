@@ -60,14 +60,14 @@ alertmanager:
       - hosts:
           - *host
   alertmanagerSpec:
-  replicas: 2
-  storage:
-    volumeClaimTemplate:
-      spec:
-        storageClassName: ceph-block
-        resources:
-          requests:
-            storage: 1Gi
+    replicas: 2
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ceph-block
+          resources:
+            requests:
+              storage: 1Gi
 kubelet:
   enabled: true
   serviceMonitor:
