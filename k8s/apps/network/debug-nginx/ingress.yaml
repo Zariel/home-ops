@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-echo-headers
+  labels:
+    name: nginx-echo-headers
+spec:
+  rules:
+    - host: &host debug.holywoo.cbannister.xyz
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: nginx-echo-headers
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - *host

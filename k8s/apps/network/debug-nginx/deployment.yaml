@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-echo-headers
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-echo-headers
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nginx-echo-headers
+    spec:
+      containers:
+        - name: name
+          image: brndnmtthws/nginx-echo-headers
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 8080
+              name: http
