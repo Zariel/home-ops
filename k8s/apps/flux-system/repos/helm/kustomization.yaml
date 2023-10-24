@@ -17,3 +17,4 @@ resources:
   - ./emberstack.yaml
   - ./bitnami.yaml
   - ./cloudnative-pg.yaml
+  - ./local-path-provisioner.yaml
