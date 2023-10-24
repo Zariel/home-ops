@@ -8,3 +8,4 @@ resources:
   - ./descheduler
   - ./coredns
   - ./reflector
+  - ./local-path-provisioner/ks.yaml
