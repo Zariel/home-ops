@@ -332,11 +332,11 @@ radarr:
           - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
       - quality_profiles:
           - name: *bluray
-            score: 1750
+            score: 1755
           - name: *remux
-            score: 1750
+            score: 1755
           - name: *bd1080
-            score: 1750
+            score: 1755
         trash_ids:
           - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
       - quality_profiles:
