@@ -45,7 +45,10 @@ spec:
               subPath: adlist.txt
             - mountPath: /etc/pihole/blacklist.txt
               name: config
-              subPath: blacklist.txt
+              subPath: blocklist.txt
+            - mountPath: /etc/pihole/whitelist.txt
+              name: config
+              subPath: allowlist.txt
           env:
             - name: WEB_PORT
               value: "80"
