@@ -12,6 +12,8 @@ configMapGenerator:
   - name: pihole-config
     files:
       - adlist.txt=config/adlist.txt
+      - whitelist.txt=config/allowlist.txt
+      - blacklist.txt=config/blocklist.txt
 secretGenerator:
   - name: pihole-password
     files:
