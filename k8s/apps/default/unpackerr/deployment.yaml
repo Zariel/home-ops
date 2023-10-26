@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unpackerr
+spec:
+  selector:
+    matchLabels:
+      app: unpackerr
+  template:
+    metadata:
+      labels:
+        app: unpackerr
+    spec:
+      volumes:
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: sharing
+          persistentVolumeClaim:
+            claimName: nas-sharing-bighorse
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: unpackerr
+          image: docker.io/golift/unpackerr:0.12.0
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: UN_WEBSERVER_METRICS
+              value: "true"
+            - name: UN_FOLDER_0_PATH
+              value: /data/prowlarr
+            - name: UN_FOLDER_0_EXTRACT_PATH
+              value: /data/sharing
+            - name: UN_FOLDER_0_DELETE_ORIGINAL
+              value: "true"
+          volumeMounts:
+            - name: arr-media
+              mountPath: /data/prowlarr
+              subPath: usenet/complete/prowlarr
+            - name: sharing
+              mountPath: /data/sharing
+          ports:
+            - containerPort: 5656
+              name: metrics

@@ -13,3 +13,4 @@ resources:
   - ./meshcentral
   - ./readarr
   - ./tautulli/ks.yaml
+  - ./unpackerr
