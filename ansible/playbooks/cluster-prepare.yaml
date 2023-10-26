@@ -55,7 +55,7 @@
               gnupg,hdparm,htop,intel-gpu-tools,iperf3,iptables,iputils-ping,ipvsadm,
               libseccomp2,lm-sensors,neofetch,net-tools,nfs-common,nvme-cli,open-iscsi,parted,psmisc,python3,
               python3-apt,python3-openshift,python3-kubernetes,python3-yaml,smartmontools,socat,software-properties-common,
-              unzip,util-linux,samba,lm-sensors,btop
+              unzip,util-linux,samba,lm-sensors,btop,ndppd
             install_recommends: false
 
     - name: Nvidia GPU Setup
@@ -139,9 +139,33 @@
               auto {{ interface }}
               allow-hotplug {{ interface }}
               iface {{ interface }} inet dhcp
-              iface {{interface}} inet6 static
-                  address {{ ipv6 }}/128
-                  gateway 2a01:4b00:847b:6042/64
+              iface {{ interface }} inet6 static
+                  address {{ ipv6 }}/64
+                  gateway 2a01:4b00:847b:6042::
+                  accept_ra 2
+
+    - name: ndppd
+      block:
+        - name: ndppd | Config
+          notify: restart-ndppd
+          ansible.builtin.copy:
+            dest: /etc/ndppd.conf
+            content: |
+              proxy {{ interface }} {
+                rule {{ ipv6_cluster_cidr }} {
+                  auto
+                }
+
+                rule {{ ipv6_service_cidr }} {
+                  static
+                }
+              }
+        # - name: ndppd | SetWants
+        - name: ndppd | Service
+          ansible.builtin.service:
+            name: ndppd
+            enabled: true
+            state: started
 
     - name: System Configuration
       notify: Reboot
@@ -201,23 +225,47 @@
               fs.inotify.max_queued_events: 65536
               fs.inotify.max_user_watches: 524288
               fs.inotify.max_user_instances: 8192
-        - name: System Configuration | Grub (1)
-          ansible.builtin.replace:
-            path: /etc/default/grub
-            regexp: '^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ item.key | regex_escape }}=).)*)(?:[" ]{{ item.key | regex_escape }}=\S+)?(.*")$'
-            replace: '\1 {{ item.key }}={{ item.value }}\2'
-          with_dict: "{{ grub_config }}"
-          vars:
-            grub_config:
-              apparmor: "0"
-              mitigations: "off"
-          register: grub_status
-        - name: System Configuration | Grub (2) # noqa: no-changed-when no-handler
-          ansible.builtin.command: update-grub
-          when: grub_status.changed
+              net.ipv6.conf.all.accept_ra: 2
+              net.ipv6.conf.default.forwarding: 1
+              net.ipv6.conf.default.proxy_ndp: 1
+              net.ipv6.conf.all.forwarding: 1
+              net.ipv6.conf.all.proxy_ndp: 1
+
+        - name: System Configuration | Sysctl (2)
+          ansible.posix.sysctl:
+            name: "net.ipv6.conf.{{interface}}.accept_ra"
+            value: "2"
+            sysctl_file: /etc/sysctl.d/99-ipv6-ra.conf
+            reload: true
+        - name: System Configuration | Sysctl (3)
+          ansible.posix.sysctl:
+            name: "net.ipv6.conf.{{interface}}.proxy_ndp"
+            value: "2"
+            sysctl_file: /etc/sysctl.d/99-ipv6-proxy-dnp.conf
+            reload: true
+
+        # - name: System Configuration | Grub (1)
+        #   ansible.builtin.replace:
+        #     path: /etc/default/grub
+        #     regexp: '^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ item.key | regex_escape }}=).)*)(?:[" ]{{ item.key | regex_escape }}=\S+)?(.*")$'
+        #     replace: '\1 {{ item.key }}={{ item.value }}\2'
+        #   with_dict: "{{ grub_config }}"
+        #   vars:
+        #     grub_config:
+        #       apparmor: "0"
+        #       mitigations: "off"
+        #   register: grub_status
+        # - name: System Configuration | Grub (2) # noqa: no-changed-when no-handler
+        #   ansible.builtin.command: update-grub
+        #   when: grub_status.changed
 
   handlers:
     - name: Reboot
       ansible.builtin.reboot:
         msg: Rebooting nodes
         reboot_timeout: 3600
+    - name: restart-ndppd
+      ansible.builtin.service:
+        name: ndppd
+        state: restarted
+        enabled: true

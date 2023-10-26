@@ -1,5 +1,4 @@
 ipv4_cluster_cidr: 10.32.0.0/16
-ipv6_cluster_cidr: 2a01:4b00:847b:6042:cafe:1::/96
 
 k3s_control_node: true
 k3s_etcd_datastore: true
@@ -20,7 +19,7 @@ k3s_server:
   disable-cloud-controller: true
   disable-kube-proxy: true
   cluster-cidr: "{{ ipv4_cluster_cidr }},{{ ipv6_cluster_cidr }}"
-  service-cidr: 10.33.0.0/16,2a01:4b00:847b:6042:cafe:2::/112
+  service-cidr: "10.33.0.0/16,{{ ipv6_service_cidr }}"
   node-ip: "{{ ansible_host }},{{ ipv6 }}"
   write-kubeconfig-mode: "0644"
   etcd-expose-metrics: true
@@ -33,4 +32,3 @@ k3s_server:
     - bind-address=0.0.0.0
   kube-apiserver-arg:
     - anonymous-auth=true
-  # node-taint: node.cilium.io/agent-not-ready=true:NoExecute
