@@ -49,6 +49,7 @@ spec:
               subPath: usenet/complete/prowlarr
             - name: sharing
               mountPath: /data/sharing
+              subPath: downloads
           ports:
             - containerPort: 5656
               name: metrics
