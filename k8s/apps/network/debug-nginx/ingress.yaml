@@ -4,6 +4,9 @@ metadata:
   name: nginx-echo-headers
   labels:
     name: nginx-echo-headers
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Forwarded-For $http_x_forwarded_for,$realip_remote_addr;
 spec:
   rules:
     - host: &host debug.holywoo.cbannister.xyz
