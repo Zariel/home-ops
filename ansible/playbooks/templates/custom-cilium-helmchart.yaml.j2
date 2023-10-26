@@ -31,20 +31,11 @@ spec:
     hubble:
       enabled: false
     ipam:
-      mode: cluster-pool
-      operator:
-        clusterPoolIPv4PodCIDRList:
-          - 10.32.0.0/16
-          - 2a01:4b00:847b:6042:cafe:1::/96
-        clusterPoolIPv4MaskSize: 24
-        clusterPoolIPv6MaskSize: 112
+      mode: kubernetes
     ipv4:
       enabled: true
     ipv6:
-      enabled: true
-    extraArgs:
-      - "--enable-ipv6-ndp=true"
-    enableIPv6Masquerade: false
+      enabled: false
     ipv4NativeRoutingCIDR: "{{ ipv4_cluster_cidr }}"
     k8sServiceHost: "{{ k3s_registration_address }}"
     k8sServicePort: 6443

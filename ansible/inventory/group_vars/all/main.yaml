@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases depName=k3s-io/k3s
-k3s_release_version: "v1.28.2+k3s1"
+k3s_release_version: "v1.27.6+k3s1"
 k3s_install_hard_links: true
 k3s_become: true
 k3s_registration_address: 192.168.42.254
@@ -25,3 +25,6 @@ k3s_server_manifests_templates:
 # /var/lib/rancher/k3s/agent/pod-manifests
 k3s_server_pod_manifests_templates:
   - kube-vip-static-pod.yaml.j2
+
+ipv6_cluster_cidr: "2a01:4b00:847b:6042:cafe:1::/96"
+ipv6_service_cidr: "2a01:4b00:847b:6042:cafe:2::/112"
