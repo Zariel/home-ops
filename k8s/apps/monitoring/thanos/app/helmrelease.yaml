@@ -81,7 +81,7 @@ spec:
         storageClass: local-path
         size: 10Gi
     ruler:
-      enabled: false
+      enabled: true
       replicaCount: 2
       replicaLabel: __replica__
       alertmanagers:
