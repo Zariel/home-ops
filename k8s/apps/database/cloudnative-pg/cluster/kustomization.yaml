@@ -7,3 +7,5 @@ resources:
   - ./cluster.yaml
   - ./prometheusrule.yaml
   - ./service.yaml
+  - ./pg-superuser.sops.yaml
+  - ./pg-holywoo.sops.yaml

@@ -15,7 +15,13 @@ spec:
     size: 20Gi
     storageClass: ceph-block
   superuserSecret:
-    name: cloudnative-pg-secret
+    name: pg-superuser
+  bootstrap:
+    initdb:
+      database: holywoo
+      owner: holywoo
+      secret:
+        name: pg-holywoo
   postgresql:
     parameters:
       max_connections: "600"
