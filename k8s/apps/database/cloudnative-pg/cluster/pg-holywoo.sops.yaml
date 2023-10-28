@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+    password: ENC[AES256_GCM,data:2UkZTOTGvZIkHTVZ,iv:VogsjuOqnpS8GooD9NvUbLJSCxJg6LXK9ueEY7y7wBQ=,tag:GwugfkSSofr6HoFqQYWELw==,type:str]
+    username: ENC[AES256_GCM,data:lyVl/7hq0tHZ2cPF,iv:FhvM+BplXyPMCXqqwaXbXwNEthOFM21M4DSZk082Nxw=,tag:xXdTUFxq9LpB8BCRRzuOMw==,type:str]
+kind: Secret
+metadata:
+    name: pg-holywoo
+    namespace: database
+    annotations:
+        reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+        # Control destination namespaces
+        reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: default
+        # Auto create reflection for matching namespaces
+        reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+        # Control auto-reflection namespaces
+        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: default
+type: kubernetes.io/basic-auth
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1865axnecqy9eccq9fzhpwkz3nkf0sxfeurva6rquyktplhzssv2s32kv5w
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBFTXNoemxxWUZ4bWJKTlY5
+            MWhMc2h2aWt1WnZCQ1c4RmlaZmM1bWZ1dTNBCkZFY1dYNmh6WmgwNmlmdzhEWVlq
+            Zy90cFZjSng3aXExWS91eFNJMDl4RkUKLS0tIHdzQnJreFZRaWIxZmV5MGNRbWZX
+            ZVFpbkZJNGlqK0I5bmw4eExWbDBVK1UKNmSrCEo6guL+5K5bhhG0ShXf3NxHx+8N
+            OU1eaGbeW9IJI9nF/93Y3ye5GapMLUjSPw/ekiABd2Buv3VY8Qmd5w==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-10-28T11:22:24Z"
+    mac: ENC[AES256_GCM,data:Y5zysj5UN9x8l1IWF7rNa5hOhuFxOJqo/fXB3GN9fAO/2A5SMkhRJnl8OgCzNQIutCtFO6mZt6ENy5uy7rSs0GdryFNUry3H4xLSAJgKud9/Ux+eRGuwvpRVXvso3oDFnLx+Tup/V7gtSP3oMdofrW7owL55NovEuwl+yr4A4zg=,iv:Sui+ZoirkoHuQIgWXe0+GRRat9+dxs5hKfBduyvSEPk=,tag:kGSV/4SRm/6cLz0jZ72V0g==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.8.1
