@@ -6,3 +6,4 @@ resources:
   - ./external-dns
   - ./pihole
   - ./debug-nginx
+  - ./external-ingress
