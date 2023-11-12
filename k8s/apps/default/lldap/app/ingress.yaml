@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lldap
+  labels:
+    name: lldap
+spec:
+  ingressClassName: internal
+  rules:
+    - host: &host lldap.holywoo.cbannister.xyz
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: lldap
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - *host
