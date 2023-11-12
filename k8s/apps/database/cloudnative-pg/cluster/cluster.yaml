@@ -16,6 +16,7 @@ spec:
     storageClass: ceph-block
   superuserSecret:
     name: pg-superuser
+  enableSuperuserAccess: true
   bootstrap:
     initdb:
       database: holywoo
