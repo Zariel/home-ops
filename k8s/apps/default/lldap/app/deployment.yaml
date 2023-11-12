@@ -69,7 +69,7 @@ spec:
             - name: LLDAP_LDAP_BASE_DN
               value: dc=home,dc=arpa
             - name: LLDAP_DATABASE_URL
-              value: "postgres://$(INIT_POSTGRES_USER):$(INIT_POSTGRES_PASS)@postgres-rw.database.svc.cluster.local/lldap"
+              value: "postgres://$(INIT_POSTGRES_USER):$(INIT_POSTGRES_PASS)@$(INIT_POSTGRES_HOST)/$(INIT_POSTGRES_DBNAME)"
           envFrom: *envFrom
           volumeMounts:
             - mountPath: /data
