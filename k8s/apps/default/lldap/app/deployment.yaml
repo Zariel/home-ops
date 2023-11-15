@@ -24,7 +24,7 @@ spec:
               app.kubernetes.io/name: lldap
       initContainers:
         - name: init-db
-          image: ghcr.io/onedr0p/postgres-init:14.9
+          image: ghcr.io/onedr0p/postgres-init:14.10
           imagePullPolicy: IfNotPresent
           env:
             - name: INIT_POSTGRES_SUPER_PASS
