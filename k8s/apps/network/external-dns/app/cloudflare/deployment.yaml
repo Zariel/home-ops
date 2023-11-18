@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns-cloudflare
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns-cloudflare
+  template:
+    metadata:
+      labels:
+        app: external-dns-cloudflare
+    spec:
+      serviceAccountName: external-dns
+      volumes:
+        - name: cloudflare-secrets
+          secret:
+            secretName: external-dns-cloudflare
+      containers:
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.14.0
+          resources:
+            limits:
+              memory: 128Mi
+              cpu: 250m
+          args:
+            - --provider=cloudflare
+            - --ingress-class=external
+            - --cloudflare-proxied
+            - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+            - --crd-source-kind=DNSEndpoint
+            - --domain-filter=holywoo.cbannister.xyz
+          envFrom:
+            - secretRef:
+                name: cloudflare-secrets
+      securityContext:
+        fsGroup: 65534 # For ExternalDNS to be able to read Kubernetes token files
