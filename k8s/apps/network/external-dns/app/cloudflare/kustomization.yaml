@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: network
+commonLabels:
+  app: external-dns-cloudflare
+resources:
+  - deployment.yaml
+secretGenerator:
+  - name: cloudflare-secrets
+    envs:
+      - ./config/cloudflare.sops.env

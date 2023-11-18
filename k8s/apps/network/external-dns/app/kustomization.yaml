@@ -5,3 +5,4 @@ resources:
   - ./dnsendpoint-crd.yaml
   - ./auth.yaml
   - ./pihole
+  - ./cloudflare
