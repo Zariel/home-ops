@@ -2,16 +2,16 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: cbannister-xyz
-  namespace: networking
+  namespace: network
 spec:
   secretName: cbannister-xyz-tls
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: holywoo.cbannister.xyz
+  commonName: cbannister.xyz
   dnsNames:
-    - holywoo.cbannister.xyz
-    - "*.holywoo.cbannister.xyz"
+    - cbannister.xyz
+    - "*.cbannister.xyz"
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
