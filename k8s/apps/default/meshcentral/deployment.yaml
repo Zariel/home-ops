@@ -23,7 +23,7 @@ spec:
             name: meshcentral
         - name: cert
           secret:
-            secretName: cbannister-xyz-tls
+            secretName: cbannister-holywoo-xyz-tls
       containers:
         - name: meshcentral
           image: ghcr.io/ylianst/meshcentral:latest@sha256:cea9e1044bcc4a38187bc8833fe462d671d80971ee4dbd56ce6539d7daaba4ff
