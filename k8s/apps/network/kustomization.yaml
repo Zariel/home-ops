@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ./ns.yaml
   - ./ingress-nginx/ks.yaml
-  - ./external-dns
+  - ./external-dns/ks.yaml
   - ./pihole
   - ./external-ingress
   - ./cloudflared/ks.yaml
