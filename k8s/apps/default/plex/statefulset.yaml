@@ -51,7 +51,7 @@ spec:
             - name: NVIDIA_VISIBLE_DEVICES
               value: all
             - name: NVIDIA_DRIVER_CAPABILITIES
-              value: "compute,video,utility"
+              value: "all"
           resources:
             requests:
               cpu: 1000m
