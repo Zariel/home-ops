@@ -5,7 +5,7 @@ nameReference:
     fieldSpecs:
       - path: spec/values/persistence/config/name
         kind: HelmRelease
-  - kind: Sercret
+  - kind: Secret
     version: v1
     fieldSpecs:
       - path: spec/values/persistence/creds/name
