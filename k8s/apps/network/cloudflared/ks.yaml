@@ -8,7 +8,7 @@ metadata:
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
-  path: ./k8s/apps/networking/cloudflared/app
+  path: ./k8s/apps/network/cloudflared/app
   prune: true
   sourceRef:
     kind: GitRepository
