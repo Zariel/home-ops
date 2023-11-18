@@ -81,7 +81,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
         hosts:
-          - host: &host "{{ .Release.Name }}.cbannister.xyz"
+          - host: &host "{{ .Release.Name }}.holywoo.cbannister.xyz"
             paths:
               - path: /
                 service:
