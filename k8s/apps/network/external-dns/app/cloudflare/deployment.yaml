@@ -33,7 +33,7 @@ spec:
             - --cloudflare-proxied
             - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
             - --crd-source-kind=DNSEndpoint
-            - --domain-filter=holywoo.cbannister.xyz
+            - --domain-filter=cbannister.xyz
           envFrom:
             - secretRef:
                 name: cloudflare-secrets
