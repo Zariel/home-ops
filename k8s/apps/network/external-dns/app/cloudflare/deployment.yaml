@@ -34,6 +34,7 @@ spec:
             - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
             - --crd-source-kind=DNSEndpoint
             - --domain-filter=cbannister.xyz
+            - --policy=sync
           envFrom:
             - secretRef:
                 name: cloudflare-secrets
