@@ -45,7 +45,7 @@ spec:
             - name: TZ
               value: Europe/London
             - name: ADVERTISE_IP
-              value: https://plex.holywoo.cbannister.xyz:443
+              value: https://plex.cbannister.xyz:443
             - name: ALLOWED_NETWORKS
               value: 192.168.42.0/24,10.0.0.0/8
             - name: NVIDIA_VISIBLE_DEVICES
