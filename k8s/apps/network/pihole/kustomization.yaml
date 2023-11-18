@@ -16,5 +16,7 @@ configMapGenerator:
       - blacklist.txt=config/blocklist.txt
 secretGenerator:
   - name: pihole-password
+    options:
+      disableNameSuffixHash: true
     files:
       - password=config/password.sops.txt
