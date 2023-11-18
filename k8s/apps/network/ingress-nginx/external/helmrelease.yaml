@@ -31,7 +31,7 @@ spec:
       replicaCount: 2
       service:
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: external.cbannister.xyz
+          external-dns.alpha.kubernetes.io/hostname: external.holywoo.cbannister.xyz
           io.cilium/lb-ipam-ips: 192.168.42.201
       ingressClassResource:
         name: external
@@ -71,7 +71,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: network/cbannister-xyz-tls
+        default-ssl-certificate: network/cbannister-holywoo-xyz-tls
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
