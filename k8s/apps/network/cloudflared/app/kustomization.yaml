@@ -16,4 +16,4 @@ secretGenerator:
   - name: cloudflared-tunnel-secret
     type: Opaque
     files:
-      - credentials.json=./config/credentials.sops.json
+      - ./config/credentials.sops.json
