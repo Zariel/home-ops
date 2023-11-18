@@ -104,5 +104,5 @@ spec:
         name: cloudflared-tunnel-secret # overriden by kustomizeconfig
         globalMounts:
           - path: /etc/cloudflared/creds/credentials.json
-            subPath: credentials.json
+            subPath: credentials.sops.json
             readOnly: true
