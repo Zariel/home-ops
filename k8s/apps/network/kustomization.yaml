@@ -7,3 +7,4 @@ resources:
   - ./pihole
   - ./external-ingress
   - ./cloudflared/ks.yaml
+  - ./echo-server/ks.yaml
