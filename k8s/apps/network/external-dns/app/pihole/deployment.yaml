@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: external-dns
+  name: external-dns-pihole
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: external-dns
+      app: external-dns-pihole
   template:
     metadata:
       labels:
-        app: external-dns
+        app: external-dns-pihole
     spec:
-      serviceAccountName: external-dns
+      serviceAccountName: external-dns-pihole
       containers:
         - name: external-dns
           image: registry.k8s.io/external-dns/external-dns:v0.14.0
