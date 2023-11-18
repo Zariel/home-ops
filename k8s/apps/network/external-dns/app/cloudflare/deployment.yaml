@@ -26,8 +26,8 @@ spec:
               memory: 128Mi
               cpu: 250m
           args:
-            - --source=service
             - --source=ingress
+            - --source=crd
             - --provider=cloudflare
             - --ingress-class=external
             - --cloudflare-proxied
