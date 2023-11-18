@@ -6,3 +6,4 @@ resources:
   - ./external-dns
   - ./pihole
   - ./external-ingress
+  - ./cloudflared/ks.yaml

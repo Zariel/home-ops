@@ -1,0 +1,14 @@
+---
+originRequest:
+  http2Origin: true
+
+ingress:
+  - hostname: holywoo.cbannister.xyz
+    service: https://nginx-external-controller.networking.svc.cluster.local:443
+    originRequest:
+      originServerName: external.holywoo.cbannister.xyz
+  - hostname: "*.holywoo.cbannister.xyz"
+    service: https://nginx-external-controller.networking.svc.cluster.local:443
+    originRequest:
+      originServerName: external.holywoo.cbannister.xyz
+  - service: http_status:404
