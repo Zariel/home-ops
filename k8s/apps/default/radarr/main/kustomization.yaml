@@ -4,7 +4,5 @@ namespace: default
 commonLabels:
   app: radarr
 resources:
-  - deployment.yaml
-  - service.yaml
-  - ingress.yaml
-  - volume.yaml
+  - ../base
+  - ./ingress.yaml
