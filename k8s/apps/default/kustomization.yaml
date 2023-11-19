@@ -4,7 +4,7 @@ resources:
   - ./lidarr
   - ./plex
   - ./prowlarr
-  - ./radarr
+  - ./radarr/ks.yaml
   - ./recyclarr
   - ./sabnzbd
   - ./sonarr

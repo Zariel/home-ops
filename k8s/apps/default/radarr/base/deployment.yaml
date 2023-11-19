@@ -40,10 +40,6 @@ spec:
               value: "1"
             - name: RADARR__POSTGRES_HOST
               value: postgres
-            - name: RADARR__POSTGRES_MAIN_DB
-              value: radarr-main
-            - name: RADARR__POSTGRES_LOG_DB
-              value: radarr-logs
             - name: RADARR__POSTGRES_USER
               value: holywoo
             - name: RADARR__POSTGRES_PASSWORD
@@ -51,6 +47,9 @@ spec:
                 secretKeyRef:
                   name: postgres
                   key: password
+          envFrom:
+            - configMapRef:
+                name: radarr-env-config
           resources:
             requests:
               cpu: "512m"
