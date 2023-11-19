@@ -6,3 +6,4 @@ commonLabels:
 resources:
   - ../base
   - ./ingress.yaml
+nameSuffix: -main
