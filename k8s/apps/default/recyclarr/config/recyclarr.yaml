@@ -30,6 +30,12 @@ sonarr:
         upgrade:
           allowed: true
         min_format_score: 0
+      - name: WEBDL-1080p
+        reset_unmatched_scores:
+          enabled: true
+        upgrade:
+          allowed: true
+        min_format_score: 0
 
     # Custom Formats
     # This section creates and/or updates Custom Formats in your Sonarr instance,
@@ -116,6 +122,7 @@ sonarr:
         quality_profiles:
           - name: BLURAY-2160p
           - name: WEBDL-2160p
+          - name: WEBDL-1080p
 radarr:
   radarr-main:
     base_url: http://radarr-main.default.svc.cluster.local
