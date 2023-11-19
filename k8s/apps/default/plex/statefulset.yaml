@@ -38,7 +38,6 @@ spec:
           persistentVolumeClaim:
             claimName: bighorse-arr-media
             readOnly: true
-      runtimeClassName: nvidia
       containers:
         - name: plex
           image: ghcr.io/onedr0p/plex:rolling@sha256:f9f77dc5e17cab9fae5ece663a64d026e3c75142b3b60bb4a52bf061957412be
