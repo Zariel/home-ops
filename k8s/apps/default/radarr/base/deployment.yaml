@@ -47,6 +47,8 @@ spec:
                 secretKeyRef:
                   name: postgres
                   key: password
+            - name: RADARR__API_KEY
+              value: 160014e59d544b86b6a738770abd044f
           envFrom:
             - configMapRef:
                 name: radarr-env-config
