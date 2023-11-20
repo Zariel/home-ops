@@ -6,7 +6,7 @@ collections:
   - name: community.general
     version: 7.5.1
   - name: kubernetes.core
-    version: 2.4.0
+    version: 3.0.0
 roles:
   - name: xanmanning.k3s
     version: v3.4.2
