@@ -19,18 +19,18 @@
   "suppressNotifications": ["prIgnoreNotification"],
   "flux": {
     "fileMatch": [
-      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$",
     ]
   },
   "helm-values": {
     "fileMatch": [
-      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$",
     ]
   },
   "kubernetes": {
     "fileMatch": [
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
-      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$",
     ]
   },
   "regexManagers": [
