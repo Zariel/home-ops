@@ -2,7 +2,7 @@ DNS1: null
 DNS2: null
 
 image:
-  tag: "2023.10.0"
+  tag: "2023.11.0"
   repository: ghcr.io/pi-hole/pihole
 
 replicaCount: 1
