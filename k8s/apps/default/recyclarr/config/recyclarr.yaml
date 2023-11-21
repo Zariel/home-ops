@@ -36,6 +36,7 @@ sonarr:
         upgrade:
           allowed: true
           until_quality: WEBDL-1080p
+          until_score: 9999999
         min_format_score: 0
         quality_sort: top
         qualities:
