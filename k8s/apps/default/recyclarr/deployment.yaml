@@ -45,7 +45,7 @@ spec:
               memory: 200Mi
           volumeMounts:
             - name: config
-              mountPath: /config
+              mountPath: /config/
               readOnly: false
             - name: recyclarr-yml
               subPath: recyclarr.yml
