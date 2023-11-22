@@ -53,7 +53,7 @@ spec:
               readOnly: true
             - name: recyclarr-yml
               subPath: sonarr.yaml
-              mountPath: /config/includes/sonarr.yaml
+              mountPath: /config/configs/includes/sonarr.yaml
               readOnly: true
       initContainers:
         - <<: *container
