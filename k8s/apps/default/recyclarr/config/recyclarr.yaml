@@ -1,13 +1,15 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/recyclarr/recyclarr/master/schemas/config-schema.json
 sonarr:
-  sonarr-main: &sonarr-main
+  sonarr-main:
     base_url: http://sonarr-main.default.svc.cluster.local
     api_key: e5434fb6e4c04bc5a797103d41714d38
     include:
       - config: includes/sonarr.yaml
   sonarr-1080:
-    <<: *sonarr-main
     base_url: http://sonarr-1080p.default.svc.cluster.local
+    api_key: e5434fb6e4c04bc5a797103d41714d38
+    include:
+      - config: includes/sonarr.yaml
 radarr:
   radarr-main:
     base_url: http://radarr-main.default.svc.cluster.local
