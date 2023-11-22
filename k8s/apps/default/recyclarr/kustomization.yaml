@@ -9,5 +9,5 @@ resources:
 configMapGenerator:
   - name: recyclarr-config
     files:
-      - config/recyclarr.yaml
-      - config/sonarr.yaml
+      - recyclarr.yaml=config/recyclarr.yaml
+      - sonarr.yaml=config/sonarr.yaml
