@@ -49,6 +49,7 @@ prometheus:
               storage: 20Gi
 grafana:
   enabled: false
+  forceDeployDashboards: true
 alertmanager:
   enabled: true
   ingress:
