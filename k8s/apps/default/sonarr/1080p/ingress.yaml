@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sonarr
+spec:
+  ingressClassName: internal
+  rules:
+    - host: &host sonarr-hd.holywoo.cbannister.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sonarr
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - *host
