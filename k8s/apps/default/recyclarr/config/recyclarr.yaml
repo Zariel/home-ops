@@ -2,12 +2,10 @@
 sonarr:
   sonarr-main:
     base_url: http://sonarr-main.default.svc.cluster.local
-    api_key: e5434fb6e4c04bc5a797103d41714d38
     include:
       - config: includes/sonarr.yaml
   sonarr-1080:
     base_url: http://sonarr-1080p.default.svc.cluster.local
-    api_key: e5434fb6e4c04bc5a797103d41714d38
     include:
       - config: includes/sonarr.yaml
 radarr:
