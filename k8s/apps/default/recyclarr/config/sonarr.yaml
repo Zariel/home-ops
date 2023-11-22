@@ -1,3 +1,5 @@
+api_key: e5434fb6e4c04bc5a797103d41714d38
+
 # Quality Definition
 # This section defines the Quality Definitions that will be used in your Sonarr instance
 # Only one set of Quality Definitions can be used per instance
