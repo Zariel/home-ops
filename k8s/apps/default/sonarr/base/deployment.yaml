@@ -48,7 +48,7 @@ spec:
                   name: postgres
                   key: password
           envFrom:
-            - secretRef:
+            - configMapRef:
                 name: sonarr-env-config
           resources:
             requests:

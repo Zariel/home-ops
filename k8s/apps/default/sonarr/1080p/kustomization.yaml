@@ -5,7 +5,7 @@ resources:
   - ../base
   - ./ingress.yaml
 nameSuffix: -1080p
-secretGenerator:
+configMapGenerator:
   - name: sonarr-env-config
     behavior: merge
     envs:
