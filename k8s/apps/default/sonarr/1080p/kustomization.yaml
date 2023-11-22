@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - ../base
+  - ./ingress.yaml
+nameSuffix: -1080p
+configMapGenerator:
+  - name: sonarr-env-config
+    behavior: merge
+    envs:
+      - ./config/postgres.env
