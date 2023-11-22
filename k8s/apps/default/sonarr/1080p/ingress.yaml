@@ -12,7 +12,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: sonarr
+                name: sonarr-1080p
                 port:
                   name: http
   tls:
