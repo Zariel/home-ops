@@ -37,7 +37,7 @@ spec:
             - name: DOTNET_gcServer
               value: "1"
             - name: SONARR_API_KEY
-              value: "e5434fb6e4c04bc5a797103d41714d38"
+              value: e5434fb6e4c04bc5a797103d41714d38
             - name: SONARR__POSTGRES_HOST
               value: postgres
             - name: SONARR__POSTGRES_USER
