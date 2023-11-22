@@ -48,7 +48,7 @@ spec:
               mountPath: /config/
               readOnly: false
             - name: recyclarr-yml
-              subPath: recyclarr.yml
+              subPath: recyclarr.yaml
               mountPath: /config/recyclarr.yml
               readOnly: true
             - name: recyclarr-yml
