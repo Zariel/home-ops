@@ -7,4 +7,4 @@ resources:
 secretGenerator:
   - name: tailscale-auth
     files:
-      - authkey=./config/authkey.sops.yaml
+      - authkey=config/authkey.sops.txt
