@@ -27,7 +27,6 @@ spec:
             limits:
               memory: "1Gi"
           env:
-            # Store the state in a k8s secret
             - name: TS_KUBE_SECRET
               value: tailscale-state
             - name: TS_USERSPACE
@@ -37,7 +36,6 @@ spec:
                 secretKeyRef:
                   name: tailscale-auth
                   key: authkey
-                  optional: true
             - name: TS_ROUTES
               value: 192.168.1.0/24,10.0.0.0/21
           volumeMounts:
