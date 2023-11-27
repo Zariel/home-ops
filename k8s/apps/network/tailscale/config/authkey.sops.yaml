@@ -1,0 +1,21 @@
+authkey: tskey-auth-kmjfS74CNTRL-e4oqK44yTzPGnf8yUVky3Qmcg4wgZBUj
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1865axnecqy9eccq9fzhpwkz3nkf0sxfeurva6rquyktplhzssv2s32kv5w
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyVXIzS3gvOVgrcDArMUsv
+            ZlRyWEM1TFpPZGlNcU93VktGTkhrWlFpRWpJCktHandGSGZ6YXNoS3NuSktsZWdo
+            VkVtUEROV2dMWDl2MlNtQ3IzbHlSaEEKLS0tIERic29IRjc1ZWg2OXN6VnlvbnZO
+            R1FKUW4vZmJlV3RUaVJiOFpiQ2hGK00K50WBRURhe27HZt32gSMNd1OoE58cfCAQ
+            oYZOxYYNjPGvA232o2FIwy9RLaJxRtSlsYwgfplhMCEWkT6g6J9ORA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-11-27T14:25:09Z"
+    mac: ENC[AES256_GCM,data:OvIhbh+OQkTcYWfwR5lNSKGWSkseoA3Cfs3goGyNTla16egQg6bGqgIWwo63JlxU7XrUALP51KUK4abX87EGRXc099k+Gc8M5wPweP1B/Es97ql+xkYEVn9ZNxrBcx8piRFnASR4LfWkGRR69bBXWekH5rUczynxI0WsmDE0hvM=,iv:vfFIMCOkIQ4jwuXdTIFocxIOp+G+1lk+QJw1KKPspA8=,tag:Zzs0PoufbHlyX1pwfkb8ng==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.8.1
