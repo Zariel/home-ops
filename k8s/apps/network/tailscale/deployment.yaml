@@ -11,16 +11,8 @@ spec:
       labels:
         app: tailscale-subnet-router
     spec:
+      hostname: tailscale-subnet-router-a
       serviceAccountName: tailscale-subnet-router
-      volumes:
-        - name: dev-tun
-          hostPath:
-            path: /dev/net/tun
-            type: CharDevice
-        - name: lib-modules
-          hostPath:
-            path: /lib/modules
-            type: Directory
       containers:
         - name: tailscale-subnet-router
           image: ghcr.io/tailscale/tailscale:v1.54.0
@@ -42,12 +34,8 @@ spec:
                   key: authkey
             - name: TS_ROUTES
               value: 192.168.1.0/24,10.0.0.0/21
-          volumeMounts:
-            - mountPath: /dev/net/tun
-              name: dev-tun
-            - mountPath: /lib/modules
-              name: lib-modules
-              readOnly: true
+            - name: TS_EXTRA_ARGS
+              value: "--advertise-exit-node"
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
