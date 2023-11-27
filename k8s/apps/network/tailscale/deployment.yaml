@@ -34,7 +34,7 @@ spec:
             - name: TS_KUBE_SECRET
               value: tailscale-state
             - name: TS_USERSPACE
-              value: "false"
+              value: "true"
             - name: TS_AUTHKEY
               valueFrom:
                 secretKeyRef:
@@ -52,7 +52,3 @@ spec:
             runAsUser: 1000
             runAsGroup: 1000
             privileged: false
-            capabilities:
-              add:
-                - NET_ADMIN
-                - NET_RAW
