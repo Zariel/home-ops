@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tailscale-subnet-router
+spec:
+  selector:
+    matchLabels:
+      app: tailscale-subnet-router
+  template:
+    metadata:
+      labels:
+        app: tailscale-subnet-router
+    spec:
+      # hostNetwork: true
+      serviceAccountName: tailscale-subnet-router
+      containers:
+        - name: tailscale-subnet-router
+          image: ghcr.io/tailscale/tailscale:v1.54.0
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+          env:
+            # Store the state in a k8s secret
+            - name: TS_KUBE_SECRET
+              value: tailscale-state
+            - name: TS_USERSPACE
+              value: "false"
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: tailscale-auth
+                  key: authkey
+                  optional: true
+            - name: TS_ROUTES
+              value: 192.168.1.0/24,10.0.0.0/21
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
