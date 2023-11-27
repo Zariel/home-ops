@@ -11,8 +11,12 @@ spec:
       labels:
         app: tailscale-subnet-router
     spec:
-      hostNetwork: true
       serviceAccountName: tailscale-subnet-router
+      volumes:
+        - name: dev-tun
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice
       containers:
         - name: tailscale-subnet-router
           image: ghcr.io/tailscale/tailscale:v1.54.0
@@ -36,10 +40,13 @@ spec:
                   optional: true
             - name: TS_ROUTES
               value: 192.168.1.0/24,10.0.0.0/21
+          volumeMounts:
+            - mountPath: /dev/net/tun
+              name: dev-tun
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
+            privileged: false
             capabilities:
               add:
                 - NET_ADMIN
-                - NET_RAW
