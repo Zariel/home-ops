@@ -17,6 +17,10 @@ spec:
           hostPath:
             path: /dev/net/tun
             type: CharDevice
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+            type: Directory
       containers:
         - name: tailscale-subnet-router
           image: ghcr.io/tailscale/tailscale:v1.54.0
@@ -41,6 +45,9 @@ spec:
           volumeMounts:
             - mountPath: /dev/net/tun
               name: dev-tun
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
