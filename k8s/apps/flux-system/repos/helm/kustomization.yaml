@@ -18,3 +18,4 @@ resources:
   - ./bitnami.yaml
   - ./cloudnative-pg.yaml
   - ./local-path-provisioner.yaml
+  - ./xenitab.yaml

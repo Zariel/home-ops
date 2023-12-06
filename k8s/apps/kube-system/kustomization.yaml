@@ -9,3 +9,4 @@ resources:
   - ./coredns
   - ./reflector
   - ./local-path-provisioner/ks.yaml
+  - ./spegel/ks.yaml
