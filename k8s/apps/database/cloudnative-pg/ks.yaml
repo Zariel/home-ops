@@ -23,6 +23,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg
+    - name: cluster-apps-kube-prometheus-stack
   path: ./k8s/apps/database/cloudnative-pg/cluster
   prune: true
   sourceRef:
