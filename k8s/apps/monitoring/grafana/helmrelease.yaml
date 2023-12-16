@@ -130,7 +130,7 @@ spec:
           datasource: Prometheus
         node-exporter-full:
           gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
-          revision: 31
+          revision: 33
           datasource: Prometheus
       ceph:
         ceph-cluster:
