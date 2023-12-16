@@ -7,6 +7,7 @@ metadata:
 spec:
   staticConfigs:
     - labels:
-        job: proxmox
+        job: node_exporter
       targets:
         - 10.0.1.100:9100
+        - 10.0.1.104:9100
