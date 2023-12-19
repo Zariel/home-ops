@@ -51,6 +51,8 @@ quality_profiles:
           - WEBDL-480p
           - WEBRip-480p
       - name: DVD
+      - name: Bluray-480p
+      - name: SDTV
 
 # Custom Formats
 # This section creates and/or updates Custom Formats in your Sonarr instance,
