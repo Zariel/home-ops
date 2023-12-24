@@ -29,7 +29,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: readarr
-          image: ghcr.io/onedr0p/readarr-develop:0.3.12.2327
+          image: ghcr.io/onedr0p/readarr-develop:0.3.13.2338
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
