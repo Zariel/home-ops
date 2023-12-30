@@ -9,5 +9,8 @@ configMapGenerator:
   - name: kube-prometheus-stack-values
     files:
       - values.yaml
+  - name: kube-state-metrics-configmap
+    files:
+      - kube-state-metrics.yaml=./resources/kube-state-metrics.yaml
 configurations:
   - kustomizeconfig.yaml

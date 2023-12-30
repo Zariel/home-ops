@@ -5,6 +5,4 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./unpoller
   - ./grafana
-  - ./kube-state-metrics
-  - ./node-exporter
   - ./thanos/ks.yaml
