@@ -4,3 +4,8 @@ nameReference:
     fieldSpecs:
       - path: spec/valuesFrom/name
         kind: HelmRelease
+  - kind: ConfigMap
+    apiVersion: v1
+    fieldSpecs:
+      - path: spec/valuesFrom/name
+        kind: HelmRelease
