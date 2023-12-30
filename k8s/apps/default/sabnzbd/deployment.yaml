@@ -50,10 +50,10 @@ spec:
                 sabnzbd.holywoo.cbannister.xyz
           resources:
             requests:
-              memory: 8192Mi
+              memory: &ram 16Gi
               cpu: 2000m
             limits:
-              memory: 8192Mi
+              memory: *ram
           ports:
             - containerPort: 8080
               name: web
