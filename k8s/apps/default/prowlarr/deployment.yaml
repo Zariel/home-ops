@@ -26,7 +26,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: prowlarr
-          image: ghcr.io/onedr0p/prowlarr-develop:1.12.0.4188
+          image: ghcr.io/onedr0p/prowlarr-develop:1.12.1.4201
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
