@@ -32,7 +32,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
       nodeSelector:
-        nas: remote
+        nas: local
       containers:
         - name: sabnzbd
           image: ghcr.io/onedr0p/sabnzbd:4.2.1
