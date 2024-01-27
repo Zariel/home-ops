@@ -26,7 +26,7 @@ spec:
             secretName: cbannister-holywoo-xyz-tls
       containers:
         - name: meshcentral
-          image: ghcr.io/ylianst/meshcentral:latest@sha256:b2e718ed0bca0ad30c4351226ae3314b46402ccff59b7265855e827f0c9ebd5e
+          image: ghcr.io/ylianst/meshcentral:latest@sha256:bd26159a83a0872c69a453b6c244c22259de69424386e90a5affbf4c30cf5c34
           imagePullPolicy: "IfNotPresent"
           command:
             - node
