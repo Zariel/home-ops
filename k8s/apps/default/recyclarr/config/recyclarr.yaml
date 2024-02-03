@@ -168,6 +168,7 @@ radarr:
           # - f537cf427b64c38c8e36298f657e4828 # Scene
           - ae4cfaa9283a4f2150ac3da08e388723 # VP9
           # - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
+          - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
 
           # Streaming Services
           - 509e5f41146e278f9eab1ddaceb34515 # HBO
@@ -229,11 +230,6 @@ radarr:
             score: 1755
         trash_ids:
           - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
-      - quality_profiles:
-          - name: *bluray
-          - name: *remux
-        trash_ids:
-          - 9c38ebb7384dada637be8899efa68e6f # SDR
   radarr-1080p:
     base_url: http://radarr-1080p.default.svc.cluster.local
     api_key: 160014e59d544b86b6a738770abd044f
