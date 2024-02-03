@@ -17,7 +17,7 @@ quality_profiles:
       enabled: true
       except:
         - "Language: Not Original or English"
-        - "Language: Prefer English"
+        - "Language: Prefer Original"
     upgrade:
       allowed: true
       until_quality: &remux-2160p Bluray-2160p Remux
