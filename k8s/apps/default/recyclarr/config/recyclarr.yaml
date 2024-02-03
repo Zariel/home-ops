@@ -17,8 +17,11 @@ radarr:
           allowed: true
           until_quality: Bluray-2160p
           until_score: 9999999
-        reset_unmatched_scores:
+        reset_unmatched_scores: &reset_unmatched_scores
           enabled: true
+          except:
+            - "Language: Not Original or English"
+            - "Language: Prefer English"
         quality_sort: top
         qualities:
           - name: Bluray-2160p
@@ -39,8 +42,7 @@ radarr:
           allowed: true
           until_quality: Remux-2160p
           until_score: 9999999
-        reset_unmatched_scores:
-          enabled: true
+        reset_unmatched_scores: *reset_unmatched_scores
         quality_sort: top
         qualities:
           - name: Remux-2160p
@@ -61,8 +63,7 @@ radarr:
           allowed: true
           until_quality: Remux-1080p
           until_score: 9999999
-        reset_unmatched_scores:
-          enabled: true
+        reset_unmatched_scores: *reset_unmatched_scores
         quality_sort: top
         qualities:
           - name: Remux-1080p
