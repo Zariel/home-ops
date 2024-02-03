@@ -12,21 +12,57 @@ replace_existing_custom_formats: true
 # This section creates and/or updates Quality Profile(s) in your Sonarr instance
 # Documentation: https://recyclarr.dev/wiki/yaml/config-reference/#quality-profiles
 quality_profiles:
-  - name: WEBDL-2160p
-    reset_unmatched_scores:
-      enabled: true
-    upgrade:
-      allowed: true
-    min_format_score: 0
   - name: BLURAY-2160p
-    reset_unmatched_scores:
+    reset_unmatched_scores: &reset_unmatched_scores
       enabled: true
+      except:
+        - "Language: Not Original or English"
+        - "Language: Prefer English"
     upgrade:
       allowed: true
+      until_quality: REMUX-2160p
+      until_score: 9999999
     min_format_score: 0
+
+  - name: WEBDL-2160p
+    reset_unmatched_scores: *reset_unmatched_scores
+    upgrade:
+      allowed: true
+      until_quality: WEBDL-2160p
+      until_score: 9999999
+    min_format_score: 0
+    qualities:
+      - name: WEBDL-2160p
+        qualities:
+          - WEBDL-2160p
+          - WEBRip-2160p
+      - name: BLURAY-2160p
+      - name: REMUX-2160p
+      - name: HDTV-2160p
+      - name: REMUX-1080p
+      - name: BLURAY-1080p
+      - name: WEBDL-1080p
+        qualities:
+          - WEBDL-1080p
+          - WEBRip-1080p
+      - name: Bluray-1080p
+      - name: HDTV-1080p
+      - name: WEBDL-720p
+        qualities:
+          - WEBDL-720p
+          - WEBRip-720p
+      - name: Bluray-720p
+      - name: HDTV-720p
+      - name: WEBDL-480p
+        qualities:
+          - WEBDL-480p
+          - WEBRip-480p
+      - name: DVD
+      - name: Bluray-480p
+      - name: SDTV
+
   - name: WEBDL-1080p
-    reset_unmatched_scores:
-      enabled: true
+    reset_unmatched_scores: *reset_unmatched_scores
     upgrade:
       allowed: true
       until_quality: WEBDL-1080p
