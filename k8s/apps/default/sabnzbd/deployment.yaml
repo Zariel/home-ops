@@ -50,7 +50,7 @@ spec:
                 sabnzbd.holywoo.cbannister.xyz
           resources:
             requests:
-              memory: &ram 2Gi
+              memory: &ram 4Gi
               cpu: 2000m
             limits:
               memory: *ram
