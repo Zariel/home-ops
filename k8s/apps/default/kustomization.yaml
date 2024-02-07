@@ -12,4 +12,3 @@ resources:
   - ./meshcentral
   - ./tautulli/ks.yaml
   - ./unpackerr
-  - ./lldap/ks.yaml
