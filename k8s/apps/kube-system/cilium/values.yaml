@@ -96,6 +96,6 @@ securityContext:
   privileged: true
 tunnel: disabled
 devices:
-  - enp[0-9]+.*
-  - eno[0-9]+.*
+  - enp+
+  - eno+
 enableRuntimeDeviceDetection: true
