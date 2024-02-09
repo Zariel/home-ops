@@ -5,8 +5,8 @@ metadata:
 spec:
   loadBalancerIPs: true
   interfaces:
-    - ^eno[0-9]+.*
-    - ^enp[0-9]+.*
+    - ^eno.*
+    - ^enp.*
 ---
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
