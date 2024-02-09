@@ -12,3 +12,4 @@ resources:
   - ./meshcentral
   - ./tautulli/ks.yaml
   - ./unpackerr
+  - ./secrets
