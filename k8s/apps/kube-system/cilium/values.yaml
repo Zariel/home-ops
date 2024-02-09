@@ -95,7 +95,7 @@ rollOutCiliumPods: true
 securityContext:
   privileged: true
 tunnel: disabled
-devices:
-  - enp+
-  - eno+
-enableRuntimeDeviceDetection: true
+# devices:
+#   - enp+
+#   - eno+
+# enableRuntimeDeviceDetection: true
