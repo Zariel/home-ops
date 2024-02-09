@@ -39,6 +39,8 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
+            - name: LIDARR__API_KEY
+              value: cc10288c9ceb4698bbf19edb2b606da2
             - name: LIDARR__POSTGRES_HOST
               value: postgres.holywoo.cbannister.xyz
             - name: LIDARR__POSTGRES_MAIN_DB
