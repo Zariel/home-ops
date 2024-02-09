@@ -49,24 +49,26 @@ spec:
     cephClusterSpec:
       resources:
         mgr:
-          limits:
-            memory: "1Gi"
           requests:
             cpu: "500m"
-            memory: "1Gi"
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            mememory: 2Gi
         mon:
-          limits:
-            memory: "1Gi"
           requests:
             cpu: "500m"
             memory: "1Gi"
-        osd:
           limits:
-            cpu: "1000m"
-            memory: "2Gi"
+            cpu: 2000m
+            memory: "4Gi"
+        osd:
           requests:
             cpu: "1000m"
             memory: "2Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
       mgr:
         modules:
           - name: pg_autoscaler # This is already enabled by default, but needs to be here so that we don't override the default behavior.
@@ -111,7 +113,7 @@ spec:
         spec:
           failureDomain: host
           replicated:
-            size: 3
+            size: 5
         storageClass:
           enabled: true
           name: ceph-block
@@ -120,7 +122,7 @@ spec:
           allowVolumeExpansion: true
           parameters:
             imageFormat: "2"
-            imageFeatures: layering
+            imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
             csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
             csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
