@@ -26,7 +26,7 @@ spec:
         runAsNonRoot: true
       initContainers:
         - name: check-logs
-          image: ghcr.io/onedr0p/alpine:latest
+          image: ubuntu:latest
           imagePullPolicy: "IfNotPresent"
           command: ["/bin/sh", "-c"]
           args:
