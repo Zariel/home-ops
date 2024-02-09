@@ -69,17 +69,17 @@ spec:
             - name: config
               mountPath: /config
               readOnly: false
-          startupProbe:
-            httpGet:
-              path: /ping
-              port: web
-            failureThreshold: 6
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: web
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 5
-            failureThreshold: 5
+          # startupProbe:
+          #   httpGet:
+          #     path: /ping
+          #     port: web
+          #   failureThreshold: 6
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /ping
+          #     port: web
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 20
+          #   timeoutSeconds: 5
+          #   failureThreshold: 5
