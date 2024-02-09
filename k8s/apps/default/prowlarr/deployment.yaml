@@ -24,6 +24,18 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
+      initContainers:
+        - name: check-logs
+          image: ghcr.io/onedr0p/alpine:latest
+          imagePullPolicy: "IfNotPresent"
+          command: ["/bin/sh", "-c"]
+          args:
+            - cat
+            - /config/logs/prowlarr.txt
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
       containers:
         - name: prowlarr
           image: ghcr.io/onedr0p/prowlarr-develop:1.13.2.4251
