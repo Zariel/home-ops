@@ -20,7 +20,7 @@ spec:
   capacity:
     storage: 1000Gi
   nfs:
-    server: truenas.holywoo.cbannister.xyz
+    server: 192.168.42.32
     path: /mnt/bighorse/arr
   mountOptions:
     - nfsvers=4.2
