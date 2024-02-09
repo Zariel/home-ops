@@ -9,7 +9,6 @@ resources:
   - ./sabnzbd
   - ./sonarr/ks.yaml
   - ./storage
-  - ./meshcentral
   - ./tautulli/ks.yaml
   - ./unpackerr
   - ./secrets
