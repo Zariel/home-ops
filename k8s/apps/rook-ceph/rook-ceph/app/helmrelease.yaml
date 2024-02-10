@@ -30,6 +30,7 @@ spec:
         enabled: true
       cephFSKernelMountOptions: ms_mode=prefer-crc
       enableLiveness: true
+      enableCephfsDriver: false
       serviceMonitor:
         enabled: true
     monitoring:
