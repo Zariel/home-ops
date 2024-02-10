@@ -7,6 +7,8 @@ metadata:
   namespace: flux-system
 spec:
   path: ./k8s/apps/monitoring/kube-prometheus-stack/app
+  dependsOn:
+    - name: cluster-apps-rook-ceph-cluster
   prune: true
   sourceRef:
     kind: GitRepository
