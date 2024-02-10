@@ -37,6 +37,8 @@ spec:
         - name: sabnzbd
           image: ghcr.io/onedr0p/sabnzbd:4.2.2
           imagePullPolicy: IfNotPresent
+          securityContext:
+            readOnlyRootFilesystem: true
           env:
             - name: TZ
               value: Europe/London
