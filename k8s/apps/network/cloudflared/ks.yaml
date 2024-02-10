@@ -11,6 +11,7 @@ spec:
   path: ./k8s/apps/network/cloudflared/app
   dependsOn:
     - name: cluster-apps-external-dns
+    - name: nginx-external
   prune: true
   sourceRef:
     kind: GitRepository
