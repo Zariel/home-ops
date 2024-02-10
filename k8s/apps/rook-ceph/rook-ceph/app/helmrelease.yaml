@@ -26,6 +26,8 @@ spec:
     keepHistory: false
   values:
     csi:
+      addons:
+        enabled: true
       cephFSKernelMountOptions: ms_mode=prefer-crc
       enableLiveness: true
       serviceMonitor:
