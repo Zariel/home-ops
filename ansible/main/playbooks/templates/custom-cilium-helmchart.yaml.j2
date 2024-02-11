@@ -18,34 +18,31 @@ spec:
       bbr: true
     bpf:
       masquerade: true
-    bgp:
-      enabled: false
+    cgroup:
+      automount:
+        enabled: false
+      hostRoot: /sys/fs/cgroup
     cluster:
-      name: kubernetes
       id: 1
+      name: kubernetes
     containerRuntime:
       integration: containerd
       socketPath: /var/run/k3s/containerd/containerd.sock
+    devices: lan0 
+    enableRuntimeDeviceDetection: true
     endpointRoutes:
       enabled: true
     hubble:
       enabled: false
     ipam:
       mode: kubernetes
-    ipv4:
-      enabled: true
-    ipv6:
-      enabled: false
-    ipv4NativeRoutingCIDR: "{{ ipv4_cluster_cidr }}"
-    k8sServiceHost: "{{ k3s_registration_address }}"
-    k8sServicePort: 6443
+    ipv4NativeRoutingCIDR: "{{ k3s_server['cluster-cidr'] }}"
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 6444
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     l2announcements:
       enabled: true
-      leaseDuration: 120s
-      leaseRenewDeadline: 60s
-      leaseRetryPeriod: 1s
     loadBalancer:
       algorithm: maglev
       mode: dsr
@@ -53,6 +50,22 @@ spec:
     operator:
       rollOutPods: true
     rollOutCiliumPods: true
+    routingMode: native
     securityContext:
-      privileged: true
-    tunnel: disabled
+      capabilities:
+        ciliumAgent:
+          - CHOWN
+          - KILL
+          - NET_ADMIN
+          - NET_RAW
+          - IPC_LOCK
+          - SYS_ADMIN
+          - SYS_RESOURCE
+          - DAC_OVERRIDE
+          - FOWNER
+          - SETGID
+          - SETUID
+        cleanCiliumState:
+          - NET_ADMIN
+          - SYS_ADMIN
+          - SYS_RESOURCE

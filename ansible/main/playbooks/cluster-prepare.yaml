@@ -1,0 +1,441 @@
+- name: Prepare System
+  hosts: all
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Pausing for 2 seconds...
+      ansible.builtin.pause:
+        seconds: 2
+  tasks:
+    - name: Locale
+      block:
+        - name: Locale | Set timezone
+          community.general.timezone:
+            name: "Europe/London"
+
+    - name: User Configuration
+      block:
+        - name: User Configuration | SSH keys
+          ansible.posix.authorized_key:
+            user: "{{ ansible_user }}"
+            key: "https://github.com/Zariel.keys"
+        - name: User Configuration | Silence login
+          ansible.builtin.file:
+            dest: "{{ '/home/' + ansible_user if ansible_user != 'root' else '/root' }}/.hushlogin"
+            state: touch
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: "0644"
+            modification_time: preserve
+            access_time: preserve
+        - name: User Configuration | Add user to sudoers
+          when: ansible_user != 'root'
+          ansible.builtin.copy:
+            content: "{{ ansible_user }} ALL=(ALL:ALL) NOPASSWD:ALL"
+            dest: "/etc/sudoers.d/{{ ansible_user }}"
+            owner: root
+            group: root
+            mode: "0440"
+        - name: User Configuration | Bash shell (1)
+          ansible.builtin.user:
+            name: "{{ ansible_user }}"
+            shell: /usr/bin/bash
+
+    - name: Network Configuration
+      # notify: Reboot
+      block:
+        - name: Network Configuration | Set hostname
+          ansible.builtin.hostname:
+            name: "{{ inventory_hostname }}"
+        - name: Network Configuration | Update hosts
+          ansible.builtin.copy:
+            dest: /etc/hosts
+            content: |
+              127.0.0.1 localhost
+              127.0.1.1 {{ inventory_hostname }}
+
+              # The following lines are desirable for IPv6 capable hosts
+              ::1     localhost ip6-localhost ip6-loopback
+              ff02::1 ip6-allnodes
+              ff02::2 ip6-allrouters
+            mode: "0644"
+        # https://github.com/cilium/cilium/issues/18706
+        - name: Network Configuration | Cilium (1)
+          ansible.builtin.lineinfile:
+            dest: /etc/systemd/networkd.conf
+            regexp: ManageForeignRoutingPolicyRules
+            line: ManageForeignRoutingPolicyRules=no
+        - name: Network Configuration | Cilium (2)
+          ansible.builtin.lineinfile:
+            dest: /etc/systemd/networkd.conf
+            regexp: ManageForeignRoutes
+            line: ManageForeignRoutes=no
+    - name: Sytemd-networkd
+      block:
+        - name: Setup networkd
+          ansible.builtin.file:
+            path: /etc/systemd/network
+            state: directory
+            mode: "0755"
+        - name: Configure systemd-network
+          notify: RestartSystemdNetworkd
+          block:
+            - name: LAN Link Name
+              ansible.builtin.copy:
+                dest: /etc/systemd/network/00-{{ interface }}.link
+                owner: root
+                group: root
+                mode: "0644"
+                content: |
+                  [Match]
+                  MACAddress={{ mac_addr }}
+
+                  [Link]
+                  Name=lan0
+                  NamePolicy=keep kernel database onboard slot path mac
+            - name: LAN Interface
+              ansible.builtin.copy:
+                dest: /etc/systemd/network/10-{{ interface }}.network
+                owner: root
+                group: root
+                mode: "0644"
+                content: |
+                  [Match]
+                  Name=lan0
+
+                  [Network]
+                  DHCP=ipv4
+                  LinkLocalAddressing=no
+                  LLDP=yes
+                  EmitLLDP=yes
+                  IPv6AcceptRA=no
+                  IPv6SendRA=no
+
+                  [Link]
+                  RequiredForOnline=yes
+        - name: Ensure wait override directory exists
+          ansible.builtin.file:
+            path: /etc/systemd/system/systemd-networkd-wait-online.service.d
+            state: directory
+            mode: "0755"
+        - name: Sytemd Networkd wait online
+          ansible.builtin.copy:
+            dest: /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
+            owner: root
+            group: root
+            mode: "0644"
+            content: |
+              [Service]
+              ExecStart=
+              ExecStart=/lib/systemd/systemd-networkd-wait-online --interface={{ interface }}
+        - name: Network Services 2
+          notify: Reboot
+          ansible.builtin.service:
+            name: systemd-networkd
+            enabled: true
+            daemon_reload: true
+        - name: Network Services 1
+          notify: Reboot
+          ansible.builtin.service:
+            name: networking
+            enabled: false
+            daemon_reload: true
+        - name: Network Services 3
+          notify: Reboot
+          ansible.builtin.file:
+            path: /etc/network
+            state: absent
+
+    - name: Packages
+      block:
+        - name: Packages | Add non-free repository
+          ansible.builtin.apt_repository:
+            repo: deb http://deb.debian.org/debian/ stable main contrib non-free non-free-firmware backports
+            filename: non-free
+            update_cache: true
+        - name: Packages | Install
+          ansible.builtin.apt:
+            name: apt-transport-https,ca-certificates,conntrack,curl,gdisk,
+              gnupg,hdparm,htop,intel-gpu-tools,iperf3,iptables,iputils-ping,ipvsadm,
+              libseccomp2,lm-sensors,neofetch,net-tools,nfs-common,nvme-cli,open-iscsi,parted,psmisc,python3,
+              python3-apt,python3-openshift,python3-kubernetes,python3-yaml,smartmontools,socat,software-properties-common,
+              unzip,util-linux,samba,lm-sensors,btop,systemd-boot,systemd-resolved,neovim,powertop,fd-find
+            install_recommends: false
+            # state: latest
+
+        - name: Nvidia GPU Setup
+          when: nvidia_gpu
+          block:
+            - name: Nvidia GPU Setup | Add nvidia repository key
+              ansible.builtin.get_url:
+                url: https://nvidia.github.io/libnvidia-container/gpgkey
+                dest: /etc/apt/keyrings/nvidia-docker.key
+            - name: Nvidia GPU Setup | Add nvidia repository
+              loop:
+                - "https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH)"
+              ansible.builtin.apt_repository:
+                repo: "deb [signed-by=/etc/apt/keyrings/nvidia-docker.key] {{ item }} /"
+                filename: nvidia
+                update_cache: true
+            - name: Nvidia GPU Setup | Install packages
+              notify: Reboot
+              ansible.builtin.apt:
+                name: nvidia-driver,firmware-misc-nonfree,nvidia-container-toolkit,nvidia-cuda-toolkit
+                install_recommends: false
+                update_cache: true
+                # state: latest
+            - name: Nvidia GPU Setup | Block nouveau
+              notify: Reboot
+              community.general.kernel_blacklist:
+                name: nouveau
+                state: present
+
+        # - name: Packages | Dist Uprade
+        #   ansible.builtin.apt:
+        #     upgrade: dist
+        #     update_cache: true
+        #   notify: Reboot
+
+    - name: Systemd-resolved
+      block:
+        - name: Setup Resolve Conf
+          ansible.builtin.file:
+            path: /etc/resolve.conf
+            state: link
+            # mode: "0744"
+            src: /run/systemd/resolve/stub-resolv.conf
+        - name: Setup Systemd-resolved
+          ansible.builtin.systemd:
+            name: systemd-resolved
+            enabled: true
+            state: started
+            daemon_reload: true
+
+    # - name: ndppd
+    #   block:
+    #     - name: ndppd | Config
+    #       notify: restart-ndppd
+    #       ansible.builtin.copy:
+    #         dest: /etc/ndppd.conf
+    #         content: |
+    #           proxy {{ interface }} {
+    #             rule {{ ipv6_cluster_cidr }} {
+    #               auto
+    #             }
+
+    #             rule {{ ipv6_service_cidr }} {
+    #               static
+    #             }
+    #           }
+    #     # - name: ndppd | SetWants
+    #     - name: ndppd | Service
+    #       ansible.builtin.service:
+    #         name: ndppd
+    #         enabled: true
+    #         state: started
+
+    - name: Bootloader
+      block:
+        - name: Bootloader | Get root device
+          ansible.builtin.command: findmnt -n -o SOURCE /
+          register: root_device
+ 
+        - name: Bootloader | Get root uuid
+          ansible.builtin.command: blkid -s PARTUUID -o value {{ root_device.stdout }}
+          register: root_uuid
+
+        - name: Bootloader | Check root_uuid
+          when: root_uuid.stdout == ""
+          ansible.builtin.fail:
+            msg: "Failed to get root uuid"
+
+        - name: Bootloader | Init /etc/kernel/cmdline
+          register: cmdline_updated
+          ansible.builtin.copy:
+            dest: /etc/kernel/cmdline
+            owner: root
+            group: root
+            mode: "0644"
+            content: root=PARTUUID={{ root_uuid.stdout }} rw mitigations=off apparmor=0 net.ifnames=0
+
+        - name: Bootloader | Check booted with systemd-bootg
+          ansible.builtin.command: bootctl status
+          register: bootctl_status
+          changed_when: bootctl_status.rc != 0
+          notify: Reboot
+
+        - name: Bootloader | Install systemd-boot
+          ansible.builtin.command: bootctl install
+
+        - name: Bootloader | Enable systemd-boot-update
+          ansible.builtin.systemd:
+            name: systemd-boot-update
+            enabled: true
+            state: started
+            daemon_reload: true
+
+        - name: Bootloader | Check loader exists
+          ansible.builtin.shell: bootctl list | grep -m1 source | awk '{print $2}'
+          register: loader_conf_exists
+
+        - name: Bootloader | Create loader
+          when: loader_conf_exists.stdout == ''
+          ansible.builtin.shell: kernel-install add $(uname -r) /boot/vmlinuz-$(uname -r)
+
+        - name: Bootloader | Check loader exists Really
+          ansible.builtin.shell: bootctl list | grep -m1 source | awk '{print $2}'
+          register: loader_conf
+
+        - name: Bootloader | Check loader
+          ansible.builtin.fail:
+            msg: "Failed to get loader"
+          when: loader_conf.stdout == ''
+
+        - name: Bootloader | Configure Bootloader
+          block:
+            - name: Bootloader | Configure Bootloader | Get Command line
+              register: cmdline
+              ansible.builtin.slurp:
+                src: /etc/kernel/cmdline
+
+            - name: Bootloader | Update Loaders
+              notify: Reboot
+              ansible.builtin.lineinfile:
+                path: "{{ loader_conf.stdout }}"
+                regexp: "^options.+$"
+                line: "options {{ cmdline.content | b64decode }}"
+
+        - name: Bootloader | Set Boot order
+          block:
+            - name: Get Systemd Boot Loader number
+              register: loader_number
+              ansible.builtin.shell: efibootmgr -v | awk '/Linux Boot Manager/ { print $1 }' | sed -E 's/^Boot([0-9A-F]+)\*/\1/'
+
+            - name: Bootloader | Check Bootctl installed to efi
+              ansible.builtin.fail:
+                msg: "systemd-boot not installed to efi"
+              when: loader_number.stdout == ''
+
+            - name: Bootloader | Get Boot order
+              register: bootorder
+              ansible.builtin.shell: efibootmgr -v | awk '/BootOrder/ { print $2 }'
+
+            - name: Bootloader | Bootorder
+              ansible.builtin.set_fact:
+                new_bootorder: "{{ loader_number.stdout + ',' + (bootorder.stdout.split(',') | reject('equalto', loader_number.stdout) | join(',')) }}"
+
+            - name: Set Boot order
+              changed_when: bootorder.stdout != new_bootorder
+              ansible.builtin.command: efibootmgr -o "{{ new_bootorder }}"
+
+            - name: Bootloader | Current boot
+              ansible.builtin.shell: efibootmgr -v | awk '/BootCurrent/ { print $2 }'
+              register: current_boot
+              changed_when: current_boot.stdout != loader_number.stdout
+              notify: Reboot
+
+        - name: Bootloader | Remove Grub
+          ansible.builtin.apt:
+            name: grub*
+            state: absent
+            autoremove: true
+            purge: true
+
+    - name: System Configuration
+      notify: Reboot
+      block:
+        - name: System Configuration | Neofetch
+          ansible.builtin.copy:
+            dest: /etc/profile.d/neofetch.sh
+            mode: "0755"
+            content: neofetch --config none
+        - name: System Configuration | Disable apparmor
+          ansible.builtin.systemd:
+            name: apparmor
+            state: stopped
+            masked: true
+        - name: System Configuration | Disable swap
+          ansible.posix.mount:
+            name: "{{ item }}"
+            fstype: swap
+            state: absent
+          loop: ["none", "swap"]
+        - name: System Configuration | Kernel modules (1)
+          community.general.modprobe:
+            name: "{{ item }}"
+            state: present
+          loop:
+            - "br_netfilter"
+            - "ceph"
+            - "ip_vs"
+            - "ip_vs_rr"
+            - "nbd"
+            - "overlay"
+            - "rbd"
+            - "tcp_bbr"
+            - "tun"
+        - name: System Configuration | Kernel modules (2)
+          ansible.builtin.copy:
+            dest: "/etc/modules-load.d/{{ item }}.conf"
+            mode: "0644"
+            content: "{{ item }}"
+          loop:
+            - "br_netfilter"
+            - "ceph"
+            - "ip_vs"
+            - "ip_vs_rr"
+            - "nbd"
+            - "overlay"
+            - "rbd"
+            - "tcp_bbr"
+            - "tun"
+
+        - name: Sysctl get files
+          ansible.builtin.find:
+            paths: /etc/sysctl.d
+            patterns: "*.conf"
+          register: sysctl_files
+
+        - name: System Configuration | Sysctl clean
+          loop: "{{ sysctl_files.files }}"
+          ansible.builtin.file:
+            path: "{{ item.path }}"
+            state: absent
+
+        - name: System Configuration | Sysctl
+          ansible.posix.sysctl:
+            name: "{{ item.key }}"
+            value: "{{ item.value }}"
+            sysctl_file: /etc/sysctl.d/99-kubernetes.conf
+            reload: true
+          with_dict: "{{ sysctl_config }}"
+          vars:
+            sysctl_config:
+              fs.inotify.max_queued_events: 65536
+              fs.inotify.max_user_watches: 524288
+              fs.inotify.max_user_instances: 8192
+              kernel.printk: '3 4 1 3'
+
+    - name: Check if reboot is required
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+
+    - name: Reboot
+      when: reboot_required.stat.exists
+      ansible.builtin.reboot:
+        msg: Rebooting node
+        post_reboot_delay: 120
+        reboot_timeout: 3600
+ 
+  handlers:
+    - name: Reboot
+      ansible.builtin.reboot:
+        msg: Rebooting nodes
+        reboot_timeout: 3600
+    - name: RestartSystemdNetworkd
+      ansible.builtin.service:
+        name: systemd-networkd
+        state: restarted
+        enabled: true
