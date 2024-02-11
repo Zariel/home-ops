@@ -21,6 +21,7 @@ spec:
       bbr: true
     bpf:
       masquerade: true
+      vlanBypass: 0
     cgroup:
       automount:
         enabled: false
@@ -31,8 +32,7 @@ spec:
     containerRuntime:
       integration: containerd
       socketPath: /var/run/k3s/containerd/containerd.sock
-    debug:
-      enabled: true
+    devices: lan0
     enableRuntimeDeviceDetection: true
     endpointRoutes:
       enabled: true
@@ -104,10 +104,6 @@ spec:
         grafana_folder: Cilium
     rollOutCiliumPods: true
     routingMode: native
-    devices: lan0
-    nodePort:
-      enabled: true
-      mode: dsr
     securityContext:
       capabilities:
         ciliumAgent:
