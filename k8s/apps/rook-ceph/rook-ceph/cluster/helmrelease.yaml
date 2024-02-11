@@ -53,7 +53,7 @@ spec:
             memory: 512Mi
           limits:
             cpu: 2000m
-            mememory: 2Gi
+            memory: 2Gi
         mon:
           requests:
             cpu: "500m"
