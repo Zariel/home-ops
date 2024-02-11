@@ -1,11 +1,32 @@
 {
+    "ansible.ansible.path": ".venv/bin/ansible",
+    "ansible.python.activationScript": ".venv/bin/activate",
+    "ansible.python.interpreterPath": ".venv/bin/python3",
+    "ansible.validation.enabled": true,
+    "ansible.validation.lint.arguments": "-c ansible/.ansible-lint",
+    "ansible.validation.lint.enabled": true,
+    "ansible.validation.lint.path": ".venv/bin/ansible-lint",
+    "sops.defaults.ageKeyFile": "age.key",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true,
+    "editor.guides.bracketPairsHorizontal": true,
+    "editor.guides.highlightActiveBracketPair": true,
+    "vs-kubernetes": {
+        "vs-kubernetes.kubeconfig": "./kubeconfig",
+        "vs-kubernetes.knownKubeconfigs": [
+            "./kubeconfig"
+        ]
+    },
+    "files.associations": {
+        "*.json5": "jsonc",
+        "./ansible/**/*.yaml": "ansible",
+        "./ansible/**/inventory/**/*.yaml": "yaml",
+        "./terraform/**/*.tf": "terraform"
+    },
+    "files.trimTrailingWhitespace": true,
+    "yaml.schemaStore.enable": true,
     "yaml.schemas": {
-        "Kubernetes": [
-            "deploy*.yaml",
-            "volume*.yaml",
-            "service*.yaml"
-        ],
-        "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.22.4-standalone-strict/all.json": "file:///Users/chrisb/dev/holywoo/k8s/apps/prometheus/ns.yaml",
-        "https://raw.githubusercontent.com/recyclarr/recyclarr/master/schemas/config-schema.json": "file:///Users/chrisb/dev/holywoo/k8s/apps/default/recyclarr/config/recyclarr.yaml"
+        "ansible": "./ansible/**/*.yaml",
+        "kubernetes": "./k8s/**/*.yaml"
     }
 }
