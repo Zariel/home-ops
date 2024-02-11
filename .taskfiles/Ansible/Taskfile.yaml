@@ -32,17 +32,16 @@ tasks:
       Args:
         cluster: Cluster to run command against (required)
         playbook: Playbook to run (required)
-    prompt: Run Ansible playbook '{{.playbook}}' against the '{{.cluster}}' cluster... continue?
     cmd: |
       .venv/bin/ansible-playbook \
-        --inventory {{.ANSIBLE_DIR}}/{{.cluster}}/inventory/hosts.yaml \
-        {{.ANSIBLE_DIR}}/{{.cluster}}/playbooks/{{.playbook}}.yaml {{.CLI_ARGS}}
+        --inventory {{.ANSIBLE_DIR}}/main/inventory/hosts.yaml \
+        {{.ANSIBLE_DIR}}/main/playbooks/{{.playbook}}.yaml {{.CLI_ARGS}}
     requires:
-      vars: ["cluster", "playbook"]
+      vars: ["playbook"]
     preconditions:
       - test -d {{.ROOT_DIR}}/.venv
-      - test -f {{.ANSIBLE_DIR}}/{{.cluster}}/inventory/hosts.yaml
-      - test -f {{.ANSIBLE_DIR}}/{{.cluster}}/playbooks/{{.playbook}}.yaml
+      - test -f {{.ANSIBLE_DIR}}/main/inventory/hosts.yaml
+      - test -f {{.ANSIBLE_DIR}}/main/playbooks/{{.playbook}}.yaml
 
   init:
     desc: Run the init playbook on a specific host
