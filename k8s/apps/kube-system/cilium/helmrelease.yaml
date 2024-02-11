@@ -104,8 +104,10 @@ spec:
         grafana_folder: Cilium
     rollOutCiliumPods: true
     routingMode: native
+    devices: lan0
     nodePort:
       enabled: true
+      directRoutingDevice: lan0
     securityContext:
       capabilities:
         ciliumAgent:
