@@ -20,20 +20,6 @@
         k3s_server_manifests_templates: []
         k3s_server_manifests_urls: []
 
-    - name: K3s Shutdown Fix
-      block:
-        - name: K3s Shutdown Fix | Service file
-          ansible.builtin.copy:
-            src: files/shutdown-k3s.service
-            dest: /etc/systemd/system/shutdown-k3s.service
-            owner: root
-            group: root
-            mode: "0644"
-        - name: K3s Shutdown Fix | Enable Service
-          ansible.builtin.service:
-            name: shutdown-k3s
-            enabled: true
-
     - name: Install Kubernetes
       ansible.builtin.include_role:
         name: xanmanning.k3s
@@ -51,14 +37,15 @@
             owner: root
             group: root
             mode: "0755"
-        - name: Nvidia GPU | Fix k3s containerd config
+        - name: Nvidia GPU | Generate CDI
           notify: Restart k3s
-          ansible.builtin.copy:
-            src: files/k3s-containerd-config.tmpl
-            dest: /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
-            owner: root
-            group: root
-            mode: "0644"
+          ansible.builtin.command:
+            creates: /etc/cdi/nvidia.yaml
+            argv:
+              - nvidia-ctk
+              - cdi
+              - generate
+              - --output=/etc/cdi/nvidia.yaml
 
     - name: Wait for custom manifests to rollout
       when:
@@ -78,23 +65,6 @@
         - { name: policy, kind: CiliumL2AnnouncementPolicy }
         - { name: pool, kind: CiliumLoadBalancerIPPool }
 
-        - {
-            name: podmonitors.monitoring.coreos.com,
-            kind: CustomResourceDefinition,
-          }
-        - {
-            name: prometheusrules.monitoring.coreos.com,
-            kind: CustomResourceDefinition,
-          }
-        - {
-            name: scrapeconfigs.monitoring.coreos.com,
-            kind: CustomResourceDefinition,
-          }
-        - {
-            name: servicemonitors.monitoring.coreos.com,
-            kind: CustomResourceDefinition,
-          }
-
     - name: Coredns
       when: k3s_primary_control_node
       ansible.builtin.include_tasks: tasks/coredns.yaml
@@ -106,6 +76,15 @@
     - name: Cruft
       when: k3s_primary_control_node
       ansible.builtin.include_tasks: tasks/cruft.yaml
+
+    - name: Containerd Config
+      notify: Restart k3s
+      ansible.builtin.template:
+        src: files/containered-config.toml.tmpl.j2
+        dest: /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
+        owner: root
+        group: root
+        mode: "0644"
 
   handlers:
     - name: Restart k3s
