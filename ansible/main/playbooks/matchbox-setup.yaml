@@ -1,0 +1,281 @@
+- name: Matchbox Setup
+  become: true
+  gather_facts: true
+  hosts: matchbox
+  tasks:
+    - name: Network Configuration
+      # notify: Reboot
+      block:
+        - name: Network Configuration | Set hostname
+          ansible.builtin.hostname:
+            name: "{{ inventory_hostname }}"
+        - name: Network Configuration | Update hosts
+          ansible.builtin.copy:
+            dest: /etc/hosts
+            content: |
+              127.0.0.1 localhost
+              127.0.1.1 {{ inventory_hostname }}
+
+              # The following lines are desirable for IPv6 capable hosts
+              ::1     localhost ip6-localhost ip6-loopback
+              ff02::1 ip6-allnodes
+              ff02::2 ip6-allrouters
+            mode: "0644"
+
+    - name: Sytemd-networkd
+      block:
+        - name: Setup networkd
+          ansible.builtin.file:
+            path: /etc/systemd/network
+            state: directory
+            mode: "0755"
+        - name: Configure systemd-network
+          notify: RestartSystemdNetworkd
+          block:
+            - name: VLAN NetDev
+              ansible.builtin.copy:
+                dest: /etc/systemd/network/00-{{ interface }}.254.netdev
+                owner: root
+                group: root
+                mode: "0644"
+                content: |
+                  [NetDev]
+                  Name={{ interface }}.254
+                  Kind=vlan
+
+                  [VLAN]
+                  Id=254
+            - name: LAN Interface
+              ansible.builtin.copy:
+                dest: /etc/systemd/network/10-{{ interface }}.network
+                owner: root
+                group: root
+                mode: "0644"
+                content: |
+                  [Match]
+                  Name={{ interface }}
+
+                  [Network]
+                  Description=Parent interface for VLANs
+                  DHCP=yes
+                  VLAN={{ interface }}.254
+                  LinkLocalAddressing=no
+                  LLDP=yes
+                  EmitLLDP=yes
+                  IPv6AcceptRA=no
+                  IPv6SendRA=no
+
+                  [Link]
+                  RequiredForOnline=yes
+            - name: VLAN interface
+              ansible.builtin.copy:
+                dest: /etc/systemd/network/20-{{ interface }}.254.network
+                owner: root
+                group: root
+                mode: "0644"
+                content: |
+                  [Match]
+                  Name={{ interface }}.254
+                  Type=vlan
+
+                  [Network]
+                  DHCP=yes
+        - name: Network Services 2
+          notify: Reboot
+          ansible.builtin.service:
+            name: systemd-networkd
+            enabled: true
+            daemon_reload: true
+        - name: Network Services 1
+          notify: Reboot
+          ansible.builtin.service:
+            name: networking
+            enabled: false
+            daemon_reload: true
+        - name: Network Services 3
+          notify: Reboot
+          ansible.builtin.file:
+            path: /etc/network
+            state: absent
+
+    - name: Bootloader
+      block:
+        - name: Bootloader | Get root device
+          ansible.builtin.command: findmnt -n -o SOURCE /
+          register: root_device
+
+        - name: Bootloader | Get root uuid
+          ansible.builtin.command: blkid -s PARTUUID -o value {{ root_device.stdout }}
+          register: root_uuid
+
+        - name: Bootloader | Check root_uuid
+          when: root_uuid.stdout == ""
+          ansible.builtin.fail:
+            msg: "Failed to get root uuid"
+
+        - name: Bootloader | Init /etc/kernel/cmdline
+          register: cmdline_updated
+          ansible.builtin.copy:
+            dest: /etc/kernel/cmdline
+            owner: root
+            group: root
+            mode: "0644"
+            content: root=PARTUUID={{ root_uuid.stdout }} rw mitigations=off apparmor=0
+
+        - name: Bootloader | Check booted with systemd-bootg
+          ansible.builtin.command: bootctl status
+          register: bootctl_status
+          changed_when: bootctl_status.rc != 0
+          notify: Reboot
+
+        - name: Bootloader | Install systemd-boot
+          ansible.builtin.command: bootctl install
+
+        - name: Bootloader | Enable systemd-boot-update
+          ansible.builtin.systemd:
+            name: systemd-boot-update
+            enabled: true
+            state: started
+            daemon_reload: true
+
+        - name: Bootloader | Check loader exists
+          ansible.builtin.shell: bootctl list | grep -m1 source | awk '{print $2}'
+          register: loader_conf_exists
+
+        - name: Bootloader | Create loader
+          when: loader_conf_exists.stdout == ''
+          ansible.builtin.shell: kernel-install add $(uname -r) /boot/vmlinuz-$(uname -r)
+
+        - name: Bootloader | Check loader exists Really
+          ansible.builtin.shell: bootctl list | grep -m1 source | awk '{print $2}'
+          register: loader_conf
+
+        - name: Bootloader | Check loader
+          ansible.builtin.fail:
+            msg: "Failed to get loader"
+          when: loader_conf.stdout == ''
+
+        - name: Bootloader | Configure Bootloader
+          block:
+            - name: Bootloader | Configure Bootloader | Get Command line
+              register: cmdline
+              ansible.builtin.slurp:
+                src: /etc/kernel/cmdline
+
+            - name: Bootloader | Update Loaders
+              notify: Reboot
+              ansible.builtin.lineinfile:
+                path: "{{ loader_conf.stdout }}"
+                regexp: "^options.+$"
+                line: "options {{ cmdline.content | b64decode }}"
+
+        - name: Bootloader | Set Boot order
+          block:
+            - name: Get Systemd Boot Loader number
+              register: loader_number
+              ansible.builtin.shell: efibootmgr -v | awk '/Linux Boot Manager/ { print $1 }' | sed -E 's/^Boot([0-9A-F]+)\*/\1/'
+
+            - name: Bootloader | Check Bootctl installed to efi
+              ansible.builtin.fail:
+                msg: "systemd-boot not installed to efi"
+              when: loader_number.stdout == ''
+
+            - name: Bootloader | Get Boot order
+              register: bootorder
+              ansible.builtin.shell: efibootmgr -v | awk '/BootOrder/ { print $2 }'
+
+            - name: Bootloader | Bootorder
+              ansible.builtin.set_fact:
+                new_bootorder: "{{ loader_number.stdout + ',' + (bootorder.stdout.split(',') | reject('equalto', loader_number.stdout) | join(',')) }}"
+
+            - name: Set Boot order
+              changed_when: bootorder.stdout != new_bootorder
+              ansible.builtin.command: efibootmgr -o "{{ new_bootorder }}"
+
+            - name: Bootloader | Current boot
+              ansible.builtin.shell: efibootmgr -v | awk '/BootCurrent/ { print $2 }'
+              register: current_boot
+              changed_when: current_boot.stdout != loader_number.stdout
+              notify: Reboot
+
+        - name: Bootloader | Remove Grub
+          ansible.builtin.apt:
+            name: grub*
+            state: absent
+            autoremove: true
+            purge: true
+
+    - name: Packages | Install
+      ansible.builtin.apt:
+        name: apt-transport-https,ca-certificates,conntrack,curl,gdisk,
+          unzip,util-linux,htop,btop,systemd-boot,systemd-resolved,neovim,powertop,fd-find,podman
+        install_recommends: false
+        state: latest
+
+    - name: Podman
+      block:
+        - name: Podman Setup Network
+          containers.podman.podman_network:
+            name: container-vlan
+            driver: macvlan
+            state: present
+            subnet: 192.168.254.0/24
+            gateway: 192.168.254.1
+            opt:
+              parent: enp6s18.254
+              mode: bridge
+
+    - name: Matchbox
+      block:
+        - name: Machbox | Configure Directory
+          loop:
+            - /var/lib/matchbox/assets
+            - /etc/matchbox
+          ansible.builtin.file:
+            dest: "{{ item }}"
+            state: directory
+            mode: "0777"
+            owner: root
+            group: root
+
+        - name: Machbox | Create Container
+          containers.podman.podman_container:
+            name: matchbox
+            image: quay.io/poseidon/matchbox:v0.10.0
+            network: container-vlan
+            ip: 192.168.254.10
+            dns: 192.168.254.1
+            volume:
+              - /var/lib/matchbox:/var/lib/matchbox:Z
+              - /etc/matchbox:/etc/matchbox:Z,ro
+            command:
+              - -address=0.0.0.0:80
+              - -log-level=debug
+            rm: true
+            state: created
+            recreate: true
+
+        - name: Matchbox | Generate systemd service
+          containers.podman.podman_generate_systemd:
+            name: matchbox
+            new: true
+            no_header: true
+            dest: /etc/systemd/system
+
+        - name: Matchbox | Enable systemd service
+          ansible.builtin.systemd:
+            name: container-matchbox
+            daemon_reload: true
+            state: started
+            enabled: true
+
+  handlers:
+    - name: Reboot
+      ansible.builtin.reboot:
+        msg: Rebooting nodes
+        reboot_timeout: 3600
+    - name: RestartSystemdNetworkd
+      ansible.builtin.service:
+        name: systemd-networkd
+        state: restarted
+        enabled: true
