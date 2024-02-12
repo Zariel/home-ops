@@ -1,6 +1,8 @@
-k8s:
+all:
   vars:
     ansible_user: chris
+k8s:
+  vars:
     nvidia_gpu: false
     vlan: false
     vlan_id: 42
@@ -50,3 +52,9 @@ k8s:
           interface: enp114s0
           ceph_drives:
             - /dev/disk/by-id/nvme-KINGSTON_SNV2S2000G_50026B7785529A0A
+ungrouped:
+  hosts:
+    matchbox:
+      ansible_host: 10.0.1.254
+      mac_addr: bc:24:11:47:49:e1
+      interface: enp6s18

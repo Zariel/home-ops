@@ -1,5 +1,5 @@
 - name: Prepare System
-  hosts: all
+  hosts: k8s
   become: true
   gather_facts: true
   any_errors_fatal: true
@@ -128,7 +128,7 @@
             content: |
               [Service]
               ExecStart=
-              ExecStart=/lib/systemd/systemd-networkd-wait-online --interface={{ interface }}
+              ExecStart=/lib/systemd/systemd-networkd-wait-online --interface=lan0
         - name: Network Services 2
           notify: Reboot
           ansible.builtin.service:
@@ -240,7 +240,7 @@
         - name: Bootloader | Get root device
           ansible.builtin.command: findmnt -n -o SOURCE /
           register: root_device
- 
+
         - name: Bootloader | Get root uuid
           ansible.builtin.command: blkid -s PARTUUID -o value {{ root_device.stdout }}
           register: root_uuid
@@ -415,7 +415,7 @@
               fs.inotify.max_queued_events: 65536
               fs.inotify.max_user_watches: 524288
               fs.inotify.max_user_instances: 8192
-              kernel.printk: '3 4 1 3'
+              kernel.printk: "3 4 1 3"
 
     - name: Check if reboot is required
       ansible.builtin.stat:
@@ -428,7 +428,7 @@
         msg: Rebooting node
         post_reboot_delay: 120
         reboot_timeout: 3600
- 
+
   handlers:
     - name: Reboot
       ansible.builtin.reboot:

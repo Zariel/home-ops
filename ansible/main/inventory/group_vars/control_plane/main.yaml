@@ -27,12 +27,13 @@ k3s_server:
   write-kubeconfig-mode: "0644"
   etcd-disable-snapshots: true
   etcd-expose-metrics: true
-  embedded-registry: true
+  # embedded-registry: true
   kubelet-arg:
     - "image-gc-low-threshold=50"
     - "image-gc-high-threshold=55"
   kube-controller-manager-arg:
     - bind-address=0.0.0.0
+    - allocate-node-cidrs
   kube-scheduler-arg:
     - bind-address=0.0.0.0
   kube-apiserver-arg:
