@@ -1,0 +1,21 @@
+port=0 # disable dns
+interface={{ interface }}.{{ dhcp_vlan }}
+
+enable-tftp
+tftp-root=/var/lib/tftpboot
+
+dhcp-range=192.168.{{ dhcp_vlan }}.10,192.168.{{ dhcp_vlan }}.100,255.255.255.0,8h
+dhcp-match=set:bios,option:client-arch,0
+dhcp-boot=tag:bios,undionly.kpxe
+dhcp-match=set:efi32,option:client-arch,6
+dhcp-boot=tag:efi32,ipxe.efi
+dhcp-match=set:efibc,option:client-arch,7
+dhcp-boot=tag:efibc,ipxe.efi
+dhcp-match=set:efi64,option:client-arch,9
+dhcp-boot=tag:efi64,ipxe.efi
+dhcp-userclass=set:ipxe,iPXE
+dhcp-boot=tag:ipxe,http://192.168.254.10/boot.ipxe
+# address=/matchbox.holywoo.cbanister.xyz/192.168.254.10
+
+log-queries
+log-dhcp

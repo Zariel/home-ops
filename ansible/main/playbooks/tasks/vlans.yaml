@@ -1,0 +1,30 @@
+- name: VLAN NetDev
+  ansible.builtin.copy:
+    dest: /etc/systemd/network/00-{{ interface }}.{{ item }}.netdev
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [NetDev]
+      Name={{ interface }}.{{ item }}
+      Kind=vlan
+
+      [VLAN]
+      Id={{ item }}
+- name: VLAN interface
+  ansible.builtin.copy:
+    dest: /etc/systemd/network/20-{{ interface }}.{{ item }}.network
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Match]
+      Name={{ interface }}.{{ item }}
+      Type=vlan
+
+      {% if item in vlan_config %}
+      {{ vlan_config[item] }}
+      {% else %}"
+      [Network]
+      DHCP=yes
+      {% endif %}

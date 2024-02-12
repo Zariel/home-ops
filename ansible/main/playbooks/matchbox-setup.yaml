@@ -2,6 +2,18 @@
   become: true
   gather_facts: true
   hosts: matchbox
+  vars:
+    dhcp_vlan: 50
+    vlan_config:
+      50: |
+        [Network]
+        Address=192.168.50.5/24
+        Gateway=192.168.50.1
+        DNS=192.168.50.1
+
+    vlans:
+      - 254
+      - "{{ dhcp_vlan }}"
   tasks:
     - name: Network Configuration
       # notify: Reboot
@@ -32,19 +44,9 @@
         - name: Configure systemd-network
           notify: RestartSystemdNetworkd
           block:
-            - name: VLAN NetDev
-              ansible.builtin.copy:
-                dest: /etc/systemd/network/00-{{ interface }}.254.netdev
-                owner: root
-                group: root
-                mode: "0644"
-                content: |
-                  [NetDev]
-                  Name={{ interface }}.254
-                  Kind=vlan
-
-                  [VLAN]
-                  Id=254
+            - name: VLAN Setup
+              include_tasks: tasks/vlans.yaml
+              loop: "{{ vlans }}"
             - name: LAN Interface
               ansible.builtin.copy:
                 dest: /etc/systemd/network/10-{{ interface }}.network
@@ -58,7 +60,9 @@
                   [Network]
                   Description=Parent interface for VLANs
                   DHCP=yes
-                  VLAN={{ interface }}.254
+                  {% for vlan in vlans %}
+                  VLAN={{ interface }}.{{ vlan }}
+                  {% endfor %}
                   LinkLocalAddressing=no
                   LLDP=yes
                   EmitLLDP=yes
@@ -67,19 +71,7 @@
 
                   [Link]
                   RequiredForOnline=yes
-            - name: VLAN interface
-              ansible.builtin.copy:
-                dest: /etc/systemd/network/20-{{ interface }}.254.network
-                owner: root
-                group: root
-                mode: "0644"
-                content: |
-                  [Match]
-                  Name={{ interface }}.254
-                  Type=vlan
 
-                  [Network]
-                  DHCP=yes
         - name: Network Services 2
           notify: Reboot
           ansible.builtin.service:
@@ -208,7 +200,7 @@
     - name: Packages | Install
       ansible.builtin.apt:
         name: apt-transport-https,ca-certificates,conntrack,curl,gdisk,
-          unzip,util-linux,htop,btop,systemd-boot,systemd-resolved,neovim,powertop,fd-find,podman
+          unzip,util-linux,htop,btop,systemd-boot,systemd-resolved,neovim,powertop,fd-find,podman,dnsmasq
         install_recommends: false
         state: latest
 
@@ -253,7 +245,6 @@
               - -log-level=debug
             rm: true
             state: created
-            recreate: true
 
         - name: Matchbox | Generate systemd service
           containers.podman.podman_generate_systemd:
@@ -269,6 +260,49 @@
             state: started
             enabled: true
 
+    - name: DNSMasq
+      block:
+        - name: TFTP Setup
+          block:
+            - name: Configure bootdir
+              ansible.builtin.file:
+                dest: /var/lib/tftpboot
+                state: directory
+                mode: "0777"
+                owner: root
+                group: root
+            - name: Fetch pxe boot loaders
+              loop:
+                - undionly.kpxe
+                - ipxe.efi
+              ansible.builtin.get_url:
+                url: https://boot.ipxe.org/{{ item }}
+                dest: /var/lib/tftpboot/{{ item }}
+                mode: "0755"
+                owner: dnsmasq
+                group: root
+            - name: Setup undionly.kpxe0
+              ansible.builtin.command:
+                cmd: cp /var/lib/tftpboot/undionly.kpxe /var/lib/tftpboot/undionly.kpxe0
+                creates: /var/lib/tftpboot/undionly.kpxe0
+
+        - name: DNSMasq | Configure
+          notify:
+            - RestartDnsmasq
+          ansible.builtin.template:
+            dest: /etc/dnsmasq.d/50-dnsmasq.conf
+            src: templates/dnsmasq.conf.j2
+            owner: dnsmasq
+            group: root
+            mode: "0644"
+
+        - name: Enable dnsmasq
+          ansible.builtin.systemd_service:
+            name: dnsmasq
+            state: started
+            enabled: true
+            daemon_reload: true
+
   handlers:
     - name: Reboot
       ansible.builtin.reboot:
@@ -278,4 +312,9 @@
       ansible.builtin.service:
         name: systemd-networkd
         state: restarted
+        enabled: true
+    - name: RestartDnsmasq
+      ansible.builtin.systemd_service:
+        name: dnsmasq
+        state: reloaded
         enabled: true
