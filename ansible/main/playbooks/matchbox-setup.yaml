@@ -316,5 +316,5 @@
     - name: RestartDnsmasq
       ansible.builtin.systemd_service:
         name: dnsmasq
-        state: reloaded
+        state: restart
         enabled: true
