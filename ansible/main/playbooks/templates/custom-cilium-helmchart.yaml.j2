@@ -18,6 +18,7 @@ spec:
       bbr: true
     bpf:
       masquerade: true
+      vlanBypass: 0
     cgroup:
       automount:
         enabled: false
@@ -28,7 +29,7 @@ spec:
     containerRuntime:
       integration: containerd
       socketPath: /var/run/k3s/containerd/containerd.sock
-    devices: lan0 
+    devices: lan0
     enableRuntimeDeviceDetection: true
     endpointRoutes:
       enabled: true
@@ -42,7 +43,7 @@ spec:
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     l2announcements:
-      enabled: true
+      enabled: false
     loadBalancer:
       algorithm: maglev
       mode: dsr
