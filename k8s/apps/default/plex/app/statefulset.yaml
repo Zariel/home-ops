@@ -24,6 +24,7 @@ spec:
       labels:
         app: plex
     spec:
+      runtimeClassName: nvidia
       securityContext:
         runAsUser: 568
         runAsGroup: 568
