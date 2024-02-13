@@ -87,26 +87,11 @@ spec:
         urlPrefix: /
         ssl: false
       storage:
-        useAllNodes: false
-        useAllDevices: false
+        useAllNodes: true
+        useAllDevices: true
+        deviceFilter: nvme0n1
         config:
           osdsPerDevice: "1"
-        nodes:
-          - name: k8s-0
-            devices:
-              - name: /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNF0W500321X
-          - name: k8s-1
-            devices:
-              - name: /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNX1W422786N
-          - name: k8s-2
-            devices:
-              - name: /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNX1W545418F
-          - name: k8s-3
-            devices:
-              - name: /dev/disk/by-id/nvme-Samsung_SSD_980_1TB_S649NL0W389115D
-          - name: k8s-4
-            devices:
-              - name: /dev/disk/by-id/nvme-KINGSTON_SNV2S2000G_50026B7785529A0A
     cephBlockPools:
       - name: ceph-blockpool
         spec:
@@ -119,9 +104,10 @@ spec:
           isDefault: true
           reclaimPolicy: Delete
           allowVolumeExpansion: true
+          volumeBindingMode: Immediate
           parameters:
             imageFormat: "2"
-            imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+            imageFeatures: layering
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
             csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
             csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
