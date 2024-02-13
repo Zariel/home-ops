@@ -5,7 +5,9 @@ metadata:
 spec:
   loadBalancerIPs: true
   interfaces:
-    - lan0
+    - enp114s0
+    - eno1
+    - enxbc2411da2b0a
 ---
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
