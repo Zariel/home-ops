@@ -1,0 +1,8 @@
+{
+  "id": "{{ item }}",
+  "name": "{{ item }}",
+  "profile": "{{ hostvars[item].matchbox_profile }}",
+  "selector": {
+    "mac": "{{ hostvars[item].pxe_mac_addr | default(hostvars[item].mac_addr) }}"
+  }
+}
