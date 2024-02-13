@@ -32,6 +32,10 @@ spec:
       name: holywoo
     containerRuntime:
       integration: containerd
+    devices:
+      - enp114s0
+      - eno1
+      - enxbc2411da2b0a
     enableRuntimeDeviceDetection: true
     endpointRoutes:
       enabled: true
