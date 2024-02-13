@@ -3,13 +3,14 @@
   gather_facts: true
   hosts: matchbox
   vars:
-    dhcp_vlan: 50
+    talos_version: v1.6.4
+    dhcp_vlan: 42
     vlan_config:
-      50: |
+      42: |
         [Network]
-        Address=192.168.50.5/24
-        Gateway=192.168.50.1
-        DNS=192.168.50.1
+        Address=192.168.42.5/24
+        Gateway=192.168.42.1
+        DNS=192.168.42.1
 
     vlans:
       - 254
@@ -33,6 +34,12 @@
               ff02::1 ip6-allnodes
               ff02::2 ip6-allrouters
             mode: "0644"
+
+        - name: Network Configuration | Update resolv.conf
+          ansible.builtin.copy:
+            dest: /etc/resolv.conf
+            content: |
+              nameserver 10.0.0.1
 
     - name: Sytemd-networkd
       block:
@@ -200,7 +207,7 @@
     - name: Packages | Install
       ansible.builtin.apt:
         name: apt-transport-https,ca-certificates,conntrack,curl,gdisk,
-          unzip,util-linux,htop,btop,systemd-boot,systemd-resolved,neovim,powertop,fd-find,podman,dnsmasq
+          unzip,util-linux,htop,btop,systemd-boot,neovim,powertop,fd-find,podman,dnsmasq
         install_recommends: false
         state: latest
 
@@ -222,6 +229,8 @@
         - name: Machbox | Configure Directory
           loop:
             - /var/lib/matchbox/assets
+            - /var/lib/matchbox/profiles
+            - /var/lib/matchbox/groups
             - /etc/matchbox
           ansible.builtin.file:
             dest: "{{ item }}"
@@ -229,6 +238,57 @@
             mode: "0777"
             owner: root
             group: root
+
+        - name: Matchbox | Fetch custom talos kernel
+          ansible.builtin.get_url:
+            url: https://pxe.factory.talos.dev/pxe/b1098363304e029b232b29d08600aca1bfd42941a1d9a06f44748bb13549b106/{{ talos_version }}/metal-amd64
+            dest: /var/lib/matchbox/assets/vmlinuz
+            decompress: no
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Matchbox | Fetch Talos
+          loop:
+            - initramfs-amd64.xz
+          ansible.builtin.get_url:
+            url: https://github.com/siderolabs/talos/releases/download/{{ talos_version }}/{{ item }}
+            dest: /var/lib/matchbox/assets/{{ item | regex_replace('\-amd64', '')}}
+            decompress: no
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Matchup | Setup Profiles
+          loop:
+            - talos-worker.json
+            - talos-control.json
+          ansible.builtin.copy:
+            dest: /var/lib/matchbox/profiles/{{ item }}
+            src: files/matchbox/{{ item }}
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Matchbox | Setup Groups
+          with_items: "{{ groups['k8s'] }}"
+          ansible.builtin.template:
+            dest: /var/lib/matchbox/groups/{{ item }}.json
+            src: templates/matchbox/group.json.j2
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Matchbox | Talos config
+          loop:
+            - controlplane.yaml
+            - worker.yaml
+          ansible.builtin.copy:
+            dest: /var/lib/matchbox/assets/{{ item }}
+            src: files/talos/{{ item }}
+            owner: root
+            group: root
+            mode: "0644"
 
         - name: Machbox | Create Container
           containers.podman.podman_container:
@@ -316,5 +376,5 @@
     - name: RestartDnsmasq
       ansible.builtin.systemd_service:
         name: dnsmasq
-        state: restart
+        state: restarted
         enabled: true
