@@ -6,7 +6,6 @@ resources:
   - ./nfs-provisioner
   - ./metrics-server
   - ./descheduler
-  - ./coredns
   - ./reflector
   - ./local-path-provisioner/ks.yaml
   # - ./spegel/ks.yaml
