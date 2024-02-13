@@ -8,6 +8,8 @@ k8s:
     vlan_id: 42
   children:
     control_plane:
+      vars:
+        matchbox_profile: talos-control
       hosts:
         k8s-0:
           ansible_host: 192.168.42.10
@@ -34,16 +36,20 @@ k8s:
           ceph_drives:
             - /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNX1W545418F
     worker:
+      vars:
+        matchbox_profile: talos-worker
       hosts:
         k8s-3:
           ansible_host: 192.168.42.13
-          mac_addr: f6:45:04:c6:96:e0
+          mac_addr: f6:45:04:c6:96:e0 # mellanox
+          pxe_mac_addr: bc:24:11:da:2b:0a # pve
           ipv4: 192.168.42.13
           ipv6: 2a01:4b00:847b:6042:cafe::13
           interface: enp3s0
           nvidia_gpu: true
           ceph_drives:
             - /dev/disk/by-id/nvme-Samsung_SSD_980_1TB_S649NL0W389115D
+          uuid: 8ae7158c-cc42-4c44-9044-9bac58bf73d5
         k8s-4:
           ansible_host: 192.168.42.14
           mac_addr: 48:21:0b:56:ac:6c
