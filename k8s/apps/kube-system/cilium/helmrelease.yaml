@@ -21,7 +21,8 @@ spec:
       bbr: true
     bpf:
       masquerade: true
-      vlanBypass: 0
+      vlanBypass:
+        - 0
     cgroup:
       automount:
         enabled: false
