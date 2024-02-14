@@ -68,7 +68,7 @@ cluster:
   serviceAccount:
     key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUdraFJuYVlmZnBPSEFNRmREczg2YXgwWFVoZmdmbXJnc2xON0l1WWdVbzZvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFRGtTbnhiOTg3QVFRY0VLUG9Bd2U3ZFdWT1psNjh6ZzFKTEdicTFYMko2VTRBRUFZdklHWQp3dHJGZDVPeWE3aGV6eUdtVEY0akd2ci8rckZKaTRjeHJRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
   apiServer:
-    image: registry.k8s.io/kube-apiserver:v1.29.1
+    image: registry.k8s.io/kube-apiserver:v1.29.2
     certSANs:
       - 127.0.0.1
       - 192.168.42.254
