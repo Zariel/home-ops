@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./k8s/main/apps/database/redis/app
+  path: ./k8s/apps/database/redis/app
   prune: true
   sourceRef:
     kind: GitRepository
