@@ -41,14 +41,14 @@ spec:
             readOnly: true
       containers:
         - name: plex
-          image: ghcr.io/onedr0p/plex-beta:1.40.0.7775-456fbaf97@sha256:cd6bafd8cf9f75c2d5b6517de312a82a986049f89f089da74b6bdb23928b8b37
+          image: ghcr.io/onedr0p/plex:1.40.0.7998-c29d4c0c8
           env:
             - name: TZ
               value: Europe/London
             - name: ADVERTISE_IP
               value: https://plex.cbannister.xyz:443,http://plex.default.svc.cluster.local:32400
             - name: ALLOWED_NETWORKS
-              value: 192.168.42.0/24,10.0.0.0/8
+              value: 192.168.42.0/24,10.0.0.0/8,192.168.1.0/24,192.168.1.0/24
             - name: NVIDIA_VISIBLE_DEVICES
               value: all
             - name: NVIDIA_DRIVER_CAPABILITIES
