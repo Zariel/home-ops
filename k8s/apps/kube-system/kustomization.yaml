@@ -7,5 +7,4 @@ resources:
   - ./metrics-server
   - ./descheduler
   - ./reflector
-  - ./local-path-provisioner/ks.yaml
   # - ./spegel/ks.yaml
