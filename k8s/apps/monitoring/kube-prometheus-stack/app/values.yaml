@@ -40,10 +40,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: ceph-block
-          volumeMode: Filesystem
-          accessModes:
-            - ReadWriteOnce
+          storageClassName: openebs-hostpath
           resources:
             requests:
               storage: 20Gi
