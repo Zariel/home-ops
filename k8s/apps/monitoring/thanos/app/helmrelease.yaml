@@ -27,8 +27,10 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: local-path-provisioner
-      namespace: kube-system
+    - name: openebs
+      namespace: openebs-system
+    - name: redis
+      namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
@@ -43,6 +45,15 @@ spec:
     queryFrontend:
       enabled: true
       replicaCount: 2
+      config: &config |-
+        type: REDIS
+        config:
+          addr: >-
+            redis-node-0.redis-headless.database.svc.cluster.local:26379,
+            redis-node-1.redis-headless.database.svc.cluster.local:26379,
+            redis-node-2.redis-headless.database.svc.cluster.local:26379
+          db: 13
+          master_name: redis-master
       ingress:
         enabled: true
         ingressClassName: internal
@@ -51,6 +62,8 @@ spec:
         extraTls:
           - hosts:
               - *host
+      networkPolicy:
+        enabled: false
     query:
       enabled: true
       replicaCount: 2
@@ -58,9 +71,13 @@ spec:
       dnsDiscovery:
         sidecarsService: kube-prometheus-stack-thanos-discovery
         sidecarsNamespace: monitoring
+      networkPolicy:
+        enabled: false
     bucketweb:
       enabled: true
       replicaCount: 2
+      networkPolicy:
+        enabled: false
     compactor:
       enabled: true
       extraFlags:
@@ -71,14 +88,17 @@ spec:
       retentionResolution1h: 90d
       persistence:
         enabled: true
-        storageClass: local-path
+        storageClass: openebs-hostpath
         size: 10Gi
+      networkPolicy:
+        enabled: false
     storegateway:
       enabled: true
       replicaCount: 2
+      config: *config
       persistence:
         enabled: true
-        storageClass: local-path
+        storageClass: openebs-hostpath
         size: 10Gi
     ruler:
       enabled: true
@@ -100,9 +120,11 @@ spec:
                   severity: critical
       persistence:
         enabled: true
-        storageClass: local-path
+        storageClass: openebs-hostpath
         size: 10Gi
-    metrics:
+      networkPolicy:
+        enabled: false
+    metriIcs:
       enabled: true
       serviceMonitor:
         enabled: true
