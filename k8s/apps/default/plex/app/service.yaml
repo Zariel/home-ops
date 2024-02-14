@@ -6,6 +6,7 @@ spec:
   selector:
     app: plex
   type: ClusterIP
+  externalTrafficPolicy: Local
   ipFamilies:
     - IPv4
   ports:
