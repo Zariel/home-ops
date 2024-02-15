@@ -49,6 +49,9 @@ spec:
             - mountPath: /etc/pihole/whitelist.txt
               name: config
               subPath: allowlist.txt
+            - mountPath: /etc/dnsmasq.d/99-domains.conf
+              name: config
+              subPath: domains.conf
           env:
             - name: WEB_PORT
               value: "80"
