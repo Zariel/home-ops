@@ -45,6 +45,8 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
+            - name: PROWLARR__API_KEY
+              value: e5434fb6e4c04bc5a797103d41714d38
             - name: PROWLARR__POSTGRES_HOST
               value: postgres
             - name: PROWLARR__POSTGRES_MAIN_DB
