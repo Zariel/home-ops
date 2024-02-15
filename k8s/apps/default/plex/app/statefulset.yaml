@@ -45,10 +45,10 @@ spec:
           env:
             - name: TZ
               value: Europe/London
-            - name: ADVERTISE_IP
-              value: https://plex.cbannister.xyz:443,http://plex.default.svc.cluster.local:32400
-            - name: ALLOWED_NETWORKS
-              value: 192.168.42.0/24,10.0.0.0/8,192.168.1.0/24,192.168.1.0/24
+            - name: PLEX_ADVERTISE_URL
+              value: https://plex.cbannister.xyz:443,http://192.168.42.210:32400
+            - name: PLEX_NO_AUTH_NETWORKS
+              value: 192.168.1.0/24
             - name: NVIDIA_VISIBLE_DEVICES
               value: all
             - name: NVIDIA_DRIVER_CAPABILITIES
