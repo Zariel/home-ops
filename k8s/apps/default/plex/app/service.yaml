@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: plex
   annotations:
-    io.cilium/lb-ipam-ips: 192.168.42.203
+    io.cilium/lb-ipam-ips: 192.168.42.210
 spec:
   selector:
     app: plex

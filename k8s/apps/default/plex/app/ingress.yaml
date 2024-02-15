@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: plex
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
+    external-dns.alpha.kubernetes.io/target: 192.168.42.210,external.cbannister.xyz
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_set_header X-Real-IP $remote_addr;
