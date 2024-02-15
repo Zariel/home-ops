@@ -63,7 +63,7 @@ spec:
               nvidia.com/gpu: 1
           ports:
             - containerPort: 32400
-              name: web
+              name: plex
           volumeMounts:
             - name: transcode
               mountPath: /transcode
