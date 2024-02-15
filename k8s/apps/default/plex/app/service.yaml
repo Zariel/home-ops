@@ -11,6 +11,10 @@ spec:
   ipFamilies:
     - IPv4
   ports:
+    - name: web
+      port: 80
+      targetPort: web
+      protocol: TCP
     - name: plex
       port: 32400
       targetPort: web
