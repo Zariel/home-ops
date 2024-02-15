@@ -34,7 +34,7 @@ spec:
     devices:
       - enp+
       - eno1
-    enableRuntimeDeviceDetection: true
+    enableRuntimeDeviceDetection: false
     endpointRoutes:
       enabled: true
     hubble:
