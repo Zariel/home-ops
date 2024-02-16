@@ -35,8 +35,10 @@ spec:
           # readOnlyRootFilesystem: true
           resources:
             requests:
-              memory: "200Mi"
+              memory: &ram "1Gi"
               cpu: "500m"
+            limits:
+              memory: *ram
           volumeMounts:
             - mountPath: /etc/pihole
               name: etc-pihole
