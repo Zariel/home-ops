@@ -71,3 +71,12 @@ spec:
               mountPath: /config
             - name: arr-media
               mountPath: /data
+          livenessProbe: &livenessProbe
+            httpGet:
+              path: /identity
+              port: plex
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readinessProbe: *livenessProbe
