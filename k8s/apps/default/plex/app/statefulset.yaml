@@ -80,3 +80,4 @@ spec:
               timeoutSeconds: 1
               failureThreshold: 3
           readinessProbe: *livenessProbe
+          startupProbe: *livenessProbe
