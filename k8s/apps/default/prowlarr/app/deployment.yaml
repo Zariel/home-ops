@@ -62,8 +62,10 @@ spec:
                   key: password
           resources:
             requests:
-              memory: "512Mi"
+              memory: &ram "1Gi"
               cpu: "500m"
+            limits:
+              memory: *ram
           ports:
             - containerPort: 9696
               name: web
