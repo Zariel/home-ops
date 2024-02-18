@@ -17,9 +17,6 @@ spec:
         - name: config
           configMap:
             name: pihole-config
-        - name: etc-pihole
-          persistentVolumeClaim:
-            claimName: pihole-config
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -41,7 +38,7 @@ spec:
               memory: *ram
           volumeMounts:
             - mountPath: /etc/pihole
-              name: etc-pihole
+              name: pihole-config
             - mountPath: /etc/pihole/adlists.list
               name: config
               subPath: adlist.txt
