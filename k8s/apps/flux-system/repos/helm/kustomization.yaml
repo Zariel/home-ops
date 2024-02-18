@@ -19,3 +19,4 @@ resources:
   - ./cloudnative-pg.yaml
   - ./xenitab.yaml
   - ./openebs.yaml
+  - ./postfinance.yaml
