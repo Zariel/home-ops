@@ -1,17 +1,18 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: external-dns-pihole
+  name: external-dns-pihole-0
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: external-dns-pihole
+      app: external-dns-pihole-0
   template:
     metadata:
       labels:
-        app: external-dns-pihole
+        app: external-dns-pihole-0
     spec:
       serviceAccountName: external-dns
       containers:
@@ -42,6 +43,26 @@ spec:
             # Change this to the actual address of your Pi-hole web server
             - --pihole-server=http://pihole-0.pihole.network.svc.cluster.local
             - --domain-filter=cbannister.xyz
+      securityContext:
+        fsGroup: 65534 # For ExternalDNS to be able to read Kubernetes token files
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns-pihole-1
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns-pihole-1
+  template:
+    metadata:
+      labels:
+        app: external-dns-pihole-1
+    spec:
+      serviceAccountName: external-dns
+      containers:
         - name: external-dns-pihole-1
           image: registry.k8s.io/external-dns/external-dns:v0.14.0
           resources:
