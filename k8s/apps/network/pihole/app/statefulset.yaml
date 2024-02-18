@@ -82,14 +82,18 @@ spec:
             periodSeconds: 5
             successThreshold: 2
             timeoutSeconds: 5
-          livenessProbe:
+          livenessProbe: &probe
             periodSeconds: 10
             timeoutSeconds: 1
-            failureThreshold: 3
+            failureThreshold: 6
             exec:
-              - nslookup
-              - google.com
-              - 127.0.0.1
+              command:
+                - nslookup
+                - google.com
+                - 127.0.0.1
+          readinessProbe:
+            <<: *probe
+            failureThreshold: 3
   volumeClaimTemplates:
     - metadata:
         name: pihole-config
