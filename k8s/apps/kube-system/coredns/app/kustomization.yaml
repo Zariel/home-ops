@@ -1,13 +1,11 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: kube-system
-commonLabels:
-  app: cilium
 resources:
-  - l2.yaml
-  - helmrelease.yaml
+  - ./helmrelease.yaml
 configMapGenerator:
-  - name: cilium-values
+  - name: coredns-values
     files:
       - values.yaml=./values.yaml
 configurations:
