@@ -1,17 +1,17 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: pihole
+  name: &name pihole
 spec:
   selector:
     matchLabels:
-      app: pihole
-  strategy:
-    type: Recreate
+      app: *name
+  serviceName: pihole
+  replicas: 2
   template:
     metadata:
       labels:
-        app: pihole
+        app: *name
     spec:
       volumes:
         - name: config
@@ -65,7 +65,7 @@ spec:
                   key: password
                   name: pihole-password
             - name: PIHOLE_DNS_
-              value: 10.0.0.1;10.0.0.1
+              value: 192.168.42.1;10.0.0.1
           ports:
             - containerPort: 80
               name: web
@@ -73,13 +73,31 @@ spec:
               protocol: UDP
             - containerPort: 53
               protocol: TCP
-          livenessProbe:
+          startupProbe:
             failureThreshold: 10
             httpGet:
               path: /admin/index.php
               port: web
               scheme: HTTP
-            initialDelaySeconds: 60
-            periodSeconds: 10
-            successThreshold: 1
+            periodSeconds: 5
+            successThreshold: 2
             timeoutSeconds: 5
+          livenessProbe:
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+            exec:
+              - nslookup
+              - google.com
+              - 127.0.0.1
+  volumeClaimTemplates:
+    - metadata:
+        name: pihole-config
+      spec:
+        storageClassName: ceph-block
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce

@@ -4,10 +4,9 @@ namespace: network
 commonLabels:
   app: pihole
 resources:
-  - deployment.yaml
+  - statefulset.yaml
   - service.yaml
   - ingress.yaml
-  - volume.yaml
 configMapGenerator:
   - name: pihole-config
     files:
