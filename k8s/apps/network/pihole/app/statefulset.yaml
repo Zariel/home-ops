@@ -85,7 +85,7 @@ spec:
             exec:
               command:
                 - nslookup
-                - google.com
+                - google.com.
                 - 127.0.0.1
           readinessProbe:
             <<: *probe
