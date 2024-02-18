@@ -80,7 +80,6 @@ spec:
               port: web
               scheme: HTTP
             periodSeconds: 5
-            successThreshold: 2
             timeoutSeconds: 5
           livenessProbe: &probe
             periodSeconds: 10
