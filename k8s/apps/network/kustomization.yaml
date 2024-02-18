@@ -8,4 +8,4 @@ resources:
   - ./external-ingress
   - ./cloudflared/ks.yaml
   - ./echo-server/ks.yaml
-  - ./tailscale
+  # - ./tailscale
