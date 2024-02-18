@@ -90,6 +90,7 @@ spec:
           readinessProbe:
             <<: *probe
             failureThreshold: 3
+            successThreshold: 3
   volumeClaimTemplates:
     - metadata:
         name: pihole-config
