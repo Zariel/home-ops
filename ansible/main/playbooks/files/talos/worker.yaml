@@ -23,12 +23,11 @@ machine:
         disableManifestsDirectory: true
     network:
         interfaces:
-            - deviceSelector:
-                  driver: virtio_net
-              ignore: true
-            - interface: enx+
+            - interface: enp3s0
               dhcp: true
-            - interface: enp+
+            - interface: enp114s0
+              dhcp: true
+            - interface: enp115s0
               dhcp: true
     install:
         disk: /dev/sda
