@@ -8,3 +8,5 @@ resources:
   - ./descheduler
   - ./reflector
   # - ./spegel/ks.yaml
+  - ./kubelet-csr-approver/ks.yaml
+  - ./coredns/ks.yaml

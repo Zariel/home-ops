@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  bootstrap:
+    desc: Bootstrap Talos
+    summary: |
+      Args:
+        cluster: Cluster to run command against (required)
+        controller: Controller node to run command against (required)
+    prompt: Bootstrap Talos on the '{{.cluster}}' cluster... continue?
+    cmds:
+      - task: bootstrap-etcd
+        vars: &vars
+          controller: "{{.controller}}"
+      - task: fetch-kubeconfig
+        vars: *vars
+      - task: bootstrap-apps
+        vars: *vars
+    requires:
+      vars: ["controller"]
+
+  bootstrap-etcd:
+    desc: Bootstrap Etcd
+    cmd: until talosctl --nodes {{.controller}} bootstrap; do sleep 10; done
+    requires:
+      vars: ["controller"]
+
+  bootstrap-apps:
+    desc: Bootstrap core apps needed for Talos
+    cmds:
+      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=600s; do sleep 10; done
+      - helmfile --file {{.KUBERNETES_DIR}}/main/bootstrap/talos/apps/helmfile.yaml apply
+      - until kubectl wait --for=condition=Ready nodes --all --timeout=600s; do sleep 10; done
+    preconditions:
+      - kubectl config get-contexts main
+      - test -f {{.KUBERNETES_DIR}}/main/bootstrap/talos/apps/helmfile.yaml
+    env:
+      CLUSTER_DIR: "{{.KUBERNETES_DIR}}/main" # required for helmfile
+
+  upgrade-talos:
+    desc: Upgrade Talos on a node
+    cmd: talosctl --nodes {{.node}} upgrade --image {{.image}} --preserve=true
+    requires:
+      vars: ["node", "image"]
+    preconditions:
+      - talosctl --nodes {{.node}} get machineconfig
+
+  upgrade-k8s:
+    desc: Upgrade k8s on a node
+    cmds:
+      - talosctl --nodes {{.node}} upgrade-k8s --to {{.to}}
+      - kubectl --namespace rook-ceph wait --timeout=1800s --for=jsonpath='{.status.ceph.health}=HEALTH_OK' cephclusters.ceph.rook.io rook-ceph
+    requires:
+      vars: ["node", "to"]
+    preconditions:
+      - talosctl --nodes {{.node}} get machineconfig
+
+  fetch-kubeconfig:
+    desc: Fetch kubeconfig from Talos controllers
+    cmd: |
+      talosctl --context {{.cluster}} kubeconfig --nodes {{.controller}} \
+          --force --force-context-name {{.cluster}} {{.KUBERNETES_DIR}}/{{.cluster}}
+    requires:
+      vars: ["cluster"]
+    preconditions:
+      - talosctl config get-contexts | grep {{.cluster}}
