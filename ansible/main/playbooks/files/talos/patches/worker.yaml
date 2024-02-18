@@ -4,10 +4,3 @@ machine:
       - deviceSelector:
           driver: virtio_net
         ignore: true
-      - deviceSelector:
-          driver: mlx5_core
-        dhcp: true
-      - interface: enp+
-        dhcp: true
-      - interface: eno+
-        dhcp: true
