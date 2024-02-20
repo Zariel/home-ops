@@ -1,8 +1,8 @@
 ; SOA Records
 $TTL 1h
 $ORIGIN cbannister.xyz.
-@ IN SOA cloudflare.com. dns.cloudflare.com. ( ; TODO: make this the gateway like bjw-s?
-  1                ; serial number
+@ IN SOA dns.cbannister.xyz. admin.cbannister.xyz. ( ; TODO: make this the gateway like bjw-s?
+  2                ; serial number
   2h               ; refresh period
   1h               ; retry period
   14d              ; expire time
@@ -10,7 +10,7 @@ $ORIGIN cbannister.xyz.
 )
 
 ; NS Records
-@                          IN  NS elias.ns.cloudflare.com. ; TODO: make this gateway?
+@                          IN  NS dns.cbannister.xyz. ; TODO: make this gateway?
 
 ; k8s external
 plex                     IN  A  192.168.42.210
