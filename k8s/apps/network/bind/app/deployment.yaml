@@ -51,4 +51,3 @@ spec:
               name: bind-zones
             - mountPath: /var/cache/bind
               name: bind-cache
-              subPath: bind9
