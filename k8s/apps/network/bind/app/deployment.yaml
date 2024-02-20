@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind9
+spec:
+  selector:
+    matchLabels:
+      app: bind9
+  template:
+    metadata:
+      labels:
+        app: bind9
+    spec:
+      volumes:
+        - name: bind9-config
+          configMap:
+            name: bind9-config
+        - name: bind9-cache
+          persistentVolumeClaim:
+            claimName: bind9-cache
+        - name: bind9-secret
+          secret:
+            secretName: bind9-secret
+      containers:
+        - name: bind9
+          image: docker.io/internetsystemsconsortium/bind9:9.19
+          command:
+            - /usr/sbin/named
+            - "-4"
+            - -f
+            - -c
+            - /etc/bind/named.conf
+            - u
+            - bind
+          resources:
+            requests:
+              memory: &ram "512Mi"
+              cpu: "100m"
+            limits:
+              memory: *ram
+          ports:
+            - containerPort: 53
+          volumeMounts:
+            - mountPath: /etc/bind/named.conf
+              name: bind9-config
+              subPath: named.conf
+            - mountPath: /etc/bind/zones/
+              name: bind9-config
+              subPath: zones
+            - mountPath: /var/cache/bind
+              name: bind9-cache
+              subPath: bind9

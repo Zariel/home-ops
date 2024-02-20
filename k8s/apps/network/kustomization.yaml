@@ -9,3 +9,4 @@ resources:
   - ./cloudflared/ks.yaml
   - ./echo-server/ks.yaml
   # - ./tailscale
+  - ./bind/ks.yaml
