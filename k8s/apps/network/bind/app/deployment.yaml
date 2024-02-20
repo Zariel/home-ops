@@ -45,8 +45,12 @@ spec:
               name: dns
               protocol: UDP
           volumeMounts:
-            - mountPath: /etc/bind/
+            - mountPath: /etc/bind/named.conf
               name: bind-config
+              subPath: named.conf
+            - mountPath: /etc/bind/externaldns.key
+              name: bind-config
+              subPath: externaldns.key
             - mountPath: /etc/bind/zones/
               name: bind-zones
             - mountPath: /var/cache/bind
