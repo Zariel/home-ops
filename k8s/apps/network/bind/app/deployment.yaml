@@ -26,6 +26,7 @@ spec:
           image: docker.io/internetsystemsconsortium/bind9:9.19
           command:
             - /usr/sbin/named
+          args:
             - "-4"
             - -f
             - -c /etc/bind/named.conf
