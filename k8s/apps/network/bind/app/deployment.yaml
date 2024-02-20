@@ -42,6 +42,8 @@ spec:
               memory: *ram
           ports:
             - containerPort: 53
+              name: dns
+              protocol: UDP
           volumeMounts:
             - mountPath: /etc/bind/
               name: bind-config
