@@ -18,9 +18,6 @@ spec:
         - name: bind9-cache
           persistentVolumeClaim:
             claimName: bind9-cache
-        - name: bind9-secret
-          secret:
-            secretName: bind9-secret
       containers:
         - name: bind9
           image: docker.io/internetsystemsconsortium/bind9:9.19
@@ -50,3 +47,6 @@ spec:
             - mountPath: /var/cache/bind
               name: bind9-cache
               subPath: bind9
+            - mountPath: /etc/bind/keys/
+              name: bind9-config
+              subPath: keys
