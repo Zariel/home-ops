@@ -31,7 +31,7 @@ spec:
             - /usr/sbin/named
           args:
             - "-4"
-            - -f
+            - -g
             - -c
             - /etc/bind/named.conf
           resources:
