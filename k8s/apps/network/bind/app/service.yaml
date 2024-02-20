@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: bind9
+  name: bind
 spec:
   type: ClusterIP
   clusterIP: 10.43.53.9
   selector:
-    app: bind9
+    app: bind
   ports:
     - port: 53
       targetPort: 53

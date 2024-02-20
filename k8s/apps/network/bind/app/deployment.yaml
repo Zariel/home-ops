@@ -1,27 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bind9
+  name: bind
 spec:
   selector:
     matchLabels:
-      app: bind9
+      app: bind
   strategy:
     type: Recreate
+  replicas: 1
   template:
     metadata:
       labels:
-        app: bind9
+        app: bind
     spec:
       volumes:
-        - name: bind9-config
+        - name: bind-config
           configMap:
-            name: bind9-config
-        - name: bind9-cache
+            name: bind-config
+        - name: bind-cache
           persistentVolumeClaim:
-            claimName: bind9-cache
+            claimName: bind-cache
       containers:
-        - name: bind9
+        - name: bind
           image: docker.io/internetsystemsconsortium/bind9:9.19
           command:
             - /usr/sbin/named
@@ -39,14 +40,14 @@ spec:
             - containerPort: 53
           volumeMounts:
             - mountPath: /etc/bind/named.conf
-              name: bind9-config
+              name: bind-config
               subPath: named.conf
             - mountPath: /etc/bind/zones/db.cbannister.xyz
-              name: bind9-config
+              name: bind-config
               subPath: db.cbannister.xyz
             - mountPath: /etc/bind/keys/externaldns.key
-              name: bind9-config
+              name: bind-config
               subPath: externaldns.key
             - mountPath: /var/cache/bind
-              name: bind9-cache
+              name: bind-cache
               subPath: bind9
