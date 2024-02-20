@@ -45,11 +45,8 @@ spec:
           volumeMounts:
             - mountPath: /etc/bind/named.conf
               name: bind-config
-              subPath: named.conf
             - mountPath: /etc/bind/zones/
               name: bind-zones
-            - mountPath: /etc/bind/keys/externaldns.key
-              name: bind-config
               subPath: externaldns.key
             - mountPath: /var/cache/bind
               name: bind-cache
