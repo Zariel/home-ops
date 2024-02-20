@@ -29,7 +29,8 @@ spec:
           args:
             - "-4"
             - -g
-            - -c /etc/bind/named.conf
+            - -c
+            - /etc/bind/named.conf
           resources:
             requests:
               memory: &ram "512Mi"
