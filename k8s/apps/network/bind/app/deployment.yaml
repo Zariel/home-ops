@@ -43,11 +43,10 @@ spec:
           ports:
             - containerPort: 53
           volumeMounts:
-            - mountPath: /etc/bind/named.conf
+            - mountPath: /etc/bind/
               name: bind-config
             - mountPath: /etc/bind/zones/
               name: bind-zones
-              subPath: externaldns.key
             - mountPath: /var/cache/bind
               name: bind-cache
               subPath: bind9
