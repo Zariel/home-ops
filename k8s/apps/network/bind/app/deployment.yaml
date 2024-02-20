@@ -6,6 +6,8 @@ spec:
   selector:
     matchLabels:
       app: bind9
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -39,9 +41,9 @@ spec:
             - mountPath: /etc/bind/named.conf
               name: bind9-config
               subPath: named.conf
-            - mountPath: /etc/bind/zones/db.ctb.casa
+            - mountPath: /etc/bind/zones/db.cbannister.xyz
               name: bind9-config
-              subPath: db.ctb.casa
+              subPath: db.cbannister.xyz
             - mountPath: /etc/bind/keys/externaldns.key
               name: bind9-config
               subPath: externaldns.key
