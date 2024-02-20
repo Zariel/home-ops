@@ -1,7 +1,7 @@
 ; SOA Records
 $TTL 1h
-$ORIGIN ctb.casa.
-@ IN SOA localhost. root.localhost. ( ; TODO: make this the gateway like bjw-s?
+$ORIGIN cbannister.xyz.
+@ IN SOA cloudflare.com. dns.cloudflare.com. ( ; TODO: make this the gateway like bjw-s?
   1                ; serial number
   2h               ; refresh period
   1h               ; retry period
@@ -10,7 +10,7 @@ $ORIGIN ctb.casa.
 )
 
 ; NS Records
-@                          IN  NS localhost. ; TODO: make this gateway?
+@                          IN  NS elias.ns.cloudflare.com. ; TODO: make this gateway?
 
 ; k8s external
 plex                     IN  A  192.168.42.210
