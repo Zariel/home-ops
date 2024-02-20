@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+  - service.yaml
+  - pvc.yaml
+configMapGenerator:
+  - name: bind9-config
+    files:
+      - named.conf=config/named.conf
+      - zones/db.ctb.casa=config/zones/db.ctb.casa
+secretGenerator:
+  - name: bind9-secret
+    files:
+      - keys/externaldns.key=config/externaldns.key
