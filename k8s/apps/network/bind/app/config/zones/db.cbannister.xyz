@@ -1,7 +1,7 @@
 ; SOA Records
 $TTL 1h
 $ORIGIN cbannister.xyz.
-@ IN SOA dns.cbannister.xyz. admin.cbannister.xyz. ; TODO: make this the gateway like bjw-s?
+@ IN SOA dns.cbannister.xyz. admin.cbannister.xyz. (; TODO: make this the gateway like bjw-s?
   2                ; serial number
   2h               ; refresh period
   1h               ; retry period
