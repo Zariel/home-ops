@@ -10,5 +10,5 @@ configMapGenerator:
   - name: bind9-config
     files:
       - named.conf=config/named.conf
-      - zones/db.ctb.casa=config/zones/db.ctb.casa
-      - keys/externaldns.key=config/externaldns.key
+      - db.ctb.casa=config/zones/db.ctb.casa
+      - externaldns.key=config/externaldns.key
