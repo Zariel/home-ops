@@ -28,8 +28,7 @@ spec:
             - /usr/sbin/named
             - "-4"
             - -f
-            - -c/etc/bind/named.conf
-            - -ubind
+            - -c /etc/bind/named.conf
           resources:
             requests:
               memory: &ram "512Mi"
