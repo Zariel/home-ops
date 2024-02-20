@@ -18,6 +18,9 @@ spec:
         - name: bind-config
           configMap:
             name: bind-config
+        - name: bind-zones
+          configMap:
+            name: bind-zones
         - name: bind-cache
           persistentVolumeClaim:
             claimName: bind-cache
@@ -43,9 +46,8 @@ spec:
             - mountPath: /etc/bind/named.conf
               name: bind-config
               subPath: named.conf
-            - mountPath: /etc/bind/zones/db.cbannister.xyz
-              name: bind-config
-              subPath: db.cbannister.xyz
+            - mountPath: /etc/bind/zones/
+              name: bind-zones
             - mountPath: /etc/bind/keys/externaldns.key
               name: bind-config
               subPath: externaldns.key

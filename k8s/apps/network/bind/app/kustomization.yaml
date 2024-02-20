@@ -10,5 +10,8 @@ configMapGenerator:
   - name: bind-config
     files:
       - named.conf=config/named.conf
-      - db.cbannister.xyz=config/zones/db.cbannister.xyz
       - externaldns.key=config/externaldns.key
+  - name: bind-zones
+    files:
+      - cbannister.xyz=config/zones/db.cbannister.xyz
+      - dns.cbannister.xyz=config/zones/db.dns.cbannister.xyz
