@@ -6,6 +6,7 @@ spec:
   selector:
     matchLabels:
       app: dnsdist
+  replicas: 2
   template:
     metadata:
       labels:
