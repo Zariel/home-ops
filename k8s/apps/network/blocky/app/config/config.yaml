@@ -1,0 +1,45 @@
+ports:
+  dns: 53
+  http: 4000
+
+upstreams:
+  groups:
+    # these external DNS resolvers will be used. Blocky picks 2 random resolvers from the list for each query
+    default:
+      # Cloudflare
+      - tcp-tls:1.1.1.1:853
+      - tcp-tls:1.0.0.1:853
+
+clientLookup:
+  upstream: 10.0.0.1
+
+ecs:
+  useAsClient: true
+
+prometheus:
+  enable: true
+  path: /metrics
+
+blocking:
+  loading:
+    downloads:
+      timeout: 4m
+
+  blackLists:
+    ads:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+    fakenews:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-only/hosts
+    gambling:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-only/hosts
+
+  whiteLists:
+    ads:
+      - |
+        www.thrivingautistic.org
+
+  clientGroupsBlock:
+    default:
+      - ads
+      - fakenews
+      - gambling

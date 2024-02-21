@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blocky
+spec:
+  selector:
+    matchLabels:
+      app: blocky
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blocky
+    spec:
+      volumes:
+        - name: blocky-config
+          configMap:
+            name: blocky-config
+      containers:
+        - name: blocky
+          image: ghcr.io/0xerr0r/blocky:v0.23
+          env:
+            - name: TZ
+              value: Europe/London
+          resources:
+            requests:
+              memory: &ram "512Mi"
+              cpu: "100m"
+            limits:
+              memory: *ram
+          ports:
+            - containerPort: 53
+              name: dns
+              protocol: UDP
+            - containerPort: 4000
+              name: metrics
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/config.yaml
+              name: blocky-config
+              subPath: config.yaml
