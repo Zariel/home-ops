@@ -36,6 +36,6 @@ spec:
               name: metrics
               protocol: TCP
           volumeMounts:
-            - mountPath: /app/config.yaml
+            - mountPath: /app/config.yml
               name: blocky-config
-              subPath: config.yaml
+              subPath: config.yml
