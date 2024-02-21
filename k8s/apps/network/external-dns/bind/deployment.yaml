@@ -48,7 +48,6 @@ spec:
             - --registry=txt
             - --txt-owner-id=default
             - --txt-prefix=k8s.
-            - --domain-filter=radarr.cbannister.xyz
           ports:
             - containerPort: &port 7979
               name: metrics
