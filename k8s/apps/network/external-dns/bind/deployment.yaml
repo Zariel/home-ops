@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns-bind
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns-bind
+  template:
+    metadata:
+      labels:
+        app: external-dns-bind
+    spec:
+      serviceAccountName: external-dns
+      containers:
+        - name: external-dns-bind
+          image: registry.k8s.io/external-dns/external-dns:v0.14.0
+          resources:
+            limits:
+              memory: 128Mi
+              cpu: 250m
+          env:
+            - name: EXTERNAL_DNS_RFC2136_HOST
+              value: bind.network.svc.cluster.local
+            - name: EXTERNAL_DNS_RFC2136_PORT
+              value: "53"
+            - name: EXTERNAL_DNS_RFC2136_ZONE
+              value: cbannister.xyz
+            - name: EXTERNAL_DNS_RFC2136_TSIG_AXFR
+              value: "true"
+            - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
+              value: externaldns-key
+            - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
+              value: "lgrLJ6W6I5GqjRjiReoOBHBPhmQk4d7q5Lfzq5u2f74="
+            - name: EXTERNAL_DNS_RFC2136_TSIG_ALGORITHM
+              value: hmac-sha256
+          args:
+            - --interval=1m
+            - --metrics-address=:7979
+            - --source=service
+            - --source=ingress
+            - --ingress-class=internal
+            - --policy=sync
+            - --provider=rfc2136
+            - --registry=txt
+            - --txt-owner-id=default
+            - --txt-prefix=k8s.
+          ports:
+            - containerPort: &port 7979
+              name: metrics
+              protocol: TCP
+          livenessProbe: &probe
+            httpGet:
+              path: /healthz
+              port: *port
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+          readinessProbe: *probe
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+      securityContext:
+        fsGroup: 65534 # For ExternalDNS to be able to read Kubernetes token files
