@@ -35,7 +35,7 @@ spec:
               value: externaldns-key
             - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
               value: "lgrLJ6W6I5GqjRjiReoOBHBPhmQk4d7q5Lfzq5u2f74="
-            - name: EXTERNAL_DNS_RFC2136_TSIG_ALGORITHM
+            - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG
               value: hmac-sha256
           args:
             - --interval=1m
