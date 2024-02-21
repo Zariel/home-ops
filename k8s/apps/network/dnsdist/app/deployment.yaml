@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dnsdist
+spec:
+  selector:
+    matchLabels:
+      app: dnsdist
+  template:
+    metadata:
+      labels:
+        app: dnsdist
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: dnsdist-config
+      containers:
+        - name: dnsdist
+          image: docker.io/powerdns/dnsdist-18:1.8.3
+          args:
+            - --log-timestamps
+          env:
+            - name: TZ
+              value: Europe/London
+          resources:
+            requests:
+              memory: &ram 1Gi
+              cpu: "500m"
+            limits:
+              memory: *ram
+          volumeMounts:
+            - name: config
+              mountPath: /etc/dnsdist/dnsdist.conf
+              subPath: dnsdist.conf
+          ports:
+            - containerPort: 53
+              name: dns
+              protocol: UDP
