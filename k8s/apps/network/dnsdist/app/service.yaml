@@ -7,6 +7,6 @@ spec:
     app: dnsdist
   ports:
     - port: 53
-      targetPort: 53
+      targetPort: 5353
       protocol: UDP
       name: dns-udp
