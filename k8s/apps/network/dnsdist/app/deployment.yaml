@@ -34,6 +34,6 @@ spec:
               mountPath: /etc/dnsdist/dnsdist.conf
               subPath: dnsdist.conf
           ports:
-            - containerPort: 53
+            - containerPort: 5353
               name: dns
               protocol: UDP
