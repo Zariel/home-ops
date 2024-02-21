@@ -4,7 +4,7 @@ metadata:
   name: dnsdist
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.42.52
+  loadBalancerIP: 192.168.42.53
   selector:
     app: dnsdist
   ports:

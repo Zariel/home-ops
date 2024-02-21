@@ -4,7 +4,6 @@ resources:
   - ./ns.yaml
   - ./ingress-nginx/ks.yaml
   - ./external-dns/ks.yaml
-  - ./pihole/ks.yaml
   - ./external-ingress
   - ./cloudflared/ks.yaml
   - ./echo-server/ks.yaml
