@@ -1,5 +1,0 @@
-https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt
-https://v.firebog.net/hosts/Easylist.txt
-https://v.firebog.net/hosts/AdguardDNS.txt
-https://adaway.org/hosts.txt
-https://dbl.oisd.nl/
