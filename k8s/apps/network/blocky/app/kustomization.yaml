@@ -8,4 +8,4 @@ resources:
 configMapGenerator:
   - name: blocky-config
     files:
-      - config/config.yaml
+      - config/config.yml
