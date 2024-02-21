@@ -24,6 +24,20 @@ spec:
         - name: bind-cache
           persistentVolumeClaim:
             claimName: bind-cache
+        - name: zone-files
+          emptyDir: {}
+      initContainers:
+        - name: zone-setup
+          image: docker.io/library/alpine:3.14
+          command:
+            - /bin/sh
+            - -c
+            - cp -v /etc/bind/zones/* /var/lib/bind
+          volumeMounts:
+            - mountPath: /etc/bind/zones
+              name: bind-zones
+            - mountPath: /var/lib/bind
+              name: zone-files
       containers:
         - name: bind
           image: docker.io/internetsystemsconsortium/bind9:9.19
@@ -51,7 +65,7 @@ spec:
             - mountPath: /etc/bind/externaldns.key
               name: bind-config
               subPath: externaldns.key
-            - mountPath: /etc/bind/zones/
-              name: bind-zones
             - mountPath: /var/cache/bind
               name: bind-cache
+            - mountPath: /var/lib/bind
+              name: zone-files
