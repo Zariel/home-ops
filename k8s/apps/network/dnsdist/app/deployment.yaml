@@ -40,8 +40,11 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/dnsdist/dnsdist.conf
-              subPath: dnsdist.conf
+              subPath: dnsdist.conf.lua
           ports:
             - containerPort: 5353
               name: dns
               protocol: UDP
+            - containerPort: 8083
+              name: metrics
+              protocol: TCP

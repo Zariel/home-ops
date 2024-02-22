@@ -1,7 +1,15 @@
 -- udp/tcp dns listening
 setLocal("0.0.0.0:5353", {})
 
-newServer({
+-- enable prometheus
+webserver("0.0.0.0:8083")
+setWebserverConfig({
+  statsRequireAuthentication = false,
+  acl = "10.42.0.0/16, 127.0.0.0/8"
+})
+setAPIWritable(false)
+
+  newServer({
   address = "10.0.0.1",
   pool = "unifi",
 })
