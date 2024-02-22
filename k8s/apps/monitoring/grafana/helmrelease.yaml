@@ -207,6 +207,12 @@ spec:
         miniflux:
           url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
           datasource: Prometheus
+      dns:
+        blocky:
+          # renovate: depName="blocky"
+          gnetId: 13768
+          revision: 3
+          datasource: Prometheus
       ceph:
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
