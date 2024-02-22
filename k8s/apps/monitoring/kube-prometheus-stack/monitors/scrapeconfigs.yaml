@@ -7,7 +7,6 @@ metadata:
 spec:
   staticConfigs:
     - labels:
-        job: node_exporter
+        job: node-exporter-servers
       targets:
         - 10.0.1.100:9100
-        - 10.0.1.104:9100
