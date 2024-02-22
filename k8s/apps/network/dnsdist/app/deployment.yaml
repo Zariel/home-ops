@@ -48,3 +48,9 @@ spec:
             - containerPort: 8083
               name: metrics
               protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: dns
+          readinessProbe:
+            tcpSocket:
+              port: dns
