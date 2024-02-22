@@ -2,7 +2,7 @@
 $TTL 1h
 $ORIGIN cbannister.xyz.
 @ IN SOA ns.cbannister.xyz. admin.cbannister.xyz. (; TODO: make this the gateway like bjw-s?
-  3                ; serial number
+  170860594        ; serial number; date +%s
   2h               ; refresh period
   1h               ; retry period
   14d              ; expire time
@@ -15,3 +15,4 @@ ns                       IN  A  10.43.53.9
 
 ; k8s external
 plex                     IN  A  192.168.42.210
+truenas                  IN  A  192.168.42.32
