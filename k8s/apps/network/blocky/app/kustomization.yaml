@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
+  - podmonitor.yaml
 configMapGenerator:
   - name: blocky-config
     files:
