@@ -67,6 +67,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/ceph
+          - name: dns
+            orgId: 1
+            folder: DNS
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/dns
           - name: flux
             orgId: 1
             folder: Flux
