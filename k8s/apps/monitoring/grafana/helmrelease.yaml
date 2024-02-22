@@ -213,6 +213,11 @@ spec:
           gnetId: 13768
           revision: 3
           datasource: Prometheus
+        dnsdist:
+          # renovate: depName="dnsdist dashboard"
+          gnetId: 13692
+          revision: 3
+          datasource: Prometheus
       ceph:
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
