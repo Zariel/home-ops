@@ -13,6 +13,8 @@ $ORIGIN cbannister.xyz.
 @                        IN  NS ns ; TODO: make this gateway?
 ns                       IN  A  10.43.53.9
 
-; k8s external
 plex                     IN  A  192.168.42.210
-nas                  IN  A  192.168.42.32
+nas                      IN  A  192.168.42.32
+pikvm                    IN  A  10.0.1.39
+ropiee                   IN  A  192.168.1.214
+anthem                   IN  A  192.168.1.63
