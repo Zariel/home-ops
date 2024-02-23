@@ -9,9 +9,14 @@ setWebserverConfig({
 })
 setAPIWritable(false)
 
-  newServer({
+newServer({
   address = "10.0.0.1",
   pool = "unifi",
+  checkName = "unifi"
+  maxCheckFailures = 3,
+  rise = 3,
+  healthCheckMode = "auto",
+  checkInterval = 1,
 })
 
 -- Local Bind
@@ -19,6 +24,10 @@ newServer({
   address = "10.43.53.9",
   pool = "bind",
   checkName = "ns.cbannister.xyz"
+  maxCheckFailures = 3,
+  rise = 3,
+  healthCheckMode = "auto",
+  checkInterval = 1,
 })
 
 -- Local Blocky
@@ -26,7 +35,7 @@ newServer({
   address = "10.43.53.10",
   pool = "blocky",
   healthCheckMode = "lazy",
-  checkInterval = 1800,
+  checkInterval = 10,
   maxCheckFailures = 3,
   lazyHealthCheckFailedInterval = 30,
   rise = 2,
@@ -34,7 +43,7 @@ newServer({
   lazyHealthCheckSampleSize = 100,
   lazyHealthCheckMinSampleCount = 10,
   lazyHealthCheckMode = 'TimeoutOnly',
-  useClientSubnet = true
+  useClientSubnet = true,
 })
 -- PiHole will be given requester IP
 setECSSourcePrefixV4(32)
