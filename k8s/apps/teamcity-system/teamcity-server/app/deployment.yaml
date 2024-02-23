@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app teamcity-server
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: *app
+  template:
+    metadata:
+      labels:
+        app: *app
+    spec:
+      volumes:
+        - name: teamcity-data
+          persistentVolumeClaim:
+            claimName: teamcity-data
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: teamcity
+          image: jetbrains/teamcity-server:2023.11.3
+          resources:
+            requests:
+              memory: &ram "2Gi"
+              cpu: "500m"
+            limits:
+              memory: *ram
+          env:
+            - name: TEAMCITY_HTTPS_PROXY_ENABLED
+              value: "true"
+          ports:
+            - containerPort: 8111
+              name: web
+          volumeMounts:
+            - mountPath: /data/teamcity_server/datadir
+              name: teamcity-data
