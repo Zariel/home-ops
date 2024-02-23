@@ -12,7 +12,7 @@ setAPIWritable(false)
 newServer({
   address = "10.0.0.1",
   pool = "unifi",
-  checkName = "unifi"
+  checkName = "unifi",
   maxCheckFailures = 3,
   rise = 3,
   healthCheckMode = "auto",
@@ -23,7 +23,7 @@ newServer({
 newServer({
   address = "10.43.53.9",
   pool = "bind",
-  checkName = "ns.cbannister.xyz"
+  checkName = "ns.cbannister.xyz",
   maxCheckFailures = 3,
   rise = 3,
   healthCheckMode = "auto",
