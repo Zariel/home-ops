@@ -219,7 +219,7 @@ spec:
         dnsdist:
           # renovate: depName="dnsdist"
           gnetId: 18044
-          revision: 3
+          revision: 1
           datasource: Prometheus
         external-dns:
           # renovate: depName="External-dns"
