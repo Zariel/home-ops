@@ -161,11 +161,6 @@ spec:
           revision: 6
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
-        external-dns:
-          # renovate: depName="External-dns"
-          gnetId: 15038
-          revision: 3
-          datasource: Prometheus
         minio:
           # renovate: depName="MinIO Dashboard"
           gnetId: 13502
@@ -222,8 +217,13 @@ spec:
           revision: 3
           datasource: Prometheus
         dnsdist:
-          # renovate: depName="dnsdist dashboard"
-          gnetId: 13692
+          # renovate: depName="dnsdist"
+          gnetId: 18044
+          revision: 3
+          datasource: Prometheus
+        external-dns:
+          # renovate: depName="External-dns"
+          gnetId: 15038
           revision: 3
           datasource: Prometheus
       ceph:
