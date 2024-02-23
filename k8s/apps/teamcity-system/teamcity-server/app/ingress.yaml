@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: teamcity-server
+  labels:
+    name: teamcity-server
+spec:
+  rules:
+    - host: &host teamcity.holywoo.cbannister.xyz
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: teamcity-server
+                port:
+                  name: web
+  tls:
+    - hosts:
+        - *host
