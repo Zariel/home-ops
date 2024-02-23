@@ -28,7 +28,7 @@ spec:
           image: jetbrains/teamcity-server:2023.11.3
           resources:
             requests:
-              memory: &ram "2Gi"
+              memory: &ram "4Gi"
               cpu: "500m"
             limits:
               memory: *ram
