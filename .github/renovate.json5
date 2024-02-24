@@ -12,12 +12,10 @@
     ":timezone(Europe/London)",
     "github>zariel/holywoo//.github/renovate/allowedVersions.json5",
     "github>zariel/holywoo//.github/renovate/autoMerge.json5",
-    "github>zariel/holywoo//.github/renovate/clusters.json5",
     "github>zariel/holywoo//.github/renovate/commitMessage.json5",
     "github>zariel/holywoo//.github/renovate/customManagers.json5",
     "github>zariel/holywoo//.github/renovate/grafanaDashboards.json5",
     "github>zariel/holywoo//.github/renovate/groups.json5",
-    // "github>zariel/holywoo//.github/renovate/labels.json5",
     "github>zariel/holywoo//.github/renovate/packageRules.json5",
     "github>zariel/holywoo//.github/renovate/semanticCommits.json5"
   ],
