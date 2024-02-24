@@ -33,18 +33,18 @@
   ],
   "flux": {
     "fileMatch": [
-      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
     ]
   },
   "helm-values": {
     "fileMatch": [
-      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
     ]
   },
   "kubernetes": {
     "fileMatch": [
       "(^|/)\\.taskfiles/.+\\.ya?ml(\\.j2)?$",
-      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
+      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
     ]
   }
 }
