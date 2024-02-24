@@ -9,6 +9,11 @@ radarr:
   radarr-main:
     base_url: http://radarr-main.default.svc.cluster.local
     api_key: 160014e59d544b86b6a738770abd044f
+    media_naming: &radarr-naming
+      folder: plex
+      movie:
+        rename: true
+        standard: default
 
     quality_profiles:
       - name: &bluray BLURAY-2160p
@@ -234,7 +239,7 @@ radarr:
   radarr-1080p:
     base_url: http://radarr-1080p.default.svc.cluster.local
     api_key: 160014e59d544b86b6a738770abd044f
-
+    media_naming: *radarr-naming
     quality_profiles:
       - name: &remux REMUX-1080p
         score_set: default
