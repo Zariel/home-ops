@@ -28,7 +28,7 @@ spec:
           emptyDir: {}
       initContainers:
         - name: zone-setup
-          image: docker.io/library/alpine:3.14
+          image: docker.io/library/alpine:3.19
           command:
             - /bin/sh
             - -c
