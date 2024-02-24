@@ -8,6 +8,15 @@ quality_definition:
 delete_old_custom_formats: true
 replace_existing_custom_formats: true
 
+media_naming:
+  series: plex
+  season: default
+  episodes:
+    rename: true
+    standard: default
+    daily: default
+    anime: default
+
 # Quality Profiles
 # This section creates and/or updates Quality Profile(s) in your Sonarr instance
 # Documentation: https://recyclarr.dev/wiki/yaml/config-reference/#quality-profiles
