@@ -257,7 +257,7 @@ radarr:
         qualities:
           - name: Remux-1080p
           - name: Bluray-1080p
-          - name: *webdl-1080
+          - *webdl-1080
       - name: &webdl WEBDL-1080p
         upgrade:
           allowed: true
