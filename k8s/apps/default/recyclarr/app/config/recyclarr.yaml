@@ -47,7 +47,9 @@ radarr:
             name: trash
             enabled: false
             qualities:
-              - br-disk
+              - BR-DISK
+              - Raw-HD
+              - Unknown
       - name: &remux REMUX-2160p
         score_set: default
         upgrade:
