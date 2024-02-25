@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/recyclarr/recyclarr/master/schemas/config-schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/recyclarr/recyclarr/v6.0.2/schemas/config-schema.json
 sonarr:
   sonarr-main:
     base_url: http://sonarr-main.default.svc.cluster.local
