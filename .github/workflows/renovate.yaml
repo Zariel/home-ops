@@ -17,6 +17,7 @@ on:
       - main
     paths:
       - .github/renovate.json5
+      - .github/renovate/*
       - .github/workflows/renovate.yaml
 env:
   LOG_LEVEL: debug
