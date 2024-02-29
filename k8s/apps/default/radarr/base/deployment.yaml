@@ -39,7 +39,7 @@ spec:
             - name: DOTNET_gcServer
               value: "1"
             - name: RADARR__POSTGRES_HOST
-              value: postgres
+              value: postgres.cbannsiter.xyz
             - name: RADARR__POSTGRES_USER
               value: holywoo
             - name: RADARR__POSTGRES_PASSWORD
