@@ -42,7 +42,7 @@ spec:
             - name: LIDARR__API_KEY
               value: cc10288c9ceb4698bbf19edb2b606da2
             - name: LIDARR__POSTGRES_HOST
-              value: postgres.holywoo.cbannister.xyz
+              value: postgres.cbannsiter.xyz
             - name: LIDARR__POSTGRES_MAIN_DB
               value: lidarr-main
             - name: LIDARR__POSTGRES_LOG_DB
