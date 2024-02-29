@@ -27,10 +27,6 @@ spec:
     - kind: ConfigMap
       name: coredns-values
   values:
-    replicaCount: 3
-    deployment:
-      annotations:
-        reloader.stakater.com/auto: "true"
     serviceAccount:
       create: true
     servers:
@@ -54,6 +50,8 @@ spec:
               ttl 30
           - name: prometheus
             parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: cbannister.xyz 10.43.53.9
           - name: forward
             parameters: . /etc/resolv.conf
           - name: cache
