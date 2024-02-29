@@ -19,5 +19,5 @@ pikvm                    IN  A  10.0.1.39
 ropiee                   IN  A  192.168.1.214
 anthem                   IN  A  192.168.1.63
 
-# server things
+; servers
 postgres                 IN  A  10.1.1.41
