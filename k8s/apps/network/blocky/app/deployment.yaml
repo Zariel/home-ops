@@ -1,17 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blocky
+  name: &name blocky
 spec:
   selector:
     matchLabels:
-      app: blocky
-  replicas: 1
+      app: *name
+  replicas: 2
   template:
     metadata:
       labels:
-        app: blocky
+        app: *name
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: *name
       volumes:
         - name: blocky-config
           configMap:
@@ -39,3 +46,11 @@ spec:
             - mountPath: /app/config.yml
               name: blocky-config
               subPath: config.yml
+          livenessProbe: &probe
+            exec:
+              command:
+                - /app/blocky
+                - healthcheck
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe: *probe
