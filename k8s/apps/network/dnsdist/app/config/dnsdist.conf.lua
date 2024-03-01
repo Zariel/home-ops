@@ -76,7 +76,7 @@ pc = newPacketCache(1000000, {
   staleTTL = 60,
   dontAge = false
 })
-getPool("blocky"):setCache(pc)
+-- getPool("blocky"):setCache(pc)
 getPool("cloudflare"):setCache(pc)
 
 addAction(AllRule(), LogAction("", false, false, true, false, false))
@@ -87,5 +87,5 @@ addAction('cbannister.xyz', PoolAction('bind'))
 addAction('unifi', PoolAction('unifi'))
 
 addAction("10.0.0.0/21", PoolAction("cloudflare"))  -- lan
-addAction("192.168.1.0/24", PoolAction("blocky"), PoolAction("cloudflare"))   -- home vlan
+addAction("192.168.1.0/24", PoolAction("blocky"))   -- home vlan
 addAction("192.168.42.0/24", PoolAction("cloudflare"))  -- servers vlan
