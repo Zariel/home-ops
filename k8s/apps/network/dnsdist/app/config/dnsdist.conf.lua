@@ -79,8 +79,8 @@ pc = newPacketCache(1000000, {
 -- getPool("blocky"):setCache(pc)
 getPool("cloudflare"):setCache(pc)
 
-addAction(AllRule(), LogAction("", false, false, true, false, false))
-addResponseAction(AllRule(), LogResponseAction("", false, true, false, false))
+-- addAction(AllRule(), LogAction("", false, false, true, false, false))
+-- addResponseAction(AllRule(), LogResponseAction("", false, true, false, false))
 
 -- this will send this domain to the bind server
 addAction('cbannister.xyz', PoolAction('bind'))
