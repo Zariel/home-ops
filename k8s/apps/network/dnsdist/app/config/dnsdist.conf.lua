@@ -69,19 +69,23 @@ newServer({
 })
 
 -- Enable caching
-pc = newPacketCache(10000, {
+pc = newPacketCache(1000000, {
   maxTTL = 86400,
   minTTL = 0,
   temporaryFailureTTL = 60,
   staleTTL = 60,
   dontAge = false
 })
-getPool(""):setCache(pc)
+getPool("blocky"):setCache(pc)
+getPool("cloudflare"):setCache(pc)
+
+addAction(AllRule(), LogAction("", false, false, true, false, false))
+addResponseAction(AllRule(), LogResponseAction("", false, true, false, false))
 
 -- this will send this domain to the bind server
 addAction('cbannister.xyz', PoolAction('bind'))
 addAction('unifi', PoolAction('unifi'))
 
 addAction("10.0.0.0/21", PoolAction("cloudflare"))  -- lan
-addAction("192.168.1.0/24", PoolAction("blocky"))   -- home vlan
+addAction("192.168.1.0/24", PoolAction("blocky"), PoolAction("cloudflare"))   -- home vlan
 addAction("192.168.42.0/24", PoolAction("cloudflare"))  -- servers vlan
