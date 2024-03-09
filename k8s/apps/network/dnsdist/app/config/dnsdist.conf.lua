@@ -84,6 +84,7 @@ getPool("cloudflare"):setCache(pc)
 
 -- this will send this domain to the bind server
 addAction('cbannister.xyz', PoolAction('bind'))
+addAction('cbannister.casa', PoolAction('bind'))
 addAction('unifi', PoolAction('unifi'))
 
 addAction("10.0.0.0/21", PoolAction("cloudflare"))  -- lan
