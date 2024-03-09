@@ -11,7 +11,7 @@ $ORIGIN cbannister.casa.
 
 ; NS Records
 @                        IN  NS ns
-ns                       IN  A  gateway.cbannister.casa.
+ns                       IN  CNAME  gateway.cbannister.casa.
 
 ; LAN
 gateway                  IN  A  10.1.0.1
