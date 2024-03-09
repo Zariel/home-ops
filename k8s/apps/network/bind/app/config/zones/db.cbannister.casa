@@ -11,7 +11,10 @@ $ORIGIN cbannister.casa.
 
 ; NS Records
 @                        IN  NS ns
-ns                       IN  A  gateway.bjw-s.casa
+ns                       IN  A  gateway.cbannister.casa.
+
+; LAN
+gateway                  IN  A  10.1.0.1
 
 nas                      IN  A  192.168.42.32
 ropiee                   IN  A  192.168.1.214
@@ -20,3 +23,4 @@ anthem                   IN  A  192.168.1.63
 ; servers
 postgres                 IN  A  10.1.1.41
 pikvm                    IN  A  10.1.1.50
+pve                      IN  A  10.1.1.31
