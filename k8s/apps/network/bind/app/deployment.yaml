@@ -38,6 +38,23 @@ spec:
               name: bind-zones
             - mountPath: /var/lib/bind
               name: zone-files
+        - name: validate-config
+          image: docker.io/internetsystemsconsortium/bind9:9.19
+          command:
+            - /usr/sbin/named-checkconf
+            - -z
+            - /etc/bind/named.conf
+          volumeMounts:
+            - mountPath: /etc/bind/named.conf
+              name: bind-config
+              subPath: named.conf
+            - mountPath: /etc/bind/externaldns.key
+              name: bind-config
+              subPath: externaldns.key
+            - mountPath: /var/cache/bind
+              name: bind-cache
+            - mountPath: /var/lib/bind
+              name: zone-files
       containers:
         - name: bind
           image: docker.io/internetsystemsconsortium/bind9:9.19
