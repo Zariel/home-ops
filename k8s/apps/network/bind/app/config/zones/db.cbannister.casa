@@ -1,7 +1,7 @@
 ; SOA Records
 $TTL 1h
-$ORIGIN cbannister.xyz.
-@ IN SOA ns.cbannister.xyz. admin.cbannister.xyz. (; TODO: make this the gateway like bjw-s?
+$ORIGIN cbannister.casa.
+@ IN SOA ns.cbannister.casa. admin.cbannister.casa. (; TODO: make this the gateway like bjw-s?
   1708606198        ; serial number; date +%s
   2h               ; refresh period
   1h               ; retry period
@@ -10,11 +10,12 @@ $ORIGIN cbannister.xyz.
 )
 
 ; NS Records
-@                        IN  NS ns ; TODO: make this gateway?
-ns                       IN  A  10.43.53.9
+@                        IN  NS ns
+ns                       IN  A  gateway.bjw-s.casa
 
 nas                      IN  A  192.168.42.32
 ropiee                   IN  A  192.168.1.214
+anthem                   IN  A  192.168.1.63
 
 ; servers
 postgres                 IN  A  10.1.1.41
