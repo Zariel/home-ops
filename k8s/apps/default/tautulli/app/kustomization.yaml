@@ -4,4 +4,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 resources:
-  - ./helmrelease.yaml
+  - statefulset.yaml
+  - service.yaml
+  - ingress.yaml
+configMapGenerator:
+  - name: tautulli-scripts
+    files:
+      - scripts/select_tmdb_poster.py
+labels:
+  - pairs:
+      app.kubernetes.io/name: tautulli
+    includeSelectors: true
+    includeTemplates: true
