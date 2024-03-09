@@ -41,7 +41,7 @@ spec:
         - name: validate-config
           image: docker.io/internetsystemsconsortium/bind9:9.19
           command:
-            - /usr/sbin/named-checkconf
+            - /usr/bin/named-checkconf
             - -z
             - /etc/bind/named.conf
           volumeMounts:
