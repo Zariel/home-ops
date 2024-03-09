@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tautulli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tautulli
+  serviceName: tautulli
+  template:
+    spec:
+      containers:
+        - name: tautulli
+          env:
+            - name: TZ
+              value: Europe/London
+          image: ghcr.io/onedr0p/tautulli:2.13.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8181
+              name: http
+              protocol: TCP
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              cpu: 10m
+              memory: 250Mi
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8181
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8181
+            timeoutSeconds: 1
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 5
+            successThreshold: 1
+            tcpSocket:
+              port: 8181
+            timeoutSeconds: 1
+          volumeMounts:
+            - mountPath: /add-ons
+              name: add-ons
+            - mountPath: /config
+              name: config
+            - mountPath: /scripts
+              name: scripts
+        - name: jbops
+          image: registry.k8s.io/git-sync/git-sync:v4.2.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - --repo=https://github.com/blacktwin/JBOPS
+            - --ref=master
+            - --period=24h
+            - --root=/add-ons
+          volumeMounts:
+            - mountPath: /add-ons
+              name: add-ons
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 568
+        runAsUser: 568
+      volumes:
+        - emptyDir: {}
+          name: add-ons
+        - name: scripts
+          configMap:
+            name: tautulli-scripts
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: ceph-block
+        volumeMode: Filesystem
