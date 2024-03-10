@@ -19,3 +19,6 @@ ropiee                   IN  A  192.168.1.214
 ; servers
 postgres                 IN  A  10.1.1.41
 pikvm                    IN  A  10.1.1.50
+
+plex                     IN  A  192.168.42.210
+jellyfin                 IN  A  192.168.42.211
