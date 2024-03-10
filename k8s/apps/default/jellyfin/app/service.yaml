@@ -13,3 +13,11 @@ spec:
       port: 8096
       targetPort: web
       protocol: TCP
+    - name: discovery-1
+      port: 1900
+      targetPort: discovery-1
+      protocol: UDP
+    - name: discovery-2
+      port: 7359
+      targetPort: discovery-2
+      protocol: UDP
