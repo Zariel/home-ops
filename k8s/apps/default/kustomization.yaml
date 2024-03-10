@@ -9,6 +9,7 @@ resources:
   - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
   - ./storage
+  - ./jellyfin
   - ./tautulli/ks.yaml
   - ./unpackerr
   - ./secrets
