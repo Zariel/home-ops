@@ -88,6 +88,6 @@ addAction('cbannister.casa', PoolAction('bind'))
 addAction('unifi', PoolAction('unifi'))
 
 addAction("10.0.0.0/21", PoolAction("cloudflare"))  -- lan
-addAction("192.168.1.0/24", PoolAction("blocky"))   -- home vlan
+addAction("10.1.2.0/24", PoolAction("blocky"))   -- home vlan
 addAction("192.168.42.0/24", PoolAction("cloudflare"))  -- servers vlan
 addAction("10.1.3.1/24", PoolAction("blocky"))  -- iot
