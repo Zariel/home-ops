@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+spec:
+  selector:
+    app: jellyfin
+  type: ClusterIP
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      port: 8096
+      targetPort: web
+      protocol: TCP
