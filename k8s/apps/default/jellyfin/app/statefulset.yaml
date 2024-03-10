@@ -29,8 +29,6 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-      nodeSelector:
-        nas: local
       volumes:
         - name: transcode
           emptyDir: {}
@@ -44,10 +42,6 @@ spec:
           env:
             - name: TZ
               value: Europe/London
-            - name: NVIDIA_VISIBLE_DEVICES
-              value: all
-            - name: NVIDIA_DRIVER_CAPABILITIES
-              value: "compute,video,utility"
           resources:
             requests:
               cpu: 250m
