@@ -15,26 +15,14 @@ k8s:
           ansible_host: 192.168.42.10
           mac_addr: ec:8e:b5:70:ca:20
           ipv4: 192.168.42.10
-          ipv6: 2a01:4b00:847b:6042:cafe::10
-          interface: eno1
-          ceph_drives:
-            - /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNF0W500321X
         k8s-1:
           ansible_host: 192.168.42.11
           mac_addr: c4:65:16:19:a0:94
           ipv4: 192.168.42.11
-          ipv6: 2a01:4b00:847b:6042:cafe::11
-          interface: eno1
-          ceph_drives:
-            - /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNX1W422786N
         k8s-2:
           ansible_host: 192.168.42.12
           mac_addr: ec:8e:b5:70:f6:59
           ipv4: 192.168.42.12
-          ipv6: 2a01:4b00:847b:6042:cafe::12
-          interface: eno1
-          ceph_drives:
-            - /dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNX1W545418F
     worker:
       vars:
         matchbox_profile: talos-worker
@@ -44,20 +32,10 @@ k8s:
           mac_addr: f6:45:04:c6:96:e0 # mellanox
           pxe_mac_addr: bc:24:11:da:2b:0a # pve
           ipv4: 192.168.42.13
-          ipv6: 2a01:4b00:847b:6042:cafe::13
-          interface: enp3s0
-          nvidia_gpu: true
-          ceph_drives:
-            - /dev/disk/by-id/nvme-Samsung_SSD_980_1TB_S649NL0W389115D
-          uuid: 8ae7158c-cc42-4c44-9044-9bac58bf73d5
         k8s-4:
           ansible_host: 192.168.42.14
           mac_addr: 48:21:0b:56:ac:6c
           ipv4: 192.168.42.14
-          ipv6: 2a01:4b00:847b:6042:cafe::14
-          interface: enp114s0
-          ceph_drives:
-            - /dev/disk/by-id/nvme-KINGSTON_SNV2S2000G_50026B7785529A0A
 ungrouped:
   hosts:
     matchbox:
