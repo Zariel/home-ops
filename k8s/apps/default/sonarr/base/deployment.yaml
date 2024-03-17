@@ -41,7 +41,7 @@ spec:
             - name: SONARR__API_KEY
               value: e5434fb6e4c04bc5a797103d41714d38
             - name: SONARR__POSTGRES_HOST
-              value: postgres.cbannister.xyz
+              value: postgres.cbannister.casa
             - name: SONARR__POSTGRES_USER
               value: holywoo
             - name: SONARR__POSTGRES_PASSWORD
