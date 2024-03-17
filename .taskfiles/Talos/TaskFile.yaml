@@ -66,3 +66,34 @@ tasks:
       vars: ["cluster"]
     preconditions:
       - talosctl config get-contexts | grep {{.cluster}}
+
+  upgrade:
+    desc: Upgrade Talos on a node
+    cmd: bash {{.TALOS_SCRIPTS_DIR}}/upgrade.sh "{{.node}}" "{{.TALOS_SCHEMATIC_ID}}:{{.TALOS_VERSION}}" "{{.rollout}}"
+    vars:
+      rollout: '{{.rollout | default "false"}}'
+    requires:
+      vars: ["node"]
+    preconditions:
+      - talosctl config info >/dev/null 2>&1
+      - talosctl --nodes {{.node}} get machineconfig >/dev/null 2>&1
+
+  upgrade-rollout:
+    desc: Rollout Talos upgrade on all nodes
+    cmds:
+      - flux suspend kustomization --all
+      - for: { var: nodes, split: "," }
+        task: upgrade
+        vars:
+          node: "{{.ITEM}}"
+          rollout: "true"
+      - kubectl cnpg maintenance unset --reusePVC --all-namespaces
+      - flux resume kustomization --all
+      - task: :kubernetes:delete-failed-pods
+
+    vars:
+      nodes:
+        sh: talosctl config info --output json | jq --join-output '[.nodes[]] | join(",")'
+    preconditions:
+      - talosctl config info >/dev/null 2>&1
+      - talosctl --nodes {{.nodes}} get machineconfig >/dev/null 2>&1
