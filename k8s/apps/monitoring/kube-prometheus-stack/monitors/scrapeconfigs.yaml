@@ -6,7 +6,6 @@ metadata:
     prometheus: system-monitoring-prometheus
 spec:
   staticConfigs:
-    - labels:
-        job: node-exporter-servers
-      targets:
-        - 10.0.1.100:9100
+    - targets:
+        - gateway.cbannister.casa:9100
+  metricsPath: /metrics
