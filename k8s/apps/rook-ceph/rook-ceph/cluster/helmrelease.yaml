@@ -132,6 +132,15 @@ spec:
           metadataServer:
             activeCount: 1
             activeStandby: true
+            labels: &filesystem-spread-labels
+              app.kubernetes.io/instance: rook-ceph-filesystem-metadata
+            placement:
+              topologySpreadConstraints:
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchLabels: *filesystem-spread-labels
             resources:
               requests:
                 cpu: 100m
