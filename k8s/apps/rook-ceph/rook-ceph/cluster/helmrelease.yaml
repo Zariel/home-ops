@@ -119,7 +119,7 @@ spec:
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
     cephFileSystems:
-      - name: ceph-filesystem
+      - name: &filesystem-name ceph-filesystem
         spec:
           metadataPool:
             replicated:
@@ -132,15 +132,15 @@ spec:
           metadataServer:
             activeCount: 1
             activeStandby: true
-            labels: &filesystem-spread-labels
-              app.kubernetes.io/instance: rook-ceph-filesystem-metadata
             placement:
               topologySpreadConstraints:
                 - maxSkew: 1
                   topologyKey: kubernetes.io/hostname
                   whenUnsatisfiable: DoNotSchedule
                   labelSelector:
-                    matchLabels: *filesystem-spread-labels
+                    matchLabels:
+                      app.kubernetes.io/name: ceph-mds
+                      app.kubernetes.io/part-of: *filesystem-name
             resources:
               requests:
                 cpu: 100m
