@@ -100,7 +100,7 @@ spec:
         spec:
           failureDomain: host
           replicated:
-            size: 5
+            size: 3
         storageClass:
           enabled: true
           name: ceph-block
