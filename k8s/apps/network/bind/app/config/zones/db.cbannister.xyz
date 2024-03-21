@@ -13,7 +13,6 @@ $ORIGIN cbannister.xyz.
 @                        IN  NS ns ; TODO: make this gateway?
 ns                       IN  A  10.43.53.9
 
-nas                      IN  A  192.168.42.32
 ropiee                   IN  A  192.168.1.214
 
 ; servers
