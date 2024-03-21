@@ -21,7 +21,7 @@ spec:
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: holywoo.cbannister.xyz
-          io.cilium/lb-ipam-ips: 192.168.42.200
+          io.cilium/lb-ipam-ips: 10.42.0.10
         externalTrafficPolicy: Cluster
       ingressClassResource:
         name: internal
