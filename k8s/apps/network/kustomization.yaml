@@ -9,5 +9,3 @@ resources:
   - ./echo-server/ks.yaml
   # - ./tailscale
   - ./bind/ks.yaml
-  - ./blocky/ks.yaml
-  - ./dnsdist/ks.yaml
