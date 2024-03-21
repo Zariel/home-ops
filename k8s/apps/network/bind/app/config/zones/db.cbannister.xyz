@@ -14,4 +14,4 @@ $ORIGIN cbannister.xyz.
 ns                       IN  A  10.43.53.9
 
 plex                     IN  A  10.42.0.20
-jellyfin                 IN  A  10.42.0.21
+jellyfin.holywoo         IN  A  10.42.0.21
