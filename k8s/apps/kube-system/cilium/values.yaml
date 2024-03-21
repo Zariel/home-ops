@@ -2,6 +2,8 @@ autoDirectNodeRoutes: true
 bandwidthManager:
   enabled: true
   bbr: true
+bgpControlPlane:
+  enabled: true
 bpf:
   masquerade: true
   vlanBypass: "0"
