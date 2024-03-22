@@ -3,10 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: recyclarr-config
 spec:
-  storageClassName: ceph-block
+  storageClassName: ceph-fileystem
   resources:
     requests:
       storage: 1Gi
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
