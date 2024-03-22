@@ -13,11 +13,11 @@ spec:
         name: config
       spec:
         accessModes:
-          - ReadWriteOnce
+          - ReadWriteMany
         resources:
           requests:
             storage: 100Gi
-        storageClassName: ceph-block
+        storageClassName: ceph-filesystem
         volumeMode: Filesystem
   template:
     metadata:
