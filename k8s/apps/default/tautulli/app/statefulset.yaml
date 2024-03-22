@@ -85,9 +85,9 @@ spec:
         name: config
       spec:
         accessModes:
-          - ReadWriteMany
+          - ReadWriteOnce
         resources:
           requests:
             storage: 5Gi
-        storageClassName: ceph-filesystem
+        storageClassName: ceph-block
         volumeMode: Filesystem

@@ -17,7 +17,7 @@ spec:
         resources:
           requests:
             storage: 50Gi
-        storageClassName: ceph-filesystem
+        storageClassName: ceph-block
         volumeMode: Filesystem
   template:
     metadata:
