@@ -40,7 +40,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: ceph-block
+          storageClassName: openebs-hostpath
           resources:
             requests:
               storage: 20Gi
@@ -101,9 +101,9 @@ kubeApiServer:
 kubeControllerManager:
   enabled: true
   endpoints: &cp
-    - 10.1.1.10
-    - 10.1.1.11
-    - 10.1.1.12
+    - 192.168.42.10
+    - 192.168.42.11
+    - 192.168.42.12
   serviceMonitor:
     metricRelabelings:
       # Remove duplicate labels provided by k3s
