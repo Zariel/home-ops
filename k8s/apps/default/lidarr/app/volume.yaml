@@ -50,10 +50,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: lidarr-config
 spec:
-  storageClassName: ceph-block
+  storageClassName: ceph-filesystem
   resources:
     requests:
       storage: 1Gi
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
