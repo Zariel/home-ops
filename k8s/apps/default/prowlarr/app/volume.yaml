@@ -3,10 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: prowlarr-config
 spec:
-  storageClassName: ceph-filesystem
+  storageClassName: ceph-block
   resources:
     requests:
       storage: 1G
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
