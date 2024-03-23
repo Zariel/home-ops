@@ -14,7 +14,7 @@ releases:
     version: 1.15.2
     wait: true
     values:
-      - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/cilium/app/values.yaml'
+      - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/cilium/values.yaml'
   - name: coredns
     namespace: kube-system
     chart: coredns/coredns
