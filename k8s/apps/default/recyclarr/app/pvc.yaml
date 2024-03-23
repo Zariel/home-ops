@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: recyclarr-config
 spec:
-  storageClassName: ceph-fileystem
+  storageClassName: ceph-filesystem
   resources:
     requests:
       storage: 1Gi
