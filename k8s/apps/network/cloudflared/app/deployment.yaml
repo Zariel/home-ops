@@ -15,10 +15,10 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: cloudflared-configmap
+            name: cloudflared-config
         - name: creds
           secret:
-            secretName: cloudflared-secret
+            secretName: cloudflared-tunnel-secret
       containers:
         - name: cloudflared
           image: docker.io/cloudflare/cloudflared:2024.3.0
