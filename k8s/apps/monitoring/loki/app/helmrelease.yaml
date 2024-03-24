@@ -205,23 +205,23 @@ spec:
       enabled: false
 
   valuesFrom:
-    - targetPath: objstoreConfig.config.bucket
+    - targetPath: loki.structuredConfig.common.storage.s3.bucketnames
       kind: ConfigMap
       name: loki-bucket
       valuesKey: BUCKET_NAME
-    - targetPath: objstoreConfig.config.endpoint
+    - targetPath: loki.structuredConfig.common.storage.s3.endpoint
       kind: ConfigMap
       name: loki-bucket
       valuesKey: BUCKET_HOST
-    - targetPath: objstoreConfig.config.region
+    - targetPath: loki.structuredConfig.common.storage.s3.region
       kind: ConfigMap
       name: loki-bucket
       valuesKey: BUCKET_REGION
-    - targetPath: objstoreConfig.config.access_key
+    - targetPath: loki.structuredConfig.common.storage.s3.access_key_id
       kind: Secret
       name: loki-bucket
       valuesKey: AWS_ACCESS_KEY_ID
-    - targetPath: objstoreConfig.config.secret_key
+    - targetPath: loki.structuredConfig.common.storage.s3.secret_access_key
       kind: Secret
       name: loki-bucket
       valuesKey: AWS_SECRET_ACCESS_KEY
