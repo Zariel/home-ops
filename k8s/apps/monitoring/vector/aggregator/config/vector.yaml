@@ -8,7 +8,7 @@ api:
 enrichment_tables:
   geoip_table:
     type: geoip
-    path: /usr/share/GeoIP/GeoLite2-City.mmdb
+    path: /usr/share/GeoIP/GeoLite2-Country.mmdb
 
 # Sources
 sources:
@@ -122,7 +122,7 @@ sinks:
 
   loki_journal:
     type: loki
-    endpoint: http://loki-gateway.monitoring.svc.cluster.local.
+    endpoint: http://loki-gateway.monitoring.svc.cluster.local
     encoding:
       codec: json
     inputs:
