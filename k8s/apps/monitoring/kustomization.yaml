@@ -7,3 +7,4 @@ resources:
   - ./grafana
   - ./thanos/ks.yaml
   - ./loki/ks.yaml
+  - ./vector/ks.yaml

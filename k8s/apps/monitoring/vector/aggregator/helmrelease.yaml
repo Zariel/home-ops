@@ -1,0 +1,105 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: vector-aggregator
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 3.0.4
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  interval: 30m
+  values:
+    controllers:
+      vector-aggregator:
+        replicas: 1
+        strategy: Recreate
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: vector-aggregator
+
+        initContainers:
+          init-geoip:
+            image:
+              repository: ghcr.io/maxmind/geoipupdate
+              tag: v6.1
+              pullPolicy: IfNotPresent
+            env:
+              - name: GEOIPUPDATE_EDITION_IDS
+                value: GeoLite2-City
+              - name: GEOIPUPDATE_FREQUENCY
+                value: "0"
+              - name: GEOIPUPDATE_VERBOSE
+                value: "true"
+            envFrom:
+              - secretRef:
+                  name: vector-maxmind
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/vector
+              tag: 0.34.1-debian
+            args:
+              - "--config"
+              - "/etc/vector/vector.yaml"
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+
+    service:
+      app:
+        controller: vector-aggregator
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "vector.bjw-s.dev"
+          io.cilium/lb-ipam-ips: "10.45.0.2"
+        externalTrafficPolicy: Cluster
+        ports:
+          http:
+            port: 8686
+          kubernetes-logs:
+            port: 6000
+          vyos-syslog:
+            port: 6001
+          journald-logs:
+            port: 6002
+
+    persistence:
+      config:
+        type: configMap
+        name: vector-aggregator-configmap
+        globalMounts:
+          - path: /etc/vector/vector.yaml
+            subPath: vector.yaml
+            readOnly: true
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /vector-data-dir
+      geoip:
+        type: emptyDir
+        globalMounts:
+          - path: /usr/share/GeoIP
