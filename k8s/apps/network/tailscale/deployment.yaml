@@ -33,7 +33,7 @@ spec:
                   name: tailscale-auth
                   key: authkey
             - name: TS_ROUTES
-              value: 192.168.1.0/24,10.0.0.0/21,10.42.0.0/24
+              value: 192.168.1.0/24,10.0.0.0/21,10.45.0.0/24
             - name: TS_EXTRA_ARGS
               value: "--advertise-exit-node"
           securityContext:
