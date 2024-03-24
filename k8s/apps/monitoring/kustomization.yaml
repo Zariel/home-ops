@@ -6,3 +6,4 @@ resources:
   - ./unpoller
   - ./grafana
   - ./thanos/ks.yaml
+  - ./loki/ks.yaml
