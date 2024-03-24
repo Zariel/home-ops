@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: vector-maxmind
+type: Opaque
+data:
+    GEOIPUPDATE_ACCOUNT_ID: ENC[AES256_GCM,data:T6iZac8h,iv:wqyxS5lBFBqCt+W1/5E+Zr+lspmAPgwU94cu57HRk7s=,tag:zEcP4jcWfK4cVzJ4BjUerg==,type:str]
+    GEOIPUPDATE_LICENSE_KEY: ENC[AES256_GCM,data:i7VI5683Keh1nRDeVzTt6hjrvzwtODKTNpJBxhNgy/lkkqOBZgQdmQ==,iv:gvfq3fOjhi973RNUxA3XZ5i0F5ZXC9TM2J4P7wrhv6Q=,tag:tcnaVx7kt0p/azAyHr9X6g==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1865axnecqy9eccq9fzhpwkz3nkf0sxfeurva6rquyktplhzssv2s32kv5w
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1ODhjbnN3UmRubnVYaEhX
+            SEZ4eld1UExsMkovVEYwNHdnaFpFQ1hNZFg4CkFhQmMrUHoxcnJteWFlVDM2d3Fa
+            VjM1YUFMSVdjTThBTHB2c04zL2YzSU0KLS0tIDFUT1dYM3RlVFBZSFYyR1o4V1hK
+            bmtEVDErYXMzNkQzY05zUUQ2dm5OTGcKupARh5o+EbMOh2xQbiNp6/OwV/ZWhqBc
+            kHzYphyae5Xku9+eUf8oshHsfiN+JZaAy5Brnyc9ETUffnECV5xoKQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-03-24T20:05:19Z"
+    mac: ENC[AES256_GCM,data:85tHxl1rDCF+gnQcevY49UN1P7UbqIpc2R6k4yKd5HcdbfWiG90x+jxVT7NkFC7dWuEwuo78svxyX6PQQ+tfe1eXpb9Slt5vlY+Ws7Ti/OPkewe4Kz0WU/T85jI57UP8EI8RfHjq8QEMthqo1fuRXoZRsSwJ1ZoGfJfxNMZGWM0=,iv:E2d2apvg27VwHnv5UoJR92qwuRuMBrKYHmCcb9e/VLI=,tag:Ggod84uVI8AU4PZedfSNpw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.8.1
