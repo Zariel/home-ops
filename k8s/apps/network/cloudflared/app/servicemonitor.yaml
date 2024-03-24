@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cloudflared
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: metrics
+      scheme: http
+      scrapeTimeout: 10s
+  jobLabel: cloudflared
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cloudflared
+  namespaceSelector:
+    matchNames:
+      - network
