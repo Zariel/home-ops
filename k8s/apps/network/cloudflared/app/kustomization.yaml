@@ -5,8 +5,7 @@ kind: Kustomization
 namespace: network
 labels:
   - pairs:
-      - key: app.kubernetes.io/name
-        value: cloudflared
+      app.kubernetes.io/name: cloudflared
 resources:
   - dnsendpoint.yaml
   - deployment.yaml
