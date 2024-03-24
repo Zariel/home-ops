@@ -41,7 +41,7 @@ spec:
               value: "true"
           volumeMounts:
             - mountPath: /etc/cloudflared/config/config.yaml
-              name: config.yaml
+              name: config
               subPath: config.yaml
             - mountPath: /etc/cloudflared/creds/credentials.json
               name: creds
