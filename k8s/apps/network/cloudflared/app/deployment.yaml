@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app cloudflared
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: *app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: cloudflared-configmap
+        - name: creds
+          secret:
+            secretName: cloudflared-secret
+      containers:
+        - name: cloudflared
+          image: docker.io/cloudflare/cloudflared:2024.3.0
+          args:
+            - tunnel
+            - --config
+            - /etc/cloudflared/config/config.yaml
+            - run
+            - "${CLUSTER_CLOUDFLARE_TUNNEL_ID}"
+          env:
+            - name: NO_AUTOUPDATE
+              value: "true"
+            - name: TUNNEL_CRED_FILE
+              value: /etc/cloudflared/creds/credentials.json
+            - name: TUNNEL_METRICS
+              value: 0.0.0.0:8080
+            - name: TUNNEL_TRANSPORT_PROTOCOL
+              value: quic
+            - name: TUNNEL_POST_QUANTUM
+              value: "true"
+          volumeMounts:
+            - mountPath: /etc/cloudflared/config/config.yaml
+              name: config.yaml
+              subPath: config.yaml
+            - mountPath: /etc/cloudflared/creds/credentials.json
+              name: creds
+              subPath: credentials.sops.json
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 5m
+              memory: &memory 128M
+            limits:
+              memory: *memory
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
