@@ -46,7 +46,7 @@ spec:
             - name: TZ
               value: Europe/London
             - name: PLEX_ADVERTISE_URL
-              value: https://plex.cbannister.xyz:443,http://10.42.0.20:32400
+              value: https://plex.cbannister.xyz:443,http://10.45.0.20:32400
             - name: PLEX_NO_AUTH_NETWORKS
               value: 192.168.1.0/24
             - name: NVIDIA_VISIBLE_DEVICES
