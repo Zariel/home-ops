@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: onepassword
+  labels:
+    name: onepassword
+spec:
+  rules:
+    - host: &host onepassword.holywoo.cbannister.xyz
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: onepassword
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - *host
