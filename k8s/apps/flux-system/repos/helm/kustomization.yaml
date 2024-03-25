@@ -20,3 +20,4 @@ resources:
   - ./xenitab.yaml
   - ./openebs.yaml
   - ./postfinance.yaml
+  - ./external-secrets.yaml

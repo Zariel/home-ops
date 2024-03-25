@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &name onepassword
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: *name
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: *name
+    spec:
+      volumes:
+        - name: config
+          emptyDir: {}
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        runAsNonRoot: true
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: onepassword-connect
+          image: docker.io/1password/connect-api:1.7.2
+          env:
+            - name: XDG_DATA_HOME
+              value: &configDir /config
+            - name: OP_HTTP_PORT
+              value: "8080"
+            - name: OP_BUS_PORT
+              value: "11220"
+            - name: OP_BUS_PEERS
+              value: localhost:11221
+            - name: OP_SESSION
+              valueFrom:
+                secretKeyRef:
+                  name: onepassword-connect-secret
+                  key: onepassword-credentials.json
+          ports:
+            - containerPort: 8080
+              name: api
+          resources: &resources
+            requests:
+              cpu: 10m
+              memory: &memory 256Mi
+            limits:
+              memory: *memory
+          volumeMounts:
+            - mountPath: *configDir
+              name: config
+          securityContext: &securityContext
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          livenessProbe:
+            httpGet:
+              path: /heartbeat
+              port: api
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: api
+            initialDelaySeconds: 15
+        - name: onepassword-sync
+          image: docker.io/1password/connect-sync:1.7.2
+          env:
+            - name: XDG_DATA_HOME
+              value: &configDir /config
+            - name: OP_HTTP_PORT
+              value: "8081"
+            - name: OP_BUS_PORT
+              value: "11221"
+            - name: OP_BUS_PEERS
+              value: localhost:11220
+            - name: OP_SESSION
+              valueFrom:
+                secretKeyRef:
+                  name: onepassword-connect-secret
+                  key: onepassword-credentials.json
+          ports:
+            - containerPort: 8081
+              name: sync
+          resources: *resources
+          volumeMounts:
+            - mountPath: *configDir
+              name: config
+          securityContext: *securityContext
+          livenessProbe:
+            httpGet:
+              path: /heartbeat
+              port: sync
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: sync
+            initialDelaySeconds: 15

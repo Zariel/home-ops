@@ -1,0 +1,6 @@
+nameReference:
+  - kind: Secret
+    version: v1
+    fieldSpecs:
+      - path: spec/provider/onepassword/auth/secretRef/connectTokenSecretRef/name
+        kind: ClusterSecretStore
