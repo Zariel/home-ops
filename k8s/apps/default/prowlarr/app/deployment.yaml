@@ -38,7 +38,7 @@ spec:
               readOnly: true
       containers:
         - name: prowlarr
-          image: ghcr.io/onedr0p/prowlarr-develop:1.14.3.4333
+          image: ghcr.io/onedr0p/prowlarr-develop:1.15.0.4361
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
