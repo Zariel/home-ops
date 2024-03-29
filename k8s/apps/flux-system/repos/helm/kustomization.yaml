@@ -21,3 +21,4 @@ resources:
   - ./openebs.yaml
   - ./postfinance.yaml
   - ./external-secrets.yaml
+  - ./stevehipwell.yaml
