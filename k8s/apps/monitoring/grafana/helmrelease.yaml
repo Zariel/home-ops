@@ -126,7 +126,7 @@ spec:
             type: prometheus
             uid: prometheus
             access: proxy
-            url: http://thanos-query-frontend.monitoring.svc.cluster.local:9090
+            url: http://thanos-query-frontend.monitoring.svc.cluster.local:10902
             jsonData:
               prometheusType: Thanos
             isDefault: true
@@ -165,6 +165,9 @@ spec:
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
           datasource: Prometheus
+        dragonfly:
+          url: https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
+          datasource: Prometheus
         external-secrets:
           url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
           datasource: Prometheus
@@ -172,7 +175,7 @@ spec:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: Prometheus
         speedtest-exporter-hub:
-          # renovate: dashboardName="Speedtest-Exporter Dashboard"
+          # renovate: depName="Speedtest-Exporter Dashboard"
           gnetId: 13665
           revision: 4
           datasource:
@@ -180,7 +183,7 @@ spec:
               value: Prometheus
       dns:
         blocky:
-          # renovate: dashboardName="blocky"
+          # renovate: depName="blocky"
           gnetId: 13768
           revision: 3
           datasource:
@@ -223,32 +226,32 @@ spec:
           datasource: Prometheus
       kubernetes:
         k8s-system-api-server:
-          # renovate: dashboardName="Kubernetes / System / API Server"
+          # renovate: depName="Kubernetes / System / API Server"
           gnetId: 15761
           revision: 16
           datasource: Prometheus
         k8s-views-global:
-          # renovate: dashboardName="Kubernetes / Views / Global"
+          # renovate: depName="Kubernetes / Views / Global"
           gnetId: 15757
           revision: 37
           datasource: Prometheus
         k8s-views-nodes:
-          # renovate: dashboardName="Kubernetes / Views / Nodes"
+          # renovate: depName="Kubernetes / Views / Nodes"
           gnetId: 15759
           revision: 29
           datasource: Prometheus
         k8s-views-namespaces:
-          # renovate: dashboardName="Kubernetes / Views / Namespaces"
+          # renovate: depName="Kubernetes / Views / Namespaces"
           gnetId: 15758
           revision: 34
           datasource: Prometheus
         k8s-views-pods:
-          # renovate: dashboardName="Kubernetes / Views / Pods"
+          # renovate: depName="Kubernetes / Views / Pods"
           gnetId: 15760
           revision: 26
           datasource: Prometheus
         k8s-volumes:
-          # renovate: dashboardName="K8s / Storage / Volumes / Cluster"
+          # renovate: depName="K8s / Storage / Volumes / Cluster"
           gnetId: 11454
           revision: 14
           datasource: Prometheus
