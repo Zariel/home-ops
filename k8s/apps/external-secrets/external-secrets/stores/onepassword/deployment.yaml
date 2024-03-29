@@ -24,7 +24,8 @@ spec:
         fsGroup: 999
         fsGroupChangePolicy: OnRootMismatch
       containers:
-        - name: onepassword-connect
+        - &container
+          name: onepassword-connect
           image: docker.io/1password/connect-api:1.7.2
           env:
             - name: XDG_DATA_HOME
@@ -46,7 +47,7 @@ spec:
               memory: &memory 256Mi
             limits:
               memory: *memory
-          volumeMounts:
+          volumeMounts: &mounts
             - mountPath: *configDir
               name: config
             - mountPath: *sessionPath
@@ -71,11 +72,12 @@ spec:
               path: /health
               port: api
             initialDelaySeconds: 15
-        - name: onepassword-sync
+        - <<: *container
+          name: onepassword-sync
           image: docker.io/1password/connect-sync:1.7.2
           env:
             - name: XDG_DATA_HOME
-              value: &configDir /config
+              value: *configDir
             - name: OP_HTTP_PORT
               value: "8081"
             - name: OP_BUS_PORT
@@ -84,27 +86,3 @@ spec:
               value: localhost:11220
             - name: OP_SESSION
               value: *sessionPath
-          ports:
-            - containerPort: 8081
-              name: sync
-          resources: *resources
-          volumeMounts:
-            - mountPath: *configDir
-              name: config
-            - mountPath: *sessionPath
-              name: onepassword-connect-secret
-              subPath: onepassword-credentials.json
-              readOnly: true
-          securityContext: *securityContext
-          livenessProbe:
-            httpGet:
-              path: /heartbeat
-              port: sync
-            initialDelaySeconds: 15
-            periodSeconds: 30
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: sync
-            initialDelaySeconds: 15
