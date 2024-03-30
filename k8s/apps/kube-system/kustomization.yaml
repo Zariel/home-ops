@@ -10,3 +10,4 @@ resources:
   # - ./spegel/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
   - ./coredns/ks.yaml
+  - ./fstrim/ks.yaml
