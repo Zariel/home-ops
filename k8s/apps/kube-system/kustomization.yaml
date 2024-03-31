@@ -11,3 +11,4 @@ resources:
   - ./kubelet-csr-approver/ks.yaml
   - ./coredns/ks.yaml
   - ./fstrim/ks.yaml
+  - ./reloader/ks.yaml
