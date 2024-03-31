@@ -22,7 +22,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  targetNamespace: security
   values:
     controllers:
       glauth:
@@ -79,6 +78,7 @@ spec:
           ldap:
             enabled: true
             port: 389
+            targetPort: 3389
             protocol: TCP
     serviceMonitor:
       app:
