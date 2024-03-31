@@ -9,13 +9,13 @@ metadata:
     kyverno.io/ignore: "true"
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.2-10
   primaryUpdateStrategy: unsupervised
   storage:
     size: 20Gi
-    storageClass: ceph-block
+    storageClass: openebs-hostpath
   superuserSecret:
-    name: pg-superuser
+    name: cloudnative-pg-secret
   enableSuperuserAccess: true
   bootstrap:
     initdb:
@@ -25,7 +25,23 @@ spec:
         name: pg-holywoo
   postgresql:
     parameters:
-      max_connections: "600"
-      shared_buffers: 512MB
+      max_connections: "400"
+      shared_buffers: 256MB
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      memory: 4Gi
   monitoring:
     enablePodMonitor: true
+    # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
+    podMonitorMetricRelabelings:
+      - {
+          sourceLabels: ["cluster"],
+          targetLabel: cnpg_cluster,
+          action: replace,
+        }
+      - { regex: cluster, action: labeldrop }
