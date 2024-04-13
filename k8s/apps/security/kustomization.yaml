@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - glauth/ks.yaml
+  - authelia/ks.yaml
