@@ -23,6 +23,9 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  dependsOn:
+    - name: loki
+      namespace: monitoring
   values:
     controllers:
       vector-aggregator:
@@ -30,14 +33,6 @@ spec:
         strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: kubernetes.io/hostname
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: vector-aggregator
         initContainers:
           init-geoip:
             image:
@@ -65,24 +60,31 @@ spec:
                 enabled: true
               readiness:
                 enabled: true
+        pod:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: *app
     service:
       app:
         controller: vector-aggregator
         type: LoadBalancer
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: "vector.holywoo.cbannister.xyz"
-          io.cilium/lb-ipam-ips: "10.45.0.2"
-        externalTrafficPolicy: Cluster
+          external-dns.alpha.kubernetes.io/hostname: vector.holywoo.cbannister.xyz
+          io.cilium/lb-ipam-ips: 10.45.0.2
         ports:
           http:
+            primary: true
             port: 8686
-          kubernetes-logs:
-            port: 6000
-          vyos-syslog:
-            port: 6001
-          journald-logs:
+          journald:
             port: 6002
-
+          kubernetes:
+            port: 6000
+          vyos:
+            port: 6001
     persistence:
       config:
         type: configMap

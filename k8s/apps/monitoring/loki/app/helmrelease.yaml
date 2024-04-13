@@ -31,10 +31,6 @@ spec:
       namespace: openebs-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: vector-agent
-      namespace: monitoring
-    - name: vector-aggregator
-      namespace: monitoring
   valuesFrom:
     - targetPath: loki.storage.bucketNames.chunks
       kind: ConfigMap
