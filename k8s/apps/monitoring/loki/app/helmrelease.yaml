@@ -16,6 +16,25 @@ spec:
         name: grafana
         namespace: flux-system
       interval: 30m
+  install:
+    crds: Skip
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: Skip
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: openebs
+      namespace: openebs-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: vector-agent
+      namespace: monitoring
+    - name: vector-aggregator
+      namespace: monitoring
   values:
     loki:
       structuredConfig:
