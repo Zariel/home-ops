@@ -13,3 +13,4 @@ resources:
   - ./tautulli/ks.yaml
   - ./unpackerr
   - ./secrets
+  - ./smtp-relay/ks.yaml
