@@ -9,5 +9,5 @@ configMapGenerator:
   - name: vector-aggregator-configmap
     files:
       - vector.yaml=./config/vector.yaml
-configurations:
-  - kustomizeconfig.yaml
+generatorOptions:
+  disableNameSuffixHash: true
