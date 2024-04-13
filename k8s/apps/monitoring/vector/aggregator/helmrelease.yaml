@@ -26,12 +26,10 @@ spec:
   values:
     controllers:
       vector-aggregator:
-        replicas: 1
+        replicas: 3
         strategy: Recreate
-
         annotations:
           reloader.stakater.com/auto: "true"
-
         pod:
           topologySpreadConstraints:
             - maxSkew: 1
@@ -40,7 +38,6 @@ spec:
               labelSelector:
                 matchLabels:
                   app.kubernetes.io/name: vector-aggregator
-
         initContainers:
           init-geoip:
             image:
@@ -57,26 +54,17 @@ spec:
             envFrom:
               - secretRef:
                   name: vector-maxmind
-
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/vector
-              tag: 0.34.1-debian
-            args:
-              - "--config"
-              - "/etc/vector/vector.yaml"
+              repository: docker.io/timberio/vector
+              tag: 0.37.1-alpine@sha256:ced16088cdcfcadd2f471c5760ea3b08bec82b9be00a8b90173b9ade7d001607
+            args: ["--config", "/etc/vector/vector.yaml"]
             probes:
               liveness:
                 enabled: true
               readiness:
                 enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
-
     service:
       app:
         controller: vector-aggregator
