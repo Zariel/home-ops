@@ -7,4 +7,3 @@ resources:
   - ./cluster16.yaml
   - ./prometheusrule.yaml
   - ./service.yaml
-  - ./pg-holywoo.sops.yaml
