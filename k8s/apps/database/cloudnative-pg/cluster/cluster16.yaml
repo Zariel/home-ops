@@ -15,12 +15,6 @@ spec:
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
-  bootstrap:
-    initdb:
-      database: holywoo
-      owner: holywoo
-      secret:
-        name: cloudnative-pg-secret
   postgresql:
     parameters:
       max_connections: "400"
