@@ -4,7 +4,7 @@ resources:
   - ns.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./unpoller
-  - ./grafana
+  - ./grafana/ks.yaml
   - ./thanos/ks.yaml
   - ./loki/ks.yaml
   - ./vector/ks.yaml
