@@ -5,3 +5,4 @@ commonLabels:
   app: grafana
 resources:
   - helmrelease.yaml
+  - externalsecret.yaml
