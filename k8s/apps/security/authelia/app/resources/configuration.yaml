@@ -31,9 +31,9 @@ session:
   remember_me: 1M
   cookies:
     - name: cbannister_xyz_session
-      domain: cbannister.xyz
+      domain: holywoo.cbannister.xyz
       authelia_url: https://auth.holywoo.cbannister.xyz
-      default_redirection_url: https://cbannister.xyz
+      default_redirection_url: https://holywoo.cbannister.xyz
   redis:
     database_index: 2
     host: dragonfly.database.svc.cluster.local
