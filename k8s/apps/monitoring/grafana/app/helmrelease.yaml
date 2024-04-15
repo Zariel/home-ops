@@ -25,11 +25,11 @@ spec:
     keepHistory: false
   dependsOn:
     - name: authelia
-      namespace: default
+      namespace: security
     - name: kube-prometheus-stack
-      namespace: observability
+      namespace: monitoring
     - name: loki
-      namespace: observability
+      namespace: monitoring
   values:
     extraInitContainers:
       - name: 01-init-db
