@@ -79,7 +79,7 @@ spec:
       app:
         className: internal
         hosts:
-          - host: &host requests.hoylwoo.cbannister.xyz
+          - host: &host requests.holywoo.cbannister.xyz
             paths:
               - path: /
                 service:
