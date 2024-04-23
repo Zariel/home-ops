@@ -21,7 +21,7 @@ spec:
             secretName: cloudflared-tunnel-secret
       containers:
         - name: cloudflared
-          image: docker.io/cloudflare/cloudflared:2024.4.0
+          image: docker.io/cloudflare/cloudflared:2024.4.1
           args:
             - tunnel
             - --config
