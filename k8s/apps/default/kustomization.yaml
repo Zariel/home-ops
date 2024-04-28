@@ -16,3 +16,4 @@ resources:
   - ./smtp-relay/ks.yaml
   - miniflux/ks.yaml
   - overseerr/ks.yaml
+  - atuin/ks.yaml
