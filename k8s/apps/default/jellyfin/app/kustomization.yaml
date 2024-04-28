@@ -7,3 +7,4 @@ resources:
   - statefulset.yaml
   - service.yaml
   - ingress.yaml
+  - pvc.yaml
