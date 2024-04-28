@@ -1,12 +1,24 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: jellyfin
 spec:
+  serviceName: jellyfin
   replicas: 1
   selector:
     matchLabels:
       app: jellyfin
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        storageClassName: ceph-filesystem
+        volumeMode: Filesystem
   template:
     metadata:
       labels:
@@ -24,9 +36,6 @@ spec:
           persistentVolumeClaim:
             claimName: bighorse-arr-media
             readOnly: true
-        - name: config
-          persistentVolumeClaim:
-            claimName: jellyfin-data
         - name: cache
           emptyDir: {}
       containers:
