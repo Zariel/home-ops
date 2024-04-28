@@ -27,6 +27,8 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: jellyfin-data
+        - name: cache
+          emptyDir: {}
       containers:
         - name: jellyfin
           image: ghcr.io/onedr0p/jellyfin:10.8.11
@@ -53,5 +55,7 @@ spec:
               mountPath: /transcode
             - name: config
               mountPath: /config
+            - name: cache
+              mountPath: /config/cache
             - name: arr-media
               mountPath: /data
