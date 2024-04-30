@@ -9,7 +9,6 @@ radarr:
   radarr-main:
     base_url: http://radarr-main.default.svc.cluster.local
     api_key: 160014e59d544b86b6a738770abd044f
-    delete_old_custom_formats: true
     media_naming: &radarr-naming
       folder: plex
       movie:
