@@ -9,6 +9,7 @@ radarr:
   radarr-main:
     base_url: http://radarr-main.default.svc.cluster.local
     api_key: 160014e59d544b86b6a738770abd044f
+    delete_old_custom_formats: true
     media_naming: &radarr-naming
       folder: plex
       movie:
@@ -43,6 +44,12 @@ radarr:
             qualities:
               - WEBDL-1080p
               - WEBRip-1080p
+          - &720
+            name: 720p
+            qualities:
+              - Bluray-720p
+              - WEBDL-720p
+              - WEBRip-720p
           - &trash
             name: trash
             enabled: false
@@ -64,6 +71,7 @@ radarr:
           - *webdl-2160
           - name: Bluray-1080p
           - *webdl-1080
+          - *720
           - *trash
       - name: &bd1080 REMUX-1080p
         score_set: default
@@ -77,6 +85,7 @@ radarr:
           - name: Remux-1080p
           - name: Bluray-1080p
           - *webdl-1080
+          - *720
           - *trash
 
     replace_existing_custom_formats: true
