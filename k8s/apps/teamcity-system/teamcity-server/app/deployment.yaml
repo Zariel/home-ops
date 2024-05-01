@@ -22,6 +22,8 @@ spec:
         - name: postgres-jdbc
           configMap:
             name: postgres-jdbc
+        - name: caches
+          emptyDir: {}
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
@@ -35,10 +37,10 @@ spec:
                 name: teamcity-secret
       containers:
         - name: teamcity
-          image: jetbrains/teamcity-server:2023.11.4
+          image: jetbrains/teamcity-server:2024.03
           resources:
             requests:
-              memory: &ram "4Gi"
+              memory: &ram "2Gi"
               cpu: "500m"
             limits:
               memory: *ram
@@ -56,3 +58,5 @@ spec:
               name: teamcity-data
             - mountPath: /data/teamcity_server/datadir/lib/jdbc
               name: postgres-jdbc
+            - mountPath: /data/teamcity_server/datadir/system/caches
+              name: caches
