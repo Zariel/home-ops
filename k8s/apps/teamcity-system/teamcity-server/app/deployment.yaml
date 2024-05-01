@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: &app teamcity-server
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app: *app
@@ -19,10 +19,20 @@ spec:
         - name: teamcity-data
           persistentVolumeClaim:
             claimName: teamcity-data
+        - name: postgres-jdbc
+          configMap:
+            name: postgres-jdbc
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      initContainers:
+        - name: init-db
+          image: ghcr.io/onedr0p/postgres-init:16
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: teamcity-secret
       containers:
         - name: teamcity
           image: jetbrains/teamcity-server:2023.11.4
@@ -35,9 +45,14 @@ spec:
           env:
             - name: TEAMCITY_HTTPS_PROXY_ENABLED
               value: "true"
+          envFrom:
+            - configMapRef:
+                name: teamcity-secret
           ports:
             - containerPort: 8111
               name: web
           volumeMounts:
             - mountPath: /data/teamcity_server/datadir
               name: teamcity-data
+            - mountPath: /data/teamcity_server/datadir/lib/jdbc
+              name: postgres-jdbc
