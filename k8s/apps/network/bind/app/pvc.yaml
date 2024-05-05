@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: bind-cache
+  name: bind-cache2
 spec:
+  storageClassName: ceph-filesystem
   resources:
     requests:
       storage: 2Gi
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany

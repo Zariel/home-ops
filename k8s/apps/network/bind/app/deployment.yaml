@@ -6,8 +6,6 @@ spec:
   selector:
     matchLabels:
       app: bind
-  strategy:
-    type: Recreate
   replicas: 1
   template:
     metadata:
@@ -23,7 +21,7 @@ spec:
             name: bind-zones
         - name: bind-cache
           persistentVolumeClaim:
-            claimName: bind-cache
+            claimName: bind-cache2
         - name: zone-files
           emptyDir: {}
       initContainers:
