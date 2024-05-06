@@ -9,3 +9,4 @@ resources:
   - loki/ks.yaml
   - vector/ks.yaml
   - karma/ks.yaml
+  - smartctl-exporter/ks.yaml
