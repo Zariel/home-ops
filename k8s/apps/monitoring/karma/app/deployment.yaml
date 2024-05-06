@@ -5,12 +5,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: *app
+      app.kubernetes.io/name: *app
   replicas: 3
   template:
     metadata:
       labels:
-        app: *app
+        app.kubernetes.io/name: *app
     spec:
       containers:
         - name: karma
