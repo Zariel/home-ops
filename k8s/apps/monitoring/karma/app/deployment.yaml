@@ -6,6 +6,7 @@ spec:
   selector:
     matchLabels:
       app: *app
+  replicas: 3
   template:
     metadata:
       labels:
@@ -42,3 +43,10 @@ spec:
             httpGet:
               path: "/health"
               port: http
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
