@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app karma
+spec:
+  selector:
+    matchLabels:
+      app: *app
+  template:
+    metadata:
+      labels:
+        app: *app
+    spec:
+      containers:
+        - name: karma
+          image: ghcr.io/prymitive/karma:v0.120
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "128Mi"
+            limits:
+              cpu: "3000m"
+              memory: "500Mi"
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: ALERTMANAGER_URI
+              value: http://kube-prometheus-stack-alertmanager:9093
+            - name: ALERTMANAGER_EXTERNAL_URI
+              value: https://alertmanager.holywoo.cbannister.xyz
+            - name: ALERTMANAGER_PROXY
+              value: "true"
+            - name: FILTERS_DEFAULT
+              value: "@state!=suppressed"
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          livenessProbe:
+            httpGet:
+              path: "/health"
+              port: http
