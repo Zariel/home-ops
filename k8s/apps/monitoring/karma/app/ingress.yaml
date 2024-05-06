@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: &app karma
+  labels:
+    name: *app
+spec:
+  ingressClassName: internal
+  rules:
+    - host: karma.holywoo.cbannister.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: karma
+                port:
+                  name: http
