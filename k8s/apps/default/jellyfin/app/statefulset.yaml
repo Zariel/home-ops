@@ -40,7 +40,7 @@ spec:
           emptyDir: {}
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:10.9.0
+          image: ghcr.io/jellyfin/jellyfin:10.9.0
           env:
             - name: TZ
               value: Europe/London
