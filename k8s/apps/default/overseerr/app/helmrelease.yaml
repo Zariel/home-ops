@@ -77,9 +77,9 @@ spec:
             port: *port
     ingress:
       app:
-        className: internal
+        className: external
         hosts:
-          - host: &host requests.holywoo.cbannister.xyz
+          - host: &host requests.cbannister.xyz
             paths:
               - path: /
                 service:
