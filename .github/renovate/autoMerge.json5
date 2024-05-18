@@ -15,6 +15,25 @@
         "ghcr.io/bjw-s",
         "ghcr.io/onedr0p"
       ]
+    },
+    {
+      "description": [
+        "Auto-merge patch"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true,
+      "matchCurrentVersion": "!/^0/"
+    },
+    {
+      "description": [
+        "Auto-merge ansible updates"
+      ],
+      "matchDatasources": [
+        "ansible"
+      ],
+      "automerge": true
     }
   ]
 }
