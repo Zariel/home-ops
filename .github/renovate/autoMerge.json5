@@ -31,7 +31,8 @@
         "Auto-merge ansible updates"
       ],
       "matchDatasources": [
-        "ansible"
+        "ansible",
+        "ansible-galaxy"
       ],
       "automerge": true
     }
