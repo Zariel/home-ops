@@ -12,5 +12,3 @@ $ORIGIN cbannister.xyz.
 ; NS Records
 @                        IN  NS ns ; TODO: make this gateway?
 ns                       IN  A  10.43.53.9
-
-plex                     IN  A  10.42.0.20
