@@ -3,11 +3,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-external-dns
+  name: &app external-dns
   namespace: flux-system
 spec:
   path: ./k8s/apps/network/external-dns/app
   prune: true
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -20,12 +24,16 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-external-dns-cloudflare
+  name: &app external-dns-cloudflare
   namespace: flux-system
 spec:
   path: ./k8s/apps/network/external-dns/cloudflare
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   dependsOn:
-    - name: cluster-apps-external-dns
+    - name: external-dns
   prune: true
   sourceRef:
     kind: GitRepository
@@ -39,12 +47,16 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-external-dns-bind
+  name: &app external-dns-bind
   namespace: flux-system
 spec:
   path: ./k8s/apps/network/external-dns/bind
+  targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   dependsOn:
-    - name: cluster-apps-external-dns
+    - name: external-dns
   prune: true
   sourceRef:
     kind: GitRepository
