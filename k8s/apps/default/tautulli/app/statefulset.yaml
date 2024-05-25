@@ -55,6 +55,10 @@ spec:
               name: config
             - mountPath: /scripts
               name: scripts
+          securityContext: &securityContext
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
         - name: jbops
           image: registry.k8s.io/git-sync/git-sync:v4.2.3
           imagePullPolicy: IfNotPresent
@@ -66,12 +70,14 @@ spec:
           volumeMounts:
             - mountPath: /add-ons
               name: add-ons
+          securityContext: *securityContext
       restartPolicy: Always
       securityContext:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         runAsGroup: 568
         runAsUser: 568
+        runAsNonRoot: true
       volumes:
         - emptyDir: {}
           name: add-ons
