@@ -82,6 +82,25 @@ quality_profiles:
       - name: Bluray-480p
       - name: SDTV
 
+  - name: BLURAY-1080p
+    reset_unmatched_scores: &reset_unmatched_scores
+      enabled: true
+      except:
+        - "Language: Not Original or English"
+        - "Language: Prefer Original"
+    upgrade:
+      allowed: true
+      until_quality: &remux-1080p Bluray-1080p Remux
+      until_score: 9999999
+    min_format_score: 0
+    qualities:
+      - name: *remux-1080p
+      - name: Bluray-1080p
+      - name: WEBDL-1080p
+        qualities:
+          - WEBDL-1080p
+          - WEBRip-1080p
+
   - name: WEBDL-1080p
     reset_unmatched_scores: *reset_unmatched_scores
     upgrade:
@@ -196,12 +215,15 @@ custom_formats:
       - d0c516558625b04b363fa6c5c2c7cfd4 # WEB Scene
     quality_profiles:
       - name: BLURAY-2160p
+      - name: BLURAY-1080p
       - name: WEBDL-2160p
       - name: WEBDL-1080p
   - trash_ids:
       - 2b239ed870daba8126a53bd5dc8dc1c8 # DV HDR10Plus
     quality_profiles:
       - name: BLURAY-2160p
+        score: 1600
+      - name: BLURAY-1080p
         score: 1600
       - name: WEBDL-2160p
         score: 1600
@@ -211,6 +233,8 @@ custom_formats:
       - 7878c33f1963fefb3d6c8657d46c2f0a # DV HDR10
     quality_profiles:
       - name: BLURAY-2160p
+        score: 1550
+      - name: BLURAY-1080p
         score: 1550
       - name: WEBDL-2160p
         score: 1550
