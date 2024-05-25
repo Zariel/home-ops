@@ -70,6 +70,8 @@ spec:
           volumeMounts:
             - mountPath: /add-ons
               name: add-ons
+            - mountPath: /tmp
+              name: tmp
           securityContext: *securityContext
       restartPolicy: Always
       securityContext:
@@ -84,6 +86,8 @@ spec:
         - name: scripts
           configMap:
             name: tautulli-scripts
+        - name: tmp
+          emptyDir: {}
   volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim
