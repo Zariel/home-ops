@@ -46,7 +46,8 @@ quality_profiles:
           - WEBDL-1080p
           - WEBRip-1080p
 
-  - name: WEBDL-2160p
+  - &webdl-2160
+    name: WEBDL-2160p
     reset_unmatched_scores: *reset_unmatched_scores
     upgrade:
       allowed: true
@@ -81,6 +82,8 @@ quality_profiles:
       - name: DVD
       - name: Bluray-480p
       - name: SDTV
+  - <<: *webdl-2160
+    name: WEBDL-2160p-NODV
 
   - name: BLURAY-1080p
     reset_unmatched_scores: &reset_unmatched_scores
@@ -138,6 +141,8 @@ custom_formats:
   # Scores from TRaSH json
   - trash_ids:
       # HDR Formats
+      - 2b239ed870daba8126a53bd5dc8dc1c8 # DV HDR10Plus
+      - 7878c33f1963fefb3d6c8657d46c2f0a # DV HDR10
       - 1f733af03141f068a540eec352589a89 # DV HLG
       - 27954b0a80aab882522a88a4d9eae1cd # DV SDR
       - 6d0d8de7b57e35518ac0308b0ddf404e # DV
@@ -217,26 +222,9 @@ custom_formats:
       - name: BLURAY-2160p
       - name: BLURAY-1080p
       - name: WEBDL-2160p
+      - name: WEBDL-2160p-NODV
       - name: WEBDL-1080p
   - trash_ids:
-      - 2b239ed870daba8126a53bd5dc8dc1c8 # DV HDR10Plus
+      - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
     quality_profiles:
-      - name: BLURAY-2160p
-        score: 1600
-      - name: BLURAY-1080p
-        score: 1600
-      - name: WEBDL-2160p
-        score: 1600
-      - name: WEBDL-1080p
-        score: 1600
-  - trash_ids:
-      - 7878c33f1963fefb3d6c8657d46c2f0a # DV HDR10
-    quality_profiles:
-      - name: BLURAY-2160p
-        score: 1550
-      - name: BLURAY-1080p
-        score: 1550
-      - name: WEBDL-2160p
-        score: 1550
-      - name: WEBDL-1080p
-        score: 1550
+      - name: WEBDL-2160p-NODV
