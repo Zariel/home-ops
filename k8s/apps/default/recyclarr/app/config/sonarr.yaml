@@ -82,8 +82,8 @@ quality_profiles:
       - name: DVD
       - name: Bluray-480p
       - name: SDTV
-  - <<: *webdl-2160
-    name: WEBDL-2160p-NODV
+  - name: WEBDL-2160p-NODV
+    <<: *webdl-2160
 
   - name: BLURAY-1080p
     reset_unmatched_scores: &reset_unmatched_scores
