@@ -151,8 +151,8 @@ quality_profiles:
           - WEBDL-1080p
           - WEBRip-1080p
       - name: Bluray-1080p
-      - name: Bluray-720p
       - name: HDTV-1080p
+      - name: Bluray-720p
       - name: WEBDL-720p
         qualities:
           - WEBDL-720p
