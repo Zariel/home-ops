@@ -18,7 +18,7 @@ releases:
   - name: coredns
     namespace: kube-system
     chart: coredns/coredns
-    version: 1.29.0
+    version: 1.30.0
     wait: true
     values:
       - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/coredns/app/values.yaml'
