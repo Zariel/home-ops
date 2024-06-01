@@ -35,7 +35,7 @@ spec:
         nas: local
       containers:
         - name: sabnzbd
-          image: ghcr.io/onedr0p/sabnzbd:4.3.2
+          image: ghcr.io/zariel/sabnzbd:4.3.2@sha256:283412a94793be6b67872aac0507511a13b01f4e53e361c739d985e4c42687c6
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
