@@ -27,6 +27,7 @@ radarr:
           except:
             - "Language: Not Original or English"
             - "Language: Prefer Original"
+            - "Language: German + Original"
         quality_sort: top
         qualities:
           - name: Bluray-2160p
