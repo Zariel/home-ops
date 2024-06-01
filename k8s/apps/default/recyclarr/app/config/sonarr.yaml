@@ -46,6 +46,19 @@ quality_profiles:
         qualities:
           - WEBDL-1080p
           - WEBRip-1080p
+      - name: HDTV-1080p
+      - name: Bluray-720p
+      - name: WEBDL-720p
+        qualities:
+          - WEBDL-720p
+          - WEBRip-720p
+          - HDTV-720p
+      - name: Bluray-480p
+      - name: WEBDL-480p
+        qualities:
+          - WEBDL-480p
+          - WEBRip-480p
+      - name: DVD
 
   - name: WEBDL-2160p
     reset_unmatched_scores: *reset_unmatched_scores
@@ -137,6 +150,19 @@ quality_profiles:
         qualities:
           - WEBDL-1080p
           - WEBRip-1080p
+      - name: HDTV-1080p
+      - name: Bluray-720p
+      - name: WEBDL-720p
+        qualities:
+          - WEBDL-720p
+          - WEBRip-720p
+          - HDTV-720p
+      - name: Bluray-480p
+      - name: WEBDL-480p
+        qualities:
+          - WEBDL-480p
+          - WEBRip-480p
+      - name: DVD
 
   - name: WEBDL-1080p
     reset_unmatched_scores: *reset_unmatched_scores
