@@ -1,0 +1,154 @@
+---
+clusterName: holywoo
+talosVersion: v1.7.4
+kubernetesVersion: v1.30.1
+endpoint: https://k8s.cbannister.casa:6443
+domain: cluster.local
+allowSchedulingOnControlPlanes: true
+additionalMachineCertSans: &certSAN
+  - 127.0.0.1
+  - k8s.cbannister.casa
+additionalApiServerCertSans: *certSAN
+clusterPodNets:
+  - 10.42.0.0/16
+clusterSvcNets:
+  - 10.43.0.0/16
+cniConfig:
+  name: none
+patches:
+  - |-
+    - op: add
+      path: /machine/kubelet
+      value:
+        extraArgs:
+          image-gc-high-threshold: "55"
+          image-gc-low-threshold: "50"
+          rotate-server-certificates: "true"
+        extraMounts:
+          - destination: /var/openebs/local
+            type: bind
+            source: /var/openebs/local
+            options:
+              - bind
+              - rshared
+              - rw
+        nodeIP:
+          validSubnets:
+            - 10.1.1.0/24
+        disableManifestsDirectory: true
+        defaultRuntimeSeccompProfileEnabled: true
+    - op: add
+      path: /cluster/proxy
+      value:
+        disabled: true
+
+controlPlane:
+  talosImageURL: factory.talos.dev/installer/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+  schematic:
+    customization:
+      extraKernelArgs:
+        - mitigations=off
+  machineFiles: &machineFiles
+    - content: |-
+        [plugins."io.containerd.grpc.v1.cri"]
+          enable_unprivileged_ports = true
+          enable_unprivileged_icmp = true
+        [plugins."io.containerd.grpc.v1.cri".containerd]
+          discard_unpacked_layers = false
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          discard_unpacked_layers = false
+      permissions: 0
+      path: /etc/cri/conf.d/20-customization.part
+      op: create
+    - content: |-
+        [ NFSMount_Global_Options ]
+        nfsvers=4.2
+        hard=True
+        noatime=True
+        nodiratime=True
+        rsize=131072
+        wsize=131072
+        nconnect=8
+      permissions: 420
+      path: /etc/nfsmount.conf
+      op: overwrite
+  networkInterfaces:
+    - interface: eno1
+      dhcp: true
+  patches:
+    - |-
+      - op: add
+        path: /cluster/coreDNS
+        value:
+          disabled: true
+      - op: add
+        path: /cluster/apiServer
+        value:
+          disablePodSecurityPolicy: true
+
+worker:
+  talosImageURL: factory.talos.dev/installer/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+  schematic:
+    customization:
+      extraKernelArgs:
+        - mitigations=off
+  machineFiles: *machineFiles
+  networkInterfaces:
+    - interface: eno1
+      dhcp: true
+nodes:
+  - hostname: k8s-0
+    ipAddress: "10.1.1.10"
+    controlPlane: true
+    installDisk: /dev/sda
+    installDiskSelector:
+      type: ssd
+  - hostname: k8s-1
+    ipAddress: "10.1.1.11"
+    controlPlane: true
+    installDisk: /dev/sda
+    installDiskSelector:
+      type: ssd
+  - hostname: k8s-2
+    ipAddress: "10.1.1.12"
+    controlPlane: true
+    installDisk: /dev/sda
+    installDiskSelector:
+      type: ssd
+  - hostname: k8s-3
+    ipAddress: "10.1.1.13"
+    controlPlane: false
+    installDisk: /dev/sda
+    installDiskSelector:
+      type: ssd
+    networkInterfaces:
+      - interface: enp3s0
+        dhcp: true
+      - deviceSelector:
+          driver: virtio_net
+        ignore: true
+    talosImageURL: factory.talos.dev/installer/6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7
+    kernelModules:
+      - name: nvidia
+      - name: nvidia_uvm
+      - name: nvidia_drm
+      - name: nvidia_modeset
+    nodeLabels:
+      nas: local
+    patches:
+      - |-
+        - op: add
+          path: /machine/sysctls
+          value:
+            net.core.bpf_jit_harden: "1"
+  - hostname: k8s-4
+    ipAddress: "10.1.1.14"
+    controlPlane: false
+    installDisk: /dev/sda
+    installDiskSelector:
+      type: ssd
+    networkInterfaces:
+      - interface: enp114s0
+        dhcp: true
+      - interface: enp115s0
+        dhcp: true
