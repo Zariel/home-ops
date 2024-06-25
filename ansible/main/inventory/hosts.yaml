@@ -12,33 +12,22 @@ k8s:
         matchbox_profile: talos-control
       hosts:
         k8s-0:
-          ansible_host: 192.168.42.10
           mac_addr: ec:8e:b5:70:ca:20
-          ipv4: 192.168.42.10
         k8s-1:
-          ansible_host: 192.168.42.11
-          mac_addr: c4:65:16:19:a0:94
-          ipv4: 192.168.42.11
+          mac_addr: 48:21:0b:60:1a:3f
         k8s-2:
-          ansible_host: 192.168.42.12
           mac_addr: ec:8e:b5:70:f6:59
-          ipv4: 192.168.42.12
     worker:
-      vars:
-        matchbox_profile: talos-worker
       hosts:
         k8s-3:
-          ansible_host: 192.168.42.13
+          matchbox_profile: talos-k8s-3
           mac_addr: f6:45:04:c6:96:e0 # mellanox
           pxe_mac_addr: bc:24:11:da:2b:0a # pve
-          ipv4: 192.168.42.13
         k8s-4:
-          ansible_host: 192.168.42.14
+          matchbox_profile: talos-k8s-4
           mac_addr: 48:21:0b:56:ac:6c
-          ipv4: 192.168.42.14
 ungrouped:
   hosts:
-    matchbox:
-      ansible_host: 10.0.1.254
-      mac_addr: bc:24:11:47:49:e1
-      interface: enp6s18
+    vyos:
+      ansible_host: 10.1.2.1
+      ansible_user: vyos
