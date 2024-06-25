@@ -2,6 +2,12 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
+vars:
+  TALOS_VERSION: v1.7.1
+  TALOS_SCHEMATIC_ID: 6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7
+  KUBERNETES_VERSION: v1.30.0
+  TALOS_SCRIPTS_DIR: "{{.ROOT_DIR}}/.taskfiles/Talos/scripts"
+
 tasks:
   bootstrap:
     desc: Bootstrap Talos
@@ -48,14 +54,13 @@ tasks:
       - talosctl --nodes {{.node}} get machineconfig
 
   upgrade-k8s:
-    desc: Upgrade k8s on a node
-    cmds:
-      - talosctl --nodes {{.node}} upgrade-k8s --to {{.to}}
-      - kubectl --namespace rook-ceph wait --timeout=1800s --for=jsonpath='{.status.ceph.health}=HEALTH_OK' cephclusters.ceph.rook.io rook-ceph
-    requires:
-      vars: ["node", "to"]
+    desc: Upgrade the clusters k8s version
+    cmd: talosctl --nodes {{.controller}} upgrade-k8s --to {{.KUBERNETES_VERSION}}
+    vars:
+      controller:
+        sh: talosctl config info --output json | jq --raw-output '.endpoints[0]'
     preconditions:
-      - talosctl --nodes {{.node}} get machineconfig
+      - talosctl --nodes {{.node}} get machineconfig >/dev/null 2>&1
 
   fetch-kubeconfig:
     desc: Fetch kubeconfig from Talos controllers
@@ -82,6 +87,7 @@ tasks:
     desc: Rollout Talos upgrade on all nodes
     cmds:
       - flux suspend kustomization --all
+      - kubectl cnpg maintenance set --reusePVC --all-namespaces
       - for: { var: nodes, split: "," }
         task: upgrade
         vars:
