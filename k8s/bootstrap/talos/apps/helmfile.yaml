@@ -22,6 +22,8 @@ releases:
     wait: true
     values:
       - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/coredns/app/values.yaml'
+    needs:
+      - cilium
   - name: kubelet-csr-approver
     namespace: kube-system
     chart: postfinance/kubelet-csr-approver
@@ -29,3 +31,6 @@ releases:
     wait: true
     values:
       - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/kubelet-csr-approver/app/values.yaml'
+    needs:
+      - cilium
+      - coredns
