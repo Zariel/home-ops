@@ -1,6 +1,6 @@
 {
-    "id": "talos-control",
-    "name": "talos-control",
+    "id": "talos-k8s-3",
+    "name": "talos-k8s-3",
     "boot": {
         "kernel": "/assets/kernel-amd64",
         "initrd": [
@@ -15,7 +15,7 @@
             "console=ttyS0",
             "printk.devkmsg=on",
             "talos.platform=metal",
-            "talos.config=http://10.5.0.8/assets/controlplane.yaml"
+            "talos.config=http://10.5.0.8/assets/k8s-3.yaml"
         ]
     }
 }

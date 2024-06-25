@@ -1,13 +1,13 @@
 {
-    "id": "talos-worker",
-    "name": "talos-worker",
+    "id": "talos-k8s-4",
+    "name": "talos-k8s-4",
     "boot": {
-        "kernel": "/assets/vmlinuz",
+        "kernel": "/assets/kernel-amd64",
         "initrd": [
-            "/assets/initramfs.xz"
+            "/assets/initramfs-amd64.xz"
         ],
         "args": [
-            "initrd=initramfs.xz",
+            "initrd=initramfs-amd64.xz",
             "init_on_alloc=1",
             "slab_nomerge",
             "pti=on",
@@ -15,7 +15,7 @@
             "console=ttyS0",
             "printk.devkmsg=on",
             "talos.platform=metal",
-            "talos.config=http://192.168.254.10/assets/worker.yaml"
+            "talos.config=http://10.5.0.8/assets/k8s-4.yaml"
         ]
     }
 }
