@@ -1,380 +1,93 @@
 - name: Matchbox Setup
   become: true
   gather_facts: true
-  hosts: matchbox
+  hosts: vyos
   vars:
-    talos_version: v1.6.4
-    dhcp_vlan: 42
-    vlan_config:
-      42: |
-        [Network]
-        Address=192.168.42.5/24
-        Gateway=192.168.42.1
-        DNS=192.168.42.1
-
-    vlans:
-      - 254
-      - "{{ dhcp_vlan }}"
+    talos_version: v1.7.4
   tasks:
-    - name: Network Configuration
-      # notify: Reboot
-      block:
-        - name: Network Configuration | Set hostname
-          ansible.builtin.hostname:
-            name: "{{ inventory_hostname }}"
-        - name: Network Configuration | Update hosts
-          ansible.builtin.copy:
-            dest: /etc/hosts
-            content: |
-              127.0.0.1 localhost
-              127.0.1.1 {{ inventory_hostname }}
-
-              # The following lines are desirable for IPv6 capable hosts
-              ::1     localhost ip6-localhost ip6-loopback
-              ff02::1 ip6-allnodes
-              ff02::2 ip6-allrouters
-            mode: "0644"
-
-        - name: Network Configuration | Update resolv.conf
-          ansible.builtin.copy:
-            dest: /etc/resolv.conf
-            content: |
-              nameserver 10.0.0.1
-
-    - name: Sytemd-networkd
-      block:
-        - name: Setup networkd
-          ansible.builtin.file:
-            path: /etc/systemd/network
-            state: directory
-            mode: "0755"
-        - name: Configure systemd-network
-          notify: RestartSystemdNetworkd
-          block:
-            - name: VLAN Setup
-              include_tasks: tasks/vlans.yaml
-              loop: "{{ vlans }}"
-            - name: LAN Interface
-              ansible.builtin.copy:
-                dest: /etc/systemd/network/10-{{ interface }}.network
-                owner: root
-                group: root
-                mode: "0644"
-                content: |
-                  [Match]
-                  Name={{ interface }}
-
-                  [Network]
-                  Description=Parent interface for VLANs
-                  DHCP=yes
-                  {% for vlan in vlans %}
-                  VLAN={{ interface }}.{{ vlan }}
-                  {% endfor %}
-                  LinkLocalAddressing=no
-                  LLDP=yes
-                  EmitLLDP=yes
-                  IPv6AcceptRA=no
-                  IPv6SendRA=no
-
-                  [Link]
-                  RequiredForOnline=yes
-
-        - name: Network Services 2
-          notify: Reboot
-          ansible.builtin.service:
-            name: systemd-networkd
-            enabled: true
-            daemon_reload: true
-        - name: Network Services 1
-          notify: Reboot
-          ansible.builtin.service:
-            name: networking
-            enabled: false
-            daemon_reload: true
-        - name: Network Services 3
-          notify: Reboot
-          ansible.builtin.file:
-            path: /etc/network
-            state: absent
-
-    - name: Bootloader
-      block:
-        - name: Bootloader | Get root device
-          ansible.builtin.command: findmnt -n -o SOURCE /
-          register: root_device
-
-        - name: Bootloader | Get root uuid
-          ansible.builtin.command: blkid -s PARTUUID -o value {{ root_device.stdout }}
-          register: root_uuid
-
-        - name: Bootloader | Check root_uuid
-          when: root_uuid.stdout == ""
-          ansible.builtin.fail:
-            msg: "Failed to get root uuid"
-
-        - name: Bootloader | Init /etc/kernel/cmdline
-          register: cmdline_updated
-          ansible.builtin.copy:
-            dest: /etc/kernel/cmdline
-            owner: root
-            group: root
-            mode: "0644"
-            content: root=PARTUUID={{ root_uuid.stdout }} rw mitigations=off apparmor=0
-
-        - name: Bootloader | Check booted with systemd-bootg
-          ansible.builtin.command: bootctl status
-          register: bootctl_status
-          changed_when: bootctl_status.rc != 0
-          notify: Reboot
-
-        - name: Bootloader | Install systemd-boot
-          ansible.builtin.command: bootctl install
-
-        - name: Bootloader | Enable systemd-boot-update
-          ansible.builtin.systemd:
-            name: systemd-boot-update
-            enabled: true
-            state: started
-            daemon_reload: true
-
-        - name: Bootloader | Check loader exists
-          ansible.builtin.shell: bootctl list | grep -m1 source | awk '{print $2}'
-          register: loader_conf_exists
-
-        - name: Bootloader | Create loader
-          when: loader_conf_exists.stdout == ''
-          ansible.builtin.shell: kernel-install add $(uname -r) /boot/vmlinuz-$(uname -r)
-
-        - name: Bootloader | Check loader exists Really
-          ansible.builtin.shell: bootctl list | grep -m1 source | awk '{print $2}'
-          register: loader_conf
-
-        - name: Bootloader | Check loader
-          ansible.builtin.fail:
-            msg: "Failed to get loader"
-          when: loader_conf.stdout == ''
-
-        - name: Bootloader | Configure Bootloader
-          block:
-            - name: Bootloader | Configure Bootloader | Get Command line
-              register: cmdline
-              ansible.builtin.slurp:
-                src: /etc/kernel/cmdline
-
-            - name: Bootloader | Update Loaders
-              notify: Reboot
-              ansible.builtin.lineinfile:
-                path: "{{ loader_conf.stdout }}"
-                regexp: "^options.+$"
-                line: "options {{ cmdline.content | b64decode }}"
-
-        - name: Bootloader | Set Boot order
-          block:
-            - name: Get Systemd Boot Loader number
-              register: loader_number
-              ansible.builtin.shell: efibootmgr -v | awk '/Linux Boot Manager/ { print $1 }' | sed -E 's/^Boot([0-9A-F]+)\*/\1/'
-
-            - name: Bootloader | Check Bootctl installed to efi
-              ansible.builtin.fail:
-                msg: "systemd-boot not installed to efi"
-              when: loader_number.stdout == ''
-
-            - name: Bootloader | Get Boot order
-              register: bootorder
-              ansible.builtin.shell: efibootmgr -v | awk '/BootOrder/ { print $2 }'
-
-            - name: Bootloader | Bootorder
-              ansible.builtin.set_fact:
-                new_bootorder: "{{ loader_number.stdout + ',' + (bootorder.stdout.split(',') | reject('equalto', loader_number.stdout) | join(',')) }}"
-
-            - name: Set Boot order
-              changed_when: bootorder.stdout != new_bootorder
-              ansible.builtin.command: efibootmgr -o "{{ new_bootorder }}"
-
-            - name: Bootloader | Current boot
-              ansible.builtin.shell: efibootmgr -v | awk '/BootCurrent/ { print $2 }'
-              register: current_boot
-              changed_when: current_boot.stdout != loader_number.stdout
-              notify: Reboot
-
-        - name: Bootloader | Remove Grub
-          ansible.builtin.apt:
-            name: grub*
-            state: absent
-            autoremove: true
-            purge: true
-
-    - name: Packages | Install
-      ansible.builtin.apt:
-        name: apt-transport-https,ca-certificates,conntrack,curl,gdisk,
-          unzip,util-linux,htop,btop,systemd-boot,neovim,powertop,fd-find,podman,dnsmasq
-        install_recommends: false
-        state: latest
-
-    - name: Podman
-      block:
-        - name: Podman Setup Network
-          containers.podman.podman_network:
-            name: container-vlan
-            driver: macvlan
-            state: present
-            subnet: 192.168.254.0/24
-            gateway: 192.168.254.1
-            opt:
-              parent: enp6s18.254
-              mode: bridge
-
     - name: Matchbox
       block:
         - name: Machbox | Configure Directory
           loop:
-            - /var/lib/matchbox/assets
-            - /var/lib/matchbox/profiles
-            - /var/lib/matchbox/groups
-            - /etc/matchbox
+            - /config/containers/matchbox/assets
+            - /config/containers/matchbox/profiles
+            - /config/containers/matchbox/groups
           ansible.builtin.file:
             dest: "{{ item }}"
             state: directory
             mode: "0777"
-            owner: root
-            group: root
-
-        - name: Matchbox | Fetch custom talos kernel
-          ansible.builtin.get_url:
-            url: https://pxe.factory.talos.dev/pxe/b1098363304e029b232b29d08600aca1bfd42941a1d9a06f44748bb13549b106/{{ talos_version }}/metal-amd64
-            dest: /var/lib/matchbox/assets/vmlinuz
-            decompress: no
-            owner: root
-            group: root
-            mode: "0644"
+            owner: vyos
+            group: vyattacfg
 
         - name: Matchbox | Fetch Talos
           loop:
-            - initramfs-amd64.xz
+            - file: initramfs-amd64.xz
+              sha: 076a96f467b4b819a27e4e108dbe150edf68931a63cd75bb5a97fd63b91a3d62
+            - file: kernel-amd64
+              sha: e57ff26c9a64ed6905af098809434ee3280d90f281fb59b6b1ea167c9f93acc6
           ansible.builtin.get_url:
-            url: https://github.com/siderolabs/talos/releases/download/{{ talos_version }}/{{ item }}
-            dest: /var/lib/matchbox/assets/{{ item | regex_replace('\-amd64', '')}}
+            url: https://factory.talos.dev/image/6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7/{{ talos_version }}/{{ item.file }}
+            dest: /config/containers/matchbox/assets/{{ item.file }}
+            checksum: sha256:{{ item.sha }}
             decompress: no
-            owner: root
-            group: root
+            owner: vyos
+            group: vyattacfg
             mode: "0644"
+            timeout: 60
 
         - name: Matchup | Setup Profiles
           loop:
-            - talos-worker.json
+            - talos-k8s-3.json
+            - talos-k8s-4.json
             - talos-control.json
           ansible.builtin.copy:
-            dest: /var/lib/matchbox/profiles/{{ item }}
+            dest: /config/containers/matchbox/profiles/{{ item }}
             src: files/matchbox/{{ item }}
-            owner: root
-            group: root
+            owner: vyos
+            group: vyattacfg
             mode: "0644"
 
         - name: Matchbox | Setup Groups
           with_items: "{{ groups['k8s'] }}"
           ansible.builtin.template:
-            dest: /var/lib/matchbox/groups/{{ item }}.json
+            dest: /config/containers/matchbox/groups/{{ item }}.json
             src: templates/matchbox/group.json.j2
-            owner: root
-            group: root
+            owner: vyos
+            group: vyattacfg
             mode: "0644"
 
         - name: Matchbox | Talos config
           loop:
             - controlplane.yaml
-            - worker.yaml
-          ansible.builtin.copy:
-            dest: /var/lib/matchbox/assets/{{ item }}
-            src: files/talos/{{ item }}
-            owner: root
-            group: root
-            mode: "0644"
-
-        - name: Machbox | Create Container
-          containers.podman.podman_container:
-            name: matchbox
-            image: quay.io/poseidon/matchbox:v0.10.0
-            network: container-vlan
-            ip: 192.168.254.10
-            dns: 192.168.254.1
-            volume:
-              - /var/lib/matchbox:/var/lib/matchbox:Z
-              - /etc/matchbox:/etc/matchbox:Z,ro
-            command:
-              - -address=0.0.0.0:80
-              - -log-level=debug
-            rm: true
-            state: created
-
-        - name: Matchbox | Generate systemd service
-          containers.podman.podman_generate_systemd:
-            name: matchbox
-            new: true
-            no_header: true
-            dest: /etc/systemd/system
-
-        - name: Matchbox | Enable systemd service
-          ansible.builtin.systemd:
-            name: container-matchbox
-            daemon_reload: true
-            state: started
-            enabled: true
-
-    - name: DNSMasq
-      block:
-        - name: TFTP Setup
-          block:
-            - name: Configure bootdir
-              ansible.builtin.file:
-                dest: /var/lib/tftpboot
-                state: directory
-                mode: "0777"
-                owner: root
-                group: root
-            - name: Fetch pxe boot loaders
-              loop:
-                - undionly.kpxe
-                - ipxe.efi
-              ansible.builtin.get_url:
-                url: https://boot.ipxe.org/{{ item }}
-                dest: /var/lib/tftpboot/{{ item }}
-                mode: "0755"
-                owner: dnsmasq
-                group: root
-            - name: Setup undionly.kpxe0
-              ansible.builtin.command:
-                cmd: cp /var/lib/tftpboot/undionly.kpxe /var/lib/tftpboot/undionly.kpxe0
-                creates: /var/lib/tftpboot/undionly.kpxe0
-
-        - name: DNSMasq | Configure
-          notify:
-            - RestartDnsmasq
+            - k8s-3.yaml
+            - k8s-4.yaml
           ansible.builtin.template:
-            dest: /etc/dnsmasq.d/50-dnsmasq.conf
-            src: templates/dnsmasq.conf.j2
-            owner: dnsmasq
-            group: root
+            dest: /config/containers/matchbox/assets/{{ item }}
+            src: files/talos/{{ item }}.
+            owner: vyos
+            group: vyattacfg
             mode: "0644"
 
-        - name: Enable dnsmasq
-          ansible.builtin.systemd_service:
-            name: dnsmasq
-            state: started
-            enabled: true
-            daemon_reload: true
-
-  handlers:
-    - name: Reboot
-      ansible.builtin.reboot:
-        msg: Rebooting nodes
-        reboot_timeout: 3600
-    - name: RestartSystemdNetworkd
-      ansible.builtin.service:
-        name: systemd-networkd
-        state: restarted
-        enabled: true
-    - name: RestartDnsmasq
-      ansible.builtin.systemd_service:
-        name: dnsmasq
-        state: restarted
-        enabled: true
+    - name: TFTP Setup
+      block:
+        - name: Configure bootdir
+          ansible.builtin.file:
+            dest: /config/tftpboot
+            state: directory
+            mode: "0777"
+            owner: tftp
+            group: tftp
+        - name: Fetch pxe boot loaders
+          loop:
+            - undionly.kpxe
+            - ipxe.efi
+          ansible.builtin.get_url:
+            url: https://boot.ipxe.org/{{ item }}
+            dest: /config/tftpboot/{{ item }}
+            mode: "0755"
+            owner: tftp
+            group: tftp
+        - name: Setup undionly.kpxe0
+          ansible.builtin.command:
+            cmd: cp /config/tftpboot/undionly.kpxe /config/tftpboot/undionly.kpxe0
+            creates: /config/tftpboot/undionly.kpxe0

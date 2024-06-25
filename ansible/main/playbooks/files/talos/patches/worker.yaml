@@ -1,6 +1,0 @@
-machine:
-  network:
-    interfaces:
-      - deviceSelector:
-          driver: virtio_net
-        ignore: true
