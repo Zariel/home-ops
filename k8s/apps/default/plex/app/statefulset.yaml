@@ -49,8 +49,6 @@ spec:
               value: https://plex.cbannister.xyz:443,http://10.45.0.20:32400
             - name: PLEX_NO_AUTH_NETWORKS
               value: 10.0.0.0/8
-            - name: PLEX_PREFERENCE_LanNetworksBandwidth
-              value: 10.0.0.0/8
             - name: NVIDIA_VISIBLE_DEVICES
               value: all
             - name: NVIDIA_DRIVER_CAPABILITIES
