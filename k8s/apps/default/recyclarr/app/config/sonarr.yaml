@@ -213,6 +213,7 @@ custom_formats:
       - 17e889ce13117940092308f48b48b45b # HLG
       - 2a7e3be05d3861d6df7171ec74cad727 # PQ
       - 385e9e8581d33133c3961bdcdeffb7b4 # DV HDR10Plus Boost
+      - ef4963043b0987f8485bc9106f16db38 # DV (Disk)
 
       # audio
       - 0d7824bb924701997f874e7ff7d4844a # TrueHD ATMOS
@@ -236,6 +237,9 @@ custom_formats:
       - fbcb31d8dabd2a319072b84fc0b7249c # Extras
       - 83304f261cf516bb208c18c54c0adf97 # SDR (no WEBDL)
       - 23297a736ca77c0fc8e70f8edd7ee56c # upscaled
+      - 06d66ab109d4d2eddb2794d21526d140 # Retags
+      - 32b367365729d530ca1c124a0b180c64 # Bad Dual Groups
+      - 82d40da2bc6923f41e14394075dd4b03 # No-RlsGroup
 
       # Misc
       - ec8fa7296b64e8cd390a1600981f3923 # Repack/Proper
