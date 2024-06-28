@@ -16,7 +16,7 @@ spec:
   args:
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=2
-    - --cluster_mode=yes
+    - --cluster_mode=emulated
     - --cache_mode=true
   resources:
     requests:
