@@ -230,6 +230,7 @@ custom_formats:
       - dbe00161b08a25ac6154c55f95e6318d # DD
 
       # Unwanted UHD
+      - 15a05bc7c1a36e2b57fd628f8977e2fc # AV1
       - 85c61753df5da1fb2aab6f2a47426b09 # BR-DISK
       - 9c11cd3f07101cdba90a2d81cf0e56b4 # LQ
       - e2315f990da2e2cbfc9fa5b7a6fcfe48 # LQ (Release Title)
@@ -270,6 +271,11 @@ custom_formats:
       - 77a7b25585c18af08f60b1547bb9b4fb # CC
       - 43b3cf48cb385cd3eac608ee6bca7f09 # UHD Streaming Boost
       - d2d299244a92b8a52d4921ce3897a256 # UHD Streaming Cut
+      - dc503e2425126fa1d0a9ad6168c83b3f # iPlayer
+      - fa5a16b951004c23e980d2913694a137 # itvx
+      - b66a699fba6f9df91becab798d7502e5 # nowtv
+      - fcc09418f67ccaddcf3b641a22c5cfd7 # all4
+      - dc5f2bb0e0262155b5fedd0f6c5d2b55 # discovery+
 
       # HQ Source Groups
       # remux
