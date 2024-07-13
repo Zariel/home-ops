@@ -298,4 +298,11 @@ custom_formats:
   - trash_ids:
       - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
     quality_profiles:
+      - name: WEBDL-2160p
+        score: -10
+      - name: WEBDL-1080p
+        score: -10
+  - trash_ids:
+      - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
+    quality_profiles:
       - name: WEBDL-2160p-NODV
