@@ -25,6 +25,10 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: sabnzbd-config
+        - name: scripts
+          configMap:
+            name: sabnzbd-scripts
+            defaultMode: 0777
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -65,6 +69,8 @@ spec:
               readOnly: false
             - name: arr-media
               mountPath: /data
+            - name: scripts
+              mountPath: /config/scripts
           startupProbe:
             httpGet:
               path: /api?mode=version
