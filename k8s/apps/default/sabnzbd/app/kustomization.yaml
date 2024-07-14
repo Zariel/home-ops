@@ -8,3 +8,8 @@ resources:
   - service.yaml
   - ingress.yaml
   - volume.yaml
+configMapGenerator:
+  - name: sabnzbd-scripts
+    files:
+      - clean.py=config/clean.py
+      - replace_for.py=config/replace_for.py
