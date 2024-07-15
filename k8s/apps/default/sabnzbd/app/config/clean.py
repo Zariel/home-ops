@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/bin/env python3 -OO
+#!/usr/local/bin/python -OO
 
 ##################################################################
 ### SABnzbd - Clean NZB Renamer                                 ##
