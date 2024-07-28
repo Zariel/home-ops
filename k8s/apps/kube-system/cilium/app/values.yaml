@@ -6,7 +6,6 @@ bgpControlPlane:
   enabled: true
 bpf:
   masquerade: true
-  vlanBypass: "0"
 cgroup:
   automount:
     enabled: false
