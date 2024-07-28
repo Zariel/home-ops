@@ -37,7 +37,7 @@ spec:
             - mountPath: /var/lib/bind
               name: zone-files
         - name: validate-config
-          image: docker.io/internetsystemsconsortium/bind9:9.20
+          image: docker.io/internetsystemsconsortium/bind9:9.19
           command:
             - /usr/bin/named-checkconf
             - -z
@@ -55,7 +55,7 @@ spec:
               name: zone-files
       containers:
         - name: bind
-          image: docker.io/internetsystemsconsortium/bind9:9.20
+          image: docker.io/internetsystemsconsortium/bind9:9.19
           command:
             - /usr/sbin/named
           args:
