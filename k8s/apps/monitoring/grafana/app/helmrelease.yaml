@@ -39,10 +39,10 @@ spec:
               name: &secret grafana-secret
     replicas: 3
     env:
-      GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.holywoo.cbannister.xyz/api/oidc/userinfo
-      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.holywoo.cbannister.xyz/api/oidc/authorization
+      GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.cbannister.xyz/api/oidc/userinfo
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.cbannister.xyz/api/oidc/authorization
       GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://auth.holywoo.cbannister.xyz/api/oidc/token
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://auth.cbannister.xyz/api/oidc/token
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards
