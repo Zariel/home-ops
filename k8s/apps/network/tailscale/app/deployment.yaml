@@ -27,15 +27,13 @@ spec:
               value: tailscale-state
             - name: TS_USERSPACE
               value: "true"
-            - name: TS_AUTHKEY
-              valueFrom:
-                secretKeyRef:
-                  name: tailscale-auth
-                  key: authkey
             - name: TS_ROUTES
               value: 10.0.0.0/8
             - name: TS_EXTRA_ARGS
               value: "--advertise-exit-node"
+          envFrom:
+            secretRef:
+              name: tailscale-secret
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
