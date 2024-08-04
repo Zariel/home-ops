@@ -31,6 +31,8 @@ spec:
     - name: loki
       namespace: monitoring
   values:
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
     annotations:
       reloader.stakater.com/auto: "true"
     deploymentStrategy:
