@@ -74,7 +74,7 @@ identity_providers:
         pre_configured_consent_duration: 1y
         scopes: ["openid", "profile", "groups", "email"]
         redirect_uris:
-          - "https://grafana.holywoo.cbannister.xyz/login/generic_oauth"
+          - "https://grafana.cbannister.xyz/login/generic_oauth"
         userinfo_signed_response_alg: none
       - client_name: Miniflux
         client_id: miniflux
