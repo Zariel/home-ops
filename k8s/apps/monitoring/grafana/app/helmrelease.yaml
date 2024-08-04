@@ -49,7 +49,7 @@ spec:
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
       GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
       GF_SECURITY_COOKIE_SAMESITE: grafana
-      GF_SERVER_ROOT_URL: https://grafana.holywoo.cbannister.xyz
+      GF_SERVER_ROOT_URL: https://grafana.cbannister.xyz
     envFromSecrets:
       - name: *secret
     grafana.ini:
@@ -384,9 +384,11 @@ spec:
       enabled: true
     ingress:
       enabled: true
-      ingressClassName: internal
+      ingressClassName: external
+      annotations:
+        external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
       hosts: &hosts
-        - grafana.holywoo.cbannister.xyz
+        - grafana.cbannister.xyz
       tls:
         - hosts: *hosts
     persistence:
