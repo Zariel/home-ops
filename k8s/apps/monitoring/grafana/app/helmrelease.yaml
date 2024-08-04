@@ -31,7 +31,7 @@ spec:
     - name: loki
       namespace: monitoring
   values:
-    podAnnotations:
+    annotations:
       reloader.stakater.com/auto: "true"
     extraInitContainers:
       - name: 01-init-db
