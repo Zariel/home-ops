@@ -6,7 +6,7 @@ metadata:
   name: home-kubernetes
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 10m
   url: ssh://git@github.com/zariel/holywoo
   ref:
     branch: main
