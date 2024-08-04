@@ -34,8 +34,8 @@ spec:
             - name: TS_EXTRA_ARGS
               value: "--advertise-exit-node"
           envFrom:
-            secretRef:
-              name: tailscale-secret
+            - secretRef:
+                name: tailscale-secret
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
