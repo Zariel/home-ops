@@ -26,6 +26,7 @@ spec:
         - name: scripts
           configMap:
             name: sonarr-scripts
+            defaultMode: 0777
       securityContext:
         runAsUser: 568
         runAsGroup: 568
