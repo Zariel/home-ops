@@ -7,9 +7,6 @@ resources:
   - service.yaml
   - volumes.yaml
 configMapGenerator:
-  - name: sonarr-env-config
-    envs:
-      - ./config/postgres.env
   - name: sonarr-scripts
     files:
       - refresh-tba.sh=scripts/refresh-tba.sh

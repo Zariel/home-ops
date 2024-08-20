@@ -3,5 +3,8 @@ kind: Kustomization
 namespace: default
 resources:
   - ../base
-  - ./ingress.yaml
 nameSuffix: "-1080"
+configMapGenerator:
+  - name: sonarr-env-config
+    envs:
+      - ./config/postgres.env

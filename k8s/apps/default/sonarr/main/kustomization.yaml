@@ -5,3 +5,7 @@ resources:
   - ../base
   - ./ingress.yaml
 nameSuffix: -main
+configMapGenerator:
+  - name: sonarr-env-config
+    envs:
+      - ./config/postgres.env
