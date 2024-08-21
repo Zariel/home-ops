@@ -55,6 +55,10 @@ spec:
               subPath: sonarr.yaml
               mountPath: /config/configs/includes/sonarr.yaml
               readOnly: true
+            - name: recyclarr-yml
+              subPath: radarr.yaml
+              mountPath: /config/configs/includes/radarr.yaml
+              readOnly: true
       initContainers:
         - <<: *container
           name: recyclarr-sync
