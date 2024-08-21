@@ -11,3 +11,4 @@ configMapGenerator:
     files:
       - recyclarr.yaml=config/recyclarr.yaml
       - sonarr.yaml=config/sonarr.yaml
+      - radarr.yaml=config/radarr.yaml
