@@ -5,6 +5,8 @@ resources:
   - ../base
   - ./ingress.yaml
 nameSuffix: -main
+commonLabels:
+  sonarr: main
 configMapGenerator:
   - name: sonarr-env-config
     envs:
