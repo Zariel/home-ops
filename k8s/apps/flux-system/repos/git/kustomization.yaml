@@ -3,4 +3,3 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - ./kubernetes-csi-addons.yaml
-  - ./csi-driver-smb.yaml

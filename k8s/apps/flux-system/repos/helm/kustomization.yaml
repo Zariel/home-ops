@@ -25,3 +25,4 @@ resources:
   - ./stakater.yaml
   - ./spegel.yaml
   - ./external-dns.yaml
+  - ./csi-driver-smb.yaml

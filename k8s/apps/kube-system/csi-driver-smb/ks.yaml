@@ -1,15 +1,16 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: csi-drvier-smb
+  name: csi-driver-smb
   namespace: flux-system
 spec:
-  interval: 30m
-  targetNamespace: kube-system
+  path: ./k8s/apps/kube-system/csi-driver-smb/app
+  prune: true
   sourceRef:
     kind: GitRepository
-    name: csi-drvier-smb
-    namespace: flux-system
-  path: "/deploy/v1.11.0"
-  prune: true
-  timeout: 1m
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
