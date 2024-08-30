@@ -88,6 +88,7 @@ quality_profiles:
     quality_sort: top
     qualities:
       - *webdl-2160
+      - name: Bluray-2160p
       - *webdl-1080
       - name: Bluray-1080p
       - *720
