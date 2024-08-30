@@ -79,6 +79,31 @@ quality_profiles:
       - *webdl-1080
       - *720
       - *trash
+  - name:  WEBDL-2160p
+    upgrade:
+      allowed: true
+      until_quality: WEB-2160p
+      until_score: 9999999
+    reset_unmatched_scores: *reset_unmatched_scores
+    quality_sort: top
+    qualities:
+      - *webdl-2160
+      - *webdl-1080
+      - name: Bluray-1080p
+      - *720
+      - *trash
+  - name:  WEBDL-1080p
+    upgrade:
+      allowed: true
+      until_quality: WEB-1080p
+      until_score: 9999999
+    reset_unmatched_scores: *reset_unmatched_scores
+    quality_sort: top
+    qualities:
+      - *webdl-1080
+      - name: Bluray-1080p
+      - *720
+      - *trash
 
 custom_formats:
   - quality_profiles:
@@ -88,6 +113,8 @@ custom_formats:
         score: 5000
       - name: *bd1080
         score: 5000
+      - name: WEBDL-1080p
+      - name: WEBDL-2160p
     trash_ids:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
@@ -95,6 +122,8 @@ custom_formats:
       - name: *bluray
       - name: *remux
       - name: *bd1080
+      - name: WEBDL-1080p
+      - name: WEBDL-2160p
     trash_ids:
       # Audio Advanced #1
       - 185f1dd7264c4562b9022d963ac37424 # DD+
@@ -220,6 +249,8 @@ custom_formats:
         score: 3500
       - name: *bd1080
         score: 3500
+      - name: WEBDL-1080p
+      - name: WEBDL-2160p
     trash_ids:
       - dcf3ec6938fa32445f590a4da84256cd # DTS-HD MA
       - 3cafb66171b47f226146a0770576870f # TrueHD
@@ -230,6 +261,8 @@ custom_formats:
         score: 2500
       - name: *bd1080
         score: 2500
+      - name: WEBDL-1080p
+      - name: WEBDL-2160p
     trash_ids:
       - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
   - quality_profiles:
@@ -239,6 +272,8 @@ custom_formats:
         score: 1755
       - name: *bd1080
         score: 1755
+      - name: WEBDL-1080p
+      - name: WEBDL-2160p
     trash_ids:
       - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
   - quality_profiles:
@@ -248,5 +283,7 @@ custom_formats:
         score: -10
       - name: *bd1080
         score: -10
+      - name: WEBDL-1080p
+      - name: WEBDL-2160p
     trash_ids:
       - 923b6abef9b17f937fab56cfcf89e1f1 # DV (webdl)
