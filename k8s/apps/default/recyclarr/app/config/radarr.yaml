@@ -204,7 +204,6 @@ custom_formats:
       # - f537cf427b64c38c8e36298f657e4828 # Scene
       - ae4cfaa9283a4f2150ac3da08e388723 # VP9
       # - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
-      - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
 
       # Streaming Services
       - b3b3a6ac74ecbd56bcdbefa4799fb9df # AMZN
@@ -290,3 +289,16 @@ custom_formats:
         score: -10
     trash_ids:
       - 923b6abef9b17f937fab56cfcf89e1f1 # DV (webdl)
+  - quality_profiles:
+      - name: *bluray
+        score: -10
+      - name: *remux
+        score: -10
+      - name: *bd1080
+        score: -10
+      - name: WEBDL-1080p
+        score: -10
+      - name: WEBDL-2160p
+        score: -10
+    trash_ids:
+      - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
