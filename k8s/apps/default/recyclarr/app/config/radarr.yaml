@@ -285,6 +285,8 @@ custom_formats:
       - name: *bd1080
         score: -10
       - name: WEBDL-1080p
+        score: -10
       - name: WEBDL-2160p
+        score: -10
     trash_ids:
       - 923b6abef9b17f937fab56cfcf89e1f1 # DV (webdl)
