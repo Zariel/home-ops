@@ -1,7 +1,7 @@
 ---
 clusterName: holywoo
-talosVersion: v1.7.4
-kubernetesVersion: v1.30.2
+talosVersion: v1.7.6
+kubernetesVersion: v1.30.3
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
 allowSchedulingOnControlPlanes: true
