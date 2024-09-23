@@ -53,12 +53,13 @@ quality_profiles:
           - WEBDL-720p
           - WEBRip-720p
       - name: HDTV-720p
+      - name: Bluray-576p
       - name: Bluray-480p
-      - name: WEBDL-480p
+      - name: 480p
         qualities:
           - WEBDL-480p
           - WEBRip-480p
-      - name: DVD
+          - DVD
 
   - name: BLURAY-1080p
     reset_unmatched_scores: *reset_unmatched_scores
@@ -82,11 +83,12 @@ quality_profiles:
           - WEBRip-720p
       - name: HDTV-720p
       - name: Bluray-480p
-      - name: WEBDL-480p
+      - name: Bluray-576p
+      - name: 480p
         qualities:
           - WEBDL-480p
           - WEBRip-480p
-      - name: DVD
+          - DVD
 
   - name: WEBDL-2160p
     reset_unmatched_scores: *reset_unmatched_scores
@@ -116,13 +118,13 @@ quality_profiles:
           - WEBDL-720p
           - WEBRip-720p
       - name: HDTV-720p
+      - name: Bluray-576p
       - name: Bluray-480p
-      - name: WEBDL-480p
+      - name: 480p
         qualities:
           - WEBDL-480p
           - WEBRip-480p
           - DVD
-      - name: SDTV
 
   - name: WEBDL-2160p-NODV
     reset_unmatched_scores: *reset_unmatched_scores
@@ -147,18 +149,18 @@ quality_profiles:
           - WEBRip-1080p
       - name: HDTV-1080p
       - name: Bluray-720p
-      - name: Bluray-480p
       - name: WEBDL-720p
         qualities:
           - WEBDL-720p
           - WEBRip-720p
       - name: HDTV-720p
-      - name: WEBDL-480p
+      - name: Bluray-576p
+      - name: Bluray-480p
+      - name: 480p
         qualities:
           - WEBDL-480p
           - WEBRip-480p
           - DVD
-      - name: SDTV
 
   - name: WEBDL-1080p
     reset_unmatched_scores: *reset_unmatched_scores
@@ -184,13 +186,13 @@ quality_profiles:
           - WEBDL-720p
           - WEBRip-720p
       - name: HDTV-720p
+      - name: Bluray-576p
       - name: Bluray-480p
-      - name: WEBDL-480p
+      - name: 480p
         qualities:
           - WEBDL-480p
           - WEBRip-480p
-      - name: DVD
-      - name: SDTV
+          -  DVD
 
 # Custom Formats
 # This section creates and/or updates Custom Formats in your Sonarr instance,
