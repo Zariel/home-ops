@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  labels:
+    app: qbittorrent
+spec:
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      hostname: qbittorrent
+      volumes:
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: config
+          persistentVolumeClaim:
+            claimName: qbittorent-config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault } 
+      containers:
+        - name: qbittorent
+          image: ghcr.io/onedr0p/qbittorrent:4.6.7
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: QBITTORRENT__PORT
+              value: "80"
+            - name: QBITTORRENT__BT_PORT
+              value: "50413"
+            - name: QBT_Preferences__WebUI__AlternativeUIEnabled
+              value: "false"
+            - name: QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled
+              value: "true"
+            - name: QBT_Preferences__WebUI__AuthSubnetWhitelist
+              value: |-
+                10.42.0.0/16, 10.45.0.0/24
+            - name: QBT_Preferences__WebUI__LocalHostAuth
+              value: "false"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - containerPort: 80
+              name: web
+            - containerPort: 50413
+              name: bt
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              memory: 32Gi
+          livenessProbe: &probes
+            httpGet:
+              path: /api/v2/app/version
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 6
+          readinessProbe: *probes
+          startupProbe:
+            <<: *probes
+            failureThreshold: 30
+            periodSeconds: 10
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: arr-media
+              mountPath: /data
