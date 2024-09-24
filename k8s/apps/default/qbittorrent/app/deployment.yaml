@@ -20,7 +20,7 @@ spec:
             claimName: bighorse-arr-media
         - name: config
           persistentVolumeClaim:
-            claimName: qbittorent-config
+            claimName: qbittorrent-config
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
