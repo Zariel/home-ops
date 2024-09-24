@@ -211,6 +211,9 @@ spec:
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: Prometheus
+        nvidia:
+          url: https://raw.githubusercontent.com/NVIDIA/dcgm-exporter/refs/heads/main/grafana/dcgm-exporter-dashboard.json
+          datasource: Prometheus
         spegel:
           # renovate: depName="Spegel"
           gnetId: 18089
