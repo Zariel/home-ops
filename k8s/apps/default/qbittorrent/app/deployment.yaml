@@ -63,19 +63,6 @@ spec:
               cpu: 100m
             limits:
               memory: 32Gi
-          livenessProbe: &probes
-            httpGet:
-              path: /api/v2/app/version
-              port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            timeoutSeconds: 10
-            failureThreshold: 6
-          readinessProbe: *probes
-          startupProbe:
-            <<: *probes
-            failureThreshold: 30
-            periodSeconds: 10
           volumeMounts:
             - name: config
               mountPath: /config
