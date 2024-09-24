@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - ns.yaml
   - runtimeclass.yaml
-  - ./nvidia-device-plugin
+  - ./nvidia-device-plugin/ks.yaml
   - ./dcgm-exporter/ks.yaml
