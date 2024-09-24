@@ -5,11 +5,11 @@ metadata:
   name: &appname dcgm-exporter
   namespace: flux-system
 spec:
-  targetNamespace: nvidia-device-plugin
+  targetNamespace: nvidia
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  path: ./k8s/apps/nvidia-device-plugin/dcgm-exporter/app
+  path: ./k8s/apps/nvidia/dcgm-exporter/app
   prune: true
   sourceRef:
     kind: GitRepository
