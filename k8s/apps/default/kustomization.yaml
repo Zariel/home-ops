@@ -17,3 +17,4 @@ resources:
   - miniflux/ks.yaml
   - overseerr/ks.yaml
   - atuin/ks.yaml
+  - qbittorrent/ks.yaml
