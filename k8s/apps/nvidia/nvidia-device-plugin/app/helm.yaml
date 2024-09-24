@@ -4,8 +4,6 @@ metadata:
   name: nvidia-device-plugin
 spec:
   interval: 5m
-  targetNamespace: nvidia-device-plugin
-  releaseName: nvidia-device-plugin
   chart:
     spec:
       chart: nvidia-device-plugin
