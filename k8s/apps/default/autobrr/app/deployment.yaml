@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &name autobrr
+  labels:
+    app: *name
+spec:
+  selector:
+    matchLabels:
+      app: *name
+  template:
+    metadata:
+      labels:
+        app: *name
+    spec:
+      hostname: *name
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault } 
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      initContainers:
+        - name: init-db
+          image: ghcr.io/onedr0p/postgres-init:16
+          envFrom: &envFrom
+            - secretRef:
+               name: autobrr-secret
+      containers:
+        - name: *name
+          image: ghcr.io/autobrr/autobrr:v1.46.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: AUTOBRR__CHECK_FOR_UPDATES
+              value: "false"
+            - name: AUTOBRR__PORT
+              value: "80"
+            - name: AUTOBRR__HOST
+              value: "0.0.0.0"
+          envFrom: *envFrom
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - containerPort: 80
+              name: web
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          livenessProbe:
+            httpGet:
+              path: /api/healthz/liveness
+              port: 80
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/healthz/readiness
+              port: 80
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
