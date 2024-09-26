@@ -72,6 +72,9 @@ spec:
             - name: arr-media
               mountPath: /data/usenet/complete/lidarr
               subPath: usenet/complete/lidarr
+            - name: arr-media
+              mountPath: /data/torrents/complete/lidarr
+              subPath: torrents/complete/lidarr
           startupProbe:
             httpGet:
               path: /ping
