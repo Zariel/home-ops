@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: internal
   rules:
-    - host: &host sonarr.holywoo.cbannister.xyz
+    - host: &host sonarr.cbannister.xyz
       http:
         paths:
           - path: /

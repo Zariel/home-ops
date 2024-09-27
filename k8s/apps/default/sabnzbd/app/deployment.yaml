@@ -51,7 +51,7 @@ spec:
                 sabnzbd.default.svc,
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
-                sabnzbd.holywoo.cbannister.xyz
+                sabnzbd.cbannister.xyz
           resources:
             requests:
               memory: &ram 8Gi

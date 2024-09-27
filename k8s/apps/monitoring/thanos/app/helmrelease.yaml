@@ -74,7 +74,7 @@ spec:
         size: 10Gi
     query:
       replicas: 2
-      extraArgs: ["--alert.query-url=https://thanos.holywoo.cbannister.xyz"]
+      extraArgs: ["--alert.query-url=https://thanos.cbannister.xyz"]
       # additionalStores: ["thanos.turbo.ac:10901"]
     queryFrontend:
       enabled: true
@@ -90,7 +90,7 @@ spec:
         enabled: true
         ingressClassName: internal
         hosts:
-          - &host thanos.holywoo.cbannister.xyz
+          - &host thanos.cbannister.xyz
         tls:
           - hosts: [*host]
       podAnnotations: &podAnnotations

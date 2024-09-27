@@ -30,7 +30,7 @@ metadata:
     name: anthem-mrx
 spec:
   rules:
-    - host: &host anthem.holywoo.cbannister.xyz
+    - host: &host anthem.cbannister.xyz
       http:
         paths:
           - pathType: Prefix

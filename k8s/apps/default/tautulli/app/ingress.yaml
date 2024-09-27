@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: internal
   rules:
-    - host: &host tautulli.holywoo.cbannister.xyz
+    - host: &host tautulli.cbannister.xyz
       http:
         paths:
           - backend:

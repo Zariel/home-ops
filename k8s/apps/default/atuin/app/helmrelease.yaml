@@ -103,7 +103,7 @@ spec:
       app:
         className: internal
         hosts:
-          - host: &host sh.holywoo.cbannister.xyz
+          - host: &host sh.cbannister.xyz
             paths:
               - path: /
                 service:
