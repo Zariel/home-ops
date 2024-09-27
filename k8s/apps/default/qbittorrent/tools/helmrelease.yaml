@@ -138,5 +138,5 @@ spec:
         advancedMounts:
           orphaned:
             app:
-              - path: /data/downloads/torrent/complete
+              - path: /data/downloads/torrents/complete
                 subPath: downloads/torrents/complete
