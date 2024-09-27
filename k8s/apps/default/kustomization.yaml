@@ -20,3 +20,4 @@ resources:
   - atuin/ks.yaml
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
+  - omegabrr/ks.yaml
