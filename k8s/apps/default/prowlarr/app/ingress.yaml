@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: internal
   rules:
-    - host: &host prowlarr.holywoo.cbannister.xyz
+    - host: &host prowlarr.cbannister.xyz
       http:
         paths:
           - path: /

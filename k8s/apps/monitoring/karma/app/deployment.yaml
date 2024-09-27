@@ -29,7 +29,7 @@ spec:
             - name: ALERTMANAGER_URI
               value: http://kube-prometheus-stack-alertmanager:9093
             - name: ALERTMANAGER_EXTERNAL_URI
-              value: https://alertmanager.holywoo.cbannister.xyz
+              value: https://alertmanager.cbannister.xyz
             - name: ALERTMANAGER_PROXY
               value: "true"
             - name: FILTERS_DEFAULT

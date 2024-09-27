@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: internal
   rules:
-    - host: &host jellyfin.holywoo.cbannister.xyz
+    - host: &host jellyfin.cbannister.xyz
       http:
         paths:
           - path: /
