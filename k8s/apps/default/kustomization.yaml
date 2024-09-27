@@ -21,3 +21,4 @@ resources:
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
   - omegabrr/ks.yaml
+  - flaresolverr/ks.yaml
