@@ -379,9 +379,9 @@ spec:
       enabled: true
     ingress:
       enabled: true
-      ingressClassName: external
+      ingressClassName: internal
       annotations:
-        external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
+        external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
       hosts: &hosts
         - grafana.cbannister.xyz
       tls:
