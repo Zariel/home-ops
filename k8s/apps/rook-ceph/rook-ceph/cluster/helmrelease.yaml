@@ -33,7 +33,7 @@ spec:
       dashboard:
         ingressClassName: internal
         host:
-          name: &host rook.holywoo.cbannister.xyz
+          name: &host rook.cbannister.xyz
           path: /
         tls:
           - hosts:

@@ -8,7 +8,7 @@ prometheus:
     ingressClassName: internal
     pathType: Prefix
     hosts: &hosts
-      - prometheus.holywoo.cbannister.xyz
+      - prometheus.cbannister.xyz
     tls:
       - hosts: *hosts
   thanosService:
@@ -51,7 +51,7 @@ alertmanager:
     ingressClassName: internal
     pathType: Prefix
     hosts:
-      - &host alertmanager.holywoo.cbannister.xyz
+      - &host alertmanager.cbannister.xyz
     tls:
       - hosts:
           - *host

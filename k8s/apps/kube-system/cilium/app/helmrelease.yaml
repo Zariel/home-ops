@@ -48,7 +48,7 @@ spec:
           enabled: true
           className: internal
           hosts:
-            - &host hubble.holywoo.cbannister.xyz
+            - &host hubble.cbannister.xyz
           tls:
             - hosts:
                 - *host
