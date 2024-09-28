@@ -38,6 +38,11 @@ spec:
               requests:
                 cpu: 15m
                 memory: 150Mi
+            env:
+              TZ: Europe/London
+              LANG: en_GB
+              LOG_HTML: true
+              LOG_LEVEL: debug
     service:
       app:
         controller: *app
