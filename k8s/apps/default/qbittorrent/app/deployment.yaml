@@ -49,6 +49,10 @@ spec:
                 10.42.0.0/16, 10.45.0.0/24
             - name: QBT_Preferences__WebUI__LocalHostAuth
               value: "false"
+            - name: QBT_BitTorrent__Session__DefaultSavePath
+              value: /data/torrents/complete
+            - name: QBT_BitTorrent__Session__TempPath
+              value: /data/torrents/incomplete
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -67,4 +71,5 @@ spec:
             - name: config
               mountPath: /config
             - name: arr-media
-              mountPath: /data
+              mountPath: /data/torrents
+              subPath: torrents
