@@ -68,7 +68,8 @@ spec:
               mountPath: /config
               readOnly: false
             - name: arr-media
-              mountPath: /data
+              mountPath: /data/usenet
+              subPath: usenet
             - name: scripts
               mountPath: /config/scripts
           startupProbe:
