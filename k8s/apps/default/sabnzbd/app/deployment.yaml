@@ -52,6 +52,9 @@ spec:
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
                 sabnzbd.cbannister.xyz
+          envFrom:
+            - secretRef:
+                name: sabnzbd-secret
           resources:
             requests:
               memory: &ram 8Gi
