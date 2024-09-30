@@ -15,6 +15,6 @@ configMapGenerator:
     options:
       labels:
         loki_rule: "true"
-  - name: qbittorent-scripts
+  - name: qbittorrent-scripts
     files:
       - post-process.sh=./resources/post-process.sh
