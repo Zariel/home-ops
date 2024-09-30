@@ -22,3 +22,4 @@ resources:
   - autobrr/ks.yaml
   - omegabrr/ks.yaml
   - flaresolverr/ks.yaml
+  - cross-seed/ks.yaml
