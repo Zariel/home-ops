@@ -57,12 +57,9 @@ spec:
               value: /data/torrents/complete
             - name: QBT_BitTorrent__Session__TempPath
               value: /data/torrents/incomplete
-            - name: CROSS_SEED_HOST
-              value: cross-seed.default.svc.cluster.local
-            - name: CROSS_SEED_PORT
-              value: "80"
-            - name: CROSS_SEED_SLEEP_INTERVAL
-              value: "0"
+          envFrom:
+            - secretRef:
+                name: qbittorrent-secret
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
