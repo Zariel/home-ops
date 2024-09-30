@@ -21,6 +21,10 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: qbittorrent-config
+        - name: scripts
+          configMap:
+            name: qbittorrent-scripts
+            defaultMode: 0755
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -53,6 +57,12 @@ spec:
               value: /data/torrents/complete
             - name: QBT_BitTorrent__Session__TempPath
               value: /data/torrents/incomplete
+            - name: CROSS_SEED_HOST
+              value: cross-seed.default.svc.cluster.local
+            - name: CROSS_SEED_PORT
+              value: "80"
+            - name: CROSS_SEED_SLEEP_INTERVAL
+              value: "0"
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -73,3 +83,6 @@ spec:
             - name: arr-media
               mountPath: /data/torrents
               subPath: torrents
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
