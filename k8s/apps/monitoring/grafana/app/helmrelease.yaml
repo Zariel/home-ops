@@ -40,6 +40,9 @@ spec:
           - secretRef:
               name: &secret grafana-secret
     replicas: 3
+    image:
+      tag: 11.2.1
+      sha: 999ac5b9b357e31be729d990e76dc3749285ca0ebd1ce1294a5b69cf6435d869
     env:
       GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.cbannister.xyz/api/oidc/userinfo
       GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.cbannister.xyz/api/oidc/authorization
