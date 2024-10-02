@@ -19,7 +19,7 @@ prometheus:
     replicas: 2
     replicaExternalLabelName: __replica__
     podMonitorSelector: &selector
-      matchLabels: null
+      matchLabels: ~
     probeSelector: *selector
     ruleSelector: *selector
     scrapeConfigSelector: *selector
