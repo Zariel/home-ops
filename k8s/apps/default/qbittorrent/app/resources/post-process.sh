@@ -2,6 +2,7 @@
 # shellcheck disable=SC2154
 
 set -euo pipefail
+set -x
 
 # User-defined variables
 CROSS_SEED_HOST="${CROSS_SEED_HOST:-required}"
@@ -10,7 +11,7 @@ CROSS_SEED_API_KEY="${CROSS_SEED_API_KEY:-required}"
 CROSS_SEED_SLEEP_INTERVAL="${CROSS_SEED_SLEEP_INTERVAL:-30}"
 
 # Function to set release variables from SABnzbd
-value: "e"t_sab_vars() {
+set_sab_vars() {
     RELEAE_NAME="${SAB_FILENAME:-}"
     RELEASE_DIR="${SAB_COMPLETE_DIR:-}"
     RELEASE_CAT="${SAB_CAT:-}"
