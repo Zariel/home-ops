@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
-set -x
 
 # User-defined variables
 CROSS_SEED_HOST="${CROSS_SEED_HOST:-required}"
