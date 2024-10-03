@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-# shellcheck disable=SC2154
+#!/bin/bash
 
 set -euo pipefail
 set -x
@@ -31,7 +30,6 @@ set_qb_vars() {
     RELEASE_STATUS=0       # Always 0 for qBittorrent
     RELEASE_TYPE="Torrent"
 }
-
 
 # Function to search for cross-seed
 search_cross_seed() {
