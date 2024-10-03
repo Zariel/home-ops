@@ -82,5 +82,5 @@ spec:
               subPath: torrents
             - name: scripts
               mountPath: /scripts/post-process.sh
-              readOnly: true
+              # readOnly: true
               subPath: post-process.sh
