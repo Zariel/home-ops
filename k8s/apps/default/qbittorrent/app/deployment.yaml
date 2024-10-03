@@ -81,5 +81,6 @@ spec:
               mountPath: /data/torrents
               subPath: torrents
             - name: scripts
-              mountPath: /scripts
+              mountPath: /scripts/post-process.sh
               readOnly: true
+              subPath: post-process.sh
