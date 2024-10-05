@@ -18,9 +18,12 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: recyclarr-config
-        - name: recyclarr-yml
+        - name: recyclarr-configs
           configMap:
-            name: recyclarr-config
+            name: recyclarr-configs
+        - name: recyclarr-includes
+          configMap:
+            name: recyclarr-includes
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -47,17 +50,11 @@ spec:
             - name: config
               mountPath: /config/
               readOnly: false
-            - name: recyclarr-yml
-              subPath: recyclarr.yaml
-              mountPath: /config/recyclarr.yaml
+            - name: recyclarr-configs
+              mountPath: /config/configs
               readOnly: true
-            - name: recyclarr-yml
-              subPath: sonarr.yaml
-              mountPath: /config/configs/includes/sonarr.yaml
-              readOnly: true
-            - name: recyclarr-yml
-              subPath: radarr.yaml
-              mountPath: /config/configs/includes/radarr.yaml
+            - name: recyclarr-includes
+              mountPath: /config/includes
               readOnly: true
       initContainers:
         - <<: *container

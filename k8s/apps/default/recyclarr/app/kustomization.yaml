@@ -7,8 +7,10 @@ resources:
   - deployment.yaml
   - pvc.yaml
 configMapGenerator:
-  - name: recyclarr-config
+  - name: recyclarr-configs
     files:
       - recyclarr.yaml=config/recyclarr.yaml
+  - name: recyclarr-includes
+    files:
       - sonarr.yaml=config/sonarr.yaml
       - radarr.yaml=config/radarr.yaml
