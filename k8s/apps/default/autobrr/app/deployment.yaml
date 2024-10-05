@@ -25,6 +25,9 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        - name: config
+          persistentVolumeClaim:
+            claimName: autobrr-config
       initContainers:
         - name: init-db
           image: ghcr.io/onedr0p/postgres-init:16
@@ -60,6 +63,8 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            - name: config
+              mountPath: /config
           livenessProbe:
             httpGet:
               path: /api/healthz/liveness
