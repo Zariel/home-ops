@@ -80,7 +80,7 @@ spec:
           - path: /qbittorrent/qBittorrent/BT_backup
             subPath: qBittorrent/BT_backup
             readOnly: true
-      media:
+      data:
         existingClaim: bighorse-arr-media
         globalMounts:
           - path: /data/torrents
