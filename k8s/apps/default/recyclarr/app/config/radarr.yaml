@@ -107,7 +107,7 @@ quality_profiles:
       - *trash
 
 custom_formats:
-  - quality_profiles:
+  - assign_scores_to:
       - name: *bluray
         score: 5000
       - name: *remux
@@ -119,7 +119,7 @@ custom_formats:
     trash_ids:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
-  - quality_profiles:
+  - assign_scores_to:
       - name: *bluray
       - name: *remux
       - name: *bd1080
@@ -242,7 +242,7 @@ custom_formats:
       - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
       - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
       - 0a3f082873eb454bde444150b70253cc # Extras
-  - quality_profiles:
+  - assign_scores_to:
       - name: *bluray
         score: 3500
       - name: *remux
@@ -254,7 +254,7 @@ custom_formats:
     trash_ids:
       - dcf3ec6938fa32445f590a4da84256cd # DTS-HD MA
       - 3cafb66171b47f226146a0770576870f # TrueHD
-  - quality_profiles:
+  - assign_scores_to:
       - name: *bluray
         score: 2500
       - name: *remux
@@ -265,7 +265,7 @@ custom_formats:
       - name: WEBDL-2160p
     trash_ids:
       - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
-  - quality_profiles:
+  - assign_scores_to:
       - name: *bluray
         score: 1755
       - name: *remux
@@ -276,7 +276,7 @@ custom_formats:
       - name: WEBDL-2160p
     trash_ids:
       - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
-  - quality_profiles:
+  - assign_scores_to:
       - name: *bluray
         score: -10
       - name: *remux
@@ -289,7 +289,7 @@ custom_formats:
         score: -10
     trash_ids:
       - 923b6abef9b17f937fab56cfcf89e1f1 # DV (webdl)
-  - quality_profiles:
+  - assign_scores_to:
       - name: *bluray
         score: -10
       - name: *remux
