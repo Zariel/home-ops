@@ -293,7 +293,7 @@ custom_formats:
 
       # Misc
       - d7c747094a7c65f4c2de083c24899e8b # FreeLeech
-    quality_profiles:
+    assign_scores_to:
       - name: BLURAY-2160p
       - name: BLURAY-1080p
       - name: WEBDL-2160p
@@ -301,12 +301,12 @@ custom_formats:
       - name: WEBDL-1080p
   - trash_ids:
       - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
-    quality_profiles:
+    assign_scores_to:
       - name: WEBDL-2160p
         score: -10
       - name: WEBDL-1080p
         score: -10
   - trash_ids:
       - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
-    quality_profiles:
+    assign_scores_to:
       - name: WEBDL-2160p-NODV
