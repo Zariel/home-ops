@@ -290,6 +290,9 @@ custom_formats:
       - 58790d4e2fdcd9733aa7ae68ba2bb503 # WEB Tier 02
       - d84935abd3f8556dcd51d4f27e22d0a6 # WEB Tier 03
       - d0c516558625b04b363fa6c5c2c7cfd4 # WEB Scene
+
+      # Misc
+      - d7c747094a7c65f4c2de083c24899e8b # FreeLeech
     quality_profiles:
       - name: BLURAY-2160p
       - name: BLURAY-1080p
