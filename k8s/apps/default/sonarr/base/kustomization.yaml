@@ -6,6 +6,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - volumes.yaml
+  - externalsecret.yaml
 configMapGenerator:
   - name: sonarr-scripts
     files:

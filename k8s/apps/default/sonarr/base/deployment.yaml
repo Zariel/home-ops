@@ -42,8 +42,6 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
-            - name: SONARR__AUTH__APIKEY
-              value: e5434fb6e4c04bc5a797103d41714d38
             - name: SONARR__AUTH__METHOD
               value: External
             - name: SONARR__AUTH__REQUIRED
@@ -60,6 +58,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: sonarr-env-config
+            - secretRef:
+                name: sonarr-secret
           resources:
             requests:
               cpu: "512m"
