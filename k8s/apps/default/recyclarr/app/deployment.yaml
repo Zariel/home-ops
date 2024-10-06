@@ -19,8 +19,8 @@ spec:
           persistentVolumeClaim:
             claimName: recyclarr-config
         - name: recyclarr-configs
-          configMap:
-            name: recyclarr-configs
+          secret:
+            secretName: recyclarr-secret
         - name: recyclarr-includes
           configMap:
             name: recyclarr-includes

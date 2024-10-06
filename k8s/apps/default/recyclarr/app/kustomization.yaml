@@ -6,10 +6,8 @@ commonLabels:
 resources:
   - deployment.yaml
   - pvc.yaml
+  - externalsecret.yaml
 configMapGenerator:
-  - name: recyclarr-configs
-    files:
-      - recyclarr.yaml=config/recyclarr.yaml
   - name: recyclarr-includes
     files:
       - sonarr.yaml=config/sonarr.yaml
