@@ -5,6 +5,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - volume.yaml
+  - externalsecret.yaml
 commonLabels:
   app.kubernetes.io/part-of: radarr
 configMapGenerator:
