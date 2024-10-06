@@ -9,3 +9,4 @@ resources:
   - ingress.yaml
   - volume.yaml
   - secret.sops.yaml
+  - externalsecret.yaml
