@@ -3,7 +3,7 @@
   gather_facts: true
   hosts: vyos
   vars:
-    talos_version: v1.7.4
+    talos_version: v1.8.1
   tasks:
     - name: Matchbox
       block:
@@ -19,54 +19,13 @@
             owner: vyos
             group: vyattacfg
 
-        - name: Matchbox | Fetch Talos
-          loop:
-            - file: initramfs-amd64.xz
-              sha: 076a96f467b4b819a27e4e108dbe150edf68931a63cd75bb5a97fd63b91a3d62
-            - file: kernel-amd64
-              sha: e57ff26c9a64ed6905af098809434ee3280d90f281fb59b6b1ea167c9f93acc6
-          ansible.builtin.get_url:
-            url: https://factory.talos.dev/image/6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7/{{ talos_version }}/{{ item.file }}
-            dest: /config/containers/matchbox/assets/{{ item.file }}
-            checksum: sha256:{{ item.sha }}
-            decompress: no
-            owner: vyos
-            group: vyattacfg
-            mode: "0644"
-            timeout: 60
-
-        - name: Matchup | Setup Profiles
-          loop:
-            - talos-k8s-3.json
-            - talos-k8s-4.json
-            - talos-control.json
-          ansible.builtin.copy:
-            dest: /config/containers/matchbox/profiles/{{ item }}
-            src: files/matchbox/{{ item }}
-            owner: vyos
-            group: vyattacfg
-            mode: "0644"
-
-        - name: Matchbox | Setup Groups
-          with_items: "{{ groups['k8s'] }}"
-          ansible.builtin.template:
-            dest: /config/containers/matchbox/groups/{{ item }}.json
-            src: templates/matchbox/group.json.j2
-            owner: vyos
-            group: vyattacfg
-            mode: "0644"
-
-        - name: Matchbox | Talos config
-          loop:
-            - controlplane.yaml
-            - k8s-3.yaml
-            - k8s-4.yaml
-          ansible.builtin.template:
-            dest: /config/containers/matchbox/assets/{{ item }}
-            src: files/talos/{{ item }}.
-            owner: vyos
-            group: vyattacfg
-            mode: "0644"
+        - name: Matchbox | Talos
+          loop: "{{ groups['k8s'] | flatten(levels=1) }}"
+          loop_control:
+            loop_var: name
+          vars:
+            node: "{{ hostvars[name] }}"
+          include_tasks: "matchbox-talos.yaml"
 
     - name: TFTP Setup
       block:
