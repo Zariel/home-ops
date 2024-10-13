@@ -15,7 +15,7 @@ spec:
           env:
             - name: TZ
               value: Europe/London
-          image: ghcr.io/tautulli/tautulli:v2.14.5
+          image: ghcr.io/tautulli/tautulli:v2.14.6
           command: ["/usr/local/bin/python", "Tautulli.py"]
           args:
             - "--config=/config/config.ini"
