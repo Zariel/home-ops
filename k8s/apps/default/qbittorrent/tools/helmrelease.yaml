@@ -36,7 +36,7 @@ spec:
           tagging: &container
             image:
               repository: ghcr.io/zariel/qbtools
-              tag: master@sha256:6952623b369325d4c49cebb5b5a962724fa26471859a6c8f9c3033eaced2c4c6
+              tag: master@sha256:5bc500bbf359e0cdfa79383a90d8eee7f9b7c3ec16e6666c0bd8d6d423ed0bc3
             env:
               TZ: *timeZone
               POD_NAMESPACE:
@@ -52,7 +52,8 @@ spec:
               "--unregistered",
               "--server", "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
               "--port", "80",
-              "--config", "/config/config.yaml"
+              "--config", "/config/config.yaml",
+              "--verbose",
             ]
             securityContext:
               allowPrivilegeEscalation: false
