@@ -36,7 +36,7 @@ spec:
           tagging: &container
             image:
               repository: ghcr.io/zariel/qbtools
-              tag: master@sha256:6952623b369325d4c49cebb5b5a962724fa26471859a6c8f9c3033eaced2c4c6
+              tag: master@sha256:140d51e2317a50a6ee932990bb9dad8bfcd7fd8ed3d001bc3bfe3d94874ed149
             env:
               TZ: *timeZone
               POD_NAMESPACE:
