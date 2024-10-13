@@ -35,8 +35,8 @@ spec:
         initContainers:
           tagging: &container
             image:
-              repository: ghcr.io/buroa/qbtools
-              tag: v0.19.2@sha256:98b84b4b0e1e5f4fcff3cd2e6b5c5fe2168d415bccd38169dc80b161139c955f
+              repository: ghcr.io/zariel/qbtools
+              tag: master@sha256:6952623b369325d4c49cebb5b5a962724fa26471859a6c8f9c3033eaced2c4c6
             env:
               TZ: *timeZone
               POD_NAMESPACE:
