@@ -13,8 +13,6 @@ cgroup:
 cluster:
   id: 1
   name: holywoo
-containerRuntime:
-  integration: containerd
 devices:
   - enp+
   - eno1
