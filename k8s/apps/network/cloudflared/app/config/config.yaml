@@ -1,14 +1,10 @@
 ---
 originRequest:
-  http2Origin: true
+  originServerName: external.devbu.io
 
 ingress:
   - hostname: cbannister.xyz
     service: https://nginx-external-controller.network.svc.cluster.local:443
-    originRequest:
-      originServerName: external.cbannister.xyz
   - hostname: "*.cbannister.xyz"
     service: https://nginx-external-controller.network.svc.cluster.local:443
-    originRequest:
-      originServerName: external.cbannister.xyz
   - service: http_status:404
