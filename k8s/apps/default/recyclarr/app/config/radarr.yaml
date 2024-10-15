@@ -169,7 +169,7 @@ custom_formats:
 
       # Misc
       # - 9de657fd3d327ecf144ec73dfe3a3e9a # Dutch Groups
-      - 0d91270a7255a1e388fa85e959f359d8 # FreeLeech
+      # - 0d91270a7255a1e388fa85e959f359d8 # FreeLeech
       - ff86c4326018682f817830ced463332b # MPEG2
       - 4b900e171accbfb172729b63323ea8ca # Multi
       - e7718d7a3ce595f289bfee26adc178f5 # Repack/Proper
