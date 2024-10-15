@@ -26,6 +26,8 @@ spec:
             - tunnel
             - --config
             - /etc/cloudflared/config/config.yaml
+            - --loglevel
+            - debug
             - run
             - "${CLUSTER_CLOUDFLARE_TUNNEL_ID}"
           env:
