@@ -292,7 +292,7 @@ custom_formats:
       - d0c516558625b04b363fa6c5c2c7cfd4 # WEB Scene
 
       # Misc
-      - d7c747094a7c65f4c2de083c24899e8b # FreeLeech
+      # - d7c747094a7c65f4c2de083c24899e8b # FreeLeech
     assign_scores_to:
       - name: BLURAY-2160p
       - name: BLURAY-1080p
