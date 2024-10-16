@@ -51,7 +51,15 @@ spec:
           - name: prometheus
             parameters: 0.0.0.0:9153
           - name: forward
-            parameters: . 10.5.0.4
+            parameters: cbannister.xyz 10.45.0.55
+          - name: forward
+            parameters: cbannister.casa 10.5.0.4
+            configBlock: |-
+              cache
+          - name: forward
+            parameters: . 1.1.1.1 1.0.0.1
+            configBlock: |-
+              cache
           - name: cache
             parameters: 30
           - name: loop
