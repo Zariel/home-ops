@@ -37,7 +37,7 @@ spec:
             - mountPath: /var/lib/bind
               name: zone-files
         - name: validate-config
-          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:a2ceeac6e2c17fc6e56e95bd5a07228f03f0232428d52b30b6a69ac26b28aeb8
+          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:f94b250c809520eab56eda146c3df035ea420b0508c2060e31cf81494875c9aa
           command:
             - /usr/bin/named-checkconf
             - -z
