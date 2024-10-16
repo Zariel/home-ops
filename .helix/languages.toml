@@ -1,0 +1,4 @@
+[language-server.yaml-language-server.config.yaml]
+schemas = { kubernetes = "k8s/**/*.yaml" }
+format = { enable = true }
+completion = true
