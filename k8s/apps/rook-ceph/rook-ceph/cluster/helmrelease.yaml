@@ -85,7 +85,7 @@ spec:
         ssl: false
         prometheusEndpoint: http://thanos-query-frontend.monitoring.svc.cluster.local:9090
       storage:
-        useAllNodes: fales
+        useAllNodes: false
         useAllDevices: false
         config:
           osdsPerDevice: "1"
