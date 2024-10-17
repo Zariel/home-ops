@@ -92,19 +92,19 @@ spec:
         nodes:
           - name: k8s-0
             devices:
-              - /dev/disk/by-id/eui.0025385531b05cb4
+              - name: /dev/disk/by-id/eui.0025385531b05cb4
           - name: k8s-1
             devices:
-              - /dev/disk/by-id/eui.0025385431b3ca45
+              - name: /dev/disk/by-id/eui.0025385431b3ca45
           - name: k8s-2
             devices:
-              - /dev/disk/by-id/eui.0025385531b55ee9
+              - name: /dev/disk/by-id/eui.0025385531b55ee9
           - name: k8s-3
             devices:
-              - /dev/disk/by-id/eui.34333830522049920025384300000001
+              - name: /dev/disk/by-id/eui.34333830522049920025384300000001
           - name: k8s-4
             devices:
-              - /dev/disk/by-id/eui.00000000000000000026b7785529a0a5
+              - name: /dev/disk/by-id/eui.00000000000000000026b7785529a0a5
     cephBlockPoolsVolumeSnapshotClass:
       enabled: true
       name: csi-ceph-blockpool
