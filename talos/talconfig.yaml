@@ -128,7 +128,7 @@ nodes:
     controlPlane: false
     installDisk: /dev/sda
     installDiskSelector:
-      size: <= 1TB
+      wwid: eui.343335304eb046460025384100000001
     networkInterfaces:
       - interface: enp3s0
         dhcp: true
