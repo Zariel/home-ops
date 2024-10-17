@@ -1,6 +1,6 @@
 ---
 clusterName: holywoo
-talosVersion: v1.8.0
+talosVersion: v1.8.1
 kubernetesVersion: v1.31.1
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
@@ -128,7 +128,7 @@ nodes:
     controlPlane: false
     installDisk: /dev/sda
     installDiskSelector:
-      type: ssd
+      size: <= 1TB
     networkInterfaces:
       - interface: enp3s0
         dhcp: true
