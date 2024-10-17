@@ -14,6 +14,9 @@ spec:
         namespace: flux-system
       interval: 30m
   values:
+    image:
+      repository: nvcr.io/nvidia/k8s-device-plugin
+      tag: v0.16.2@sha256:fe3da09abe6509c2200f29049ac3ae5ff1277d9653972b4b391348655f8cd944
     runtimeClassName: nvidia
     config:
       name: nvidia-device-plugin-config
