@@ -5,6 +5,10 @@ metadata:
   name: cluster-apps-plex
   namespace: flux-system
 spec:
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: plex
   path: ./k8s/apps/default/plex/app
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
