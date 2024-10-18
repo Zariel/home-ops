@@ -35,6 +35,11 @@ spec:
       volumes:
         - name: transcode
           emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        - name: cache
+          persistentVolumeClaim:
+            claimName: plex-cache
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -69,15 +74,19 @@ spec:
               mountPath: /transcode
             - name: config
               mountPath: /config
+            - name: logs
+              mountPath: /config/Library/Application Support/Plex Media Server/Logs
+            - name: cache
+              mountPath: /config/Library/Application Support/Plex Media Server/Cache
             - name: arr-media
               mountPath: /data
           livenessProbe: &livenessProbe
             httpGet:
               path: /identity
               port: plex
-              initialDelaySeconds: 0
-              periodSeconds: 10
-              timeoutSeconds: 1
-              failureThreshold: 3
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
           readinessProbe: *livenessProbe
           startupProbe: *livenessProbe
