@@ -9,4 +9,15 @@ spec:
     requests:
       storage: 75Gi
   storageClassName: ceph-block
-
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: config-plex-0
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: ceph-filesystem
