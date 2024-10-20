@@ -65,44 +65,20 @@ alertmanager:
           resources:
             requests:
               storage: 10Gi
-kubelet:
-  enabled: true
-  serviceMonitor:
-    metricRelabelings:
-      # Drop high cardinality labels
-      - action: labeldrop
-        regex: (uid)
-      - action: labeldrop
-        regex: (id|name)
-      - action: drop
-        sourceLabels: ["__name__"]
-        regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
 kubeApiServer:
-  enabled: true
   serviceMonitor:
-    metricRelabelings:
-      # Drop high cardinality labels
-      - action: drop
-        sourceLabels: ["__name__"]
-        regex: (apiserver|etcd|rest_client)_request(|_sli|_slo)_duration_seconds_bucket
-      - action: drop
-        sourceLabels: ["__name__"]
-        regex: (apiserver_response_sizes_bucket|apiserver_watch_events_sizes_bucket)
-kubeControllerManager:
-  enabled: true
-  endpoints: &cp
-    - 10.1.1.10
-    - 10.1.1.11
-    - 10.1.1.12
-  serviceMonitor:
-    metricRelabelings:
-kubeEtcd:
-  enabled: true
-  endpoints: *cp
+    selector:
+      k8s-app: kube-apiserver
 kubeScheduler:
-  enabled: true
-  endpoints: *cp
-kubeProxy:
+  service:
+    selector:
+      k8s-app: kube-scheduler
+kubeControllerManager: &kubeControllerManager
+  service:
+    selector:
+      k8s-app: kube-controller-manager
+kubeEtcd:
+  <<: *kubeControllerManager # etcd runs on control plane nodeskubeProxy:
   enabled: false
 nodeExporter:
   enabled: true
@@ -138,8 +114,3 @@ kube-state-metrics:
 grafana:
   enabled: false
   forceDeployDashboards: true
-  sidecar:
-    dashboards:
-      multicluster:
-        etcd:
-          enabled: true
