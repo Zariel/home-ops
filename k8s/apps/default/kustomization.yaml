@@ -15,7 +15,6 @@ resources:
   - ./secrets
   - ./smtp-relay/ks.yaml
   - miniflux/ks.yaml
-  - overseerr/ks.yaml
   - atuin/ks.yaml
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
@@ -23,3 +22,4 @@ resources:
   - flaresolverr/ks.yaml
   - cross-seed/ks.yaml
   - unpackerr/ks.yaml
+  - jellyseerr/ks.yaml
