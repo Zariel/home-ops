@@ -1,24 +1,12 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: plex
 spec:
-  serviceName: plex
   replicas: 1
   selector:
     matchLabels:
       app: plex
-  volumeClaimTemplates:
-    - metadata:
-        name: config
-      spec:
-        accessModes:
-          - ReadWriteMany
-        resources:
-          requests:
-            storage: 100Gi
-        storageClassName: ceph-filesystem
-        volumeMode: Filesystem
   template:
     metadata:
       labels:
@@ -37,6 +25,9 @@ spec:
           emptyDir: {}
         - name: logs
           emptyDir: {}
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-plex-0
         - name: cache
           persistentVolumeClaim:
             claimName: plex-cache
