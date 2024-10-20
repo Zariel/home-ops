@@ -57,7 +57,7 @@ spec:
             requests:
               cpu: 200m
             limits:
-              mem: 1Gi
+              memory: 1Gi
           volumeMounts:
             - mountPath: /etc/vector/vector.yaml
               name: config
