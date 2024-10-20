@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels: &labels
+    app.kubernetes.io/component: vector-aggregator
+    app.kubernetes.io/instance: vector-aggregator
+  name: vector-aggregator
+spec:
+  replicas: 3
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      initContainers:
+        - name: init-geoip
+          image: ghcr.io/maxmind/geoipupdate:v7.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GEOIPUPDATE_EDITION_IDS
+              value: GeoLite2-Country
+            - name: GEOIPUPDATE_FREQUENCY
+              value: "0"
+            - name: GEOIPUPDATE_VERBOSE
+              value: "1"
+          envFrom:
+            - secretRef:
+                name: vector-maxmind
+          volumeMounts:
+            - mountPath: /usr/share/GeoIP
+              name: geoip
+      containers:
+        - name: app
+          args:
+            - --config
+            - /etc/vector/vector.yaml
+          image: docker.io/timberio/vector:0.41.1-alpine@sha256:501e5403e19238c9073c116fb3cbb750a9201d0271b09dae88f044534803c670
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8686
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8686
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 200m
+            limits:
+              mem: 512mi
+          volumeMounts:
+            - mountPath: /etc/vector/vector.yaml
+              name: config
+              readOnly: true
+              subPath: vector.yaml
+            - mountPath: /vector-data-dir
+              name: data
+            - mountPath: /usr/share/GeoIP
+              name: geoip
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: vector-aggregator
+          maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+      volumes:
+        - name: config
+          configMap:
+            name: vector-aggregator-configmap
+        - name: data
+          emptyDir: {}
+        - name: geoip
+          emptyDir: {}
