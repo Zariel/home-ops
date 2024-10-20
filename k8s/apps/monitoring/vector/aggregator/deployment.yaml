@@ -6,6 +6,7 @@ metadata:
   labels: &labels
     app.kubernetes.io/component: vector-aggregator
     app.kubernetes.io/instance: vector-aggregator
+    app.kubernetes.io/name: vector-aggregator
   name: vector-aggregator
 spec:
   replicas: 3
