@@ -17,9 +17,8 @@ cniConfig:
   name: none
 patches:
   - |-
-    - op: add
-      path: /machine/kubelet
-      value:
+    machine:
+      kubelet:
         extraArgs:
           image-gc-high-threshold: "55"
           image-gc-low-threshold: "50"
@@ -37,18 +36,15 @@ patches:
             - 10.1.1.0/24
         disableManifestsDirectory: true
         defaultRuntimeSeccompProfileEnabled: true
-    - op: add
-      path: /cluster/proxy
-      value:
-        disabled: true
-    - op: add
-      path: /machine/sysctls
-      value:
+      sysctls:
         fs.inotify.max_queued_events: "65536"
         fs.inotify.max_user_instances: "8192"
         fs.inotify.max_user_watches: "524288"
         net.core.rmem_max: "7500000"
         net.core.wmem_max: "7500000"
+    cluster:
+      proxy:
+        disabled: true
 
 controlPlane:
   talosImageURL: factory.talos.dev/installer/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -85,14 +81,14 @@ controlPlane:
       dhcp: true
   patches:
     - |-
-      - op: add
-        path: /cluster/coreDNS
-        value:
+      cluster:
+        coreDNS:
           disabled: true
-      - op: add
-        path: /cluster/apiServer
-        value:
+        apiServer:
           disablePodSecurityPolicy: true
+        etcd:
+          extraArgs:
+            listen-metrics-urls: http://0.0.0.0:2381
 
 worker:
   talosImageURL: factory.talos.dev/installer/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -126,7 +122,6 @@ nodes:
   - hostname: k8s-3
     ipAddress: "10.1.1.13"
     controlPlane: false
-    installDisk: /dev/sda
     installDiskSelector:
       wwid: eui.343335304eb046460025384100000001
     networkInterfaces:
@@ -135,7 +130,7 @@ nodes:
       - deviceSelector:
           driver: virtio_net
         ignore: true
-    talosImageURL: factory.talos.dev/installer/6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7
+    talosImageURL: factory.talos.dev/installer/26124abcbd408be693df9fe852c80ef1e6cc178e34d7d7d8430a28d1130b4227
     kernelModules:
       - name: nvidia
       - name: nvidia_uvm
@@ -145,9 +140,8 @@ nodes:
       nas: local
     patches:
       - |-
-        - op: add
-          path: /machine/sysctls
-          value:
+        machine:
+          sysctls:
             net.core.bpf_jit_harden: "1"
   - hostname: k8s-4
     ipAddress: "10.1.1.14"
