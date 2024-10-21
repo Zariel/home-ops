@@ -69,7 +69,7 @@ spec:
       persistence: &persistence
         enabled: true
         storageClass: ceph-block
-        size: 10Gi
+        size: 50Gi
     query:
       replicas: 2
       extraArgs: ["--alert.query-url=https://thanos.cbannister.xyz"]
