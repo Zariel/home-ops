@@ -22,3 +22,5 @@ spec:
       name: nvidia-device-plugin-config
     gfd:
       enabled: true
+    nfd:
+      enabled: false
