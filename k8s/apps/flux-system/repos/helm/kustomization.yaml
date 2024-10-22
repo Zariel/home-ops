@@ -16,7 +16,6 @@ resources:
   - ./nfs-subdir-external-provisioner.yaml
   - ./coredns.yaml
   - ./emberstack.yaml
-  - ./bitnami.yaml
   - ./cloudnative-pg.yaml
   - ./xenitab.yaml
   - ./openebs.yaml
