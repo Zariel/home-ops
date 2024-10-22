@@ -12,7 +12,6 @@ spec:
       labels:
         app: plex
     spec:
-      runtimeClassName: nvidia
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -45,18 +44,14 @@ spec:
               value: https://plex.cbannister.xyz:443,http://10.45.0.20:32400
             - name: PLEX_NO_AUTH_NETWORKS
               value: 10.0.0.0/8
-            - name: NVIDIA_VISIBLE_DEVICES
-              value: all
-            - name: NVIDIA_DRIVER_CAPABILITIES
-              value: "all"
           resources:
             requests:
               cpu: 1000m
               memory: 4096Mi
-              nvidia.com/gpu: 1
+              gpu.intel.com/i915: 1
             limits:
               memory: 4096Mi
-              nvidia.com/gpu: 1
+              gpu.intel.com/i915: 1
           ports:
             - containerPort: 32400
               name: plex
