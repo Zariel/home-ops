@@ -27,3 +27,4 @@ resources:
   - ./spegel.yaml
   - ./external-dns.yaml
   - ./csi-driver-smb.yaml
+  - ./node-feature-discovery.yaml
