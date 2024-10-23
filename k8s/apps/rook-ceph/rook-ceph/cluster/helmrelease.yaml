@@ -95,7 +95,7 @@ spec:
               - name: /dev/disk/by-id/nvme-eui.34333830522016980025384300000001
           - name: k8s-1
             devices:
-              - name: /dev/disk/by-id/nvme-eui.0025385431b3ca45
+              - name: /dev/disk/by-id/nvme-eui.34333830522015940025384300000001
           - name: k8s-2
             devices:
               - name: /dev/disk/by-id/nvme-eui.0025385531b55ee9
