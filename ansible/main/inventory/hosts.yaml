@@ -12,11 +12,11 @@ k8s:
       initramfs_sha: 8f62240a619bea4c76e2da45e105a1adc937d8ed671ad9235a5c7de91147d84e
   hosts:
     k8s-0:
-      mac_addr: ec:8e:b5:70:ca:20
+      mac_addr: 58:47:ca:78:d2:44
     k8s-1:
-      mac_addr: 48:21:0b:60:1a:3f
+      mac_addr: 58:47:CA:78:D7:FC
     k8s-2:
-      mac_addr: ec:8e:b5:70:f6:59
+      mac_addr: 58:47:ca:78:d8:44
     k8s-3:
       mac_addr: f6:45:04:c6:96:e0 # mellanox
       pxe_mac_addr: bc:24:11:da:2b:0a # pve
