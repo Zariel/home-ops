@@ -35,8 +35,6 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
-      nodeSelector:
-        nas: local
       containers:
         - name: sabnzbd
           image: ghcr.io/onedr0p/sabnzbd:4.3.3
