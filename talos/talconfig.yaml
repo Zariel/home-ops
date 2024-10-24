@@ -170,14 +170,3 @@ nodes:
         machine:
           sysctls:
             net.core.bpf_jit_harden: 1
-  - hostname: k8s-4
-    ipAddress: "10.1.1.14"
-    controlPlane: false
-    installDisk: /dev/sda
-    installDiskSelector:
-      type: ssd
-    networkInterfaces:
-      - interface: enp114s0
-        dhcp: true
-      - interface: enp115s0
-        dhcp: true
