@@ -14,10 +14,7 @@ cgroup:
 cluster:
   id: 1
   name: holywoo
-devices:
-  - enp+
-  - eno1
-enableRuntimeDeviceDetection: false
+enableRuntimeDeviceDetection: true
 endpointRoutes:
   enabled: true
 envoy:
