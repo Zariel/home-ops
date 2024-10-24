@@ -24,8 +24,6 @@ k8s:
         schematic_id: 6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7
         kernel_sha: a2d97f9ca8070635079db9ce1b3fd7f416c6d20c538804c8b58af8f3c4751b30
         initramfs_sha: 855a34fa8bf729834aefba89a6d9536a14fc74791db3b62bb567a608e30f4720
-    k8s-4:
-      mac_addr: 48:21:0b:56:ac:6c
 ungrouped:
   hosts:
     vyos:
