@@ -24,6 +24,8 @@ spec:
       strategy: rollback
       retries: 3
   dependsOn:
+    - name: openebs
+      namespace: openebs-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
   valuesFrom:
@@ -68,7 +70,7 @@ spec:
         - --retention.resolution-1h=60d
       persistence: &persistence
         enabled: true
-        storageClass: ceph-block
+        storageClass: openebs-hostpath
         size: 50Gi
     query:
       replicas: 2
