@@ -56,15 +56,21 @@ spec:
         mon:
           requests:
             cpu: "500m"
-            memory: "2Gi"
+            memory: "1Gi"
           limits:
-            memory: "2Gi"
+            memory: "1Gi"
         osd:
           requests:
             cpu: "500m"
             memory: "2Gi"
           limits:
-            memory: "8Gi"
+            memory: "6Gi"
+        mgr-sidecar:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
       mgr:
         modules:
           - name: pg_autoscaler # This is already enabled by default, but needs to be here so that we don't override the default behavior.
