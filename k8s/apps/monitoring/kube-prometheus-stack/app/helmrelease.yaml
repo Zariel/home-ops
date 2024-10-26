@@ -16,12 +16,17 @@ spec:
         namespace: flux-system
       interval: 30m
   install:
-    crds: CreateReplace
+    crds: Skip
   upgrade:
-    crds: CreateReplace
+    crds: Skip
+  dependsOn:
+    - name: prometheus-operator-crds
+      namespace: monitoring
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   values:
     crds:
-      enabled: true
+      enabled: false
     cleanPrometheusOperatorObjectNames: true
     namespaceOverride: monitoring
     prometheus:

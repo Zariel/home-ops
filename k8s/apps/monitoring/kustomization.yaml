@@ -10,3 +10,4 @@ resources:
   - vector/ks.yaml
   - karma/ks.yaml
   - smartctl-exporter/ks.yaml
+  - prometheus-operator-crds/ks.yaml
