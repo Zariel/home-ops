@@ -104,7 +104,7 @@ spec:
     kubeProxy:
       enabled: false
     nodeExporter:
-      enabled: true
+      enabled: false
     prometheus-node-exporter:
       enabled: false
     kubeStateMetrics:
