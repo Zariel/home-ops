@@ -1,21 +1,22 @@
----
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app kube-prometheus-stack
+  name: &app node-exporter
   namespace: flux-system
 spec:
-  path: ./k8s/apps/monitoring/kube-prometheus-stack/app
   targetNamespace: monitoring
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  path: ./k8s/apps/monitoring/node-exporter/app
+  dependsOn:
+    - name: kube-prometheus-stack
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 15m
+  timeout: 5m
