@@ -7,11 +7,12 @@ metadata:
   namespace: flux-system
 spec:
   path: ./k8s/apps/monitoring/kube-prometheus-stack/app
+  targetNamespace: monitoring
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 15m
