@@ -18,5 +18,5 @@ spec:
     name: home-kubernetes
   wait: true
   dependsOn:
-    - name: kube-prometheus-stack
+    - name: cluster-apps-kube-prometheus-stack
     - name: cluster-apps-rook-ceph-cluster
