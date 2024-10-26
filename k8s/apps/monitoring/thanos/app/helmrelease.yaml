@@ -73,6 +73,11 @@ spec:
         enabled: true
         storageClass: openebs-hostpath
         size: 50Gi
+      resources:
+        requests:
+          cpu: 200m
+        limits:
+          memory: 4Gi
     query:
       replicas: 2
       extraArgs: ["--alert.query-url=https://thanos.cbannister.xyz"]
