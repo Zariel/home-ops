@@ -3,9 +3,3 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - ./scrapeconfigs
-configMapGenerator:
-  - name: kube-prometheus-stack-values
-    files:
-      - values.yaml
-configurations:
-  - kustomizeconfig.yaml
