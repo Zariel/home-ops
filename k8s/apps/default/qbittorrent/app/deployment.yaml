@@ -32,7 +32,7 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
-        seccompProfile: { type: RuntimeDefault } 
+        seccompProfile: { type: RuntimeDefault }
       containers:
         - name: qbittorent
           image: ghcr.io/onedr0p/qbittorrent:5.0.0
@@ -73,7 +73,7 @@ spec:
             requests:
               cpu: 100m
             limits:
-              memory: 16Gi
+              memory: 10Gi
           volumeMounts:
             - name: config
               mountPath: /config
