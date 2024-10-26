@@ -45,6 +45,7 @@ spec:
               - __meta_kubernetes_pod_node_name
             targetLabel: kubernetes_node
     rbac:
+      create: false
       pspEnabled: false
     kubeRBACProxy:
       enabled: false
