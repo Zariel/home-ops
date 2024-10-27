@@ -47,24 +47,26 @@ spec:
       osd_class_update_on_start = false
     cephClusterSpec:
       resources:
+        api:
+          requests:
+            cpu: "100m"
+          limits:
+            memory: 512Mi
         mgr:
           requests:
             cpu: "500m"
-            memory: 2Gi
           limits:
-            memory: 2Gi
+            memory: 768Mi
         mon:
           requests:
             cpu: "500m"
-            memory: "1Gi"
           limits:
-            memory: "1Gi"
+            memory: 768Mi
         osd:
           requests:
             cpu: "500m"
-            memory: "2Gi"
           limits:
-            memory: "6Gi"
+            memory: "3Gi"
         mgr-sidecar:
           requests:
             cpu: 50m
@@ -89,7 +91,7 @@ spec:
         enabled: true
         urlPrefix: /
         ssl: false
-        prometheusEndpoint: http://thanos-query-frontend.monitoring.svc.cluster.local:9090
+        prometheusEndpoint: http://thanos-query-frontend.monitoring.svc.cluster.local:10902
       storage:
         useAllNodes: false
         useAllDevices: false
