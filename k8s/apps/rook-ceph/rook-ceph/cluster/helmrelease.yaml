@@ -32,12 +32,11 @@ spec:
     ingress:
       dashboard:
         ingressClassName: internal
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
         host:
-          name: &host rook.cbannister.xyz
+          name: rook.cbannister.xyz
           path: /
-        tls:
-          - hosts:
-              - *host
     toolbox:
       enabled: true
     configOverride: |
@@ -205,6 +204,7 @@ spec:
               size: 3
           preservePoolsOnDelete: true
           gateway:
+            hostNetwork: false
             port: 80
             resources:
               requests:
@@ -222,3 +222,13 @@ spec:
           reclaimPolicy: Delete
           parameters:
             region: eu-west-2
+        ingress:
+          enabled: true
+          annotations:
+            external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
+            nginx.ingress.kubernetes.io/proxy-body-size: "0"
+            nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+          ingressClassName: internal
+          host:
+            name: rgw.cbannister.xyz
+            path: /
