@@ -13,7 +13,7 @@ spec:
             path: "/"
             backend:
               service:
-                name: onepassword
+                name: onepassword-connect
                 port:
                   name: http
   tls:
