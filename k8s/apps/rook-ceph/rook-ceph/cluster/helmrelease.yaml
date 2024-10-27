@@ -79,7 +79,8 @@ spec:
           - name: rook # This enables the rook module.
             enabled: true
       network:
-        provider: host
+        ipFamily: IPv4
+        dualStack: false
         connections:
           compression:
             enabled: true
