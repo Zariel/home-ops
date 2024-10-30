@@ -236,6 +236,7 @@ custom_formats:
       - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
       - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
       - 0a3f082873eb454bde444150b70253cc # Extras
+      - f537cf427b64c38c8e36298f657e4828 # Scene
   - assign_scores_to:
       - name: *bluray
         score: 3500
