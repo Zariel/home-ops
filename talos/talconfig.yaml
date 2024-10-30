@@ -1,7 +1,7 @@
 ---
 clusterName: holywoo
 talosVersion: v1.8.1
-kubernetesVersion: v1.31.1
+kubernetesVersion: v1.31.2
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
 allowSchedulingOnControlPlanes: true
@@ -51,7 +51,7 @@ patches:
         disablePodSecurityPolicy: true
 
 controlPlane:
-  talosImageURL: factory.talos.dev/installer/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+  talosImageURL: factory.talos.dev/installer/de3b865124c5616da8084826167f8c0b0fbc9b905b146290db797024e84097fc
   schematic:
     customization:
       extraKernelArgs:
@@ -95,9 +95,6 @@ controlPlane:
       permissions: 420
       path: /etc/nfsmount.conf
       op: overwrite
-  networkInterfaces:
-    - interface: eno1
-      dhcp: true
 
 worker:
   talosImageURL: factory.talos.dev/installer/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -109,6 +106,7 @@ worker:
   networkInterfaces:
     - interface: eno1
       dhcp: true
+
 nodes:
   - hostname: k8s-0
     ipAddress: "10.1.1.10"
