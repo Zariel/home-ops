@@ -16,7 +16,7 @@ spec:
   values:
     image:
       repository: nvcr.io/nvidia/k8s-device-plugin
-      tag: v0.16.2@sha256:fe3da09abe6509c2200f29049ac3ae5ff1277d9653972b4b391348655f8cd944
+      tag: v0.17.0@sha256:be97526ae92ea6bdbd1d4f971b9106156b5aa4d61dfa34a3787bf13e86899ffc
     runtimeClassName: nvidia
     config:
       name: nvidia-device-plugin-config
