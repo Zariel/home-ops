@@ -2,9 +2,6 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: smartctl-exporter
-  labels:
-    app.kubernetes.io/instance: smartctl-exporter
-    app.kubernetes.io/name: prometheus-smartctl-exporter
 spec:
   endpoints:
   - interval: 60s
@@ -17,5 +14,4 @@ spec:
     - monitoring
   selector:
     matchLabels:
-      app.kubernetes.io/instance: smartctl-exporter
-      app.kubernetes.io/name: prometheus-smartctl-exporter
+      app.kubernetes.io/name: smartctl-exporter
