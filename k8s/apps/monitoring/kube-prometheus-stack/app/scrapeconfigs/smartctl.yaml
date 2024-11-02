@@ -8,6 +8,7 @@ spec:
   staticConfigs:
     - targets:
       - pve.cbannister.casa:9633
+      - nas.cbannister.casa:9633
   metricsPath: /metrics
   relabelings:
     - action: replace
