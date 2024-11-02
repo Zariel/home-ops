@@ -23,8 +23,8 @@ spec:
         args:
         - --smartctl.path=/usr/sbin/smartctl
         - --smartctl.interval=120s
-        - --smartctl.device=/dev/nvme0n1
-        - --smartctl.device=/dev/nvme1n1
+        - --smartctl.device=/host/dev/nvme0n1
+        - --smartctl.device=/host/dev/nvme1n1
         - --web.listen-address=0.0.0.0:9633
         - --web.telemetry-path=/metrics
         ports:
@@ -33,7 +33,7 @@ spec:
           protocol: TCP
         resources: {}
         volumeMounts:
-        - mountPath: /hostdev
+        - mountPath: /host/dev
           name: dev
       volumes:
       - hostPath:
