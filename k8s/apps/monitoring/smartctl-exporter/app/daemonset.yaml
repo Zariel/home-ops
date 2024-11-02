@@ -18,8 +18,7 @@ spec:
         args:
         - --web.listen-address=0.0.0.0:9633
         - --web.telemetry-path=/metrics
-        - --smartctl.device=/dev/nvme0
-        - --smartctl.device=/dev/nvme1
+        - --smartctl.device-include=nvme
         ports:
         - containerPort: 9633
           name: http
