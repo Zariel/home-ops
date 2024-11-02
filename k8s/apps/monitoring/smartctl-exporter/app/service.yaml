@@ -2,14 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: smartctl-exporter
-  labels:
-    app.kubernetes.io/instance: smartctl-exporter
-    app.kubernetes.io/name: prometheus-smartctl-exporter
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/instance: smartctl-exporter
-    app.kubernetes.io/name: prometheus-smartctl-exporter
+    app.kubernetes.io/name: smartctl-exporter
   ports:
   - name: http
     port: 80
