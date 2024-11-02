@@ -23,8 +23,6 @@ spec:
         args:
         - --smartctl.path=/usr/sbin/smartctl
         - --smartctl.interval=120s
-        - --smartctl.device=/host/dev/nvme0n1
-        - --smartctl.device=/host/dev/nvme1n1
         - --web.listen-address=0.0.0.0:9633
         - --web.telemetry-path=/metrics
         ports:
@@ -38,5 +36,4 @@ spec:
       volumes:
       - hostPath:
           path: /dev
-          type: ""
         name: dev
