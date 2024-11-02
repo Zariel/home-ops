@@ -35,6 +35,11 @@ spec:
           name: nvme0n1
         - mountPath: /dev/nvme1n1
           name: nvme1n1
+        securityContext:
+          readOnlyRootFilesystem: true
+          capabilities:
+            add:
+              - SYS_ADMIN
       volumes:
       - name: nvme0n1
         hostPath:
