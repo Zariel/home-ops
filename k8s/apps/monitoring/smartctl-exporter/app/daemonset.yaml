@@ -11,25 +11,26 @@ spec:
       labels:
         app.kubernetes.io/name: smartctl-exporter
     spec:
+      hostNetwork: true
       containers:
-      - name: smartctl-exporter
-        image: quay.io/prometheuscommunity/smartctl-exporter:v0.12.0
-        imagePullPolicy: IfNotPresent
-        args:
-        - --web.listen-address=0.0.0.0:9633
-        - --web.telemetry-path=/metrics
-        - --smartctl.device-include=nvme
-        ports:
-        - containerPort: 9633
-          name: http
-          protocol: TCP
-        resources:
-          requests:
-            cpu: 50m
-            memory: 200Mi
-          limits:
-            memory: 200Mi
-        securityContext:
-          privileged: true
-          runAsUser: 0
-          readOnlyRootFilesystem: true
+        - name: smartctl-exporter
+          image: quay.io/prometheuscommunity/smartctl-exporter:v0.12.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --web.listen-address=0.0.0.0:9633
+            - --web.telemetry-path=/metrics
+            - --smartctl.device-include=nvme
+          ports:
+            - containerPort: 9633
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 200Mi
+            limits:
+              memory: 200Mi
+          securityContext:
+            privileged: true
+            runAsUser: 0
+            readOnlyRootFilesystem: true
