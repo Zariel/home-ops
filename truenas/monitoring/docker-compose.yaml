@@ -1,0 +1,26 @@
+services:
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.8.2
+    ports:
+      - 9100:9100
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--path.rootfs=/host/root"
+      - "--path.udev.data=/host/root/run/udev/data"
+      - "--web.listen-address=0.0.0.0:9100"
+      - "--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)"
+      - "--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+    restart: always
+    network_mode: host
+    volumes:
+      - /sys:/host/sys:ro
+      - /proc:/host/proc:ro
+      - /:/host/root:ro
+  smartctl_exporter:
+    image: quay.io/prometheuscommunity/smartctl-exporter:v0.12.0
+    ports:
+      - 9633:9633
+    command:
+      - "--smartctl.path=/usr/sbin/smartctl"
+      - "--smartctl.interval=120s"
