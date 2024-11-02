@@ -38,3 +38,15 @@ spec:
         securityContext:
           privileged: true
           readOnlyRootFilesystem: true
+        volumeDevices:
+          - devicePath: /dev/nvme0n1
+            name: nvme0n1
+          - devicePath: /dev/nvme1n1
+            name: nvme1n1
+      volumes:
+        - name: nvme0n1
+          hostPath:
+            path: /dev/nvme0n1
+        - name: nvme1n1
+          hostPath:
+            path: /dev/nvme1n1
