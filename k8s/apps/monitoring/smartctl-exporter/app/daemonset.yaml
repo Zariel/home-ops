@@ -34,7 +34,7 @@ spec:
             cpu: 50m
             memory: 200Mi
           limits:
-            cpu: 200Mi
+            memory: 200Mi
         securityContext:
           privileged: true
           readOnlyRootFilesystem: true
