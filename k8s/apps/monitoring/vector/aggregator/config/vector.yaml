@@ -97,7 +97,7 @@ sinks:
     type: loki
     inputs:
       - kubernetes_remap
-    endpoint: http://loki-gateway.monitoring.svc.cluster.local
+    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
     out_of_order_action: rewrite_timestamp
@@ -113,7 +113,7 @@ sinks:
     inputs:
       - vyos_firewall_wan_route._unmatched
       - vyos_firewall_geoip_remap
-    endpoint: http://loki-gateway.monitoring.svc.cluster.local
+    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
     out_of_order_action: rewrite_timestamp
@@ -122,7 +122,7 @@ sinks:
 
   loki_journal:
     type: loki
-    endpoint: http://loki-gateway.monitoring.svc.cluster.local
+    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
     inputs:
