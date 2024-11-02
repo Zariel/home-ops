@@ -99,7 +99,8 @@ sinks:
       - kubernetes_remap
     endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
-      codec: json
+      codec: protobuf
+    compression: snappy
     out_of_order_action: rewrite_timestamp
     remove_label_fields: true
     remove_timestamp: true
@@ -115,7 +116,8 @@ sinks:
       - vyos_firewall_geoip_remap
     endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
-      codec: json
+      codec: protobuf
+    compression: snappy
     out_of_order_action: rewrite_timestamp
     labels:
       hostname: "{{ host }}"
@@ -124,7 +126,8 @@ sinks:
     type: loki
     endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
-      codec: json
+      codec: protobuf
+    compression: snappy
     inputs:
       - journald_source
     out_of_order_action: accept
