@@ -10,9 +10,8 @@
       ],
       "versioning": "loose",
       "matchPackagePatterns": [
-        "changedetection",
+        "cross-seed",
         "plex",
-        "qbittorrent"
       ]
     },
     {
