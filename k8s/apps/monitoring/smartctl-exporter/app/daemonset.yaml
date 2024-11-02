@@ -37,7 +37,5 @@ spec:
             memory: 200Mi
         securityContext:
           privileged: true
-          capabilities:
-            add:
-              - SYS_ADMIN
+          runAsUser: 0
           readOnlyRootFilesystem: true
