@@ -30,20 +30,8 @@ spec:
           name: http
           protocol: TCP
         resources: {}
-        volumeMounts:
-        - mountPath: /dev/nvme0n1
-          name: nvme0n1
-        - mountPath: /dev/nvme1n1
-          name: nvme1n1
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
             add:
               - SYS_ADMIN
-      volumes:
-      - name: nvme0n1
-        hostPath:
-          path: /dev/nvme0n1
-      - name: nvme1n1
-        hostPath:
-          path: /dev/nvme1n1
