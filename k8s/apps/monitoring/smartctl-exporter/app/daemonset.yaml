@@ -29,9 +29,12 @@ spec:
         - containerPort: 9633
           name: http
           protocol: TCP
-        resources: {}
+        resources:
+          requests:
+            cpu: 50m
+            memory: 200Mi
+          limits:
+            cpu: 200Mi
         securityContext:
+          privileged: true
           readOnlyRootFilesystem: true
-          capabilities:
-            add:
-              - SYS_ADMIN
