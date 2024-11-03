@@ -91,7 +91,7 @@ spec:
           - hosts: [*host]
     persistence:
       config:
-        existingClaim: jellyseerr
+        existingClaim: jellyseerr-config
         globalMounts:
           - path: /app/config
       cache:
