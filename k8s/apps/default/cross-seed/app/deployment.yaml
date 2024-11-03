@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cross-seed
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/component: cross-seed
+    app.kubernetes.io/instance: cross-seed
+    app.kubernetes.io/name: cross-seed
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: cross-seed
+      app.kubernetes.io/instance: cross-seed
+      app.kubernetes.io/name: cross-seed
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: cross-seed
+        app.kubernetes.io/instance: cross-seed
+        app.kubernetes.io/name: cross-seed
+    spec:
+      containers:
+        - name: cross-seed
+          image: ghcr.io/cross-seed/cross-seed:6.0.0-44@sha256:881ce834570f3b369860e47a0801b89ab10469b3beccf5279f90e041d3725058
+          imagePullPolicy: IfNotPresent
+          args:
+            - daemon
+          env:
+            - name: TZ
+              value: Europe/London
+          ports:
+            - name: http
+              containerPort: 80
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 10m
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /data/torrents
+              name: data
+              subPath: torrents
+            - mountPath: /data/usenet
+              name: data
+              subPath: usenet
+            - mountPath: /qbittorrent/qBittorrent/BT_backup
+              name: qbittorrent
+              readOnly: true
+              subPath: qBittorrent/BT_backup
+            - mountPath: /config/config.js
+              name: secret-file
+              readOnly: true
+              subPath: config.js
+      enableServiceLinks: false
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 568
+        runAsNonRoot: true
+        runAsUser: 568
+        seccompProfile:
+          type: RuntimeDefault
+        supplementalGroups:
+          - 10000
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: cross-seed-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: qbittorrent
+          persistentVolumeClaim:
+            claimName: qbittorrent-config
+        - name: secret-file
+          secret:
+            secretName: cross-seed-secret
