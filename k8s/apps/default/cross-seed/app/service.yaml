@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: cross-seed
+spec:
+  selector:
+    app.kubernetes.io/name: cross-seed
+  ports:
+    - port: 80
+      name: http
