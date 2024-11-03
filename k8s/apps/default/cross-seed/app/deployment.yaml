@@ -29,6 +29,7 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - daemon
+            - --verbose
           env:
             - name: TZ
               value: Europe/London
