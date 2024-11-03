@@ -2,3 +2,8 @@
 schemas = { kubernetes = "k8s/**/*.yaml" }
 format = { enable = true }
 completion = true
+
+[[language]]
+name = "yaml"
+auto-format = true
+formatter = { command = 'prettier', args = ["--parser", "yaml"] }
