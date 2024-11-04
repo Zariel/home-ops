@@ -13,7 +13,8 @@
       "automergeType": "branch",
       "matchPackagePatterns": [
         "ghcr.io/bjw-s",
-        "ghcr.io/onedr0p"
+        "ghcr.io/onedr0p",
+        "ghcr.io/zariel",
       ]
     },
     {
