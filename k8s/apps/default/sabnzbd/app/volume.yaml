@@ -10,3 +10,15 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sabnzbd-incomplete
+spec:
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce

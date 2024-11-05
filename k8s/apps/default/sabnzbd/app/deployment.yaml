@@ -18,7 +18,8 @@ spec:
       hostname: sabnzbd
       volumes:
         - name: incomplete
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: sabnzbd-incomplete
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -55,7 +56,7 @@ spec:
                 name: sabnzbd-secret
           resources:
             requests:
-              memory: &ram 4Gi
+              memory: &ram 8Gi
               cpu: 2000m
             limits:
               memory: *ram
