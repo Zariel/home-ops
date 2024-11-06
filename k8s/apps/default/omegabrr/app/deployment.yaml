@@ -28,7 +28,7 @@ spec:
             name: omegabrr-config
       containers:
         - name: *name
-          image: ghcr.io/autobrr/omegabrr:v1.14.0
+          image: ghcr.io/autobrr/omegabrr:v1.15.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
