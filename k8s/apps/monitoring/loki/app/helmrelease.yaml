@@ -113,19 +113,7 @@ spec:
         size: 20Gi
         storageClass: ceph-block
     gateway:
-      replicas: 3
-      image:
-        registry: ghcr.io
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hosts:
-          - host: &host loki.cbannister.xyz
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts: [*host]
+      enabled: false
     read:
       replicas: 3
     write:
