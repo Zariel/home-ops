@@ -203,8 +203,9 @@ spec:
               size: 3
           dataPool:
             failureDomain: host
-            replicated:
-              size: 3
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 1
           preservePoolsOnDelete: true
           gateway:
             hostNetwork: false
