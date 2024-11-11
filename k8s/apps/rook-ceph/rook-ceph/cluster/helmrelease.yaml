@@ -87,6 +87,8 @@ spec:
           requireMsgr2: true
       crashCollector:
         disable: true
+      csi:
+        readAffinity: true
       dashboard:
         enabled: true
         urlPrefix: /
