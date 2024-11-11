@@ -180,9 +180,9 @@ spec:
             type: loki
             uid: loki
             access: proxy
-            url: http://loki-gateway.monitoring.svc.cluster.local:80
+            url: http://loki-read.monitoring.svc.cluster.local:3100
             jsonData:
-              maxLines: 250
+              maxLines: 1000
           - name: Alertmanager
             type: alertmanager
             uid: alertmanager
