@@ -43,17 +43,21 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: metadata.namespace
-            args: [
-              "tagging",
-              "--added-on",
-              "--expired",
-              "--last-activity",
-              "--sites",
-              "--unregistered",
-              "--server", "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
-              "--port", "80",
-              "--config", "/config/config.yaml",
-            ]
+            args:
+              [
+                "tagging",
+                "--added-on",
+                "--expired",
+                "--last-activity",
+                "--sites",
+                "--unregistered",
+                "--server",
+                "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
+                "--port",
+                "80",
+                "--config",
+                "/config/config.yaml",
+              ]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -67,27 +71,39 @@ spec:
           unregistered:
             <<: *container
             args: [
-              "prune",
-              "--exclude-category", "manual",
-              "--exclude-category", "music",
-              "--exclude-tag", "added:24h",
-              "--include-tag", "unregistered",
-              # "--dry-run",
-              "--server", "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
-              "--port", "80"
-            ]
+                "prune",
+                "--exclude-category",
+                "manual",
+                "--exclude-category",
+                "music",
+                "--exclude-tag",
+                "added:1d",
+                "--include-tag",
+                "unregistered",
+                # "--dry-run",
+                "--server",
+                "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
+                "--port",
+                "80",
+              ]
           expired:
             <<: *container
             args: [
-              "prune",
-              "--exclude-category", "manual",
-              "--exclude-category", "music",
-              "--exclude-tag", "added:24h",
-              "--include-tag", "expired", # defined in config.yaml
-              # "--dry-run",
-              "--server", "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
-              "--port", "80"
-            ]
+                "prune",
+                "--exclude-category",
+                "manual",
+                "--exclude-category",
+                "music",
+                "--exclude-tag",
+                "added:1d",
+                "--include-tag",
+                "expired", # defined in config.yaml
+                # "--dry-run",
+                "--server",
+                "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
+                "--port",
+                "80",
+              ]
         pod:
           restartPolicy: OnFailure
       orphaned:
@@ -99,25 +115,32 @@ spec:
           app:
             <<: *container
             args: [
-              "orphaned",
-              "--exclude-pattern", "*_unpackerred*",
-              "--exclude-pattern", "*/manual/*",
-              # "--dry-run",
-              "--server", "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
-              "--port", "80"
-            ]
+                "orphaned",
+                "--exclude-pattern",
+                "*_unpackerred*",
+                "--exclude-pattern",
+                "*/manual/*",
+                # "--dry-run",
+                "--server",
+                "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
+                "--port",
+                "80",
+              ]
         pod:
           restartPolicy: OnFailure
       reannounce:
         containers:
           app:
             <<: *container
-            args: [
-              "reannounce",
-              "--process-seeding",
-              "--server", "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
-              "--port", "80"
-            ]
+            args:
+              [
+                "reannounce",
+                "--process-seeding",
+                "--server",
+                "qbittorrent.$(POD_NAMESPACE).svc.cluster.local",
+                "--port",
+                "80",
+              ]
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
