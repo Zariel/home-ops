@@ -28,13 +28,16 @@ spec:
     worker:
       config:
         core:
-          sources: ["pci", "system", "usb"]
+          sources:
+            - pci
+            - system
+            - cpu
         sources:
           pci:
             deviceClassWhitelist:
-            - "02"
-            - "03"
+              - "02"
+              - "03"
             deviceLabelFields:
-            - vendor
+              - vendor
     prometheus:
       enable: true
