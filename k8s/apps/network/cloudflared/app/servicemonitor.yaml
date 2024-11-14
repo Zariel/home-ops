@@ -6,7 +6,7 @@ spec:
   endpoints:
     - interval: 1m
       path: /metrics
-      port: http
+      port: metrics
       scheme: http
       scrapeTimeout: 10s
   jobLabel: cloudflared
