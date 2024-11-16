@@ -22,10 +22,23 @@ sources:
     mode: tcp
     address: 0.0.0.0:6001
 
-  journald_source:
-    type: vector
+  talos_kernel_logs:
     address: 0.0.0.0:6002
-    version: "2"
+    type: socket
+    mode: udp
+    max_length: 102400
+    decoding:
+      codec: json
+    host_key: __host
+
+  talos_service_logs:
+    address: 0.0.0.0:6003
+    type: socket
+    mode: udp
+    max_length: 102400
+    decoding:
+      codec: json
+    host_key: __host
 
 # Transformations
 transforms:
@@ -91,6 +104,28 @@ transforms:
           }
       )
 
+  talos_kernel_transform:
+    type: remap
+    inputs:
+      - talos_kernel_logs
+    source: |-
+      r1 = replace!(.__host, "10.1.1.10", "k8s-0")
+      r2 = replace(r1, "10.1.1.11", "k8s-1")
+      r3 = replace(r2, "10.1.1.12", "k8s-2")
+      r4 = replace(r3, "10.1.1.13", "k8s-3")
+      .node = r4
+
+  talos_service_transform:
+    type: remap
+    inputs:
+      - talos_service_logs
+    source: |-
+      r1 = replace!(.__host, "10.1.1.10", "k8s-0")
+      r2 = replace(r1, "10.1.1.11", "k8s-1")
+      r3 = replace(r2, "10.1.1.12", "k8s-2")
+      r4 = replace(r3, "10.1.1.13", "k8s-3")
+      .node = r4
+
 # Sinks
 sinks:
   loki_kubernetes:
@@ -100,12 +135,15 @@ sinks:
     endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
+    batch:
+      max_bytes: 524288
     out_of_order_action: rewrite_timestamp
     remove_label_fields: true
     remove_timestamp: true
     labels:
       app: "{{ custom_app_name }}"
       namespace: "{{ kubernetes.pod_namespace }}"
+      container: "{{ container_name }}"
       node: "{{ kubernetes.pod_node_name }}"
 
   loki_vyos:
@@ -116,19 +154,43 @@ sinks:
     endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
+    batch:
+      max_bytes: 524288
     out_of_order_action: rewrite_timestamp
     labels:
       hostname: "{{ host }}"
+      namespce: "vyos:wan"
 
-  loki_journal:
+  talos_kernel:
     type: loki
+    inputs:
+      - talos_kernel_transform
     endpoint: http://loki-write.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
-    inputs:
-      - journald_source
-    out_of_order_action: accept
-    remove_label_fields: true
-    remove_timestamp: true
+      except_fields:
+        - __host
+    batch:
+      max_bytes: 524288
+    out_of_order_action: rewrite_timestamp
     labels:
-      hostname: "{{ host }}"
+      node: "{{ node }}"
+      facility: "{{ facility }}"
+      namespace: "talos:kernel"
+
+  talos_service:
+    type: loki
+    inputs:
+      - talos_service_transform
+    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
+    encoding:
+      codec: json
+      except_fields:
+        - __host
+    batch:
+      max_bytes: 524288
+    out_of_order_action: rewrite_timestamp
+    labels:
+      node: "{{ node }}"
+      talos_service: '{{ "talos-service" }}'
+      namespace: "talos:service"

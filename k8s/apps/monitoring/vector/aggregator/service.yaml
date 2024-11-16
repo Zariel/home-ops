@@ -13,22 +13,21 @@ spec:
     - IPv4
   ports:
     - name: http
-      nodePort: 32314
       port: 8686
-      protocol: TCP
       targetPort: 8686
-    - name: journald
-      nodePort: 31453
-      port: 6002
-      protocol: TCP
-      targetPort: 6002
     - name: kubernetes
-      nodePort: 31155
       port: 6000
       protocol: TCP
-      targetPort: 6000
+      targetPort: kubernetes
     - name: vyos
-      nodePort: 31271
       port: 6001
       protocol: TCP
-      targetPort: 6001
+      targetPort: vyos
+    - name: taloskernel
+      port: 6002
+      protocol: UDP
+      targetPort: taloskernel
+    - name: talosservice
+      port: 6003
+      protocol: UDP
+      targetPort: talosservice
