@@ -40,20 +40,14 @@ spec:
             - /etc/vector/vector.yaml
           image: docker.io/timberio/vector:0.42.0-alpine@sha256:913878963fdead8276686ff96831db994acc5c740447b2186da0d87c835d8375
           imagePullPolicy: IfNotPresent
-          livenessProbe:
+          livenessProbe: &probe
             failureThreshold: 3
             periodSeconds: 10
             successThreshold: 1
             tcpSocket:
               port: 8686
             timeoutSeconds: 1
-          readinessProbe:
-            failureThreshold: 3
-            periodSeconds: 10
-            successThreshold: 1
-            tcpSocket:
-              port: 8686
-            timeoutSeconds: 1
+          readinessProbe: *probe
           resources:
             requests:
               cpu: 200m
@@ -68,6 +62,17 @@ spec:
               name: data
             - mountPath: /usr/share/GeoIP
               name: geoip
+          ports:
+            - name: kubernetes
+              containerPort: 6000
+            - name: vyos
+              containerPort: 6001
+            - name: taloskernel
+              containerPort: 6002
+              protocol: UDP
+            - name: talosservice
+              containerPort: 6003
+              protocol: UDP
       topologySpreadConstraints:
         - labelSelector:
             matchLabels:
