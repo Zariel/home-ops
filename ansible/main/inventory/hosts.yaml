@@ -3,9 +3,6 @@ all:
     ansible_user: chris
 k8s:
   vars:
-    nvidia_gpu: false
-    vlan: false
-    vlan_id: 42
     talos:
       schematic_id: 97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
       kernel_sha: a2d97f9ca8070635079db9ce1b3fd7f416c6d20c538804c8b58af8f3c4751b30
@@ -18,8 +15,7 @@ k8s:
     k8s-2:
       mac_addr: 58:47:ca:78:d8:44
     k8s-3:
-      mac_addr: f6:45:04:c6:96:e0 # mellanox
-      pxe_mac_addr: bc:24:11:da:2b:0a # pve
+      mac_addr: f6:45:04:c6:96:e0
       talos:
         schematic_id: 6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7
         kernel_sha: a2d97f9ca8070635079db9ce1b3fd7f416c6d20c538804c8b58af8f3c4751b30
