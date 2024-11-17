@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/zariel/overseerr
-              tag: develop@sha256:784b8706bd3cedae22880f52100f48d74ddb594b1f7157ed928be2527e7b6807
+              tag: develop@sha256:1741c08dbfae323e1ca17e3fe1e00b8a49297e9c09306dc5ca2791bd8845c85c
             env:
               TZ: Europe/London
               LOG_LEVEL: "info"
