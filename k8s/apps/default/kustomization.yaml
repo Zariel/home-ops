@@ -22,6 +22,5 @@ resources:
   - flaresolverr/ks.yaml
   - cross-seed/ks.yaml
   - unpackerr/ks.yaml
-  - jellyseerr/ks.yaml
   - filebrowser/ks.yaml
   - overseerr/ks.yaml
