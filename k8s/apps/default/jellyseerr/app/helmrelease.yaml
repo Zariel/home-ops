@@ -33,8 +33,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/zariel/overseerr
-              tag: develop@sha256:c6110d36896a705daa18f873b762485fd4e9e0df3eae246b77a6ab81b57fba7b
+              repository: ghcr.io/zariel/jellyseerr
+              tag: 2.1.0@sha256:072e9914c42263358f298a9f06998dda59c4ed8eabd673092dc9bc01083d9f90
             env:
               TZ: Europe/London
               LOG_LEVEL: "info"
@@ -91,11 +91,11 @@ spec:
           - hosts: [*host]
     persistence:
       config:
-        existingClaim: overseerr-config
+        existingClaim: jellyseerr-config
         globalMounts:
           - path: /app/config
       cache:
-        existingClaim: overseerr-cache
+        existingClaim: jellyseerr-cache
         globalMounts:
           - path: /app/config/cache
       logs:
