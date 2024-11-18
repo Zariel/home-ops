@@ -78,10 +78,10 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
-        className: internal
+          external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
+        className: external
         hosts:
-          - host: overseerr.cbannister.xyz
+          - host: requests.cbannister.xyz
             paths:
               - path: /
                 service:
