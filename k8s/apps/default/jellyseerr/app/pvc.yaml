@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: overseerr-cache
+  name: jellyseerr-cache
 spec:
   accessModes: ["ReadWriteOnce"]
   resources:
@@ -13,10 +13,10 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: overseerr-config
+  name: jellyseerr-config
 spec:
-  accessModes: ["ReadWriteOnce"]
+  accessModes: ["ReadWriteMany"]
   resources:
     requests:
       storage: 15Gi
-  storageClassName: ceph-block
+  storageClassName: ceph-filesystem
