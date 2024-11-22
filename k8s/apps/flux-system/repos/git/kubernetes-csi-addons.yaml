@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/gitrepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
@@ -8,10 +9,3 @@ spec:
   url: https://github.com/csi-addons/kubernetes-csi-addons
   ref:
     tag: v0.10.0
-  ignore: |
-    # exclude all
-    /*
-    # include files
-    !/deploy/controller/crds.yaml
-    !/deploy/controller/rbac.yaml
-    !/deploy/controller/setup-controller.yaml
