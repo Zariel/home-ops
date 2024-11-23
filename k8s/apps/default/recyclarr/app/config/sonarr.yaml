@@ -126,42 +126,6 @@ quality_profiles:
           - WEBRip-480p
           - DVD
 
-  - name: WEBDL-2160p-NODV
-    reset_unmatched_scores: *reset_unmatched_scores
-    upgrade:
-      allowed: true
-      until_quality: WEBDL-2160p
-      until_score: 9999999
-    min_format_score: 0
-    qualities:
-      - name: WEBDL-2160p
-        qualities:
-          - WEBDL-2160p
-          - WEBRip-2160p
-      - name: Bluray-2160p
-      - name: *remux-2160p
-      - name: HDTV-2160p
-      - name: *remux-1080p
-      - name: Bluray-1080p
-      - name: WEBDL-1080p
-        qualities:
-          - WEBDL-1080p
-          - WEBRip-1080p
-      - name: HDTV-1080p
-      - name: Bluray-720p
-      - name: WEBDL-720p
-        qualities:
-          - WEBDL-720p
-          - WEBRip-720p
-      - name: HDTV-720p
-      - name: Bluray-576p
-      - name: Bluray-480p
-      - name: 480p
-        qualities:
-          - WEBDL-480p
-          - WEBRip-480p
-          - DVD
-
   - name: WEBDL-1080p
     reset_unmatched_scores: *reset_unmatched_scores
     upgrade:
@@ -298,7 +262,6 @@ custom_formats:
       - name: BLURAY-2160p
       - name: BLURAY-1080p
       - name: WEBDL-2160p
-      - name: WEBDL-2160p-NODV
       - name: WEBDL-1080p
   - trash_ids:
       - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
@@ -307,7 +270,3 @@ custom_formats:
         score: -10
       - name: WEBDL-1080p
         score: -10
-  - trash_ids:
-      - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
-    assign_scores_to:
-      - name: WEBDL-2160p-NODV
