@@ -37,6 +37,7 @@ spec:
               UN_WEBSERVER_METRICS: true
               UN_WEBSERVER_LOG_FILE: /logs/webserver.log
               UN_ACTIVITY: true
+              UN_INTERVAL: 1m
               UN_SONARR_0_URL: http://sonarr-main.default.svc.cluster.local
               UN_SONARR_0_PATHS_0: /data/torrents/complete/sonarr
               UN_RADARR_0_URL: http://radarr-main.default.svc.cluster.local
@@ -86,7 +87,7 @@ spec:
       logs:
         type: emptyDir
       data:
-        existingClaim: bighorse-arr-media 
+        existingClaim: bighorse-arr-media
         globalMounts:
           - path: /data/torrents/complete
             subPath: torrents/complete
