@@ -1,7 +1,7 @@
 ---
 clusterName: holywoo
-talosVersion: v1.8.1
-kubernetesVersion: v1.31.2
+talosVersion: v1.8.3
+kubernetesVersion: v1.31.3
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
 allowSchedulingOnControlPlanes: true
@@ -20,9 +20,9 @@ patches:
     machine:
       kubelet:
         extraArgs:
-          image-gc-high-threshold: "55"
-          image-gc-low-threshold: "50"
           rotate-server-certificates: "true"
+        extraConfig:
+          maxPods: 150
         extraMounts:
           - destination: /var/openebs/local
             type: bind
@@ -36,16 +36,15 @@ patches:
             - 10.1.1.0/24
         disableManifestsDirectory: true
         defaultRuntimeSeccompProfileEnabled: true
+      logging:
+        destinations:
+          - endpoint: udp://10.45.0.2:6003
+            format: json_lines
       sysctls:
         fs.inotify.max_user_watches: 1048576
         fs.inotify.max_user_instances: 8192
-        net.core.netdev_max_backlog: 30000
-        net.core.rmem_max: 67108864
-        net.core.wmem_max: 67108864
-        net.ipv4.tcp_rmem: 4096 87380 33554432
-        net.ipv4.tcp_wmem: 4096 65536 33554432
-        net.ipv4.tcp_tw_reuse: 1
-        net.ipv4.tcp_window_scaling: 1
+        net.core.rmem_max: 7500000
+        net.core.wmem_max: 7500000
     cluster:
       proxy:
         disabled: true
@@ -59,7 +58,13 @@ controlPlane:
   schematic:
     customization:
       extraKernelArgs:
+        - intel_iommu=on
+        - iommu=pt
         - mitigations=off
+        - apparmor=0
+        - security=none
+        - module_blacklist=igc
+        - talos.logging.kernel=udp://10.45.0.2:6002/
   patches:
     - |-
       cluster:
@@ -69,6 +74,19 @@ controlPlane:
         scheduler:
           extraArgs:
             bind-address: 0.0.0.0
+          config:
+            apiVersion: kubescheduler.config.k8s.io/v1
+            kind: KubeSchedulerConfiguration
+            profiles:
+              - schedulerName: default-scheduler
+                pluginConfig:
+                  - name: PodTopologySpread
+                    args:
+                      defaultingType: List
+                      defaultConstraints:
+                        - maxSkew: 1
+                          topologyKey: kubernetes.io/hostname
+                          whenUnsatisfiable: ScheduleAnyway
         etcd:
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
@@ -90,9 +108,8 @@ controlPlane:
     - content: |-
         [ NFSMount_Global_Options ]
         nfsvers=4.2
-        async=True
         hard=True
-        nconnect=4
+        nconnect=16
         noatime=True
         rsize=1048576
         wsize=1048576
@@ -106,6 +123,9 @@ worker:
     customization:
       extraKernelArgs:
         - mitigations=off
+        - apparmor=0
+        - security=none
+        - talos.logging.kernel=udp://10.45.0.2:6002/
   machineFiles: *machineFiles
   nodeLabels:
     node-role.kubernetes.io/worker: worker
@@ -153,19 +173,11 @@ nodes:
     installDiskSelector:
       wwid: eui.343335304eb046460025384100000001
     networkInterfaces:
-      - interface: enp3s0
-        dhcp: true
       - deviceSelector:
           driver: virtio_net
-        ignore: true
-    talosImageURL: factory.talos.dev/installer/26124abcbd408be693df9fe852c80ef1e6cc178e34d7d7d8430a28d1130b4227
-    kernelModules:
-      - name: nvidia
-      - name: nvidia_uvm
-      - name: nvidia_drm
-      - name: nvidia_modeset
-    patches:
-      - |-
-        machine:
-          sysctls:
-            net.core.bpf_jit_harden: 1
+        dhcp: true
+    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/qemu-guest-agent
