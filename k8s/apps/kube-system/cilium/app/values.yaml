@@ -6,6 +6,7 @@ bgpControlPlane:
   enabled: true
 bpf:
   masquerade: true
+  preallocateMaps: true
   tproxy: true
 cgroup:
   automount:
@@ -15,6 +16,7 @@ cluster:
   id: 1
   name: holywoo
 enableRuntimeDeviceDetection: true
+enableIPv4BIGTCP: true
 endpointRoutes:
   enabled: true
 envoy:
@@ -29,7 +31,7 @@ k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: true
+  enabled: false
 loadBalancer:
   algorithm: maglev
   mode: dsr
