@@ -17,9 +17,6 @@ spec:
     spec:
       hostname: sabnzbd
       volumes:
-        - name: incomplete
-          persistentVolumeClaim:
-            claimName: sabnzbd-incomplete
         - name: arr-media
           persistentVolumeClaim:
             claimName: bighorse-arr-media
@@ -30,6 +27,8 @@ spec:
           configMap:
             name: sabnzbd-scripts
             defaultMode: 0777
+        - name: tmp
+          emptyDir: {}
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -64,8 +63,6 @@ spec:
             - containerPort: 8080
               name: web
           volumeMounts:
-            - name: incomplete
-              mountPath: /tmp/incomplete
             - name: config
               mountPath: /config
               readOnly: false
@@ -74,6 +71,8 @@ spec:
               subPath: usenet
             - name: scripts
               mountPath: /config/scripts
+            - name: tmp
+              mountPath: /tmp
           startupProbe:
             httpGet:
               path: /api?mode=version
@@ -88,3 +87,7 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 5
             failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
