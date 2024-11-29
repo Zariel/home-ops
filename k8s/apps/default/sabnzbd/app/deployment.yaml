@@ -50,6 +50,12 @@ spec:
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
                 sabnzbd.cbannister.xyz
+            - name: CROSS_SEED_HOST
+              value: "cross-seed.default.svc.cluster.local"
+            - name: CROSS_SEED_PORT
+              value: "80"
+            - name: CROSS_SEED_SLEEP_INTERVAL
+              value: "5"
           envFrom:
             - secretRef:
                 name: sabnzbd-secret
