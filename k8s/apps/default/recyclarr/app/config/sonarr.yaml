@@ -184,7 +184,6 @@ custom_formats:
       - 0d7824bb924701997f874e7ff7d4844a # TrueHD ATMOS
       - 9d00418ba386a083fbf4d58235fc37ef # DTS X
       - b6fbafa7942952a13e17e2b1152b539a # ATMOS
-      - 4232a509ce60c4e208d13825b7c06264 # DD+ ATMOS
       - 1808e4b9cee74e064dfae3f1db99dbfe # TrueHD
       - c429417a57ea8c41d57e6990a8b0033f # DTS-HD-MA
       - 851bd64e04c9374c51102be3dd9ae4cc # FLAC
@@ -269,3 +268,14 @@ custom_formats:
         score: -10
       - name: WEBDL-1080p
         score: -10
+  - trash_ids:
+      - 4232a509ce60c4e208d13825b7c06264 # DD+ ATMOS
+    assign_scores_to:
+      - name: BLURAY-2160p
+        score: 1750
+      - name: BLURAY-1080p
+        score: 1750
+      - name: WEBDL-2160p
+        score: 1750
+      - name: WEBDL-1080p
+        score: 1750
