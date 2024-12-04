@@ -1,0 +1,23 @@
+---
+apiVersion: monitoring.giantswarm.io/v1alpha1
+kind: Silence
+metadata:
+  name: noise-efivars
+spec:
+  matchers:
+    - name: alertname
+      value: NodeFilesystemAlmostOutOfSpace
+      isRegex: false
+    - name: fstype
+      value: efivarfs
+      isRegex: false
+---
+apiVersion: monitoring.giantswarm.io/v1alpha1
+kind: Silence
+metadata:
+  name: noise-kubeproxy
+spec:
+  matchers:
+    - name: alertname
+      value: KubeProxyDown
+      isRegex: false
