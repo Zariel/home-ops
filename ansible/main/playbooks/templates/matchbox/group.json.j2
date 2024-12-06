@@ -3,6 +3,6 @@
   "name": "{{ name }}",
   "profile": "{{ name }}",
   "selector": {
-    "mac": "{{ node.pxe_mac_addr | default(node.mac_addr) }}"
+    "mac": "{{ node.mac_addr }}"
   }
 }
