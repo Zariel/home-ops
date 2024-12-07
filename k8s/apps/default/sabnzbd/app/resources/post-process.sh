@@ -45,6 +45,11 @@ search_cross_seed() {
         "http://${CROSS_SEED_HOST}:${CROSS_SEED_PORT}/api/webhook"
     )
 
+    if [[ $status_code == 204 ]]; then
+        echo "cross-seed did not find a match for $RELEASE_NAME"
+        ls -lR "$RELEASE_DIR"
+    fi
+
     printf "cross-seed search returned with HTTP status code %s and path %s\n" \
         "${status_code}" \
         "${RELEASE_DIR}" >&2
