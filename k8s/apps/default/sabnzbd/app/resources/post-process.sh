@@ -11,7 +11,7 @@ CROSS_SEED_SLEEP_INTERVAL="${CROSS_SEED_SLEEP_INTERVAL:-30}"
 
 # Function to set release variables from SABnzbd
 set_sab_vars() {
-    RELEAE_NAME="${SAB_FILENAME:-}"
+    RELEASE_NAME="${SAB_FILENAME:-}"
     RELEASE_DIR="${SAB_COMPLETE_DIR:-}"
     RELEASE_CAT="${SAB_CAT:-}"
     RELEASE_SIZE="${SAB_BYTES:-}"
