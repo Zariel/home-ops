@@ -35,7 +35,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: qbittorent
-          image: ghcr.io/onedr0p/qbittorrent-beta:5.0.2
+          image: ghcr.io/onedr0p/qbittorrent-beta:5.0.2@sha256:da52bb1039884ba8f3ecc7dcf71212d64554af676b636a01a39bd7b04b5002bb
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
@@ -68,12 +68,16 @@ spec:
             - containerPort: 80
               name: web
             - containerPort: 50413
-              name: bt
+              name: bt-tcp
+              protocol: TCP
+            - containerPort: 50413
+              name: bt-udp
+              protocol: UDP
           resources:
             requests:
               cpu: 100m
             limits:
-              memory: 10Gi
+              memory: 8Gi
           volumeMounts:
             - name: config
               mountPath: /config
