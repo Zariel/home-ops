@@ -8,6 +8,8 @@ spec:
   selector:
     matchLabels:
       app: qbittorrent
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
