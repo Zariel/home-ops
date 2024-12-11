@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: thelounge
+spec:
+  ingressClassName: internal
+  rules:
+    - host: irc.cbannister.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: thelounge
+                port:
+                  name: web
