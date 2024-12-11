@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thelounge
+  labels:
+    app: thelounge
+spec:
+  selector:
+    matchLabels:
+      app: thelounge
+  template:
+    metadata:
+      labels:
+        app: thelounge
+    spec:
+      hostname: thelounge
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: thelounge-config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: thelounge
+          image: ghcr.io/thelounge/thelounge:4.4.3@sha256:f409770a884c6f34c15162e0e3e1c9e2b550b3114e2479d6774b10c43635c72d
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: THELOUNGE_HOME
+              value: /config
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - containerPort: 9000
+              name: web
+          startupProbe:
+            httpGet:
+              port: web
+          livenessProbe:
+            httpGet:
+              port: web
+          readinessProbe:
+            httpGet:
+              port: web
+            successThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /config

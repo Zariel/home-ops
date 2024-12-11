@@ -24,3 +24,4 @@ resources:
   - unpackerr/ks.yaml
   - filebrowser/ks.yaml
   - overseerr/ks.yaml
+  - thelounge/ks.yaml
