@@ -148,7 +148,7 @@ spec:
     persistence:
       secret-file:
         type: secret
-        name: qbtools-secret
+        name: qbtools-config-secret
         globalMounts:
           - path: /config/config.yaml
             subPath: config.yaml
