@@ -217,7 +217,8 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 2Gi
-            instances: 2
+            instances: 3
+            priorityClassName: system-cluster-critical
           healthCheck:
             bucket:
               interval: 60s
