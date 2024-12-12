@@ -4,6 +4,8 @@ metadata:
   name: &name omegabrr
   labels:
     app: *name
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
@@ -21,11 +23,11 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
-        seccompProfile: { type: RuntimeDefault } 
+        seccompProfile: { type: RuntimeDefault }
       volumes:
         - name: config
-          configMap:
-            name: omegabrr-config
+          secret:
+            secretName: omegabrr-secret
       containers:
         - name: *name
           image: ghcr.io/autobrr/omegabrr:v1.15.0
