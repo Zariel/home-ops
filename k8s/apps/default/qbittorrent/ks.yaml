@@ -34,6 +34,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./k8s/apps/default/qbittorrent/tools
+  dependsOn:
+    - name: external-secrets-stores
   prune: true
   sourceRef:
     kind: GitRepository
