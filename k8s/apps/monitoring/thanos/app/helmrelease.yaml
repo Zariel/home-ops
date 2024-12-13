@@ -61,7 +61,6 @@ spec:
     serviceMonitor:
       enabled: true
     compact:
-      replicas: 2
       enabled: true
       extraArgs:
         - --compact.concurrency=4
@@ -71,7 +70,7 @@ spec:
         - --retention.resolution-1h=60d
       persistence: &persistence
         enabled: true
-        storageClass: openebs-hostpath
+        storageClass: ceph-block
         size: 50Gi
       resources:
         requests:
@@ -123,10 +122,16 @@ spec:
                   for: 5m
                   labels:
                     severity: critical
-      persistence: *persistence
+      persistence:
+        enabled: true
+        storageClass: ceph-block
+        size: 2Gi
     storeGateway:
       replicas: 2
       extraEnv: *extraEnv
       extraArgs: ["--index-cache.config=$(THANOS_CACHE_CONFIG)"]
-      persistence: *persistence
+      persistence:
+        enabled: true
+        storageClass: ceph-block
+        size: 10Gi
       podAnnotations: *podAnnotations
