@@ -16,7 +16,19 @@ metadata:
   name: config-plex-0
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: ceph-filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config
+spec:
+  accessModes:
+    - ReadWriteMany
   resources:
     requests:
       storage: 100Gi
