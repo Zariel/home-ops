@@ -12,3 +12,4 @@ resources:
   - smartctl-exporter/ks.yaml
   - prometheus-operator-crds/ks.yaml
   - silence-operator/ks.yaml
+  - blackbox-exporter/ks.yaml
