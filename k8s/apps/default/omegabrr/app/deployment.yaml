@@ -30,7 +30,7 @@ spec:
             secretName: omegabrr-secret
       containers:
         - name: *name
-          image: ghcr.io/autobrr/omegabrr:v1.15.0
+          image: ghcr.io/autobrr/omegabrr:v1.16.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
