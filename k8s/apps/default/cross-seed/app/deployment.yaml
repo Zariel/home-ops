@@ -70,6 +70,10 @@ spec:
             - mountPath: /data/usenet
               name: data
               subPath: usenet
+            - mountPath: /media
+              name: data
+              subPath: media
+              readOnly: true
             - mountPath: /qbittorrent/qBittorrent/BT_backup
               name: qbittorrent
               readOnly: true
