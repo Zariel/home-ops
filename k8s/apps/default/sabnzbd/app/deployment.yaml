@@ -75,8 +75,8 @@ spec:
               mountPath: /config
               readOnly: false
             - name: arr-media
-              mountPath: /data/usenet
-              subPath: usenet
+              mountPath: /data/downloads/usenet
+              subPath: downloads/usenet
             - name: scripts
               mountPath: /config/scripts
             - name: tmp
