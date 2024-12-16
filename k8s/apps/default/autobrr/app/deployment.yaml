@@ -36,7 +36,7 @@ spec:
                name: autobrr-secret
       containers:
         - name: *name
-          image: ghcr.io/autobrr/autobrr:v1.53.1
+          image: ghcr.io/autobrr/autobrr:v1.54.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
