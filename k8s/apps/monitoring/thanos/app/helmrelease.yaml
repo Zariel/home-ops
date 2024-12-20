@@ -63,11 +63,12 @@ spec:
     compact:
       enabled: true
       extraArgs:
-        - --compact.concurrency=4
+        - --compact.concurrency=2
         - --delete-delay=30m
         - --retention.resolution-raw=14d
         - --retention.resolution-5m=30d
         - --retention.resolution-1h=60d
+        - --hash-func=sha256
       persistence: &persistence
         enabled: true
         storageClass: ceph-block
