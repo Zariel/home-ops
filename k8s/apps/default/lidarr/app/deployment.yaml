@@ -70,11 +70,11 @@ spec:
             - name: lidarr-music-bighorse
               mountPath: /data/media/music
             - name: arr-media
-              mountPath: /data/usenet/complete/lidarr
-              subPath: usenet/complete/lidarr
+              mountPath: /data/downloads/usenet/complete/lidarr
+              subPath: downloads/usenet/complete/lidarr
             - name: arr-media
-              mountPath: /data/torrents/complete/lidarr
-              subPath: torrents/complete/lidarr
+              mountPath: /data/downloads/torrents/complete/lidarr
+              subPath: downloads/torrents/complete/lidarr
           startupProbe:
             httpGet:
               path: /ping
