@@ -31,3 +31,4 @@ resources:
   - intel.yaml
   - piraeus.yaml
   - backube.yaml
+  - victoria-metrics.yaml
