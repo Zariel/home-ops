@@ -12,3 +12,8 @@ spec:
       requests:
         storage: 150Gi
     storageClassName: ceph-block
+  resources:
+    requests:
+      cpu: 1
+    limits:
+      memory: 4Gi
