@@ -18,7 +18,7 @@ services:
       - /proc:/host/proc:ro
       - /:/host/root:ro
   smartctl_exporter:
-    image: quay.io/prometheuscommunity/smartctl-exporter:v0.12.0
+    image: quay.io/prometheuscommunity/smartctl-exporter:v0.13.0
     ports:
       - 9633:9633
     command:
