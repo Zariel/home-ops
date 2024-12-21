@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: cross-seed
-          image: ghcr.io/cross-seed/cross-seed:6.4.1@sha256:3c97487736a679a92e5314de9cafc6b6599cdcf369b93ad51d27102c0bd61496
+          image: ghcr.io/cross-seed/cross-seed:6.5.0@sha256:8c241fb6e286c46e08a46d8136c09c8b995a57a41722c67ac51cd024928b4d07
           imagePullPolicy: IfNotPresent
           args:
             - daemon
