@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - ./objectbucketclaim.yaml
   - ./helmrelease.yaml
+  - gateway-service.yaml
+  - readproxy.yaml
 configMapGenerator:
   - name: thanos-cache-configmap
     files:
