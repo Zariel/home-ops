@@ -190,6 +190,15 @@ spec:
             url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
             jsonData:
               implementation: prometheus
+          - name: Victoria Metrics
+            type: prometheus
+            uid: victoriametrics
+            orgId: 1
+            url: http://vmsingle-victoria-metrics-single.monitoring.svc.cluster.local:8428
+            access: proxy
+            isDefault: false
+            updateIntervalSeconds: 10
+            editable: true
     dashboards:
       default:
         cloudflared:
@@ -236,6 +245,10 @@ spec:
           gnetId: 7845
           revision: 4
           datasource: Prometheus
+        victoriametrics:
+          gnetId: 10229
+          revision: 22
+          datasource: victoriametrics
       dns:
         dnsdist:
           # renovate: depName="dnsdist"
