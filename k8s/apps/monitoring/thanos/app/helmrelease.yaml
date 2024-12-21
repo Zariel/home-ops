@@ -61,7 +61,7 @@ spec:
     serviceMonitor:
       enabled: true
     compact:
-      enabled: true
+      enabled: false
       extraArgs:
         - --compact.concurrency=2
         - --delete-delay=30m
