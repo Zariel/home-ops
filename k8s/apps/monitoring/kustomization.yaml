@@ -13,3 +13,4 @@ resources:
   - prometheus-operator-crds/ks.yaml
   - silence-operator/ks.yaml
   - blackbox-exporter/ks.yaml
+  - victoria-metrics/ks.yaml
