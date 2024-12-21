@@ -194,7 +194,7 @@ spec:
             type: prometheus
             uid: victoriametrics
             orgId: 1
-            url: http://vmsingle-victoria.monitoring.svc.cluster.local:8428
+            url: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
             access: proxy
             isDefault: false
             updateIntervalSeconds: 10
