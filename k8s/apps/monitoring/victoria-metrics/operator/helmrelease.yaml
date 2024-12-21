@@ -20,5 +20,21 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
-    annotations:
-      reloader.stakater.com/auto: "true"
+    createCRD: true
+    operator:
+      enable_converter_ownership: true
+      useCustomConfigReloader: true
+      psp_auto_creation_enabled: false
+    env:
+      - name: VM_VMALERTDEFAULT_CONFIGRELOADERCPU
+        value: 10m
+      - name: VM_VMAGENTDEFAULT_CONFIGRELOADERCPU
+        value: 10m
+    rbac:
+      pspEnabled: false
+    resources:
+      requests:
+        cpu: 20m
+      limits:
+        cpu: 100m
+        memory: 200Mi
