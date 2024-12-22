@@ -33,7 +33,8 @@ spec:
               tag: latest@sha256:191727c793e162002a908543ec286399625b2855611dc51de7e2530e3b2a37ce
               pullPolicy: IfNotPresent
             args:
-              - -store="thanos-store-gateway.monitoring.svc.cluster.local:10901"
+              - -store
+              - thanos-store-gateway.monitoring.svc.cluster.local:10901
             resources:
               requests:
                 cpu: 100m
