@@ -175,7 +175,6 @@ spec:
             url: http://thanos-query-frontend.monitoring.svc.cluster.local:10902
             jsonData:
               prometheusType: Thanos
-            isDefault: true
           - name: Loki
             type: loki
             uid: loki
@@ -196,7 +195,7 @@ spec:
             orgId: 1
             url: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
             access: proxy
-            isDefault: false
+            isDefault: true
             updateIntervalSeconds: 10
             editable: true
     dashboards:
