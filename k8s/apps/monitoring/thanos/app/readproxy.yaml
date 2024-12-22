@@ -29,7 +29,7 @@ spec:
         containers:
           main:
             image:
-              repository: docker pull ghcr.io/g-research/thanos-remote-read/thanos-remote-read:latest
+              repository: ghcr.io/g-research/thanos-remote-read/thanos-remote-read
               tag: latest@sha256:191727c793e162002a908543ec286399625b2855611dc51de7e2530e3b2a37ce
               pullPolicy: IfNotPresent
             args:
