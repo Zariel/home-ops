@@ -94,7 +94,7 @@ spec:
                 "added:1d",
                 "--include-tag",
                 "expired", # defined in config.yaml
-                "--width-data",
+                "--with-data",
                 # "--dry-run",
               ]
         pod:
