@@ -205,45 +205,45 @@ spec:
           gnetId: 17457
           revision: 6
           datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
+            - { name: DS_PROMETHEUS, value: victoriametrics }
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
           revision: 36
-          datasource: Prometheus
+          datasource: victoriametrics
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
-          datasource: Prometheus
+          datasource: victoriametrics
         dragonfly:
           url: https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
-          datasource: Prometheus
+          datasource: victoriametrics
         external-secrets:
           url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
-          datasource: Prometheus
+          datasource: victoriametrics
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
-          datasource: Prometheus
+          datasource: victoriametrics
         nvidia:
           url: https://raw.githubusercontent.com/NVIDIA/dcgm-exporter/refs/heads/main/grafana/dcgm-exporter-dashboard.json
-          datasource: Prometheus
+          datasource: victoriametrics
         spegel:
           # renovate: depName="Spegel"
           gnetId: 18089
           revision: 1
           datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
+            - { name: DS_PROMETHEUS, value: victoriametrics }
         speedtest-exporter-hub:
           # renovate: depName="Speedtest-Exporter Dashboard"
           gnetId: 13665
           revision: 4
           datasource:
             - name: "DS_PROMETHEUS"
-              value: Prometheus
+              value: victoriametrics
         zfs:
           # renovate: depName="ZFS"
           gnetId: 7845
           revision: 4
-          datasource: Prometheus
+          datasource: victoriametrics
         victoriametrics:
           gnetId: 10229
           revision: 22
@@ -253,128 +253,128 @@ spec:
           # renovate: depName="dnsdist"
           gnetId: 18044
           revision: 1
-          datasource: Prometheus
+          datasource: victoriametrics
         external-dns:
           # renovate: depName="External-dns"
           gnetId: 15038
           revision: 3
-          datasource: Prometheus
+          datasource: victoriametrics
       ceph:
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
           gnetId: 2842
           revision: 17
-          datasource: Prometheus
+          datasource: victoriametrics
         ceph-osd:
           # renovate: depName="Ceph - OSD (Single)"
           gnetId: 5336
           revision: 9
-          datasource: Prometheus
+          datasource: victoriametrics
         ceph-pools:
           # renovate: depName="Ceph - Pools"
           gnetId: 5342
           revision: 9
-          datasource: Prometheus
+          datasource: victoriametrics
       flux:
         flux-cluster:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
-          datasource: Prometheus
+          datasource: victoriametrics
         flux-control-plane:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
-          datasource: Prometheus
+          datasource: victoriametrics
       kubernetes:
         k8s-system-api-server:
           # renovate: depName="Kubernetes / System / API Server"
           gnetId: 15761
           revision: 16
-          datasource: Prometheus
+          datasource: victoriametrics
         k8s-views-global:
           # renovate: depName="Kubernetes / Views / Global"
           gnetId: 15757
           revision: 37
-          datasource: Prometheus
+          datasource: victoriametrics
         k8s-views-nodes:
           # renovate: depName="Kubernetes / Views / Nodes"
           gnetId: 15759
           revision: 29
-          datasource: Prometheus
+          datasource: victoriametrics
         k8s-views-namespaces:
           # renovate: depName="Kubernetes / Views / Namespaces"
           gnetId: 15758
           revision: 34
-          datasource: Prometheus
+          datasource: victoriametrics
         k8s-views-pods:
           # renovate: depName="Kubernetes / Views / Pods"
           gnetId: 15760
           revision: 26
-          datasource: Prometheus
+          datasource: victoriametrics
         k8s-volumes:
           # renovate: depName="K8s / Storage / Volumes / Cluster"
           gnetId: 11454
           revision: 14
-          datasource: Prometheus
+          datasource: victoriametrics
       nginx:
         nginx:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
-          datasource: Prometheus
+          datasource: victoriametrics
         nginx-request-handling-performance:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
-          datasource: Prometheus
+          datasource: victoriametrics
       prometheus:
         prometheus:
           # renovate: depName="Prometheus"
           gnetId: 19105
           revision: 3
-          datasource: Prometheus
+          datasource: victoriametrics
       thanos:
         thanos-bucket-replicate:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/bucket-replicate.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-compact:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/compact.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-overview:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/overview.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-query:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-query-frontend:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query-frontend.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-receieve:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/receive.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-rule:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/rule.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-sidecar:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/sidecar.json
-          datasource: Prometheus
+          datasource: victoriametrics
         thanos-store:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/store.json
-          datasource: Prometheus
+          datasource: victoriametrics
       unifi:
         unifi-insights:
           # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
           gnetId: 11315
           revision: 9
-          datasource: Prometheus
+          datasource: victoriametrics
         unifi-network-sites:
           # renovate: depName="UniFi-Poller: Network Sites - Prometheus"
           gnetId: 11311
           revision: 5
-          datasource: Prometheus
+          datasource: victoriametrics
         unifi-uap:
           # renovate: depName="UniFi-Poller: UAP Insights - Prometheus"
           gnetId: 11314
           revision: 10
-          datasource: Prometheus
+          datasource: victoriametrics
         unifi-usw:
           # renovate: depName="UniFi-Poller: USW Insights - Prometheus"
           gnetId: 11312
           revision: 9
-          datasource: Prometheus
+          datasource: victoriametrics
     sidecar:
       dashboards:
         enabled: true
