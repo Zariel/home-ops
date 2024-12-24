@@ -144,14 +144,6 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/prometheus
-          - name: thanos
-            orgId: 1
-            folder: Thanos
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/thanos
           - name: unifi
             orgId: 1
             folder: Unifi
@@ -168,13 +160,6 @@ spec:
           - { name: Loki, orgId: 1 }
           - { name: Prometheus, orgId: 1 }
         datasources:
-          - name: Prometheus
-            type: prometheus
-            uid: prometheus
-            access: proxy
-            url: http://thanos-query-frontend.monitoring.svc.cluster.local:10902
-            jsonData:
-              prometheusType: Thanos
           - name: Loki
             type: loki
             uid: loki
@@ -189,15 +174,13 @@ spec:
             url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
             jsonData:
               implementation: prometheus
-          - name: Victoria Metrics
+          - name: VictoriaMetrics
             type: prometheus
             uid: victoriametrics
             orgId: 1
             url: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
             access: proxy
             isDefault: true
-            updateIntervalSeconds: 10
-            editable: true
     dashboards:
       default:
         cloudflared:
@@ -325,34 +308,6 @@ spec:
           # renovate: depName="Prometheus"
           gnetId: 19105
           revision: 3
-          datasource: victoriametrics
-      thanos:
-        thanos-bucket-replicate:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/bucket-replicate.json
-          datasource: victoriametrics
-        thanos-compact:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/compact.json
-          datasource: victoriametrics
-        thanos-overview:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/overview.json
-          datasource: victoriametrics
-        thanos-query:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query.json
-          datasource: victoriametrics
-        thanos-query-frontend:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query-frontend.json
-          datasource: victoriametrics
-        thanos-receieve:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/receive.json
-          datasource: victoriametrics
-        thanos-rule:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/rule.json
-          datasource: victoriametrics
-        thanos-sidecar:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/sidecar.json
-          datasource: victoriametrics
-        thanos-store:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/store.json
           datasource: victoriametrics
       unifi:
         unifi-insights:
