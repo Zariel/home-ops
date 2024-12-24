@@ -25,8 +25,6 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: authelia
-      namespace: security
     - name: kube-prometheus-stack
       namespace: monitoring
     - name: loki
@@ -40,20 +38,15 @@ spec:
         envFrom:
           - secretRef:
               name: &secret grafana-secret
-    replicas: 3
+    replicas: 2
     image:
       tag: 11.2.1
       sha: 999ac5b9b357e31be729d990e76dc3749285ca0ebd1ce1294a5b69cf6435d869
     env:
-      GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.cbannister.xyz/api/oidc/userinfo
-      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.cbannister.xyz/api/oidc/authorization
-      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://auth.cbannister.xyz/api/oidc/token
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
       GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
-      GF_SECURITY_COOKIE_SAMESITE: grafana
       GF_SERVER_ROOT_URL: https://grafana.cbannister.xyz
     envFromSecrets:
       - name: *secret
@@ -196,9 +189,6 @@ spec:
           datasource: victoriametrics
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
-          datasource: victoriametrics
-        dragonfly:
-          url: https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
           datasource: victoriametrics
         external-secrets:
           url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
