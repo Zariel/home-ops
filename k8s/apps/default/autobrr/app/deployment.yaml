@@ -21,7 +21,7 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
-        seccompProfile: { type: RuntimeDefault } 
+        seccompProfile: { type: RuntimeDefault }
       volumes:
         - name: tmp
           emptyDir: {}
@@ -33,10 +33,10 @@ spec:
           image: ghcr.io/onedr0p/postgres-init:16
           envFrom: &envFrom
             - secretRef:
-               name: autobrr-secret
+                name: autobrr-secret
       containers:
         - name: *name
-          image: ghcr.io/autobrr/autobrr:v1.56.0
+          image: ghcr.io/autobrr/autobrr:develop@sha256:6c4d502117d10414b47faace0c44d505b9e0db3354ff3bba96dc8275918a1f99
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
