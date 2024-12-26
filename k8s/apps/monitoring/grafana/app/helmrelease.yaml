@@ -133,6 +133,7 @@ spec:
     datasources:
       datasources.yaml:
         apiVersion: 1
+        prune: true
         deleteDatasources:
           - { name: Alertmanager, orgId: 1 }
           - { name: Loki, orgId: 1 }
