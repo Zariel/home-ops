@@ -21,6 +21,7 @@ spec:
       namespace: rook-ceph
   values:
     createCRD: true
+    replicaCount: 2
     operator:
       enable_converter_ownership: true
       useCustomConfigReloader: true
