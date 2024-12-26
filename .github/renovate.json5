@@ -29,7 +29,8 @@
   "ignorePaths": [
     "**/*.sops.*",
     "**/.archive/**",
-    "**/resources/**"
+    "**/resources/**",
+    "**/ansible/**",
   ],
   "flux": {
     "fileMatch": [
