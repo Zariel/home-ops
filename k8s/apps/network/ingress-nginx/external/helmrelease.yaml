@@ -28,7 +28,7 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
-      replicaCount: 3
+      replicaCount: 2
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: external.cbannister.xyz
