@@ -4,3 +4,4 @@ namespace: monitoring
 resources:
   - vmsingle.yaml
   - vmagent.yaml
+  - ingress.yaml
