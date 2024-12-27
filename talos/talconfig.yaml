@@ -1,7 +1,9 @@
 ---
 clusterName: holywoo
-talosVersion: v1.8.3
-kubernetesVersion: v1.31.3
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+talosVersion: v1.9.1
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.32.0
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
 allowSchedulingOnControlPlanes: true
