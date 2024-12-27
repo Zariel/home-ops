@@ -142,9 +142,7 @@ controlPlane:
         hard=True
         nconnect=16
         noatime=True
-        rsize=1048576
-        wsize=1048576
-      permissions: 420
+      # permissions: 420
       path: /etc/nfsmount.conf
       op: overwrite
 
@@ -171,9 +169,7 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:d2:42
         dhcp: true
-      - deviceSelector:
-          driver: igc
-        ignore: true
+        mtu: 9000
   - hostname: k8s-1
     ipAddress: "10.1.1.11"
     controlPlane: true
@@ -181,9 +177,7 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:d7:fa
         dhcp: true
-      - deviceSelector:
-          driver: igc
-        ignore: true
+        mtu: 9000
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
   - hostname: k8s-2
@@ -193,9 +187,7 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:d8:42
         dhcp: true
-      - deviceSelector:
-          driver: igc
-        ignore: true
+        mtu: 9000
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
   - hostname: k8s-3
@@ -207,8 +199,5 @@ nodes:
       - deviceSelector:
           driver: virtio_net
         dhcp: true
+        mtu: 9000
     talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
-    customization:
-      systemExtensions:
-        officialExtensions:
-          - siderolabs/qemu-guest-agent
