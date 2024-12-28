@@ -33,6 +33,9 @@ spec:
       enabled: false
     alertmanager:
       enabled: true
+      service:
+        enabled: true
+        clusterIP: ""
       ingress:
         enabled: true
         ingressClassName: internal
