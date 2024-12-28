@@ -30,38 +30,7 @@ spec:
     cleanPrometheusOperatorObjectNames: true
     namespaceOverride: monitoring
     prometheus:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        pathType: Prefix
-        hosts: &hosts
-          - prometheus.cbannister.xyz
-        tls:
-          - hosts: *hosts
-      prometheusSpec:
-        replicas: 2
-        replicaExternalLabelName: __replica__
-        podMonitorSelector: &selector
-          matchLabels: ~
-        probeSelector: *selector
-        ruleSelector: *selector
-        scrapeConfigSelector: *selector
-        serviceMonitorSelector: *selector
-        enableAdminAPI: true
-        walCompression: true
-        enableFeatures:
-          - auto-gomaxprocs
-          - memory-snapshot-on-shutdown
-          - new-service-discovery-manager
-        retention: 2d
-        retentionSize: 15GB
-        storageSpec:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: ceph-block
-              resources:
-                requests:
-                  storage: 20Gi
+      enabled: false
     alertmanager:
       enabled: true
       ingress:
