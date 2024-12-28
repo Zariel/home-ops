@@ -57,7 +57,7 @@ spec:
             - name: CROSS_SEED_PORT
               value: "80"
             - name: CROSS_SEED_SLEEP_INTERVAL
-              value: "10"
+              value: "30"
           envFrom:
             - secretRef:
                 name: sabnzbd-secret
