@@ -18,16 +18,14 @@ spec:
           resources:
             requests:
               cpu: "10m"
-              memory: "128Mi"
             limits:
-              cpu: "3000m"
               memory: "500Mi"
           ports:
             - containerPort: 8080
               name: http
           env:
             - name: ALERTMANAGER_URI
-              value: http://kube-prometheus-stack-alertmanager:9093
+              value: http://alertmanager-operated.monitoring.svc.cluster.local:9093
             - name: ALERTMANAGER_EXTERNAL_URI
               value: https://alertmanager.cbannister.xyz
             - name: ALERTMANAGER_PROXY
