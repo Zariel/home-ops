@@ -1,12 +1,26 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: bind
 spec:
+  serviceName: bind
   selector:
     matchLabels:
       app: bind
-  replicas: 1
+  replicas: 2
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: bind-cache
+      spec:
+        storageClassName: ceph-block
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
   template:
     metadata:
       labels:
@@ -21,7 +35,7 @@ spec:
             name: bind-zones
         - name: bind-cache
           persistentVolumeClaim:
-            claimName: bind-cache2
+            claimName: bind-cache
         - name: zone-files
           emptyDir: {}
       initContainers:
@@ -55,7 +69,7 @@ spec:
               name: zone-files
       containers:
         - name: bind
-          image: docker.io/internetsystemsconsortium/bind9:9.21
+          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:4f06749abe3f8c020a264d26aeacb1f68a9303feb3f341a6d1b1e69475186d2c
           command:
             - /usr/sbin/named
           args:
@@ -69,6 +83,18 @@ spec:
               cpu: "100m"
             limits:
               memory: *ram
+          startupProbe:
+            tcpSocket:
+              port: 53
+          livenessProbe:
+            tcpSocket:
+              port: 53
+          readinessProbe:
+            exec:
+              command:
+                - nslookup
+                - ns.cbannister.xyz.
+                - 127.0.0.1
           ports:
             - containerPort: 53
               name: dns
