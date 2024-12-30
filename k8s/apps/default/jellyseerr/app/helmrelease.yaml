@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/zariel/jellyseerr
-              tag: 2.2.0@sha256:0cf1449c6948d17f641ddd51fc85ab2cb5a49972d656f6449758a37a978c261a
+              tag: 2.2.1@sha256:94cba7bd6ab5302b74529b2ecbd3ff0db3d1d61c7e2dd2f85c395134e4becc43
             env:
               TZ: Europe/London
               LOG_LEVEL: "info"
