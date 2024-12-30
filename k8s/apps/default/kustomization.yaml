@@ -17,7 +17,6 @@ resources:
   - atuin/ks.yaml
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
-  - omegabrr/ks.yaml
   - cross-seed/ks.yaml
   - unpackerr/ks.yaml
   - filebrowser/ks.yaml
