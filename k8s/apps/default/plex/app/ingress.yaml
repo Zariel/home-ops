@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: external
   rules:
-    - host: &host plex.cbannister.xyz
+    - host: plex.cbannister.xyz
       http:
         paths:
           - path: /
@@ -20,6 +20,3 @@ spec:
                 name: plex
                 port:
                   name: plex
-  tls:
-    - hosts:
-        - *host
