@@ -31,8 +31,8 @@ spec:
       replicaCount: 2
       service:
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: external.cbannister.xyz
-          io.cilium/lb-ipam-ips: 10.45.0.11
+          external-dns.alpha.kubernetes.io/hostname: &hostname external.cbannister.xyz
+          lbipam.cilium.io/ips: 10.45.0.11
         externalTrafficPolicy: Cluster
       ingressClassResource:
         name: external
@@ -78,14 +78,9 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/cbannister-xyz-tls
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/instance: nginx-external
-              app.kubernetes.io/component: controller
+        publish-status-address: *hostname
+      publishService:
+        enabled: false
       resources:
         requests:
           cpu: 100m

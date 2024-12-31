@@ -32,8 +32,6 @@ spec:
     ingress:
       dashboard:
         ingressClassName: internal
-        annotations:
-          external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
         host:
           name: rook.cbannister.xyz
           path: /
@@ -231,7 +229,6 @@ spec:
         ingress:
           enabled: true
           annotations:
-            external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
             nginx.ingress.kubernetes.io/proxy-body-size: "0"
             nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
           ingressClassName: internal
