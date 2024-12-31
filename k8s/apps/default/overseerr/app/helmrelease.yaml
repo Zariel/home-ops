@@ -77,8 +77,6 @@ spec:
             port: *port
     ingress:
       app:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
         className: external
         hosts:
           - host: requests.cbannister.xyz
