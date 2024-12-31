@@ -21,8 +21,8 @@ spec:
       replicaCount: 2
       service:
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: internal.cbannister.xyz
-          io.cilium/lb-ipam-ips: 10.45.0.10
+          external-dns.alpha.kubernetes.io/hostname: &hostname internal.cbannister.xyz
+          lbipam.cilium.io/ips: 10.45.0.10
       ingressClassResource:
         name: internal
         default: true
@@ -67,15 +67,10 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/cbannister-xyz-tls
+        publish-status-address: *hostname
       terminationGracePeriodSeconds: 120
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/instance: nginx-internal
-              app.kubernetes.io/component: controller
+      publishService:
+        enabled: false
       resources:
         requests:
           cpu: 100m
