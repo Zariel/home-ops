@@ -29,7 +29,6 @@ spec:
       namespace: volsync-system
   values:
     csi:
-      enableVolumeGroupSnapshot: false
       cephFSKernelMountOptions: ms_mode=prefer-crc
       enableLiveness: true
       serviceMonitor:
