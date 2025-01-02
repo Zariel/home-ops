@@ -15,7 +15,6 @@ spec:
         kind: HelmRepository
         name: rook-ceph
         namespace: flux-system
-  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -25,6 +24,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-operator
+      namespace: rook-ceph
+    - name: snapshot-controller
+      namespace: volsync-system
   values:
     monitoring:
       enabled: true
