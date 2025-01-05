@@ -158,6 +158,35 @@ quality_profiles:
           - WEBRip-480p
           - DVD
 
+  - name: WEBDL
+    reset_unmatched_scores: *reset_unmatched_scores
+    upgrade:
+      allowed: true
+      until_quality: WEBDL-2160p
+      until_score: 9999999
+    min_format_score: 0
+    qualities:
+      - name: WEBDL-2160p
+      - name: WEBRip-2160p
+      - name: HDTV-2160p
+      - name: WEBDL-1080p
+      - name: WEBRip-1080p
+      - name: Bluray-2160p
+      - name: Bluray-1080p
+      - name: HDTV-1080p
+      - name: Bluray-720p
+      - name: WEBDL-720p
+        qualities:
+          - WEBDL-720p
+          - WEBRip-720p
+      - name: HDTV-720p
+      - name: Bluray-576p
+      - name: Bluray-480p
+      - name: 480p
+        qualities:
+          - WEBDL-480p
+          - WEBRip-480p
+          - DVD
 # Custom Formats
 # This section creates and/or updates Custom Formats in your Sonarr instance,
 # and applies them and their scores to Quality Profiles
@@ -265,6 +294,7 @@ custom_formats:
       - name: BLURAY-1080p
       - name: WEBDL-2160p
       - name: WEBDL-1080p
+      - name: WEBDL
   - trash_ids:
       - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
     assign_scores_to:
@@ -272,6 +302,7 @@ custom_formats:
         score: -10
       - name: WEBDL-1080p
         score: -10
+      - name: WEBDL
   - trash_ids:
       - 4232a509ce60c4e208d13825b7c06264 # DD+ ATMOS
     assign_scores_to:
@@ -283,3 +314,4 @@ custom_formats:
         score: 1750
       - name: WEBDL-1080p
         score: 1750
+      - name: WEBDL
