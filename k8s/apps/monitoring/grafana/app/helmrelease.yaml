@@ -59,7 +59,7 @@ spec:
         enabled: true
         org_id: 1
         org_name: Main Org.
-        org_role: Viewer
+        org_role: Editor
       news:
         news_feed_enabled: false
     dashboardProviders:
