@@ -2,11 +2,11 @@ delete_old_custom_formats: true
 replace_existing_custom_formats: true
 
 quality_profiles:
-  - name: &bluray BLURAY-2160p
+  - name: &remux REMUX-2160p
     score_set: default
     upgrade:
       allowed: true
-      until_quality: Bluray-2160p
+      until_quality: Remux-2160p
       until_score: 9999999
     reset_unmatched_scores: &reset_unmatched_scores
       enabled: true
@@ -17,10 +17,9 @@ quality_profiles:
         - "DV HDR10+ Boost"
     quality_sort: top
     qualities:
-      - name: Bluray-2160p
       - name: Remux-2160p
-      - &webdl-2160
-        name: WEB-2160p
+      - name: Bluray-2160p
+      - name: WEB-2160p
         qualities:
           - WEBDL-2160p
           - WEBRip-2160p
@@ -44,22 +43,6 @@ quality_profiles:
           - BR-DISK
           - Raw-HD
           - Unknown
-  - name: &remux REMUX-2160p
-    score_set: default
-    upgrade:
-      allowed: true
-      until_quality: Remux-2160p
-      until_score: 9999999
-    reset_unmatched_scores: *reset_unmatched_scores
-    quality_sort: top
-    qualities:
-      - name: Remux-2160p
-      - name: Bluray-2160p
-      - *webdl-2160
-      - name: Bluray-1080p
-      - *webdl-1080
-      - *720
-      - *trash
   - name: &bd1080 REMUX-1080p
     score_set: default
     upgrade:
@@ -82,7 +65,11 @@ quality_profiles:
     reset_unmatched_scores: *reset_unmatched_scores
     quality_sort: top
     qualities:
-      - *webdl-2160
+      - &webdl-2160
+        name: WEB-2160p
+        qualities:
+          - WEBDL-2160p
+          - WEBRip-2160p
       - name: Bluray-2160p
       - *webdl-1080
       - name: Bluray-1080p
@@ -117,8 +104,6 @@ quality_profiles:
       - *trash
 custom_formats:
   - assign_scores_to:
-      - name: *bluray
-        score: 5000
       - name: *remux
         score: 5000
       - name: *bd1080
@@ -130,7 +115,6 @@ custom_formats:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
   - assign_scores_to:
-      - name: *bluray
       - name: *remux
       - name: *bd1080
       - name: WEBDL-1080p
@@ -255,8 +239,6 @@ custom_formats:
       - 0a3f082873eb454bde444150b70253cc # Extras
       - f537cf427b64c38c8e36298f657e4828 # Scene
   - assign_scores_to:
-      - name: *bluray
-        score: 3500
       - name: *remux
         score: 3500
       - name: *bd1080
@@ -268,8 +250,6 @@ custom_formats:
       - dcf3ec6938fa32445f590a4da84256cd # DTS-HD MA
       - 3cafb66171b47f226146a0770576870f # TrueHD
   - assign_scores_to:
-      - name: *bluray
-        score: 2500
       - name: *remux
         score: 2500
       - name: *bd1080
@@ -280,8 +260,6 @@ custom_formats:
     trash_ids:
       - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
   - assign_scores_to:
-      - name: *bluray
-        score: 1755
       - name: *remux
         score: 1755
       - name: *bd1080
@@ -292,8 +270,6 @@ custom_formats:
     trash_ids:
       - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
   - assign_scores_to:
-      - name: *bluray
-        score: -100
       - name: *remux
         score: -100
       - name: *bd1080
@@ -306,8 +282,6 @@ custom_formats:
     trash_ids:
       - 923b6abef9b17f937fab56cfcf89e1f1 # DV (webdl)
   - assign_scores_to:
-      - name: *bluray
-        score: -10
       - name: *remux
         score: -10
       - name: *bd1080
