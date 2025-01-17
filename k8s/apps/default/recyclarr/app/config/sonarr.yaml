@@ -315,3 +315,15 @@ custom_formats:
       - name: WEBDL-1080p
         score: 1750
       - name: WEBDL
+  - trash_ids:
+      - 3bc5f395426614e155e585a2f056cdf1 # Season Packs
+    assign_scores_to:
+      - name: BLURAY-2160p
+        score: 10
+      - name: BLURAY-1080p
+        score: 10
+      - name: WEBDL-2160p
+        score: 10
+      - name: WEBDL-1080p
+        score: 10
+      - name: WEBDL
