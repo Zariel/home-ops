@@ -3,9 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: thelounge-config
 spec:
-  storageClassName: ceph-filesystem
+  storageClassName: ceph-block
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
