@@ -42,33 +42,22 @@ spec:
           emptyDir: {}
       initContainers:
         - name: zone-setup
-          image: docker.io/library/alpine:3.21
+          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:4f06749abe3f8c020a264d26aeacb1f68a9303feb3f341a6d1b1e69475186d2c
           command:
-            - /bin/sh
-            - -c
-            - cp -v /etc/bind/zones/* /var/lib/bind
+            - /usr/bin/named-compilezone
+          args:
+            - -d
+            - -J
+            - /var/cache/bind/db.cbannister.xyz.jnl
+            - -o
+            - /var/cache/bind/db.cbannister.xyz
+            - cbannister.xyz.
+            - /etc/bind/zones/db.cbannister.xyz
           volumeMounts:
             - mountPath: /etc/bind/zones
               name: bind-zones
-            - mountPath: /var/lib/bind
-              name: zone-files
-        - name: validate-config
-          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:4f06749abe3f8c020a264d26aeacb1f68a9303feb3f341a6d1b1e69475186d2c
-          command:
-            - /usr/bin/named-checkconf
-            - -z
-            - /etc/bind/named.conf
-          volumeMounts:
-            - mountPath: /etc/bind/named.conf
-              name: bind-config
-              subPath: named.conf
-            - mountPath: /etc/bind/externaldns.key
-              name: bind-config
-              subPath: externaldns.key
             - mountPath: /var/cache/bind
               name: bind-cache
-            - mountPath: /var/lib/bind
-              name: zone-files
       containers:
         - name: bind
           image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:4f06749abe3f8c020a264d26aeacb1f68a9303feb3f341a6d1b1e69475186d2c
