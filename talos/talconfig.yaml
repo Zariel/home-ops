@@ -1,9 +1,9 @@
 ---
 clusterName: holywoo
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: v1.9.1
+talosVersion: v1.9.2
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.32.0
+kubernetesVersion: v1.32.1
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
 allowSchedulingOnControlPlanes: true
@@ -87,6 +87,10 @@ controlPlane:
             kind: KubeSchedulerConfiguration
             profiles:
               - schedulerName: default-scheduler
+                plugins:
+                  score:
+                    disabled:
+                      - name: ImageLocality
                 pluginConfig:
                   - name: PodTopologySpread
                     args:
