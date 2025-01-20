@@ -66,10 +66,6 @@ spec:
               name: config
             - mountPath: /data
               name: data
-            - mountPath: /qbittorrent/qBittorrent/BT_backup
-              name: qbittorrent
-              readOnly: true
-              subPath: qBittorrent/BT_backup
             - mountPath: /config/config.js
               name: secret-file
               readOnly: true
@@ -93,9 +89,6 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: bighorse-arr-media
-        - name: qbittorrent
-          persistentVolumeClaim:
-            claimName: qbittorrent-config
         - name: secret-file
           secret:
             secretName: cross-seed-secret
