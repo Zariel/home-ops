@@ -15,6 +15,7 @@ quality_profiles:
         - "Language: Prefer Original"
         - "Language: German + Original"
         - "DV HDR10+ Boost"
+        - "Home Groups"
     quality_sort: top
     qualities:
       - name: Remux-2160p
