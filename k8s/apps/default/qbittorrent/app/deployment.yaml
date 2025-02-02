@@ -27,6 +27,8 @@ spec:
           configMap:
             name: qbittorrent-scripts
             defaultMode: 0775
+      nodeSelector:
+        feature.node.kubernetes.io/cpu-model.vendor_id: Intel
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
