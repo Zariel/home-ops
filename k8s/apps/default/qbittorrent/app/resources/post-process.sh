@@ -10,7 +10,7 @@ CROSS_SEED_SLEEP_INTERVAL="${CROSS_SEED_SLEEP_INTERVAL:-30}"
 
 # Function to set release variables from SABnzbd
 set_sab_vars() {
-    RELEAE_NAME="${SAB_FILENAME:-}"
+    RELEASE_NAME="${SAB_FILENAME:-}"
     RELEASE_DIR="${SAB_COMPLETE_DIR:-}"
     RELEASE_CAT="${SAB_CAT:-}"
     RELEASE_SIZE="${SAB_BYTES:-}"
@@ -63,6 +63,11 @@ main() {
         printf "post-processing failed with sabnzbd status code %s\n" \
             "${RELEASE_STATUS}" >&2
         exit 1
+    fi
+
+    if [[ "${RELEASE_CAT}" == "cross-seed" ]]; then
+        echo "ignoring cross-seed search for already cross-seeded download ${RELEASE_NAME}"
+        exit 0
     fi
 
     # Update permissions on the release directory
