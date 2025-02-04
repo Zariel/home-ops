@@ -300,15 +300,15 @@ custom_formats:
       - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
     assign_scores_to:
       - name: BLURAY-2160p
-        score: -10
+        score: -150
       - name: BLURAY-1080p
-        score: -10
+        score: -150
       - name: WEBDL-2160p
-        score: -10
+        score: -150
       - name: WEBDL-1080p
-        score: -10
+        score: -150
       - name: WEBDL
-        score: -10
+        score: -150
   - trash_ids:
       - 4232a509ce60c4e208d13825b7c06264 # DD+ ATMOS
     assign_scores_to:
@@ -321,3 +321,4 @@ custom_formats:
       - name: WEBDL-1080p
         score: 1750
       - name: WEBDL
+        score: 1750
