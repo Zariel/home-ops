@@ -57,6 +57,20 @@ search_cross_seed() {
     sleep "${CROSS_SEED_SLEEP_INTERVAL}"
 }
 
+# replaces spaces with dot's in release file names which apparently
+# helps prevent loops with poorly named releases (HONE)
+replace_spaces() {
+    local replaced
+    local original
+    for name in "${RELEASE_DIR}"/*; do
+        original=$(basename "$name")
+        replaced="${original//_/.}"
+        if [[ "$replaced" != "$original" ]]; then
+            mv -v "$RELEASE_DIR/$original" "$RELEASE_DIR/$replaced"
+        fi
+    done
+}
+
 main() {
     # Determine the source and set release variables accordingly
     if env | grep -q "^SAB_"; then
@@ -77,6 +91,8 @@ main() {
 
     # Search for cross-seed
     search_cross_seed
+
+    replace_spaces
 }
 
 main "$@"
