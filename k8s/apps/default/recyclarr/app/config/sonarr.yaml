@@ -181,7 +181,7 @@ custom_formats:
       - a3d82cbef5039f8d295478d28a887159 # HDR10+
       - 17e889ce13117940092308f48b48b45b # HLG
       - 2a7e3be05d3861d6df7171ec74cad727 # PQ
-      - 385e9e8581d33133c3961bdcdeffb7b4 # DV HDR10Plus Boost
+      # - 385e9e8581d33133c3961bdcdeffb7b4 # DV HDR10Plus Boost
       - ef4963043b0987f8485bc9106f16db38 # DV (Disk)
 
       # audio
