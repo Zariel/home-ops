@@ -49,10 +49,10 @@ metadata:
 spec:
   advertisements:
     - advertisementType: PodCIDR
-    - advertisementType: "Service"
+    - advertisementType: Service
       service:
         addresses:
-          - ExternalIP
+          - LoadBalancerIP
       selector:
         matchExpressions:
           - key: thisFakeSelector
