@@ -6,7 +6,7 @@ bgpControlPlane:
   enabled: true
 bpf:
   datapathMode: netkit
-  masquerade: true
+  masquerade: false # bgp advertised routes
   preallocateMaps: true
   tproxy: true
 cgroup:
