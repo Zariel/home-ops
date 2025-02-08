@@ -15,7 +15,7 @@ metadata:
 spec:
   bgpInstances:
     - name: gateway
-      localASN: 64512
+      localASN: 64513
       peers:
         - name: gateway
           peerASN: 64512
