@@ -250,7 +250,7 @@ spec:
         k8s-views-global:
           # renovate: depName="Kubernetes / Views / Global"
           gnetId: 15757
-          revision: 42
+          revision: 43
           datasource: victoriametrics
         k8s-views-nodes:
           # renovate: depName="Kubernetes / Views / Nodes"
