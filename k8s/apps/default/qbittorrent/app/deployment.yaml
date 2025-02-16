@@ -74,9 +74,6 @@ spec:
             - containerPort: 50413
               name: bt-tcp
               protocol: TCP
-            - containerPort: 50413
-              name: bt-udp
-              protocol: UDP
           resources:
             requests:
               cpu: 100m
