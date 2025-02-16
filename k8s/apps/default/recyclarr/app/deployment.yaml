@@ -33,7 +33,7 @@ spec:
       containers:
         - &container
           name: recyclarr
-          image: ghcr.io/recyclarr/recyclarr:7.4.0
+          image: ghcr.io/recyclarr/recyclarr:7.4.1
           imagePullPolicy: IfNotPresent
           env:
             - name: DOTNET_EnableDiagnostics
