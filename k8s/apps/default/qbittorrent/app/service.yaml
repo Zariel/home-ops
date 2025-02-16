@@ -3,24 +3,19 @@ kind: Service
 metadata:
   labels:
     app: qbittorrent
+  annotations:
+    lbipam.cilium.io/ips: 10.45.0.24
   name: qbittorrent
 spec:
   selector:
     app: qbittorrent
   type: LoadBalancer
-  loadBalancerIP: 10.45.0.24
   ipFamilies:
     - IPv4
   ports:
     - name: http
       port: 80
-      targetPort: 80
       protocol: TCP
     - name: bt-tcp
       port: 50413
-      targetPort: 50413
       protocol: TCP
-    - name: bt-udp
-      port: 50413
-      targetPort: 50413
-      protocol: UDP
