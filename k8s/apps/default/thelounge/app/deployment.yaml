@@ -37,6 +37,8 @@ spec:
               value: Europe/London
             - name: THELOUNGE_HOME
               value: /config/thelounge
+            - name: SQLITE_TMPDIR
+              value: /config/thelounge/_tmp
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
