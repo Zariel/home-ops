@@ -41,7 +41,6 @@ spec:
               value: /config/thelounge/_tmp
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
             capabilities: { drop: ["ALL"] }
           ports:
             - containerPort: 9000
