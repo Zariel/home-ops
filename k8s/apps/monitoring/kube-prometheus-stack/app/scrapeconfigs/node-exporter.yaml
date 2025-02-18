@@ -10,6 +10,7 @@ spec:
         - gateway.cbannister.casa:9100
         - pve.cbannister.casa:9100
         - nas.cbannister.casa:9100
+        - am6b.cbannister.casa:9100
   metricsPath: /metrics
   relabelings:
     - action: replace
