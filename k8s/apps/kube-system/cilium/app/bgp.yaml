@@ -54,10 +54,6 @@ metadata:
     advertise: bgp
 spec:
   advertisements:
-    - advertisementType: PodCIDR
-      selector:
-        matchExpressions:
-          - { key: somekey, operator: NotIn, values: ["never-used-value"] }
     - advertisementType: Service
       service:
         addresses:
