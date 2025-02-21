@@ -22,13 +22,6 @@ spec:
   nfs:
     server: nas.cbannister.casa
     path: /mnt/bighorse/arr
-  mountOptions:
-    - nfsvers=4.2
-    - nconnect=8
-    - hard
-    - noatime
-    - rsize=131072
-    - wsize=131072
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
