@@ -23,7 +23,20 @@ endpointRoutes:
 envoy:
   enabled: false
 hubble:
-  enabled: false
+  enabled: true
+  relay:
+    enabled: true
+    rollOutPods: true
+    tolerations: []
+  ui:
+    enabled: true
+    tolerations: []
+    rollOutPods: true
+    ingress:
+      enabled: true
+      className: internal
+      hosts:
+        - hubble.cbannister.xyz
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.42.0.0/16
