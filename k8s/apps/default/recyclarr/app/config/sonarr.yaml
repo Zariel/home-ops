@@ -37,7 +37,7 @@ quality_profiles:
     qualities:
       - name: *remux-2160p
       - name: Bluray-2160p
-      - name: Bluray-1080p Remux
+      - name: &remux-1080p Bluray-1080p Remux
       - name: WEBDL-2160p
         qualities:
           - WEBDL-2160p
@@ -66,7 +66,7 @@ quality_profiles:
     reset_unmatched_scores: *reset_unmatched_scores
     upgrade:
       allowed: true
-      until_quality: &remux-1080p Bluray-1080p Remux
+      until_quality: *remux-1080p
       until_score: 9999999
     min_format_score: 0
     qualities:
@@ -104,6 +104,8 @@ quality_profiles:
           - WEBDL-2160p
           - WEBRip-2160p
       - name: Bluray-2160p
+      - name: *remux-1080p
+      - name: Bluray-1080p
       - name: WEBDL-1080p
         qualities:
           - WEBDL-1080p
