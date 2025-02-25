@@ -48,11 +48,18 @@ patches:
         net.core.default_qdisc: fq             # 10Gb/s
         net.core.rmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
         net.core.wmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
+        net.ipv4.tcp_congestion_control: bbr   # 10Gb/s
+        net.ipv4.tcp_fastopen: 3               # Send and accept data in the opening SYN packet
         net.ipv4.tcp_mtu_probing: 1            # 10Gb/s | Jumbo frames
         net.ipv4.tcp_rmem: 4096 87380 33554432 # 10Gb/s
         net.ipv4.tcp_wmem: 4096 65536 33554432 # 10Gb/s
         net.ipv4.tcp_window_scaling: 1         # 10Gb/s
         vm.nr_hugepages: 1024                  # PostgreSQL
+      features:
+        hostDNS:
+          enabled: true
+          resolveMemberNames: true
+          forwardKubeDNSToHost: false
     cluster:
       proxy:
         disabled: true
@@ -62,10 +69,11 @@ patches:
         disablePodSecurityPolicy: true
 
 controlPlane:
-  talosImageURL: factory.talos.dev/installer/de3b865124c5616da8084826167f8c0b0fbc9b905b146290db797024e84097fc
   schematic:
     customization:
       extraKernelArgs:
+        - init_on_alloc=0
+        - init_on_free=0
         - intel_iommu=on
         - iommu=pt
         - mitigations=off
@@ -73,6 +81,12 @@ controlPlane:
         - security=none
         - module_blacklist=igc
         - talos.logging.kernel=udp://10.45.0.2:6002/
+        - talos.auditd.disabled=1
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/i915
+          - siderolabs/intel-ucode
+          - siderolabs/mei
   patches:
     - |-
       cluster:
@@ -125,9 +139,18 @@ controlPlane:
           devices.system.cpu.cpu17.cpufreq.energy_performance_preference: balance_performance
           devices.system.cpu.cpu18.cpufreq.energy_performance_preference: balance_performance
           devices.system.cpu.cpu19.cpufreq.energy_performance_preference: balance_performance
+        features:
+          kubernetesTalosAPIAccess:
+            enabled: true
+            allowedRoles:
+              - os:admin
+            allowedKubernetesNamespaces:
+              - kube-system
+
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl
+
   machineFiles: &machineFiles
     - content: |-
         [plugins."io.containerd.grpc.v1.cri"]
@@ -151,14 +174,20 @@ controlPlane:
       op: overwrite
 
 worker:
-  talosImageURL: factory.talos.dev/installer/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
   schematic:
     customization:
       extraKernelArgs:
+        - init_on_alloc=0
+        - init_on_free=0
         - mitigations=off
         - apparmor=0
         - security=none
         - talos.logging.kernel=udp://10.45.0.2:6002/
+        - talos.auditd.disabled=1
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/qemu-guest-agent
+
   machineFiles: *machineFiles
   nodeLabels:
     node-role.kubernetes.io/worker: worker
