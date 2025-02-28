@@ -45,17 +45,17 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
-            - name: PROWLARR__API_KEY
+            - name: PROWLARR_API_KEY
               value: e5434fb6e4c04bc5a797103d41714d38
-            - name: PROWLARR__POSTGRES_HOST
+            - name: PROWLARR_POSTGRES_HOST
               value: postgres.cbannister.casa
-            - name: PROWLARR__POSTGRES_MAIN_DB
+            - name: PROWLARR_POSTGRES_MAIN_DB
               value: prowlarr-main
-            - name: PROWLARR__POSTGRES_LOG_DB
+            - name: PROWLARR_POSTGRES_LOG_DB
               value: prowlarr-logs
-            - name: PROWLARR__POSTGRES_USER
+            - name: PROWLARR_POSTGRES_USER
               value: holywoo
-            - name: PROWLARR__POSTGRES_PASSWORD
+            - name: PROWLARR_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres
