@@ -4,7 +4,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app cross-seed
-  namespace: flux-system
 spec:
   targetNamespace: default
   commonMetadata:
@@ -12,11 +11,15 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-stores
+      namespace: external-secrets
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   path: ./k8s/apps/default/cross-seed/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

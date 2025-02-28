@@ -4,7 +4,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname vector-aggregator
-  namespace: flux-system
 spec:
   targetNamespace: monitoring
   commonMetadata:
@@ -16,6 +15,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: true
   dependsOn:
     - name: loki
@@ -25,7 +25,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname vector-agent
-  namespace: flux-system
 spec:
   targetNamespace: monitoring
   commonMetadata:
@@ -37,6 +36,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
-  dependsOn:
-    - name: vector-aggregator
