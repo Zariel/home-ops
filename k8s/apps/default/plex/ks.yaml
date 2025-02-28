@@ -11,6 +11,7 @@ spec:
   path: ./k8s/apps/default/plex/app
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
+      namespace: flux-system
   prune: true
   sourceRef:
     kind: GitRepository
