@@ -38,11 +38,11 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
-            - name: RADARR__POSTGRES_HOST
+            - name: RADARR__POSTGRES__HOST
               value: postgres.cbannister.casa
-            - name: RADARR__POSTGRES_USER
+            - name: RADARR__POSTGRES__USER
               value: holywoo
-            - name: RADARR__POSTGRES_PASSWORD
+            - name: RADARR__POSTGRES__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres
