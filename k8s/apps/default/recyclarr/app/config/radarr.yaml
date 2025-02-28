@@ -1,6 +1,12 @@
 delete_old_custom_formats: true
 replace_existing_custom_formats: true
 
+media_naming:
+  folder: plex
+  movie:
+    rename: true
+    standard: default
+
 quality_profiles:
   - name: &remux REMUX-2160p
     score_set: default
