@@ -47,15 +47,15 @@ spec:
               value: "1"
             - name: PROWLARR_API_KEY
               value: e5434fb6e4c04bc5a797103d41714d38
-            - name: PROWLARR_POSTGRES_HOST
+            - name: PROWLARR__POSTGRES__HOST
               value: postgres.cbannister.casa
-            - name: PROWLARR_POSTGRES_MAIN_DB
+            - name: PROWLARR__POSTGRES__MAINDB
               value: prowlarr-main
-            - name: PROWLARR_POSTGRES_LOG_DB
+            - name: PROWLARR__POSTGRES__LOGDB
               value: prowlarr-logs
-            - name: PROWLARR_POSTGRES_USER
+            - name: PROWLARR__POSTGRES__USER
               value: holywoo
-            - name: PROWLARR_POSTGRES_PASSWORD
+            - name: PROWLARR__POSTGRES__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres
