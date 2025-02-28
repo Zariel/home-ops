@@ -15,10 +15,12 @@ spec:
         app: plex
     spec:
       securityContext:
+        runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [1000, 568, 44]
       volumes:
         - name: transcode
           emptyDir: {}
@@ -26,7 +28,7 @@ spec:
           emptyDir: {}
         - name: config
           persistentVolumeClaim:
-            claimName: config-plex-0
+            claimName: plex-config
         - name: cache
           persistentVolumeClaim:
             claimName: plex-cache
