@@ -2,16 +2,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-lidarr
-  namespace: flux-system
+  name: lidarr
 spec:
   path: ./k8s/apps/default/lidarr/app
   dependsOn:
-    - name: cluster-apps-rook-ceph-cluster
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: external-secrets-stores
+      namespace: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 30m
   retryInterval: 1m

@@ -10,8 +10,8 @@ spec:
       app.kubernetes.io/name: plex
   path: ./k8s/apps/default/plex/app
   dependsOn:
-    - name: cluster-apps-rook-ceph-cluster
-      namespace: flux-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   prune: true
   sourceRef:
     kind: GitRepository
