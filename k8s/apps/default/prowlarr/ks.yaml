@@ -2,16 +2,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-prowlarr
-  namespace: flux-system
+  name: prowlarr
 spec:
   path: ./k8s/apps/default/prowlarr/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   dependsOn:
-    - name: cluster-apps-rook-ceph-cluster
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: external-secrets-stores
+      namespace: external-secrets
   wait: false
   interval: 30m
   retryInterval: 1m
