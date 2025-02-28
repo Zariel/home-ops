@@ -20,7 +20,7 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [1000, 568, 44]
+        supplementalGroups: [44]
       volumes:
         - name: transcode
           emptyDir: {}
@@ -68,6 +68,10 @@ spec:
               mountPath: /config/Library/Application Support/Plex Media Server/Cache
             - name: arr-media
               mountPath: /data
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
           livenessProbe: &livenessProbe
             httpGet:
               path: /identity
