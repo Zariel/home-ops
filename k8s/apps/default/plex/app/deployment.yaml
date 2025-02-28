@@ -67,7 +67,8 @@ spec:
             - name: cache
               mountPath: /config/Library/Application Support/Plex Media Server/Cache
             - name: arr-media
-              mountPath: /data
+              mountPath: /data/media
+              subPath: media/
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
