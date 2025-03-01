@@ -78,7 +78,7 @@ spec:
       app:
         className: external
         hosts:
-          - host: requests.cbannister.xyx
+          - host: requests.cbannister.xyz
             paths:
               - path: /
                 service:
