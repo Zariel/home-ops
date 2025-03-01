@@ -23,5 +23,5 @@ resources:
   - cross-seed/ks.yaml
   - unpackerr/ks.yaml
   - filebrowser/ks.yaml
-  - overseerr/ks.yaml
+  - jellyseerr/ks.yaml
   - thelounge/ks.yaml

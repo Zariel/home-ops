@@ -1,11 +1,11 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: jellyseerr
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: app-template
@@ -22,9 +22,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   values:
     controllers:
       jellyseerr:
@@ -33,12 +30,15 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/zariel/jellyseerr
-              tag: 2.3.0@sha256:cdb4b4d4cf0c8d0b37bad2918cdfc567ba341dc6430c113ca3dab0e49bd9b4ca
+              repository: ghcr.io/fallenbagel/jellyseerr
+              tag: 2.3.0@sha256:df53a7b06006e9da117a7072a55cf5d8b2071a6272f6bb329d8ca62b6f5c08a6
             env:
               TZ: Europe/London
               LOG_LEVEL: "info"
               PORT: &port 80
+            envFrom:
+              - secretRef:
+                  name: jellyseerr-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -59,16 +59,15 @@ spec:
             resources:
               requests:
                 cpu: 10m
-                memory: 2Gi
               limits:
                 memory: 2Gi
-        pod:
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            runAsNonRoot: true
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: jellyseerr
@@ -77,28 +76,24 @@ spec:
             port: *port
     ingress:
       app:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
         className: external
         hosts:
-          - host: &host requests.cbannister.xyz
+          - host: requests.cbannister.xyx
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts: [*host]
     persistence:
       config:
-        existingClaim: jellyseerr-config
+        existingClaim: jellyseerr
         globalMounts:
           - path: /app/config
-      cache:
+      config-cache:
         existingClaim: jellyseerr-cache
         globalMounts:
           - path: /app/config/cache
-      logs:
+      config-logs:
         type: emptyDir
         globalMounts:
           - path: /app/config/logs
