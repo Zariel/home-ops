@@ -42,7 +42,7 @@ spec:
           emptyDir: {}
       initContainers:
         - name: zone-setup
-          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:df18689f808f3ef49723a5fc5e8979f114601d21d2d97ab360a4fdb70b979536
+          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:f16732186b1a334b1c0fc453ee93739d4ed45a4d1bf282acc9bc231c45a88a4c
           command:
             - /usr/bin/named-compilezone
           args:
@@ -60,7 +60,7 @@ spec:
               name: bind-cache
       containers:
         - name: bind
-          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:df18689f808f3ef49723a5fc5e8979f114601d21d2d97ab360a4fdb70b979536
+          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:f16732186b1a334b1c0fc453ee93739d4ed45a4d1bf282acc9bc231c45a88a4c
           command:
             - /usr/sbin/named
           args:
