@@ -8,6 +8,8 @@ spec:
   selector:
     matchLabels:
       app: *name
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -27,7 +29,7 @@ spec:
           emptyDir: {}
         - name: config
           persistentVolumeClaim:
-            claimName: autobrr-config
+            claimName: autobrr-config2
       initContainers:
         - name: init-db
           image: ghcr.io/onedr0p/postgres-init:16
