@@ -57,7 +57,7 @@ spec:
             - mountPath: /add-ons
               name: add-ons
             - mountPath: /config
-              name: tautulli
+              name: config
             - mountPath: /scripts
               name: scripts
           securityContext: &securityContext
@@ -88,6 +88,9 @@ spec:
       volumes:
         - emptyDir: {}
           name: add-ons
+        - name: config
+          persistentVolumeClaim:
+            claimName: tautulli
         - name: scripts
           configMap:
             name: tautulli-scripts
