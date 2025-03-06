@@ -1,13 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: tautulli
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: tautulli
-  serviceName: tautulli
   template:
     spec:
       containers:
@@ -31,7 +32,6 @@ spec:
               memory: 500Mi
             requests:
               cpu: 10m
-              memory: 250Mi
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
@@ -57,7 +57,7 @@ spec:
             - mountPath: /add-ons
               name: add-ons
             - mountPath: /config
-              name: config
+              name: tautulli
             - mountPath: /scripts
               name: scripts
           securityContext: &securityContext
@@ -93,16 +93,3 @@ spec:
             name: tautulli-scripts
         - name: tmp
           emptyDir: {}
-  volumeClaimTemplates:
-    - apiVersion: v1
-      kind: PersistentVolumeClaim
-      metadata:
-        name: config
-      spec:
-        accessModes:
-          - ReadWriteMany
-        resources:
-          requests:
-            storage: 5Gi
-        storageClassName: ceph-filesystem
-        volumeMode: Filesystem
