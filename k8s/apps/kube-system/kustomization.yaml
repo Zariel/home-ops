@@ -18,4 +18,3 @@ resources:
   - intel-device-plugin/ks.yaml
   - descheduler/ks.yaml
   - irqbalance/ks.yaml
-  - system-upgrade/ks.yaml
