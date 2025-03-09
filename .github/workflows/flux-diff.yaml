@@ -9,6 +9,13 @@ on:
       - k8s/apps/**
       - k8s/flux/**
       - k8s/templates/**
+  push:
+    branches:
+      - "renovate/**"
+    paths:
+      - k8s/apps/**
+      - k8s/flux/**
+      - k8s/templates/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
