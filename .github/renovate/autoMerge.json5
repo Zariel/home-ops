@@ -11,7 +11,7 @@
       ],
       "automerge": true,
       "automergeType": "branch",
-      "matchUpdateTypes": ["digest"],
+      "matchUpdateTypes": ["digest", "minor", "patch"],
       "matchPackagePatterns": [
         "ghcr.io/bjw-s",
         "ghcr.io/onedr0p",
