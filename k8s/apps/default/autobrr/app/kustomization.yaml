@@ -8,3 +8,10 @@ resources:
   - ingress.yaml
   - externalsecret.yaml
   - pvc.yaml
+configMapGenerator:
+  - name: autobrr-scripts
+    files:
+      - autoannounce.sh=resources/autoannounce.sh
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
