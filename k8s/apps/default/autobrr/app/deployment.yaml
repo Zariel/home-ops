@@ -30,6 +30,10 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: autobrr-config2
+        - name: scripts
+          configMap:
+            name: autobrr-scripts
+            defaultMode: 0775
       initContainers:
         - name: init-db
           image: ghcr.io/onedr0p/postgres-init:16
@@ -67,6 +71,8 @@ spec:
               mountPath: /tmp
             - name: config
               mountPath: /config
+            - name: scripts
+              mountPath: /scripts
           livenessProbe:
             httpGet:
               path: /api/healthz/liveness
