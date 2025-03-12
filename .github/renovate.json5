@@ -43,9 +43,6 @@
     ]
   },
   "kubernetes": {
-    "fileMatch": [
-      "(^|/)\\.taskfiles/.+\\.ya?ml(\\.j2)?$",
-      "(^|/)k8s/.+\\.ya?ml(\\.j2)?$"
-    ]
+    fileMatch: ["(^|/)k8s/.+\\.ya?ml$"],
   }
 }
