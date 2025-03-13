@@ -9,7 +9,6 @@ resources:
   - csi-driver-smb/ks.yaml
   - nfs-provisioner
   - metrics-server
-  - reflector
   - spegel/ks.yaml
   - kubelet-csr-approver/ks.yaml
   - coredns/ks.yaml
