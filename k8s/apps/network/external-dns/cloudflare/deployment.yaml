@@ -26,10 +26,10 @@ spec:
               memory: 128Mi
               cpu: 250m
           args:
-            - --source=ingress
+            - --source=gateway-httproute
             - --source=crd
             - --provider=cloudflare
-            - --ingress-class=external
+            - --gateway-label-filter=gateway==external
             - --cloudflare-proxied
             - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
             - --crd-source-kind=DNSEndpoint
