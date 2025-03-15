@@ -6,6 +6,7 @@ kubectl apply --server-side --filename https://raw.githubusercontent.com/prometh
 kubectl apply --server-side --filename https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.71.2/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
 kubectl apply --server-side --filename https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.71.2/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
 kubectl apply --server-side --filename https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.71.2/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+kubectl apply --server-side --filename 'https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml'
 
 kubectl apply --kustomize ./
 sops --decrypt sops-age.sops.yaml | kubectl apply -f -
