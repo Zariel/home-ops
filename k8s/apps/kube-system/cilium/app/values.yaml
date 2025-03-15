@@ -37,10 +37,7 @@ hubble:
     tolerations: []
     rollOutPods: true
     ingress:
-      enabled: true
-      className: internal
-      hosts:
-        - hubble.cbannister.xyz
+      enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.42.0.0/16
