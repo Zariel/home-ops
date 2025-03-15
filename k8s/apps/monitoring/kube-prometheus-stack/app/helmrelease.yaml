@@ -36,17 +36,18 @@ spec:
       service:
         enabled: true
         clusterIP: null
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        pathType: Prefix
-        hosts:
-          - &host alertmanager.cbannister.xyz
-        tls:
-          - hosts:
-              - *host
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - &host "alertmanager.cbannister.xyz"
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       alertmanagerSpec:
         replicas: 2
+        externalUrl: *host
         storage:
           volumeClaimTemplate:
             spec:

@@ -329,11 +329,14 @@ spec:
       - vonage-status-panel
     serviceMonitor:
       enabled: true
-    ingress:
-      enabled: true
-      ingressClassName: internal
-      hosts:
-        - grafana.cbannister.xyz
+    route:
+      main:
+        enabled: true
+        hostnames: ["{{ .Release.Name }}.cbannister.xyz"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
     persistence:
       enabled: false
     testFramework:
