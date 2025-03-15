@@ -25,18 +25,6 @@ gatewayAPI:
   enabled: true
   enableAlpn: true
   xffNumTrustedHops: 1
-hubble:
-  enabled: true
-  relay:
-    enabled: true
-    rollOutPods: true
-    tolerations: []
-  ui:
-    enabled: true
-    tolerations: []
-    rollOutPods: true
-    ingress:
-      enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.42.0.0/16
