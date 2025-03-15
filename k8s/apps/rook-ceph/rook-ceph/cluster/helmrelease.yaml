@@ -33,12 +33,6 @@ spec:
     monitoring:
       enabled: true
       createPrometheusRules: true
-    ingress:
-      dashboard:
-        ingressClassName: internal
-        host:
-          name: rook.cbannister.xyz
-          path: /
     toolbox:
       enabled: true
     configOverride: |
@@ -230,12 +224,3 @@ spec:
           reclaimPolicy: Delete
           parameters:
             region: eu-west-2
-        ingress:
-          enabled: true
-          annotations:
-            nginx.ingress.kubernetes.io/proxy-body-size: "0"
-            nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          ingressClassName: internal
-          host:
-            name: rgw.cbannister.xyz
-            path: /
