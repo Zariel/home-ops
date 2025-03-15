@@ -6,7 +6,7 @@ commonLabels:
 resources:
   - service.yaml
   - deployment.yaml
-  - ingress.yaml
+  - httproute.yaml
   - volume.yaml
   - secret.sops.yaml
   - externalsecret.yaml
