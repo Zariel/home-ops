@@ -6,6 +6,6 @@ spec:
   type: ClusterIP
   ports:
     - name: http
-      port: 8181
+      port: 8081
       protocol: TCP
       targetPort: http
