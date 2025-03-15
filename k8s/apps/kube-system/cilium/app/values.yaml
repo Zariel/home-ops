@@ -21,7 +21,11 @@ enableIPv4BIGTCP: true
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: false
+  rollOutPods: true
+gatewayAPI:
+  enabled: true
+  enableAlpn: true
+  xffNumTrustedHops: 1
 hubble:
   enabled: true
   relay:
@@ -33,10 +37,7 @@ hubble:
     tolerations: []
     rollOutPods: true
     ingress:
-      enabled: true
-      className: internal
-      hosts:
-        - hubble.cbannister.xyz
+      enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.42.0.0/16
