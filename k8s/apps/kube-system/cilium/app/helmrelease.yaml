@@ -41,17 +41,6 @@ spec:
         prometheus:
           serviceMonitor:
             enabled: true
-      ui:
-        enabled: true
-        rollOutPods: true
-        ingress:
-          enabled: true
-          className: internal
-          hosts:
-            - &host hubble.cbannister.xyz
-          tls:
-            - hosts:
-                - *host
     operator:
       prometheus:
         enabled: true
