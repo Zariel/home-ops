@@ -5,9 +5,7 @@ namespace: network
 components:
   - ../../components/common
 resources:
-  - ./ingress-nginx/ks.yaml
   - ./external-dns/ks.yaml
-  - ./external-ingress
   - ./cloudflared/ks.yaml
   - ./tailscale/ks.yaml
   - ./bind/ks.yaml
