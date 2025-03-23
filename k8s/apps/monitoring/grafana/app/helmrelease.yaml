@@ -34,7 +34,7 @@ spec:
       reloader.stakater.com/auto: "true"
     extraInitContainers:
       - name: 01-init-db
-        image: ghcr.io/home-operations/postgres-init:16
+        image: ghcr.io/home-operations/postgres-init:17
         envFrom:
           - secretRef:
               name: &secret grafana-secret
