@@ -30,7 +30,7 @@ spec:
         fsGroup: 1000
       initContainers:
         - name: init-db
-          image: ghcr.io/home-operations/postgres-init:16
+          image: ghcr.io/home-operations/postgres-init:17
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
