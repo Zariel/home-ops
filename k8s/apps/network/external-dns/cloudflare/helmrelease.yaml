@@ -35,7 +35,7 @@ spec:
       - --gateway-name=external
       - --zone-id-filter=$(CF_ZONE_ID)
     env:
-      - &name CF_API_TOKEN:
+      - name: &name CF_API_TOKEN
         valueFrom:
           secretKeyRef:
             name: &secret cloudflare-dns-secret
