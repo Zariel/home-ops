@@ -37,7 +37,7 @@ spec:
     env:
       - &name CF_API_TOKEN:
         valueFrom:
-          secretRef:
+          secretKeyRef:
             name: &secret cloudflare-dns-secret
             key: *name
       - name: &name CF_ZONE_ID
