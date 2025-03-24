@@ -40,14 +40,14 @@ spec:
         main:
           enabled: true
           hostnames:
-            - &host "alertmanager.cbannister.xyz"
+            - "alertmanager.cbannister.xyz"
           parentRefs:
             - name: internal
               namespace: kube-system
               sectionName: https
       alertmanagerSpec:
         replicas: 2
-        externalUrl: *host
+        externalUrl: "https://alertmanager.cbannister.xyz"
         storage:
           volumeClaimTemplate:
             spec:
