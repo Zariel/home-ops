@@ -10,7 +10,8 @@
         "docker"
       ],
       "automerge": true,
-      "automergeType": "branch",
+      "automergeType": "pr",
+      ignoreTests: false,
       "matchUpdateTypes": ["digest", "minor", "patch"],
       "matchPackagePatterns": [
         "ghcr.io/bjw-s",
