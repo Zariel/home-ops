@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Renovate
 on:
   workflow_dispatch:
@@ -17,17 +18,13 @@ on:
       - main
     paths:
       - .github/renovate.json5
-      - .github/renovate/*
+      - .github/renovate/**.json5
       - .github/workflows/renovate.yaml
-env:
-  LOG_LEVEL: debug
-  RENOVATE_DRY_RUN: false
-  RENOVATE_CONFIG_FILE: .github/renovate.json5
-  RENOVATE_AUTODISCOVER: true
-  RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
-  WORKFLOW_RENOVATE_VERSION: "${{ inputs.version || 'latest' }}"
-  RENOVATE_PLATFORM: github
-  RENOVATE_PLATFORM_COMMIT: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   renovate:
     runs-on: ubuntu-latest
@@ -38,18 +35,21 @@ jobs:
         with:
           app-id: "${{ secrets.BOT_APP_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Override default config from dispatch variables
-        shell: bash
-        run: |
-          echo "RENOVATE_DRY_RUN=${{ github.event.inputs.dryRun || env.RENOVATE_DRY_RUN }}" >> "${GITHUB_ENV}"
-          echo "LOG_LEVEL=${{ github.event.inputs.logLevel || env.LOG_LEVEL }}" >> "${GITHUB_ENV}"
-
       - name: Renovate
         uses: renovatebot/github-action@3cef36a9aba515d8726b491905b3bc766832e221 # v39.0.5
+        env:
+          LOG_LEVEL: "${{ inputs.logLevel || 'debug' }}"
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
+          RENOVATE_DRY_RUN: "${{ inputs.dryRun }}"
+          RENOVATE_INTERNAL_CHECKS_FILTER: strict
+          RENOVATE_PLATFORM: github
+          RENOVATE_PLATFORM_COMMIT: true
         with:
           configurationFile: .github/renovate.json5
           token: "${{ steps.app-token.outputs.token }}"
-          renovate-version: "${{ env.WORKFLOW_RENOVATE_VERSION }}"
+          renovate-version: "${{ inputs.version || 'latest' }}"
