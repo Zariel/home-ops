@@ -88,5 +88,11 @@
         "commitMessageTopic": "{{{groupName}}} group"
       }
     },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/thelounge/thelounge", "docker.io/internetsystemsconsortium/bind9"],
+      "matchUpdateTypes": ["digest"],
+      "enabled": false
+    },
   ]
 }
