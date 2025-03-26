@@ -74,6 +74,20 @@ spec:
             - containerPort: 50413
               name: bt-tcp
               protocol: TCP
+          readinessProbe:
+            httpGet: &probe
+              port: web
+              path: /api/v2/app/version
+          startupProbe:
+            httpGet: *probe
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: *probe
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
           resources:
             requests:
               cpu: 100m
