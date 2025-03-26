@@ -44,22 +44,22 @@ spec:
           env:
             - name: TZ
               value: Europe/London
-            - name: QBITTORRENT__PORT
+            - name: QBT_WEBUI_PORT
               value: "80"
-            - name: QBITTORRENT__BT_PORT
+            - name: QBT_TORRENTING_PORT
               value: "50413"
-            - name: QBT_Preferences__WebUI__AlternativeUIEnabled
+            - name: QBT_Preferences_WebUI_AlternativeUIEnabled
               value: "false"
-            - name: QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled
+            - name: QBT_Preferences_WebUI_AuthSubnetWhitelistEnabled
               value: "true"
-            - name: QBT_Preferences__WebUI__AuthSubnetWhitelist
+            - name: QBT_Preferences_WebUI_AuthSubnetWhitelist
               value: |-
                 10.0.0.0/8
-            - name: QBT_Preferences__WebUI__LocalHostAuth
+            - name: QBT_Preferences_WebUI_LocalHostAuth
               value: "false"
-            - name: QBT_BitTorrent__Session__DefaultSavePath
+            - name: QBT_BitTorrent_Session_DefaultSavePath
               value: /data/torrents/complete
-            - name: QBT_BitTorrent__Session__TempPath
+            - name: QBT_BitTorrent_Session_TempPath
               value: /data/torrents/incomplete
           envFrom:
             - secretRef:
