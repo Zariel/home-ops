@@ -39,7 +39,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: qbittorent
-          image: ghcr.io/home-operations/qbittorrent:5.0.4
+          image: ghcr.io/home-operations/qbittorrent:5.0.4@sha256:995c561247b069c10b1fa098186f35b3155c2df63912041f70637a9232755756
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
