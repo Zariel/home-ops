@@ -37,7 +37,7 @@ spec:
                 name: teamcity-secret
       containers:
         - name: teamcity
-          image: jetbrains/teamcity-server:2024.12
+          image: jetbrains/teamcity-server:2025.03
           resources:
             requests:
               memory: &ram "2Gi"
