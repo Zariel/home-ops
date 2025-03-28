@@ -17,7 +17,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: recyclarr-config
+            claimName: recyclarr-config2
         - name: recyclarr-configs
           secret:
             secretName: recyclarr-secret
