@@ -24,7 +24,7 @@ spec:
             claimName: bighorse-arr-media
         - name: config
           persistentVolumeClaim:
-            claimName: sabnzbd-config
+            claimName: sabnzbd-config2
         - name: scripts
           configMap:
             name: sabnzbd-scripts
