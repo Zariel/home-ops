@@ -17,7 +17,6 @@ resources:
   - openebs.yaml
   - postfinance.yaml
   - stevehipwell.yaml
-  - stakater.yaml
   - spegel.yaml
   - external-dns.yaml
   - csi-driver-smb.yaml
