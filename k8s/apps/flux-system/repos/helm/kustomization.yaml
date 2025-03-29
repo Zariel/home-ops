@@ -16,7 +16,6 @@ resources:
   - xenitab.yaml
   - openebs.yaml
   - postfinance.yaml
-  - stevehipwell.yaml
   - spegel.yaml
   - external-dns.yaml
   - csi-driver-smb.yaml
