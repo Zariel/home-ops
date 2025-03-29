@@ -6,7 +6,6 @@ resources:
   - cilium.yaml
   - metrics-server.yaml
   - descheduler.yaml
-  - prometheus-community.yaml
   - bjw-s.yaml
   - grafana.yaml
   - jetstack.yaml
