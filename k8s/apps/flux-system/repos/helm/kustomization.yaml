@@ -4,15 +4,12 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - cilium.yaml
-  - ingress-nginx.yaml
   - metrics-server.yaml
   - descheduler.yaml
   - prometheus-community.yaml
   - bjw-s.yaml
   - grafana.yaml
   - jetstack.yaml
-  - nvidia-dcgm-exporter.yaml
-  - nvidia-device-plugin.yaml
   - nfs-subdir-external-provisioner.yaml
   - coredns.yaml
   - emberstack.yaml
