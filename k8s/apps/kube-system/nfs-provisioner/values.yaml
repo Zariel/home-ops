@@ -1,5 +1,0 @@
-storageClass:
-  name: bighorse-nfs
-nfs:
-  server: nas.cbannister.casa
-  path: /mnt/bighorse/k8s
