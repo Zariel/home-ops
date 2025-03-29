@@ -7,7 +7,6 @@ components:
 resources:
   - cilium/ks.yaml
   - csi-driver-smb/ks.yaml
-  - nfs-provisioner
   - metrics-server
   - spegel/ks.yaml
   - kubelet-csr-approver/ks.yaml

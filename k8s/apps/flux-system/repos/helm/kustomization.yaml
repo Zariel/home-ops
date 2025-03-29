@@ -9,7 +9,6 @@ resources:
   - bjw-s.yaml
   - grafana.yaml
   - jetstack.yaml
-  - nfs-subdir-external-provisioner.yaml
   - coredns.yaml
   - emberstack.yaml
   - cloudnative-pg.yaml
