@@ -20,7 +20,6 @@ resources:
   - xenitab.yaml
   - openebs.yaml
   - postfinance.yaml
-  - external-secrets.yaml
   - stevehipwell.yaml
   - stakater.yaml
   - spegel.yaml
