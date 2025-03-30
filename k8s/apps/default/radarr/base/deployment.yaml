@@ -22,7 +22,7 @@ spec:
             claimName: bighorse-arr-media
         - name: config
           persistentVolumeClaim:
-            claimName: radarr-config
+            claimName: radarr
       securityContext:
         runAsUser: 568
         runAsGroup: 568
