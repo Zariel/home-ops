@@ -22,7 +22,7 @@ spec:
             claimName: bighorse-arr-media
         - name: config
           persistentVolumeClaim:
-            claimName: sonarr-config
+            claimName: sonarr
         - name: scripts
           configMap:
             name: sonarr-scripts
