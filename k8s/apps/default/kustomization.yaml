@@ -25,3 +25,4 @@ resources:
   - filebrowser/ks.yaml
   - jellyseerr/ks.yaml
   - thelounge/ks.yaml
+  - maintainerr/ks.yaml
