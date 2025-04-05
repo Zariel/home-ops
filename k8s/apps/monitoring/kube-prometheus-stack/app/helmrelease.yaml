@@ -41,29 +41,7 @@ spec:
     prometheus:
       enabled: false
     alertmanager:
-      enabled: true
-      service:
-        enabled: true
-        clusterIP: null
-      route:
-        main:
-          enabled: true
-          hostnames:
-            - "alertmanager.cbannister.xyz"
-          parentRefs:
-            - name: internal
-              namespace: kube-system
-              sectionName: https
-      alertmanagerSpec:
-        replicas: 2
-        externalUrl: "https://alertmanager.cbannister.xyz"
-        storage:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: ceph-block
-              resources:
-                requests:
-                  storage: 1Gi
+      enabled: false
     kubeApiServer:
       serviceMonitor:
         selector:
