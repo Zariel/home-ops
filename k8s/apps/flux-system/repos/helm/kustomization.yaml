@@ -8,7 +8,6 @@ resources:
   - descheduler.yaml
   - bjw-s.yaml
   - grafana.yaml
-  - coredns.yaml
   - emberstack.yaml
   - cloudnative-pg.yaml
   - xenitab.yaml
