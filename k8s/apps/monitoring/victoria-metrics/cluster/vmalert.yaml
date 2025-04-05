@@ -15,7 +15,7 @@ spec:
   remoteWrite:
     url: http://vmagent-victoria.monitoring.svc.cluster.local:8429
   notifiers:
-    - url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
+    - url: http://alertmanager.monitoring.svc.cluster.local:9093
   resources:
     limits:
       cpu: 150m

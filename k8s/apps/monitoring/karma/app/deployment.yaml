@@ -25,7 +25,7 @@ spec:
               name: http
           env:
             - name: ALERTMANAGER_URI
-              value: http://alertmanager-operated.monitoring.svc.cluster.local:9093
+              value: http://alertmanager.monitoring.svc.cluster.local:9093
             - name: ALERTMANAGER_EXTERNAL_URI
               value: https://alertmanager.cbannister.xyz
             - name: ALERTMANAGER_PROXY
