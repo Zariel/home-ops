@@ -16,3 +16,4 @@ resources:
   - silence-operator/ks.yaml
   - blackbox-exporter/ks.yaml
   - victoria-metrics/ks.yaml
+  - alertmanager/ks.yaml
