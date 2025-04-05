@@ -17,8 +17,9 @@ spec:
   notifiers:
     - url: http://alertmanager.monitoring.svc.cluster.local:9093
   resources:
+    requests:
+      cpu: 200m
     limits:
-      cpu: 150m
       memory: 256Mi
   topologySpreadConstraints:
     - maxSkew: 1
