@@ -17,3 +17,4 @@ resources:
   - blackbox-exporter/ks.yaml
   - victoria-metrics/ks.yaml
   - alertmanager/ks.yaml
+  - kube-state-metrics/ks.yaml
