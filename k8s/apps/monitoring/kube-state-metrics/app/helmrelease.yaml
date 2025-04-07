@@ -32,6 +32,7 @@ spec:
       - pods=[*]
       - deployments=[*]
       - persistentvolumeclaims=[*]
+    releaseLabel: true
     prometheus:
       monitor:
         enabled: true
