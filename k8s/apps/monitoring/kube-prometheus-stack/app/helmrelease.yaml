@@ -76,6 +76,8 @@ spec:
     grafana:
       enabled: false
       forceDeployDashboards: true
+    prometheusOperator:
+      enabled: false
 
   postRenderers:
     - kustomize:
