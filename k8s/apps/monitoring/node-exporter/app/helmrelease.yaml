@@ -35,6 +35,7 @@ spec:
     prometheus:
       monitor:
         enabled: true
+        jobLabel: jobLabel
         relabelings:
           - action: replace
             regex: (.*)
