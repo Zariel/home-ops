@@ -36,6 +36,7 @@ spec:
     prometheus:
       monitor:
         enabled: true
+        honorLabels: true
         relabelings:
           - action: replace
             regex: (.*)
