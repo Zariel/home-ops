@@ -71,6 +71,8 @@ spec:
               targetLabel: kubernetes_node
     kubeStateMetrics:
       enabled: false
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
     grafana:
       enabled: false
       forceDeployDashboards: true
