@@ -7,7 +7,6 @@ resources:
   - metrics-server.yaml
   - descheduler.yaml
   - bjw-s.yaml
-  - grafana.yaml
   - emberstack.yaml
   - cloudnative-pg.yaml
   - xenitab.yaml
