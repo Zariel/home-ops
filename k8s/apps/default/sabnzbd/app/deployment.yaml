@@ -39,7 +39,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: sabnzbd
-          image: ghcr.io/home-operations/sabnzbd:4.5.0@sha256:2bf66d50132f1524067919a5b58215b18b1d9f30155c0008888e20fa609321ef
+          image: ghcr.io/home-operations/sabnzbd:4.5.1@sha256:4f2e137aea235fc4c42b7da6b9ef86439043b2dad93cc84b80186c60c405ea57
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
