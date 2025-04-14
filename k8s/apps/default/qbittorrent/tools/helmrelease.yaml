@@ -104,17 +104,17 @@ spec:
         cronjob:
           <<: *cronJobSpec
           schedule: "@daily"
-          suspend: true
         containers:
           app:
             <<: *container
-            args: [
+            args:
+              [
                 "orphaned",
                 "--exclude-pattern",
                 "*_unpackerred*",
                 "--exclude-pattern",
                 "*/manual/*",
-                # "--dry-run",
+                "--dry-run",
               ]
         pod:
           restartPolicy: Never
