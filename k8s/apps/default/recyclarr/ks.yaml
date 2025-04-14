@@ -3,11 +3,15 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: recyclarr
+  namespace: &namespace default
 spec:
+  targetNamespace: *namespace
   path: ./k8s/apps/default/recyclarr/app
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
+    - name: external-secrets-stores
+      namespace: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository
