@@ -116,7 +116,6 @@ spec:
                 "*/manual/*",
                 "--exclude-pattern",
                 "*/orpheus/*",
-                "--dry-run",
               ]
         pod:
           restartPolicy: Never
