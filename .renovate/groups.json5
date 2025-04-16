@@ -47,20 +47,13 @@
       }
     },
     {
-      "description": [
-        "Rook-Ceph Group"
-      ],
-      "groupName": "Rook-Ceph",
-      "matchPackagePatterns": [
-        "rook.ceph"
-      ],
-      "matchDatasources": [
-        "helm"
-      ],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
+      description: "Rook-Ceph Group",
+      groupName: "Rook-Ceph",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/rook-ceph/", "/rook-ceph-cluster/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
       },
-      "separateMinorPatch": true
     },
     {
       "description": [
