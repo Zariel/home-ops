@@ -7,7 +7,13 @@ metadata:
   namespace: &namespace rook-ceph
 spec:
   path: ./k8s/apps/rook-ceph/rook-ceph/app
+  targetNamespace: *namespace
   prune: false
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: rook-ceph-operator
+      namespace: *namespace
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -24,8 +30,10 @@ metadata:
   name: rook-ceph-cluster
   namespace: &namespace rook-ceph
 spec:
+  targetNamespace: *namespace
   dependsOn:
     - name: rook-ceph
+      namespace: *namespace
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
