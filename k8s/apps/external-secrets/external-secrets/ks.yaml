@@ -4,12 +4,18 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app external-secrets
+  namespace: &namespace external-secrets
 spec:
-  targetNamespace: external-secrets
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
       app.kubernetes.io/part-of: external-secrets
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: *app
+      namespace: *namespace
   path: ./k8s/apps/external-secrets/external-secrets/app
   prune: true
   sourceRef:
@@ -26,14 +32,20 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app external-secrets-stores
+  namespace: &namespace external-secrets
 spec:
-  targetNamespace: external-secrets
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
       app.kubernetes.io/part-of: external-secrets
   dependsOn:
     - name: external-secrets
+  healthCheckExprs:
+    - apiVersion: external-secrets.io/v1
+      kind: ClusterSecretStore
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
   path: ./k8s/apps/external-secrets/external-secrets/stores
   prune: true
   sourceRef:
