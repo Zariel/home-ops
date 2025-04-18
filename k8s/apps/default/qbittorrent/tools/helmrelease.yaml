@@ -80,7 +80,6 @@ spec:
                 "added:1d",
                 "--include-tag",
                 "unregistered",
-                "--with-data",
               ]
           expired:
             <<: *container
