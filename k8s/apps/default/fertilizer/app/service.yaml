@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: &name fertilizer
+spec:
+  selector:
+    app.kubernetes.io/name: *name
+  ports:
+    - port: 80
+      name: http
