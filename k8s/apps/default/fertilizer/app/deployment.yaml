@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &name fertilizer
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels: &labels
+    app.kubernetes.io/component: *name
+    app.kubernetes.io/instance: *name
+    app.kubernetes.io/name: *name
+spec:
+  selector:
+    matchLabels: *labels
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      containers:
+        - name: *name
+          image: ghcr.io/moleculekayak/fertilizer:v0.3.0@sha256:4a84c18bab794eb9091b5b14205d1cb3aea3077941c1db3718e3e2f89ddbfbba
+          imagePullPolicy: IfNotPresent
+          args:
+            - --server
+            - --input-directory
+            - /data/downloads/torrents/bt_backup
+            - --output-directory
+            - /config/output
+          env:
+            - name: TZ
+              value: Europe/London
+          ports:
+            - name: http
+              containerPort: 9713
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: http
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: http
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              cpu: 10m
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /data
+              name: media
+            - mountPath: /config/config.json
+              name: secret-file
+              readOnly: true
+              subPath: config.json
+      enableServiceLinks: false
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 568
+        runAsNonRoot: true
+        runAsUser: 568
+        seccompProfile:
+          type: RuntimeDefault
+        supplementalGroups:
+          - 10000
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: *name
+        - name: media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: secret-file
+          secret:
+            secretName: fertilizer-secret

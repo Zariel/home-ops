@@ -26,3 +26,4 @@ resources:
   - jellyseerr/ks.yaml
   - thelounge/ks.yaml
   - maintainerr/ks.yaml
+  - fertilizer/ks.yaml
