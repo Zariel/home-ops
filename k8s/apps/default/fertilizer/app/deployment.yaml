@@ -21,6 +21,8 @@ spec:
         - name: *name
           image: ghcr.io/moleculekayak/fertilizer:v0.3.0@sha256:4a84c18bab794eb9091b5b14205d1cb3aea3077941c1db3718e3e2f89ddbfbba
           imagePullPolicy: IfNotPresent
+          command:
+            - fertilizer
           args:
             - --server
             - --input-directory
