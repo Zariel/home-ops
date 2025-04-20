@@ -29,6 +29,8 @@ spec:
             - /data/downloads/torrents/bt_backup
             - --output-directory
             - /config/output
+            - --config
+            - &configPath /config/config.json
           env:
             - name: TZ
               value: Europe/London
@@ -65,7 +67,7 @@ spec:
               name: config
             - mountPath: /data
               name: media
-            - mountPath: /config/config.json
+            - mountPath: *configPath
               name: secret-file
               readOnly: true
               subPath: config.json
