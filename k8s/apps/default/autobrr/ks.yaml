@@ -10,11 +10,16 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./k8s/apps/default/autobrr/app
   prune: true
+  postBuild:
+    substitute:
+      APP: *app
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
