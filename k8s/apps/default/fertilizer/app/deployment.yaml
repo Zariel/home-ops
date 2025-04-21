@@ -25,12 +25,9 @@ spec:
             - fertilizer
           args:
             - --server
-            - --input-directory
-            - /data/downloads/torrents/bt_backup
-            - --output-directory
-            - /config/output
-            - --config
-            - &configPath /config/config.json
+            - --input-directory /data/downloads/torrents/bt_backup
+            - --output-directory /config/output
+            - --config /config/config.json
           env:
             - name: TZ
               value: Europe/London
@@ -67,7 +64,7 @@ spec:
               name: config
             - mountPath: /data
               name: media
-            - mountPath: *configPath
+            - mountPath: /config/config.json
               name: secret-file
               readOnly: true
               subPath: config.json
