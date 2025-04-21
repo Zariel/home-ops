@@ -34,6 +34,9 @@ spec:
           configMap:
             name: autobrr-scripts
             defaultMode: 0775
+        - name: temp-conf
+          persistentVolumeClaim:
+            claimName: autobrr
       initContainers:
         - name: init-db
           image: ghcr.io/home-operations/postgres-init:17
@@ -73,6 +76,8 @@ spec:
               mountPath: /config
             - name: scripts
               mountPath: /scripts
+            - name: temp-conf
+              mountPath: /_config
           livenessProbe:
             httpGet:
               path: /api/healthz/liveness
