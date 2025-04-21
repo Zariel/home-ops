@@ -21,6 +21,7 @@ spec:
   postBuild:
     substitute:
       APP: sonarr
+  nameSuffix: "-main"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -53,6 +54,7 @@ spec:
   postBuild:
     substitute:
       APP: sonarr
+  nameSuffix: "-1080"
   prune: true
   sourceRef:
     kind: GitRepository
