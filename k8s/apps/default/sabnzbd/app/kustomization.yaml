@@ -7,7 +7,6 @@ resources:
   - deployment.yaml
   - service.yaml
   - httproute.yaml
-  - volume.yaml
   - externalsecret.yaml
 configMapGenerator:
   - name: sabnzbd-scripts
