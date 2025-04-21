@@ -25,6 +25,7 @@ spec:
             - fertilizer
           args:
             - --server
+            - --verbose
             - --input-directory
             - /data/downloads/torrents/bt_backup
             - --output-directory
@@ -71,8 +72,6 @@ spec:
               name: secret-file
               readOnly: true
               subPath: config.json
-      enableServiceLinks: false
-      restartPolicy: Always
       securityContext:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
