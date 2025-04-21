@@ -12,7 +12,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-    namespace: flux-system
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
@@ -21,6 +20,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   prune: true
   wait: false
   interval: 30m
