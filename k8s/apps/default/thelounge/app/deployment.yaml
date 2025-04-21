@@ -19,7 +19,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: thelounge-config
+            claimName: thelounge
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
