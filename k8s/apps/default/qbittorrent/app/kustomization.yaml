@@ -6,7 +6,6 @@ resources:
   - deployment.yaml
   - service.yaml
   - httproute.yaml
-  - pvc.yaml
   - externalsecret.yaml
 configMapGenerator:
   - name: qbittorrent-loki-rules
