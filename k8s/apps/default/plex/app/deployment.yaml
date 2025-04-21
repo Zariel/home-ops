@@ -28,7 +28,7 @@ spec:
           emptyDir: {}
         - name: config
           persistentVolumeClaim:
-            claimName: plex-config
+            claimName: plex
         - name: cache
           persistentVolumeClaim:
             claimName: plex-cache
