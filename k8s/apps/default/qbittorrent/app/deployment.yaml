@@ -22,7 +22,7 @@ spec:
             claimName: bighorse-arr-media
         - name: config
           persistentVolumeClaim:
-            claimName: qbittorrent-config2
+            claimName: qbittorrent
         - name: scripts
           configMap:
             name: qbittorrent-scripts
