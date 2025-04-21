@@ -25,9 +25,12 @@ spec:
             - fertilizer
           args:
             - --server
-            - --input-directory /data/downloads/torrents/bt_backup
-            - --output-directory /config/output
-            - --config /config/config.json
+            - --input-directory
+            - /data/downloads/torrents/bt_backup
+            - --output-directory
+            - /config/output
+            - --config
+            - /config/config.json
           env:
             - name: TZ
               value: Europe/London
