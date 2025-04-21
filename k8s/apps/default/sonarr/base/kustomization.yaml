@@ -9,3 +9,6 @@ configMapGenerator:
   - name: sonarr-scripts
     files:
       - refresh-tba.sh=scripts/refresh-tba.sh
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
