@@ -7,7 +7,6 @@ resources:
   - service.yaml
   - httproute.yaml
   - externalsecret.yaml
-  - pvc.yaml
 configMapGenerator:
   - name: autobrr-scripts
     files:
