@@ -29,14 +29,11 @@ spec:
           emptyDir: {}
         - name: config
           persistentVolumeClaim:
-            claimName: autobrr-config2
+            claimName: autobrr
         - name: scripts
           configMap:
             name: autobrr-scripts
             defaultMode: 0775
-        - name: temp-conf
-          persistentVolumeClaim:
-            claimName: autobrr
       initContainers:
         - name: init-db
           image: ghcr.io/home-operations/postgres-init:17
