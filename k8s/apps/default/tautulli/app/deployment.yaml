@@ -58,6 +58,8 @@ spec:
               name: add-ons
             - mountPath: /config
               name: config
+            - mountPath: /config/cache
+              name: cache
             - mountPath: /scripts
               name: scripts
           securityContext: &securityContext
@@ -91,6 +93,9 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: tautulli
+        - name: cache
+          persistentVolumeClaim:
+            claimName: tautulli-cache
         - name: scripts
           configMap:
             name: tautulli-scripts
