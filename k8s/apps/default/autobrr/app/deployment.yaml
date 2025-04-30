@@ -73,8 +73,6 @@ spec:
               mountPath: /config
             - name: scripts
               mountPath: /scripts
-            - name: temp-conf
-              mountPath: /_config
           livenessProbe:
             httpGet:
               path: /api/healthz/liveness
