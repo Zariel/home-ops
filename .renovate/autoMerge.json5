@@ -29,5 +29,17 @@
       minimumReleaseAge: "3 days",
       ignoreTests: true,
     },
+    {
+      "description": [
+        "dont auto merge qbittorrent updates until clients are allowed"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "automerge": false,
+      "matchPackgeNames": [
+        "ghcr.io/home-operations/qbittorrent"
+      ]
+    }
   ]
 }
