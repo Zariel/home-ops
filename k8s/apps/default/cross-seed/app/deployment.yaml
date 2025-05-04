@@ -79,7 +79,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: cross-seed-config
+            claimName: cross-seed
         - name: data
           persistentVolumeClaim:
             claimName: bighorse-arr-media
