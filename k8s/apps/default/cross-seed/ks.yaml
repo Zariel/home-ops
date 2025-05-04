@@ -4,17 +4,24 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app cross-seed
+  namespace: &namespace default
 spec:
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
+  targetNamespace: *namespace
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: rook-ceph-cluster
       namespace: rook-ceph
   path: ./k8s/apps/default/cross-seed/app
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository
@@ -24,6 +31,3 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
-  postBuild:
-    substitute:
-      APP: *app
