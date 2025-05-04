@@ -1,6 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "ignoreTests": false,
   "packageRules": [
     {
       "description": [
@@ -19,6 +18,15 @@
         "ghcr.io/zariel",
         "ghcr.io/home-operations",
       ]
+    },
+    {
+      description: "Auto-merge OCI Charts",
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "pr",
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: ["/kube-prometheus-stack/", "/grafana/"],
+      ignoreTests: false,
     },
     {
       description: "Auto-merge GitHub Actions",
