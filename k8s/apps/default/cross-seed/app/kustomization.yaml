@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - deployment.yaml
-  - pvc.yaml
   - service.yaml
 configMapGenerator:
   - name: cross-seed-loki-rules
