@@ -2,7 +2,7 @@ delete_old_custom_formats: true
 replace_existing_custom_formats: true
 
 media_naming:
-  folder: plex
+  folder: plex-imdb
   movie:
     rename: true
     standard: default
