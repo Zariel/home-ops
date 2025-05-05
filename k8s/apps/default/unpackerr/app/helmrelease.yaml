@@ -40,7 +40,7 @@ spec:
               UN_INTERVAL: 1m
               UN_SONARR_0_URL: http://sonarr-main.default.svc.cluster.local
               UN_SONARR_0_PATHS_0: /data/torrents/complete/sonarr
-              UN_RADARR_0_URL: http://radarr-main.default.svc.cluster.local
+              UN_RADARR_0_URL: http://radarr.default.svc.cluster.local
               UN_RADARR_0_PATHS_0: /data/torrents/complete/radarr
             envFrom:
               - secretRef:
