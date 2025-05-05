@@ -6,7 +6,7 @@ metadata:
   name: radarr
 spec:
   hostnames:
-    - radarr-new.cbannister.xyz
+    - radarr.cbannister.xyz
   parentRefs:
     - name: internal
       namespace: kube-system
