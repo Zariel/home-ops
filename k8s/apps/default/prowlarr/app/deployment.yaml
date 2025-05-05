@@ -33,19 +33,6 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
-            - name: PROWLARR__POSTGRES__HOST
-              value: postgres.cbannister.casa
-            - name: PROWLARR__POSTGRES__MAINDB
-              value: prowlarr-main
-            - name: PROWLARR__POSTGRES__LOGDB
-              value: prowlarr-logs
-            - name: PROWLARR__POSTGRES__USER
-              value: holywoo
-            - name: PROWLARR__POSTGRES__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres
-                  key: password
           envFrom:
             - secretRef:
                 name: prowlarr-secret
