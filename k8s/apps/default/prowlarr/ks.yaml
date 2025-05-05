@@ -2,10 +2,20 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prowlarr
+  name: &app prowlarr
   namespace: &namespace default
 spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
+  targetNamespace: *namespace
   path: ./k8s/apps/default/prowlarr/app
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 1Gi
   prune: true
   sourceRef:
     kind: GitRepository
@@ -16,7 +26,6 @@ spec:
       namespace: rook-ceph
     - name: external-secrets-stores
       namespace: external-secrets
-  targetNamespace: *namespace
   wait: false
   interval: 30m
   retryInterval: 1m

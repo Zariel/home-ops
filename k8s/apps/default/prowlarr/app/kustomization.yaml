@@ -6,6 +6,5 @@ commonLabels:
 resources:
   - deployment.yaml
   - service.yaml
-  - volume.yaml
   - httproute.yaml
   - externalsecret.yaml
