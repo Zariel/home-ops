@@ -26,6 +26,8 @@ spec:
           emptyDir: {}
         - name: logs
           emptyDir: {}
+        - name: tmp
+          emptyDir: {}
         - name: config
           persistentVolumeClaim:
             claimName: plex
@@ -69,6 +71,8 @@ spec:
             - name: arr-media
               mountPath: /data/media
               subPath: media/
+            - name: tmp
+              mountPath: /tmp
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
