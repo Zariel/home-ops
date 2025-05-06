@@ -1,7 +1,7 @@
 ---
 clusterName: holywoo
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: v1.10.0
+talosVersion: v1.9.6
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.32.4
 endpoint: https://k8s.cbannister.casa:6443
@@ -90,6 +90,10 @@ controlPlane:
   patches:
     - |-
       cluster:
+        apiServer:
+          extraArgs:
+            feature-gates: MutatingAdmissionPolicy=true
+            runtime-config: admissionregistration.k8s.io/v1alpha1=true
         controllerManager:
           extraArgs:
             bind-address: 0.0.0.0
@@ -203,6 +207,7 @@ nodes:
           hardwareAddr: 58:47:ca:78:d2:42
         dhcp: true
         mtu: 9000
+        vlans: &vlans []
   - hostname: k8s-1
     ipAddress: "10.1.1.11"
     controlPlane: true
@@ -211,6 +216,7 @@ nodes:
           hardwareAddr: 58:47:ca:78:d7:fa
         dhcp: true
         mtu: 9000
+        vlans: *vlans
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
   - hostname: k8s-2
@@ -221,6 +227,7 @@ nodes:
           hardwareAddr: 58:47:ca:78:d8:42
         dhcp: true
         mtu: 9000
+        vlans: *vlans
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
   - hostname: k8s-3
@@ -230,7 +237,8 @@ nodes:
       wwid: eui.343335304eb046460025384100000001
     networkInterfaces:
       - deviceSelector:
-          driver: virtio_net
+          hardwareAddr: b8:59:9f:cf:ff:b2
         dhcp: true
         mtu: 9000
+        vlans: *vlans
     talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
