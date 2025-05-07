@@ -72,6 +72,7 @@ controlPlane:
   schematic:
     customization:
       extraKernelArgs:
+        - "-selinux"
         - init_on_alloc=0
         - init_on_free=0
         - intel_iommu=on
@@ -155,6 +156,8 @@ controlPlane:
       - op: remove
         path: /cluster/apiServer/admissionControl
 
+  extraManifests:
+    - manifests/x710.yaml
   machineFiles: &machineFiles
     - content: |-
         [plugins."io.containerd.grpc.v1.cri"]
@@ -181,6 +184,7 @@ worker:
   schematic:
     customization:
       extraKernelArgs:
+        - "-selinux"
         - init_on_alloc=0
         - init_on_free=0
         - mitigations=off
@@ -242,3 +246,5 @@ nodes:
         mtu: 9000
         vlans: *vlans
     talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    extraManifests:
+      - manifests/k8s-3.yaml
