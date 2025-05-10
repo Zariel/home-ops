@@ -6,12 +6,12 @@ metadata:
   name: sonarr
 spec:
   hostnames:
-    - sonarr-hd.cbannister.xyz
+    - sonarr-new.cbannister.xyz
   parentRefs:
     - name: internal
       namespace: kube-system
       sectionName: https
   rules:
     - backendRefs:
-        - name: sonarr-1080
+        - name: sonarr
           port: 80

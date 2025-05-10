@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+spec:
+  selector:
+    app: sonarr
+  type: ClusterIP
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      port: 80
+      targetPort: web
+      protocol: TCP
