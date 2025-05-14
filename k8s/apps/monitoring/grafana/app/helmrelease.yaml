@@ -180,7 +180,8 @@ spec:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
           revision: 40
-          datasource: *datasource
+          datasource:
+            - { name: DS_PROMETHEUS, value: victoriametrics }
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
           datasource: *datasource
