@@ -19,3 +19,6 @@ spec:
     - name: bt-tcp
       port: 50413
       protocol: TCP
+    - name: bt-udp
+      port: 50413
+      protocol: UDP
