@@ -15,6 +15,5 @@ resources:
   - external-dns.yaml
   - csi-driver-smb.yaml
   - node-feature-discovery.yaml
-  - intel.yaml
   - piraeus.yaml
   - backube.yaml
