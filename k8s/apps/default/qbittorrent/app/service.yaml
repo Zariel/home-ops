@@ -12,6 +12,7 @@ spec:
   type: LoadBalancer
   ipFamilies:
     - IPv4
+  externalTrafficPolicy: Local
   ports:
     - name: http
       port: 80
