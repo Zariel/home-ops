@@ -60,11 +60,13 @@ spec:
         mgr:
           requests:
             cpu: "500m"
+            memory: 768Mi
           limits:
             memory: 768Mi
         mon:
           requests:
             cpu: "500m"
+            memory: 768Mi
           limits:
             memory: 768Mi
         osd:
