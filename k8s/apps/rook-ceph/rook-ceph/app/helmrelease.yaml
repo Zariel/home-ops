@@ -39,6 +39,7 @@ spec:
     - name: snapshot-controller
       namespace: volsync-system
   values:
+    logLevel: DEBUG
     csi:
       cephFSKernelMountOptions: ms_mode=prefer-crc
       enableLiveness: true
