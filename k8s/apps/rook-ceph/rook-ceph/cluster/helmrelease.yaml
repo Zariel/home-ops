@@ -54,26 +54,27 @@ spec:
       resources:
         api:
           requests:
-            cpu: "100m"
+            cpu: 100m
           limits:
             memory: 512Mi
         mgr:
           requests:
-            cpu: "500m"
+            cpu: 500m
             memory: 768Mi
           limits:
             memory: 768Mi
         mon:
           requests:
-            cpu: "500m"
+            cpu: 500m
             memory: 768Mi
           limits:
             memory: 768Mi
         osd:
           requests:
-            cpu: "500m"
+            cpu: 500m
+            memory: 3Gi
           limits:
-            memory: "3Gi"
+            memory: 3Gi
         mgr-sidecar:
           requests:
             cpu: 50m
