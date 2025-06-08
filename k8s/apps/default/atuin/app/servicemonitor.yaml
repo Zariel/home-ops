@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: atuin
+  labels:
+    app.kubernetes.io/instance: atuin
+    app.kubernetes.io/name: atuin
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: metrics
+      scheme: http
+      scrapeTimeout: 10s
+  jobLabel: atuin
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: atuin
+      app.kubernetes.io/name: atuin
+      app.kubernetes.io/service: atuin
