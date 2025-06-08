@@ -15,8 +15,6 @@ spec:
       app.kubernetes.io/component: atuin
       app.kubernetes.io/instance: atuin
       app.kubernetes.io/name: atuin
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
