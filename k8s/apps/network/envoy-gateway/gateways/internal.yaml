@@ -9,7 +9,7 @@ metadata:
   labels:
     gateway: internal
 spec:
-  gatewayClassName: cilium
+  gatewayClassName: envoy-gateway
   addresses:
     - type: IPAddress
       value: 10.45.0.10
