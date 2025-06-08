@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyseerr
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/component: jellyseerr
+    app.kubernetes.io/instance: jellyseerr
+    app.kubernetes.io/name: jellyseerr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: jellyseerr
+      app.kubernetes.io/instance: jellyseerr
+      app.kubernetes.io/name: jellyseerr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: jellyseerr
+        app.kubernetes.io/instance: jellyseerr
+        app.kubernetes.io/name: jellyseerr
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/fallenbagel/jellyseerr:2.5.2@sha256:2a611369ad1d0d501c2d051fc89b6246ff081fb4a30879fdc75642cf6a37b1a6
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: LOG_LEVEL
+              value: info
+            - name: PORT
+              value: "80"
+            - name: TZ
+              value: Europe/London
+          envFrom:
+            - secretRef:
+                name: jellyseerr-secret
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v1/status
+              port: 80
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /api/v1/status
+              port: 80
+              scheme: HTTP
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              cpu: 10m
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /app/config
+              name: config
+            - mountPath: /app/config/cache
+              name: config-cache
+            - mountPath: /app/config/logs
+              name: config-logs
+            - mountPath: /tmp
+              name: tmp
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyseerr
+        - name: config-cache
+          persistentVolumeClaim:
+            claimName: jellyseerr-cache
+        - emptyDir: {}
+          name: config-logs
+        - emptyDir: {}
+          name: tmp
