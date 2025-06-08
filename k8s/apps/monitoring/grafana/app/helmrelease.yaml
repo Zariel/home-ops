@@ -350,7 +350,7 @@ spec:
         hostnames: ["{{ .Release.Name }}.cbannister.xyz"]
         parentRefs:
           - name: internal
-            namespace: kube-system
+            namespace: network
             sectionName: https
     persistence:
       enabled: false
