@@ -20,14 +20,10 @@ enableIPv4BIGTCP: true
 endpointRoutes:
   enabled: true
 envoy:
-  rollOutPods: true
-  prometheus:
-    serviceMonitor:
-      enabled: true
+  enabled: false
+  rollOutPods: false
 gatewayAPI:
-  enabled: true
-  enableAlpn: true
-  xffNumTrustedHops: 1
+  enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.42.0.0/16
