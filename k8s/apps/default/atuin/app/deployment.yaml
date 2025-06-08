@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atuin
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/component: atuin
+    app.kubernetes.io/instance: atuin
+    app.kubernetes.io/name: atuin
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: atuin
+      app.kubernetes.io/instance: atuin
+      app.kubernetes.io/name: atuin
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: atuin
+        app.kubernetes.io/instance: atuin
+        app.kubernetes.io/name: atuin
+    spec:
+      initContainers:
+        - name: init-db
+          image: ghcr.io/home-operations/postgres-init:17
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: atuin-secret
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      containers:
+        - name: app
+          image: ghcr.io/atuinsh/atuin:v18.6.1@sha256:869a85bcc169ae9a3ea65dcf32a99dae982d28d8562172e2712d3313d7349203
+          imagePullPolicy: IfNotPresent
+          args:
+            - server
+            - start
+          env:
+            - name: ATUIN_HOST
+              value: 0.0.0.0
+            - name: ATUIN_METRICS__ENABLE
+              value: "true"
+            - name: ATUIN_METRICS__HOST
+              value: 0.0.0.0
+            - name: ATUIN_METRICS__PORT
+              value: "8080"
+            - name: ATUIN_OPEN_REGISTRATION
+              value: "true"
+            - name: ATUIN_PORT
+              value: "80"
+            - name: ATUIN_TLS__ENABLE
+              value: "false"
+          envFrom:
+            - secretRef:
+                name: atuin-secret
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 10m
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 568
+        runAsNonRoot: true
+        runAsUser: 568
+      volumes:
+        - emptyDir: {}
+          name: config
