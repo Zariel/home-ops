@@ -35,6 +35,8 @@ spec:
     remediation:
       retries: 5
   values:
+    deployment:
+      replicas: 2
     config:
       envoyGateway:
         gateway:
