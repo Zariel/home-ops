@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: smtp-relay
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: smtp.cbannister.xyz
+    io.cilium/lb-ipam-ips: 10.45.0.22
+  labels:
+    app.kubernetes.io/instance: smtp-relay
+    app.kubernetes.io/name: smtp-relay
+    app.kubernetes.io/service: smtp-relay
+spec:
+  type: LoadBalancer
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: http
+      nodePort: 32626
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: smtp
+      nodePort: 31510
+      port: 25
+      protocol: TCP
+      targetPort: 25
+  selector:
+    app.kubernetes.io/component: smtp-relay
+    app.kubernetes.io/instance: smtp-relay
+    app.kubernetes.io/name: smtp-relay

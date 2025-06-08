@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smtp-relay
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/component: smtp-relay
+    app.kubernetes.io/instance: smtp-relay
+    app.kubernetes.io/name: smtp-relay
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: smtp-relay
+      app.kubernetes.io/instance: smtp-relay
+      app.kubernetes.io/name: smtp-relay
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: smtp-relay
+        app.kubernetes.io/instance: smtp-relay
+        app.kubernetes.io/name: smtp-relay
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/foxcpp/maddy:0.8.1@sha256:55636d8a29588eea62d81d51acdafe38e0f694fb91801ab12dc1ed8c47b6439d
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SMTP_RELAY_METRICS_PORT
+              value: "8080"
+            - name: SMTP_RELAY_SERVER_PORT
+              value: "465"
+            - name: SMTP_RELAY_SMTP_PORT
+              value: "25"
+          envFrom:
+            - secretRef:
+                name: smtp-relay-secret
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              cpu: 10m
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /cache
+              name: cache
+            - mountPath: /data/maddy.conf
+              name: config
+              readOnly: true
+              subPath: maddy.conf
+      securityContext:
+        runAsGroup: 568
+        runAsNonRoot: true
+        runAsUser: 568
+      volumes:
+        - emptyDir: {}
+          name: cache
+        - configMap:
+            defaultMode: 420
+            name: smtp-relay-configmap
+          name: config
