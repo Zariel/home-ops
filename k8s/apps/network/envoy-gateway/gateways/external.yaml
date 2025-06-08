@@ -9,7 +9,7 @@ metadata:
   labels:
     gateway: external
 spec:
-  gatewayClassName: cilium
+  gatewayClassName: envoy-gateway
   addresses:
     - type: IPAddress
       value: 10.45.0.11
@@ -23,7 +23,7 @@ spec:
       hostname: "*.cbannister.xyz"
       allowedRoutes:
         namespaces:
-          from: All
+          from: Same
     - name: https
       protocol: HTTPS
       port: 443
