@@ -27,3 +27,4 @@ resources:
   - thelounge/ks.yaml
   - maintainerr/ks.yaml
   - fertilizer/ks.yaml
+  - audiobookshelf/ks.yaml
