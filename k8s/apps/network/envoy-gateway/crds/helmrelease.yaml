@@ -1,12 +1,11 @@
 ---
-# yaml-language-server: $schema=https://schemas.budimanjojo.com/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/ocirepository-source-v1beta2.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: envoy-gateway-crds
 spec:
-  interval: 30m
-  timeout: 60s
+  interval: 10m
   url: oci://docker.io/envoyproxy/gateway-crds-helm
   ref:
     tag: 1.4.1
