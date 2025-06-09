@@ -77,7 +77,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: audiobookshelf
+              - identifier: app
                 port: *port
     persistence:
       config:
