@@ -5,6 +5,8 @@ metadata:
   name: system-upgrade
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app.kubernetes.io/name: system-upgrade
@@ -15,6 +17,7 @@ spec:
         app.kubernetes.io/name: system-upgrade
         app.kubernetes.io/instance: system-upgrade
     spec:
+      serviceAccountName: system-upgrade-controller
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
