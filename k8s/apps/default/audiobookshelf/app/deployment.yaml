@@ -1,0 +1,85 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audiobookshelf
+  labels:
+    app.kubernetes.io/name: audiobookshelf
+    app.kubernetes.io/instance: audiobookshelf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: audiobookshelf
+      app.kubernetes.io/instance: audiobookshelf
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: audiobookshelf
+        app.kubernetes.io/instance: audiobookshelf
+    spec:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: app
+          image: ghcr.io/advplyr/audiobookshelf:2.24.0@sha256:4e3ea23c551706c6d7934e2b48e9c4015a60ef5d70f965d3f4e5b68d59ef6c95
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: AUDIOBOOKSHELF_UID
+              value: "568"
+            - name: AUDIOBOOKSHELF_GID
+              value: "568"
+            - name: CONFIG_PATH
+              value: /config
+            - name: METADATA_PATH
+              value: /config/metadata
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 80
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 80
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              memory: 500Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: cache
+              mountPath: /.npm
+            - name: data
+              mountPath: /data/media/audiobooks
+              subPath: audio/audiobooks
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: audiobookshelf
+        - name: cache
+          emptyDir: {}
+        - name: data
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
