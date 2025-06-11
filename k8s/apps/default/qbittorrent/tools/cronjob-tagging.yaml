@@ -1,0 +1,148 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: qbtools-tagging
+spec:
+  schedule: "@hourly"
+  timeZone: Europe/London
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 3600
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            seccompProfile:
+              type: RuntimeDefault
+          initContainers:
+            - name: tagging
+              image: ghcr.io/buroa/qbtools:v0.21.0@sha256:3a60f001c3f5fd068ff38960fbf9db726fa59edf135b18cd50294230366c284e
+              env:
+                - name: TZ
+                  value: Europe/London
+                - name: QBITTORRENT_HOST
+                  value: qbittorrent.default.svc.cluster.local
+                - name: QBITTORRENT_PORT
+                  value: "80"
+                - name: SABNZBD_HOST
+                  value: sabnzbd.default.svc.cluster.local
+                - name: SABNZBD_PORT
+                  value: "80"
+              envFrom:
+                - secretRef:
+                    name: qbtools-secret
+              args:
+                - tagging
+                - --added-on
+                - --expired
+                - --last-activity
+                - --sites
+                - --unregistered
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 25m
+                limits:
+                  memory: 256M
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+          containers:
+            - name: unregistered
+              image: ghcr.io/buroa/qbtools:v0.21.0@sha256:3a60f001c3f5fd068ff38960fbf9db726fa59edf135b18cd50294230366c284e
+              env:
+                - name: TZ
+                  value: Europe/London
+                - name: QBITTORRENT_HOST
+                  value: qbittorrent.default.svc.cluster.local
+                - name: QBITTORRENT_PORT
+                  value: "80"
+                - name: SABNZBD_HOST
+                  value: sabnzbd.default.svc.cluster.local
+                - name: SABNZBD_PORT
+                  value: "80"
+              envFrom:
+                - secretRef:
+                    name: qbtools-secret
+              args:
+                - prune
+                - --exclude-category
+                - manual
+                - --exclude-category
+                - music
+                - --exclude-tag
+                - "added:1d"
+                - --include-tag
+                - unregistered
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 25m
+                limits:
+                  memory: 256M
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+            - name: expired
+              image: ghcr.io/buroa/qbtools:v0.21.0@sha256:3a60f001c3f5fd068ff38960fbf9db726fa59edf135b18cd50294230366c284e
+              env:
+                - name: TZ
+                  value: Europe/London
+                - name: QBITTORRENT_HOST
+                  value: qbittorrent.default.svc.cluster.local
+                - name: QBITTORRENT_PORT
+                  value: "80"
+                - name: SABNZBD_HOST
+                  value: sabnzbd.default.svc.cluster.local
+                - name: SABNZBD_PORT
+                  value: "80"
+              envFrom:
+                - secretRef:
+                    name: qbtools-secret
+              args:
+                - prune
+                - --exclude-category
+                - manual
+                - --exclude-category
+                - music
+                - --exclude-tag
+                - "added:1d"
+                - --include-tag
+                - expired
+                - --with-data
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 25m
+                limits:
+                  memory: 256M
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+          volumes:
+            - name: config
+              secret:
+                secretName: qbtools-config-secret
