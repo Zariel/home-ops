@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: irqbalance
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: irqbalance
+      app.kubernetes.io/instance: irqbalance
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: irqbalance
+        app.kubernetes.io/instance: irqbalance
+    spec:
+      hostIPC: true
+      hostPID: true
+      nodeSelector:
+        feature.node.kubernetes.io/cpu-model.vendor_id: Intel
+        feature.node.kubernetes.io/cpu-model.family: "6"
+        feature.node.kubernetes.io/cpu-model.id: "154"
+      containers:
+        - name: irqbalance
+          image: ghcr.io/home-operations/irqbalance:1.9.4@sha256:86f83ccf82033339f19981697f947d96194539d6b130fa5a4336e887461fe7dc
+          env:
+            - name: IRQBALANCE_BANNED_CPULIST
+              value: "12-19"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: run
+              mountPath: /run/irqbalance
+      volumes:
+        - name: run
+          emptyDir: {}

@@ -4,4 +4,6 @@ namespace: monitoring
 commonLabels:
   app: unpoller
 resources:
-  - ./helmrelease.yaml
+  - ./deployment.yaml
+  - ./service.yaml
+  - ./servicemonitor.yaml
