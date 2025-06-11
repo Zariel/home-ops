@@ -4,5 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - qbtools.secret.sops.yaml
-  - helmrelease.yaml
   - externalsecret.yaml
+  - cronjob-tagging.yaml
+  - cronjob-orphaned.yaml
+  - deployment-reannounce.yaml
