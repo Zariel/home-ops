@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: system-upgrade
         app.kubernetes.io/instance: system-upgrade
     spec:
-      serviceAccountName: system-upgrade-controller
+      serviceAccountName: system-upgrade
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
