@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/jorenn92/maintainerr:2.17.0
+          image: ghcr.io/jorenn92/maintainerr:2.18.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
