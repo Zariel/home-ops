@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: i40e-irq-affinity
+  labels:
+    app: i40e-irq-affinity
+spec:
+  selector:
+    matchLabels:
+      app: i40e-irq-affinity
+  template:
+    metadata:
+      labels:
+        app: i40e-irq-affinity
+    spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true
+      nodeSelector:
+        feature.node.kubernetes.io/cpu-model.vendor_id: Intel
+      initContainers:
+        - name: download-script
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              curl -fsSL https://raw.githubusercontent.com/intel/ethernet-linux-i40e/master/scripts/set_irq_affinity -o /shared/set_irq_affinity
+              chmod +x /shared/set_irq_affinity
+          volumeMounts:
+            - name: shared-scripts
+              mountPath: /shared
+      containers:
+        - name: irq-affinity
+          image: alpine:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Setting IRQ affinity for i40e interface..."
+              /shared/set_irq_affinity -x 0-11 enp2s0f0np0
+              echo "IRQ affinity set successfully"
+              echo "Sleeping indefinitely to keep container running..."
+              sleep infinity
+          volumeMounts:
+            - name: shared-scripts
+              mountPath: /shared
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+      volumes:
+        - name: shared-scripts
+          emptyDir: {}
