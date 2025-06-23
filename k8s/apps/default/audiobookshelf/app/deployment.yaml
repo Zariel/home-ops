@@ -73,7 +73,7 @@ spec:
               mountPath: /.npm
             - name: data
               mountPath: /data/media/audiobooks
-              subPath: audio/audiobooks
+              subPath: media/audiobooks
       volumes:
         - name: config
           persistentVolumeClaim:
