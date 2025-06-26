@@ -28,7 +28,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: filebrowser
-          image: docker.io/filebrowser/filebrowser:v2.32.3@sha256:9a14d4f683ec0807f213fb58371845f9ac1bfd749f4e7fe897a64c1f619b000c
+          image: docker.io/filebrowser/filebrowser:v2.33.8@sha256:b31708528d91e54d5a8f2e1778e8e752966bea787e596eaea191de874fa832ea
           env:
             - name: TZ
               value: Europe/London
