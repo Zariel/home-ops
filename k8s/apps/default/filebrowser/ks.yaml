@@ -9,7 +9,14 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
   path: ./k8s/apps/default/filebrowser/app
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: external-secrets-stores
+      namespace: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository
