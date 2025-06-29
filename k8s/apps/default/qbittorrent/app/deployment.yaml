@@ -27,6 +27,10 @@ spec:
           configMap:
             name: qbittorrent-scripts
             defaultMode: 0775
+        - name: music
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/music/downloads
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -104,3 +108,5 @@ spec:
               mountPath: /scripts/post-process.sh
               # readOnly: true
               subPath: post-process.sh
+            - name: music
+              mountPath: /data/downloads/torrents/complete/music
