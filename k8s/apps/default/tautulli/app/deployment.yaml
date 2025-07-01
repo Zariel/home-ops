@@ -86,6 +86,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         runAsGroup: 568
         runAsUser: 568
+        supplementalGroups: [3005]
         runAsNonRoot: true
       volumes:
         - emptyDir: {}
