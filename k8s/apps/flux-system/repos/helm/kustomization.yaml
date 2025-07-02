@@ -6,7 +6,6 @@ resources:
   - cilium.yaml
   - metrics-server.yaml
   - descheduler.yaml
-  - bjw-s.yaml
   - emberstack.yaml
   - cloudnative-pg.yaml
   - xenitab.yaml
