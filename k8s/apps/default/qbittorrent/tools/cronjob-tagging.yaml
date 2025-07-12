@@ -24,7 +24,7 @@ spec:
               type: RuntimeDefault
           initContainers:
             - name: tagging
-              image: ghcr.io/buroa/qbtools:v0.21.0@sha256:3a60f001c3f5fd068ff38960fbf9db726fa59edf135b18cd50294230366c284e
+              image: ghcr.io/buroa/qbtools:v0.21.1@sha256:fd13085f7534719b7b30828684661b7f5611bbc4156831123775cfcd9b8f2eb5
               env:
                 - name: TZ
                   value: Europe/London
@@ -62,7 +62,7 @@ spec:
                   readOnly: true
           containers:
             - name: unregistered
-              image: ghcr.io/buroa/qbtools:v0.21.0@sha256:3a60f001c3f5fd068ff38960fbf9db726fa59edf135b18cd50294230366c284e
+              image: ghcr.io/buroa/qbtools:v0.21.1@sha256:fd13085f7534719b7b30828684661b7f5611bbc4156831123775cfcd9b8f2eb5
               env:
                 - name: TZ
                   value: Europe/London
@@ -102,7 +102,7 @@ spec:
                   mountPath: /config
                   readOnly: true
             - name: expired
-              image: ghcr.io/buroa/qbtools:v0.21.0@sha256:3a60f001c3f5fd068ff38960fbf9db726fa59edf135b18cd50294230366c284e
+              image: ghcr.io/buroa/qbtools:v0.21.1@sha256:fd13085f7534719b7b30828684661b7f5611bbc4156831123775cfcd9b8f2eb5
               env:
                 - name: TZ
                   value: Europe/London
