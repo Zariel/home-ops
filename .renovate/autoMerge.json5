@@ -17,6 +17,7 @@
         "ghcr.io/onedr0p",
         "ghcr.io/zariel",
         "ghcr.io/home-operations",
+        "ghcr.io/cross-seed/cross-seed",
         "docker.io/filebrowser/filebrowser"
       ]
     },
