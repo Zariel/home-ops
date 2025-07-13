@@ -10,32 +10,33 @@
       ],
       "automerge": true,
       "automergeType": "pr",
-      ignoreTests: false,
-      "matchUpdateTypes": ["digest", "minor", "patch"],
+      "ignoreTests": false,
+      "matchUpdateTypes": ["digest"],
       "matchPackagePatterns": [
         "ghcr.io/bjw-s",
         "ghcr.io/onedr0p",
         "ghcr.io/zariel",
         "ghcr.io/home-operations",
+        "docker.io/filebrowser/filebrowser"
       ]
     },
     {
-      description: "Auto-merge OCI Charts",
-      matchDatasources: ["docker"],
-      automerge: true,
-      automergeType: "pr",
-      matchUpdateTypes: ["minor", "patch"],
-      matchPackageNames: ["/kube-prometheus-stack/", "/grafana/"],
-      ignoreTests: false,
+      "description": "Auto-merge OCI Charts",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "pr",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": ["ghcr.io/prometheus-community/charts", "ghcr.io/grafana/helm-charts"],
+      "ignoreTests": false,
     },
     {
-      description: "Auto-merge GitHub Actions",
-      matchManagers: ["github-actions"],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["minor", "patch", "digest"],
-      minimumReleaseAge: "3 days",
-      ignoreTests: true,
+      "description": "Auto-merge GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "automerge": true,
+      "automergeType": "branch",
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "minimumReleaseAge": "3 days",
+      "ignoreTests": true,
     },
     {
       "description": [
@@ -45,7 +46,7 @@
         "docker"
       ],
       "automerge": false,
-      "matchPackgeNames": [
+      "matchPackageNames": [
         "ghcr.io/home-operations/qbittorrent"
       ]
     }
