@@ -8,6 +8,8 @@ bpf:
   datapathMode: netkit
   masquerade: false
   preallocateMaps: true
+  hostRouting: true
+  hostLegacyRouting: false
 cgroup:
   automount:
     enabled: false
