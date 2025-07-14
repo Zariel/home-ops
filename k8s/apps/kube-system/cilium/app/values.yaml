@@ -6,7 +6,7 @@ bgpControlPlane:
   enabled: true
 bpf:
   datapathMode: netkit
-  masquerade: false
+  masquerade: true
   preallocateMaps: true
   hostRouting: true
   hostLegacyRouting: false
@@ -19,6 +19,7 @@ cluster:
   name: holywoo
 enableRuntimeDeviceDetection: true
 enableIPv4BIGTCP: true
+enableIPv4Masquerade: false
 endpointRoutes:
   enabled: true
 envoy:
