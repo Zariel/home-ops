@@ -66,3 +66,4 @@ spec:
           - key: thisFakeSelector
             operator: NotIn
             values: ["will-match-and-announce-all-services"]
+    - advertisementType: PodCIDR
