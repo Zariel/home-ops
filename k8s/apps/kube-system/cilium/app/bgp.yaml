@@ -5,10 +5,11 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: main-pool
 spec:
+  allowFirstLastIPs: "No"
   blocks:
-    - cidr: 10.45.0.1/24
+    - cidr: 10.45.0.0/24
 ---
-# yaml-language-server: $schema=https://crds.jank.ing/cilium.io/ciliumbgppeerconfig_v2alpha1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgpclusterconfig_v2alpha1.json
 apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPClusterConfig
 metadata:
@@ -27,6 +28,7 @@ spec:
           peerConfigRef:
             name: gateway
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2alpha1.json
 apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPPeerConfig
 metadata:
@@ -46,6 +48,7 @@ spec:
         matchLabels:
           advertise: "bgp"
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgpadvertisement_v2alpha1.json
 apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPAdvertisement
 metadata:
