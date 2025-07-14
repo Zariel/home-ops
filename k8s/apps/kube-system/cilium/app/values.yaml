@@ -10,6 +10,7 @@ bpf:
   preallocateMaps: true
   hostRouting: true
   hostLegacyRouting: false
+bpfClockProbe: true
 cgroup:
   automount:
     enabled: false
