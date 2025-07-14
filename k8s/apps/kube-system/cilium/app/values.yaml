@@ -6,7 +6,7 @@ bgpControlPlane:
   enabled: true
 bpf:
   datapathMode: netkit
-  masquerade: true
+  masquerade: false
   preallocateMaps: true
 cgroup:
   automount:
@@ -26,7 +26,7 @@ gatewayAPI:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 10.42.0.0/16
+ipv4NativeRoutingCIDR: 0.0.0.0/0
 ingressController:
   enabled: false
   secretsNamespace:
