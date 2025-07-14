@@ -28,7 +28,7 @@ envoy:
   rollOutPods: false
 gatewayAPI:
   enabled: false
-installNoConntrackIptablesRules: true
+installNoConntrackIptablesRules: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 0.0.0.0/0
