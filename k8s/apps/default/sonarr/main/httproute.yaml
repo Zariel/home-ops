@@ -6,7 +6,7 @@ metadata:
   name: sonarr
 spec:
   hostnames:
-    - sonarr.cbannister.xyz
+    - sonarr-old.cbannister.xyz
   parentRefs:
     - name: internal
       namespace: network
