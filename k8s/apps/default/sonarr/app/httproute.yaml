@@ -13,4 +13,4 @@ spec:
   rules:
     - backendRefs:
         - name: sonarr
-          port: 8989
+          port: 80
