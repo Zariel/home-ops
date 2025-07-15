@@ -1,14 +1,9 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: default
 resources:
-  - ../base
+  - deployment.yaml
+  - service.yaml
+  - externalsecret.yaml
   - httproute.yaml
-nameSuffix: "-1080"
-commonLabels:
-  sonarr: 1080p
-configMapGenerator:
-  - name: sonarr-env-config
-    envs:
-      - ./config/postgres.env
+  - pvc.yaml

@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  labels:
+    app: sonarr
+spec:
+  selector:
+    matchLabels:
+      app: sonarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      hostname: sonarr
+      volumes:
+        - name: arr-media
+          persistentVolumeClaim:
+            claimName: bighorse-arr-media
+        - name: config
+          persistentVolumeClaim:
+            claimName: sonarr
+        - name: cache
+          persistentVolumeClaim:
+            claimName: sonarr-cache
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 3005
+        supplementalGroups: [3005]
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      containers:
+        - name: sonarr
+          image: ghcr.io/home-operations/sonarr:4.0.15.2940@sha256:ca6c735014bdfb04ce043bf1323a068ab1d1228eea5bab8305ca0722df7baf78
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: DOTNET_gcServer
+              value: "1"
+            - name: SONARR__AUTH__METHOD
+              value: External
+            - name: SONARR__AUTH__REQUIRED
+              value: DisabledForLocalAddresses
+            - name: SONARR__LOG__DBENABLED
+              value: "False"
+            - name: SONARR__LOG__LEVEL
+              value: info
+            - name: TZ
+              value: Europe/London
+          envFrom:
+            - secretRef:
+                name: sonarr-secret
+          resources:
+            requests:
+              cpu: "512m"
+            limits:
+              memory: 2Gi
+          ports:
+            - containerPort: 8989
+              name: web
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: arr-media
+              mountPath: /data
+            - name: cache
+              mountPath: /config/MediaCover
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: web
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe: &probe
+            httpGet:
+              path: /ping
+              port: web
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe: *probe
