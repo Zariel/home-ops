@@ -4,12 +4,12 @@ kind: HTTPRoute
 metadata:
   name: sonarr
 spec:
-  parentRefs:
-    - name: internal-gateway
-      namespace: networking
-      sectionName: https
   hostnames:
-    - "sonarr-new.cbannister.xyz"
+    - sonarr-new.cbannister.xyz
+  parentRefs:
+    - name: internal
+      namespace: network
+      sectionName: https
   rules:
     - backendRefs:
         - name: sonarr
