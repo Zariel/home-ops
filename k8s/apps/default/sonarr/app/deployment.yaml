@@ -3,17 +3,20 @@ kind: Deployment
 metadata:
   name: sonarr
   labels:
-    app: sonarr
+    app.kubernetes.io/name: sonarr
+    app.kubernetes.io/instance: sonarr
 spec:
   selector:
     matchLabels:
-      app: sonarr
+      app.kubernetes.io/name: sonarr
+      app.kubernetes.io/instance: sonarr
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: sonarr
+        app.kubernetes.io/name: sonarr
+        app.kubernetes.io/instance: sonarr
     spec:
       hostname: sonarr
       volumes:
