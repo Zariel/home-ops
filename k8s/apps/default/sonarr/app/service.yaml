@@ -3,11 +3,13 @@ kind: Service
 metadata:
   name: sonarr
   labels:
-    app: sonarr
+    app.kubernetes.io/name: sonarr
+    app.kubernetes.io/instance: sonarr
 spec:
   type: ClusterIP
   selector:
-    app: sonarr
+    app.kubernetes.io/name: sonarr
+    app.kubernetes.io/instance: sonarr
   ports:
     - name: web
       targetPort: web
