@@ -13,7 +13,6 @@ resources:
   - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
   - ./storage
-  - ./jellyfin/ks.yaml
   - ./tautulli/ks.yaml
   - ./secrets
   - ./smtp-relay/ks.yaml
