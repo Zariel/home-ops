@@ -3,5 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - externalsecret.yaml
-  - deployment-reannounce.yaml
+  - cronjob.yaml 
+configMapGenerator:
+  - name: tqm-config
+    files:
+      - config.yaml=./resources/config.sops.yaml
