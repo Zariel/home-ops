@@ -3,21 +3,22 @@ package tqm
 import (
 	"strings"
 	"list"
+	"time"
 )
 
 #tracker: {
 	name!: string
-	url!: string | [string, ...string]
+	url!: string | [...string] & list.MinItems(1)
 	seedDays?:    number & >0
 	ratio?:       number & >0
 	minSeedDays?: number & >0
 }
 
-#trackers: [#tracker, ...#tracker]
+#trackers: [...#tracker] & list.MinItems(1)
 #tag: {
 	name!: string
 	mode:  *"full" | "add" | "remove"
-	update!: [string, ...string]
+	update!: [...string] & list.MinItems(1)
 }
 
 clients: qb: {
@@ -28,19 +29,38 @@ clients: qb: {
 	url:           "http://qbittorrent.default.svc.cluster.local"
 }
 
+#orphan: {
+	grace_period?: string & time.Duration()
+	ignore_paths?: [...string]
+}
+
 filters: [string]: {
+	bypassIgnoreIfUnregistered?: bool
+	MapHardlinksFor: [..."retag" | "clean"] // ?
+
 	tag: [...#tag]
 	remove: [...string]
+	orphan?: #orphan
+	ignore: [...string]
 }
 
 filters: default: {
 	MapHardlinksFor: ["retag"]
+	bypassIgnoreIfUnregistered: true
 	ignore: [
 		"IsTrackerDown()",
-		"Downloaded == false && !IsUnregistered()",
-		"SeedingHours < 26 && !IsUnregistered()",
-		"HardlinkedOutsideClient == true && !isUnregistered()",
+		"Downloaded == false",
+		"SeedingHours < 26",
+		"HardlinkedOutsideClient == true",
+		"Label startsWith \"music\"",
 	]
+	orphan: {
+		grace_period: "1h"
+		ignore_paths: [
+			"/data/downloads/torrents/complete/music",
+			"/data/downloads/torrents/complete/uploads",
+		]
+	}
 }
 
 #arrCats: list.FlattenN([
