@@ -89,6 +89,6 @@ filters: default: remove: [
 	},
 
 	for t in #trackers if t.minSeedDays != _|_ {
-		"HasAllTags(\"site:\(t.name)\", \"not-linked\") && SeedingDays >= \(t.minSeedDays)"
+		"HasAllTags(\"site:\(t.name)\", \"not-linked\") && SeedingDays >= \(t.minSeedDays) && Seeds > 5"
 	},
 ]
