@@ -13,6 +13,7 @@ spec:
     spec:
       template:
         spec:
+          restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true
             runAsUser: 568
