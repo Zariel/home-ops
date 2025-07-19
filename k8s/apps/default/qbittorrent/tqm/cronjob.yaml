@@ -57,6 +57,12 @@ spec:
                 - clean
                 - qb
               <<: *container
+            - name: orphan
+              args:
+                - orphan
+                - qb
+                - --dry-run
+              <<: *container
           volumes:
             - name: config-dir
               emptyDir: {}
