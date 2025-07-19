@@ -47,6 +47,10 @@ spec:
                   mountPath: /.config/tqm/config.yaml
                   subPath: config.yaml
                   readOnly: true
+                - name: data
+                  mountPath: /data
+                - name: music
+                  mountPath: /data/downloads/torrents/complete/music
           containers:
             - name: clean
               args:
@@ -60,10 +64,10 @@ spec:
             - name: config
               secret:
                 secretName: tqm-config
-            - name: arr-media
-              mountPath: /data/downloads/torrents
-              subPath: downloads/torrents
+            - name: data
+              persistentVolumeClaim:
+                claimName: bighorse-arr-media
             - name: music
-              mountPath: /data/downloads/torrents/complete/music
-            - name: music-incomplete
-              mountPath: /data/downloads/torrents/incomplete/music/library
+              nfs:
+                server: nas.cbannister.casa
+                path: /mnt/bighorse/music/downloads
