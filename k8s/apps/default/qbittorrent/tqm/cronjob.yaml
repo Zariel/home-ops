@@ -58,6 +58,11 @@ spec:
                 - qb
                 - --dry-run
               <<: *container
+            - name: debug
+              image: busybox
+              args: []
+              command: ["sleep", "3600"]
+              <<: *container
           volumes:
             - name: config-dir
               emptyDir: {}
