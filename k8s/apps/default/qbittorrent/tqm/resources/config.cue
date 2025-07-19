@@ -8,8 +8,9 @@ import (
 #tracker: {
 	name!: string
 	url!: string | [string, ...string]
-	seedDays?: number & >0
-	ratio?:    number & >0
+	seedDays?:    number & >0
+	ratio?:       number & >0
+	minSeedDays?: number & >0
 }
 
 #trackers: [#tracker, ...#tracker]
@@ -38,10 +39,11 @@ filters: default: {
 		"IsTrackerDown()",
 		"Downloaded == false && !IsUnregistered()",
 		"SeedingHours < 26 && !IsUnregistered()",
+		"HardlinkedOutsideClient == true && !isUnregistered()",
 	]
 }
 
-#arrCats: [...string] & list.FlattenN([
+#arrCats: list.FlattenN([
 	for f in ["sonarr", "radarr"] {
 		["\(f)", "\(f)-imported"]
 	},
@@ -58,7 +60,8 @@ filters: default: tag: [
 	{
 		name: "not-linked"
 		let cats = [for u in #arrCats {"\"\(u)\""}]
-		update: ["HardlinkedOutsideClient == false && Label in [\(strings.Join(cats, ","))]"]},
+		update: ["HardlinkedOutsideClient == false && Label in [\(strings.Join(cats, ","))]"]
+	},
 
 	for t in #trackers {
 		name: "site:\(t.name)"
@@ -83,5 +86,9 @@ filters: default: remove: [
 		if t.seedDays == _|_ && t.ratio != _|_ {
 			"HasAllTags(\"site:\(t.name)\") && Ratio > \(t.ratio)"
 		}
+	},
+
+	for t in #trackers if t.minSeedDays != _|_ {
+		"HasAllTags(\"site:\(t.name)\", \"not-linked\") && SeedingDays >= \(t.minSeedDays)"
 	},
 ]
