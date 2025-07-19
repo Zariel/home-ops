@@ -56,7 +56,6 @@ spec:
               args:
                 - clean
                 - qb
-                - --dry-run
               <<: *container
           volumes:
             - name: config-dir
