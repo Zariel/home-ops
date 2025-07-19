@@ -67,6 +67,8 @@ spec:
               name: config
             - mountPath: /data
               name: data
+            - name: music
+              mountPath: /data/downloads/torrents/complete/music
             - mountPath: /config/config.js
               name: secret-file
               readOnly: true
@@ -90,6 +92,10 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: bighorse-arr-media
+        - name: music
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/music/downloads
         - name: secret-file
           secret:
             secretName: cross-seed-secret
