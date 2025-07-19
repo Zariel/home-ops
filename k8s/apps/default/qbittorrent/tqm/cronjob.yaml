@@ -58,8 +58,8 @@ spec:
             - name: config-dir
               emptyDir: {}
             - name: config
-              configMap:
-                name: tqm-config
+              secret:
+                secretName: tqm-config
             - name: arr-media
               mountPath: /data/downloads/torrents
               subPath: downloads/torrents
