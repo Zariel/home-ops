@@ -1,0 +1,63 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: tqm
+spec:
+  schedule: "@hourly"
+  timeZone: Europe/London
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 3005
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [3005]
+            seccompProfile:
+              type: RuntimeDefault
+          initContainers:
+            - &container
+              name: retag
+              image: ghcr.io/home-operations/tqm:1.15.0@sha256:70545e1a52e5afc4a6474c5b492e127be7b776eb9cea7adea3c6399e67ae2287
+              args:
+                - retag
+                - qb
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 25m
+                limits:
+                  memory: 256M
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+          containers:
+            - name: clean
+              args:
+                - clean
+                - qb
+                - --dry-run
+              <<: *container
+          volumes:
+            - name: config
+              configMap:
+                name: tqm-config
+            - name: arr-media
+              mountPath: /data/downloads/torrents
+              subPath: downloads/torrents
+            - name: music
+              mountPath: /data/downloads/torrents/complete/music
+            - name: music-incomplete
+              mountPath: /data/downloads/torrents/incomplete/music/library
