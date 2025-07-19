@@ -1,11 +1,11 @@
 ---
 creation_rules:
-  - path_regex: k8s/.*\.sops\.ya?ml
+  - path_regex: ^(.+\.)?secret\.sops\.ya?ml$
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:
           - age1865axnecqy9eccq9fzhpwkz3nkf0sxfeurva6rquyktplhzssv2s32kv5w
-  - path_regex: k8s/.*\.sops\.(env|ini|json|toml|txt|cue)
+  - path_regex: k8s/.+\.sops\.(env|ini|json|toml|txt|cue|yaml)
     key_groups:
       - age:
           - age1865axnecqy9eccq9fzhpwkz3nkf0sxfeurva6rquyktplhzssv2s32kv5w
