@@ -59,6 +59,7 @@ filters: default: {
 		ignore_paths: [
 			"/data/downloads/torrents/complete/music",
 			"/data/downloads/torrents/complete/uploads",
+			"/data/downloads/torrents/complete/manual",
 		]
 	}
 }
