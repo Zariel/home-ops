@@ -41,7 +41,7 @@ spec:
                 limits:
                   memory: 256M
               volumeMounts:
-                - name: configDir
+                - name: config-dir
                   mountPath: /.config/tqm
                 - name: config
                   mountPath: /.config/tqm/config.yaml
@@ -55,7 +55,7 @@ spec:
                 - --dry-run
               <<: *container
           volumes:
-            - name: configDir
+            - name: config-dir
               emptyDir: {}
             - name: config
               configMap:
