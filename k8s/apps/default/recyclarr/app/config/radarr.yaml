@@ -102,7 +102,7 @@ quality_profiles:
   - name: WEBDL
     upgrade:
       allowed: true
-      until_quality: uhd
+      until_quality: WEB
       until_score: 9999999
     reset_unmatched_scores: *reset_unmatched_scores
     quality_sort: top
