@@ -64,12 +64,6 @@ filters: default: {
 	}
 }
 
-#arrCats: list.FlattenN([
-	for f in ["sonarr", "radarr"] {
-		["\(f)", "\(f)-imported"]
-	},
-], 1)
-
 filters: default: tag: [
 	{name: "added:1d", update: ["AddedDays < 7"]},
 	{name: "added:7d", update: ["AddedDays >= 7 && AddedDays < 14"]},
@@ -80,7 +74,7 @@ filters: default: tag: [
 	{name: "unregistered", update: ["IsUnregistered()"]},
 	{
 		name: "not-linked"
-		let cats = [for u in #arrCats {"\"\(u)\""}]
+		let cats = [for u in ["sonarr-imported", "radarr-imported"] {"\"\(u)\""}]
 		update: ["HardlinkedOutsideClient == false && Label in [\(strings.Join(cats, ","))]"]
 	},
 
@@ -97,6 +91,9 @@ filters: default: tag: [
 ]
 
 filters: default: remove: [
+	"IsUnregistered()",
+	"HasAllTags(\"not-linked\") && SeedingDays > 14",
+
 	for t in #trackers if t.seedDays != _|_ || t.ratio != _|_ {
 		if t.seedDays != _|_ && t.ratio != _|_ {
 			"HasAllTags(\"site:\(t.name)\") && (Ratio > \(t.ratio) || SeedingDays >= \(t.seedDays))"
