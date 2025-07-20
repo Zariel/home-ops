@@ -51,6 +51,7 @@ quality_profiles:
           - BR-DISK
           - Raw-HD
           - Unknown
+
   - name: &bd1080 REMUX-1080p
     score_set: default
     upgrade:
@@ -65,6 +66,7 @@ quality_profiles:
       - *webdl-1080
       - *720
       - *trash
+
   - name: WEBDL-2160p
     upgrade:
       allowed: true
@@ -83,6 +85,7 @@ quality_profiles:
       - name: Bluray-1080p
       - *720
       - *trash
+
   - name: WEBDL-1080p
     upgrade:
       allowed: true
@@ -104,18 +107,17 @@ quality_profiles:
     reset_unmatched_scores: *reset_unmatched_scores
     quality_sort: top
     qualities:
-      - name: uhd
+      - name: WEB
         qualities:
           - WEBDL-2160p
           - WEBRip-2160p
           - Bluray-2160p
-      - name: hd
-        qualities:
           - WEBDL-1080p
           - WEBRip-1080p
           - Bluray-1080p
       - *720
       - *trash
+
 custom_formats:
   - assign_scores_to:
       - name: *remux
@@ -310,3 +312,31 @@ custom_formats:
         score: -10
     trash_ids:
       - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
+  - assign_scores_to:
+      - name: *remux
+        score: 20
+      - name: *bd1080
+        score: 20
+      - name: WEBDL-1080p
+        score: 20
+      - name: WEBDL-2160p
+        score: 20
+      - name: WEBDL
+        score: 20
+    trash_ids:
+      - 6a061313d22e51e0f25b7cd4dc065233 # MAX
+      - 5763d1b0ce84aff3b21038eea8e9b8ad # HMAX
+  - assign_scores_to:
+      - name: WEBDL
+        score: 151
+    trash_ids:
+      - fb392fb0d61a010ae38e49ceaa24a1ef # 2160p
+  - assign_scores_to:
+      - name: WEBDL
+    trash_ids:
+      - 820b09bb9acbfde9c35c71e0e565dad8 # 1080p
+  - assign_scores_to:
+      - name: WEBDL
+        score: 2300
+    trash_ids:
+      - 4d74ac4c4db0b64bff6ce0cffef99bf0 # UHD Bluray Tier 01
