@@ -74,7 +74,7 @@ filters: default: tag: [
 	{name: "unregistered", update: ["IsUnregistered()"]},
 	{
 		name: "not-linked"
-		let cats = [for u in ["sonarr-imported", "radarr-imported"] {"\"\(u)\""}]
+		let cats = [for u in ["sonarr-imported", "radarr-imported", "cross-seed"] {"\"\(u)\""}]
 		update: ["HardlinkedOutsideClient == false && Label in [\(strings.Join(cats, ","))]"]
 	},
 
