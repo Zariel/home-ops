@@ -5,7 +5,7 @@ media_naming:
   folder: plex-imdb
   movie:
     rename: true
-    standard: default
+    standard: standard
 
 quality_profiles:
   - name: &remux REMUX-2160p
