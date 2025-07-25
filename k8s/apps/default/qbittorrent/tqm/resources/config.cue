@@ -75,7 +75,18 @@ filters: default: tag: [
 	{
 		name: "not-linked"
 		let cats = [for u in ["sonarr-imported", "radarr-imported", "cross-seed"] {"\"\(u)\""}]
-		update: ["HardlinkedOutsideClient == false && Label in [\(strings.Join(cats, ","))]"]
+		update: [
+			"HardlinkedOutsideClient == false",
+			"Label in [\(strings.Join(cats, ","))]",
+		]
+	},
+	{
+		name: "not-linked"
+		update: [
+			#"Label in ["sonarr", "radarr"]"#,
+			"HardLinkedOutsideClient == false",
+			"AdedDays > 3",
+		]
 	},
 
 	for t in #trackers {
