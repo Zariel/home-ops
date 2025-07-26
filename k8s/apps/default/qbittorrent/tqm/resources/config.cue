@@ -84,8 +84,8 @@ filters: default: tag: [
 		name: "not-linked"
 		update: [
 			#"Label in ["sonarr", "radarr"]"#,
-			"HardLinkedOutsideClient == false",
-			"AdedDays > 3",
+			"HardlinkedOutsideClient == false",
+			"AddedDays > 3",
 		]
 	},
 
