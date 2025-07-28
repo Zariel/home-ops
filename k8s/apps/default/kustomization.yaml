@@ -27,3 +27,4 @@ resources:
   - maintainerr/ks.yaml
   - fertilizer/ks.yaml
   - audiobookshelf/ks.yaml
+  - tqm/ks.yaml
