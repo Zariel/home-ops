@@ -45,7 +45,7 @@ filters: [string]: {
 }
 
 filters: default: {
-	MapHardlinksFor: ["retag"]
+	MapHardlinksFor: ["retag", "clean"]
 	bypassIgnoreIfUnregistered: true
 	ignore: [
 		"IsTrackerDown()",
@@ -107,7 +107,7 @@ filters: default: remove: [
 
 	for t in #trackers if t.seedDays != _|_ || t.ratio != _|_ {
 		if t.seedDays != _|_ && t.ratio != _|_ {
-			"HasAllTags(\"site:\(t.name)\") && (Ratio > \(t.ratio) || SeedingDays >= \(t.seedDays))"
+			"HasAllTags(\"site:\(t.name)\") && (Ratio > \(t.ratio) && SeedingDays >= \(t.seedDays))"
 		}
 		if t.seedDays != _|_ && t.ratio == _|_ {
 			"HasAllTags(\"site:\(t.name)\") && SeedingDays >= \(t.seedDays)"
@@ -118,6 +118,6 @@ filters: default: remove: [
 	},
 
 	for t in #trackers if t.minSeedDays != _|_ {
-		"HasAllTags(\"site:\(t.name)\", \"not-linked\") && SeedingDays >= \(t.minSeedDays) && Seeds > 5"
+		"HasAllTags(\"site:\(t.name)\", \"not-linked\") && SeedingDays >= \(t.minSeedDays)"
 	},
 ]
