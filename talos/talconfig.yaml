@@ -51,9 +51,12 @@ patches:
         net.ipv4.tcp_congestion_control: bbr   # 10Gb/s
         net.ipv4.tcp_fastopen: 3               # Send and accept data in the opening SYN packet
         net.ipv4.tcp_mtu_probing: 1            # 10Gb/s | Jumbo frames
-        net.ipv4.tcp_rmem: 4096 87380 33554432 # 10Gb/s
+        net.ipv4.tcp_rmem: 4096 65536 33554432 # 10Gb/s
         net.ipv4.tcp_wmem: 4096 65536 33554432 # 10Gb/s
         net.ipv4.tcp_window_scaling: 1         # 10Gb/s
+        net.ipv4.tcp_slow_start_after_idle: 1
+        sunrpc.tcp_slot_table_entries: 128     # 10Gb/s | NFS
+        sunrpc.tcp_max_slot_table_entries: 128 # 10Gb/s | NFS
         vm.nr_hugepages: 1024                  # PostgreSQL
       features:
         hostDNS:
@@ -124,18 +127,18 @@ controlPlane:
       machine:
         sysfs:
           devices.system.cpu.intel_pstate.hwp_dynamic_boost: 1
-          devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu0.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu1.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu2.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu3.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu4.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu5.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu6.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu7.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu8.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu9.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu10.cpufreq.energy_performance_preference: performance
+          devices.system.cpu.cpu11.cpufreq.energy_performance_preference: performance
           devices.system.cpu.cpu12.cpufreq.energy_performance_preference: balance_performance
           devices.system.cpu.cpu13.cpufreq.energy_performance_preference: balance_performance
           devices.system.cpu.cpu14.cpufreq.energy_performance_preference: balance_performance
@@ -144,6 +147,18 @@ controlPlane:
           devices.system.cpu.cpu17.cpufreq.energy_performance_preference: balance_performance
           devices.system.cpu.cpu18.cpufreq.energy_performance_preference: balance_performance
           devices.system.cpu.cpu19.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu0.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu1.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu2.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu3.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu4.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu5.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu6.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu7.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu8.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu9.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu10.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu11.power.energy_perf_bias: 4 # balance_performance
         features:
           kubernetesTalosAPIAccess:
             enabled: true
@@ -176,7 +191,10 @@ controlPlane:
         hard=True
         nconnect=16
         noatime=True
-      # permissions: 420
+        rsize=1048576
+        wsize=1048576
+        proto=tcp
+      permissions: 0o644
       path: /etc/nfsmount.conf
       op: overwrite
 
@@ -209,15 +227,21 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:d2:42
-        dhcp: true
+          driver: i40e
+          physical: true
         mtu: 9000
-        vlans: &vlans []
+        dhcp: true
+        vlans: &vlans
+          - vlanId: 142
+            dhcp: false
   - hostname: k8s-1
     ipAddress: "10.1.1.11"
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:d7:fa
+          driver: i40e
+          physical: true
         dhcp: true
         mtu: 9000
         vlans: *vlans
@@ -229,6 +253,8 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:d8:42
+          driver: i40e
+          physical: true
         dhcp: true
         mtu: 9000
         vlans: *vlans
@@ -242,6 +268,7 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: b8:59:9f:cf:ff:b2
+          physical: true
         dhcp: true
         mtu: 9000
         vlans: *vlans
