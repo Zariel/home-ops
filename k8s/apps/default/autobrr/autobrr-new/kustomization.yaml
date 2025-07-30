@@ -7,11 +7,6 @@ resources:
   - service.yaml
   - httproute.yaml
   - externalsecret.yaml
-configMapGenerator:
-  - name: autobrr-scripts
-    files:
-      - autoannounce.sh=resources/autoannounce.sh
 generatorOptions:
-  disableNameSuffixHash: true
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
