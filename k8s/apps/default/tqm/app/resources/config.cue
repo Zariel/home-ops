@@ -44,9 +44,10 @@ filters: [string]: {
 	ignore: [...string]
 }
 
+bypassIgnoreIfUnregistered: true
+
 filters: default: {
 	MapHardlinksFor: ["retag", "clean"]
-	bypassIgnoreIfUnregistered: true
 	ignore: [
 		"IsTrackerDown()",
 		"Downloaded == false",
