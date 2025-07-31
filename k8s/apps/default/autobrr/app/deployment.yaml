@@ -29,6 +29,8 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        - name: config
+          emptyDir: {}
         - name: scripts
           configMap:
             name: autobrr-scripts
