@@ -31,7 +31,7 @@ spec:
           emptyDir: {}
         - name: config
           persistentVolumeClaim:
-            claimName: autobrr-new
+            claimName: autobrr
         - name: scripts
           configMap:
             name: autobrr-scripts
