@@ -42,7 +42,7 @@
 - name: Talos Config
   ansible.builtin.template:
     dest: /config/containers/matchbox/assets/{{ name }}.yaml
-    src: files/talos/holywoo-{{ name }}.yaml
+    src: files/talos/hollywoo-{{ name }}.yaml
     owner: vyos
     group: vyattacfg
     mode: "0644"
