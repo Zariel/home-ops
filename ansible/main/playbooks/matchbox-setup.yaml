@@ -3,7 +3,7 @@
   gather_facts: true
   hosts: vyos
   vars:
-    talos_version: v1.8.3
+    talos_version: v1.10.6
   tasks:
     - name: Matchbox
       block:
