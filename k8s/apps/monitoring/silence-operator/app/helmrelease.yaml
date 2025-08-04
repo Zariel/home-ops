@@ -34,7 +34,5 @@ spec:
     alertmanagerAddress: http://alertmanager.monitoring.svc.cluster.local:9093
     image:
       registry: quay.io
-      name: giantswarm/silence-operator
-      tag: 0.16.1
     networkPolicy:
       enabled: false
