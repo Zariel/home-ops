@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -34,5 +34,6 @@ spec:
     alertmanagerAddress: http://alertmanager.monitoring.svc.cluster.local:9093
     image:
       registry: quay.io
+      tag: 0.18.0@sha256:24d561a207f910b52eab533ee9c2acfc5a6a75287561a73661768e76dea142b9
     networkPolicy:
       enabled: false
