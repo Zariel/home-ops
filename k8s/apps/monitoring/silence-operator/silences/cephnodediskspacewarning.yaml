@@ -7,10 +7,8 @@ spec:
   matchers:
     - name: alertname
       value: CephNodeDiskspaceWarning
-      isRegex: false
     - name: mountpoint
       value: /etc/nfsmount.conf
-      isRegex: false
 ---
 apiVersion: observability.giantswarm.io/v1alpha2
 kind: Silence
@@ -20,7 +18,5 @@ spec:
   matchers:
     - name: alertname
       value: CephNodeDiskspaceWarning
-      isRegex: false
     - name: device
       value: /dev/sda6
-      isRegex: false
