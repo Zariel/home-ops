@@ -24,7 +24,7 @@ spec:
       peers:
         - name: gateway
           peerASN: 64512
-          peerAddress: "10.1.8.1"
+          peerAddress: "10.1.0.1"
           peerConfigRef:
             name: gateway
 ---
