@@ -9,13 +9,12 @@ domain: cluster.local
 allowSchedulingOnControlPlanes: true
 additionalMachineCertSans: &certSAN
   - 127.0.0.1
-  - 10.45.0.2
   - k8s.cbannister.casa
 additionalApiServerCertSans: *certSAN
 clusterPodNets:
-  - 172.20.0.0/16
+  - 10.42.0.0/16
 clusterSvcNets:
-  - 172.21.0.0/16
+  - 10.43.0.0/16
 cniConfig:
   name: none
 patches:
@@ -36,7 +35,7 @@ patches:
               - rw
         nodeIP:
           validSubnets:
-            - 10.8.1.0/24
+            - 10.1.1.0/24
         disableManifestsDirectory: true
         defaultRuntimeSeccompProfileEnabled: true
       logging:
@@ -221,7 +220,7 @@ worker:
 
 nodes:
   - hostname: k8s-0
-    ipAddress: "10.1.8.10"
+    ipAddress: "10.1.1.10"
     controlPlane: true
     installDiskSelector:
       wwid: eui.343335304ea054640025384100000001
@@ -231,14 +230,12 @@ nodes:
           driver: i40e
           physical: true
         mtu: 9000
-        # default vlan is servers so let it get an ip
         dhcp: true
         vlans: &vlans
-          - vlanId: 80
-            dhcp: true
-            mtu: 9000
+          - vlanId: 142
+            dhcp: false
   - hostname: k8s-1
-    ipAddress: "10.1.8.11"
+    ipAddress: "10.1.1.11"
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -251,7 +248,7 @@ nodes:
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
   - hostname: k8s-2
-    ipAddress: "10.1.8.12"
+    ipAddress: "10.1.1.12"
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -264,7 +261,7 @@ nodes:
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
   - hostname: k8s-3
-    ipAddress: "10.1.8.13"
+    ipAddress: "10.1.1.13"
     controlPlane: false
     installDiskSelector:
       wwid: eui.343335304eb046460025384100000001
