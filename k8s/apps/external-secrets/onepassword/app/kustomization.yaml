@@ -11,5 +11,5 @@ secretGenerator:
     files:
       - onepassword-credentials.json=config/onepassword-credentials.sops.json
       - token=config/token.sops.txt
-configurations:
-  - kustomizeconfig.yaml
+generatorOptions:
+  disableNameSuffixHash: true
