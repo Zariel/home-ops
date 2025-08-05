@@ -24,7 +24,7 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: external-secrets-stores
+    - name: onepassword-store
       namespace: external-secrets
   wait: false
   interval: 30m
