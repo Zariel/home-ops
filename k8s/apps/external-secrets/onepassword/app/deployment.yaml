@@ -10,6 +10,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: *name
+      annotations:
+        reloader.stakater.com/auto: "true"
     spec:
       volumes:
         - name: config
