@@ -4,7 +4,6 @@ metadata:
   name: bind
 spec:
   type: LoadBalancer
-  clusterIP: 10.43.53.9
   loadBalancerIP: 10.45.0.55
   selector:
     app: bind
