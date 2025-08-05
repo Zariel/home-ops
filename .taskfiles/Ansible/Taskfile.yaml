@@ -26,6 +26,19 @@ tasks:
     generates:
       - "{{.ROOT_DIR}}/.venv/pyvenv.cfg"
 
+  matchbox:
+    desc: Run an Ansible playbook for configuring a cluster
+    summary: |
+      Args:
+        cluster: Cluster to run command against (required)
+        playbook: Playbook to run (required)
+    deps:
+      - ":talos:generate"
+    cmds:
+      - task: run
+        vars:
+          playbook: matchbox-setup
+
   run:
     desc: Run an Ansible playbook for configuring a cluster
     summary: |
@@ -35,6 +48,7 @@ tasks:
     cmd: |
       .venv/bin/ansible-playbook \
         --inventory {{.ANSIBLE_DIR}}/main/inventory/hosts.yaml \
+        --diff \
         {{.ANSIBLE_DIR}}/main/playbooks/{{.playbook}}.yaml {{.CLI_ARGS}}
     requires:
       vars: ["playbook"]
