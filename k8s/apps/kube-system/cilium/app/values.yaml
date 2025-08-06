@@ -31,7 +31,7 @@ gatewayAPI:
 installNoConntrackIptablesRules: true
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 0.0.0.0/0
+ipv4NativeRoutingCIDR: 172.20.0.0/16
 ingressController:
   enabled: false
   secretsNamespace:
