@@ -38,24 +38,24 @@ spec:
         - name: bind-cache
           persistentVolumeClaim:
             claimName: bind-cache
-        - name: zone-files
-          emptyDir: {}
       initContainers:
-        - name: zone-setup
-          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:df18689f808f3ef49723a5fc5e8979f114601d21d2d97ab360a4fdb70b979536
+        - name: zone-init
+          image: alpine:3.20
           command:
-            - /usr/bin/named-compilezone
-          args:
-            - -d
-            - -J
-            - /var/cache/bind/db.cbannister.xyz.jnl
-            - -o
-            - /var/cache/bind/db.cbannister.xyz
-            - cbannister.xyz.
-            - /etc/bind/zones/db.cbannister.xyz
+            - /bin/sh
+            - -c
+            - |
+              # Only copy zone file if it doesn't exist
+              if [ ! -f "/var/cache/bind/db.cbannister.xyz" ]; then
+                echo "Zone file not found, copying initial zone..."
+                cp /etc/bind/zones/db.cbannister.xyz /var/cache/bind/db.cbannister.xyz
+              else
+                echo "Zone file already exists, skipping initialization"
+              fi
           volumeMounts:
             - mountPath: /etc/bind/zones
               name: bind-zones
+              readOnly: true
             - mountPath: /var/cache/bind
               name: bind-cache
       containers:
@@ -83,9 +83,13 @@ spec:
           readinessProbe:
             exec:
               command:
-                - nslookup
-                - ns.cbannister.xyz.
-                - 127.0.0.1
+                - /bin/sh
+                - -c
+                - |
+                  # Check if named is responding to queries
+                  dig @127.0.0.1 +short SOA cbannister.xyz. >/dev/null 2>&1 || exit 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
           ports:
             - containerPort: 53
               name: dns
@@ -99,5 +103,3 @@ spec:
               subPath: externaldns.key
             - mountPath: /var/cache/bind
               name: bind-cache
-            - mountPath: /var/lib/bind
-              name: zone-files
