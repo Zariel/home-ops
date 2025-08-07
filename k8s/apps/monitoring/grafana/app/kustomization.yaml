@@ -6,3 +6,12 @@ commonLabels:
 resources:
   - helmrelease.yaml
   - externalsecret.yaml
+configMapGenerator:
+  - name: zfs-better-dashboard
+    files:
+      - resources/dashboards/zfs-better.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: "default"
