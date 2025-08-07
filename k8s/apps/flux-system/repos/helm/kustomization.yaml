@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - metrics-server.yaml
-  - descheduler.yaml
   - emberstack.yaml
   - cloudnative-pg.yaml
   - xenitab.yaml
