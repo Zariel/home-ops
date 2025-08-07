@@ -12,8 +12,6 @@ spec:
   ref:
     tag: 0.33.0
   url: oci://ghcr.io/home-operations/charts-mirror/descheduler
-  verify:
-    provider: cosign
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -28,11 +26,10 @@ spec:
     name: descheduler
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     replicas: 2
