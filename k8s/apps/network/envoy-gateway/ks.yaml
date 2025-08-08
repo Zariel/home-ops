@@ -99,11 +99,11 @@ spec:
     name: home-kubernetes
     namespace: flux-system
   healthChecks:
-    - apiVersion: gateway.network.k8s.io/v1
+    - apiVersion: gateway.networking.k8s.io/v1
       kind: GatewayClass
       name: envoy-gateway
   healthCheckExprs:
-    - apiVersion: gateway.network.k8s.io/v1
+    - apiVersion: gateway.networking.k8s.io/v1
       kind: GatewayClass
       failed: status.conditions.filter(e, e.type == 'Accepted').all(e, e.status == 'False')
       inProgress: status.conditions.filter(e, e.type == 'Accepted').all(e, e.status == 'Unknown')
