@@ -24,7 +24,7 @@ spec:
     - name: cert-manager-issuers
       namespace: cert-manager
 ---
-yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -98,7 +98,7 @@ spec:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  healthChecls:
+  healthChecks:
     - apiVersion: gateway.network.k8s.io/v1
       kind: GatewayClass
       name: envoy-gateway
