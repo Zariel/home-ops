@@ -6,7 +6,7 @@ bgpControlPlane:
   enabled: true
 bpf:
   datapathMode: netkit
-  masquerade: false
+  masquerade: true
   preallocateMaps: true
   hostRouting: true
   hostLegacyRouting: false
@@ -20,7 +20,7 @@ cluster:
   name: hollywoo
 enableRuntimeDeviceDetection: true
 enableIPv4BIGTCP: true
-enableIPv4Masquerade: false
+enableIPv4Masquerade: true
 endpointRoutes:
   enabled: true
 envoy:
@@ -28,10 +28,9 @@ envoy:
   rollOutPods: false
 gatewayAPI:
   enabled: false
-installNoConntrackIptablesRules: true
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 0.0.0.0/0
+ipv4NativeRoutingCIDR: 172.20.0.0/16
 ingressController:
   enabled: false
   secretsNamespace:
