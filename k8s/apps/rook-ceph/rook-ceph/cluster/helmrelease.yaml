@@ -66,10 +66,10 @@ spec:
             memory: 768Mi
         osd:
           requests:
-            cpu: 500m
-            memory: 3Gi
+            cpu: 1
+            memory: 8Gi
           limits:
-            memory: 3Gi
+            memory: 8Gi
         mgr-sidecar:
           requests:
             cpu: 50m
