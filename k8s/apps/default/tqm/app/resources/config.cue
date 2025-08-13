@@ -114,7 +114,7 @@ filters: default: tag: [
 		}
 		update: list.Concat([
 			_filter,
-			["SeedingDays >= \(t.minSeedDays)"],
+			["SeedingDays < \(t.minSeedDays)"],
 		])
 	},
 ]
