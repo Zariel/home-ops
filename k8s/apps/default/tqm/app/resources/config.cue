@@ -100,6 +100,23 @@ filters: default: tag: [
 			update: ["TrackerName in [\(strings.Join(urls, ", "))]"]
 		}
 	},
+
+	for t in #trackers
+	if t.minSeedDays != _|_ {
+		name: "hnr"
+		_filter: [...string]
+		if (t.url & string) != _|_ {
+			_filter: ["TrackerName == \"\(t.url)\""]
+		}
+		if (t.url & [...string]) != _|_ {
+			let urls = [for u in t.url {"\"\(u)\""}]
+			_filter: ["TrackerName in [\(strings.Join(urls, ", "))]"]
+		}
+		update: list.Concat([
+			_filter,
+			["SeedingDays >= \(t.minSeedDays)"],
+		])
+	},
 ]
 
 filters: default: remove: [
