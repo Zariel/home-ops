@@ -19,3 +19,4 @@ resources:
   - alertmanager/ks.yaml
   - kube-state-metrics/ks.yaml
   - node-exporter/ks.yaml
+  - snmp-exporter/ks.yaml
