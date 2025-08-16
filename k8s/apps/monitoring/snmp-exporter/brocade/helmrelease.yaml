@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: snmp-exporter
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 9.6.2
+  url: oci://ghcr.io/prometheus-community/charts/prometheus-snmp-exporter
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app snmp-exporter-brocade
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: snmp-exporter
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    fullnameOverride: *app
+    extraArgs: ["--config.file=/config/snmp.yaml"]
+    extraConfigmapMounts:
+      - name: &name brocade-snmp-configmap
+        mountPath: /config/snmp.yaml
+        subPath: snmp.yaml
+        configMap: *name
+        readOnly: true
+        defaultMode: 420
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: *name
+    serviceMonitor:
+      enabled: true
+      params:
+        - name: beefchunk
+          module: ["brocade"]
+          target: 10.1.0.10
+          auth: ["public_v2"]
+      path: /snmp
+      scrapeTimeout: 60s
+      relabelings:
+        - { sourceLabels: ["__param_target"], targetLabel: instance }
