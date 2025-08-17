@@ -10,3 +10,4 @@ resources:
   - tailscale/ks.yaml
   - bind/ks.yaml
   - envoy-gateway/ks.yaml
+  - certificates/ks.yaml
