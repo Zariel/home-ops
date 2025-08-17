@@ -45,9 +45,6 @@ loadBalancer:
   algorithm: maglev
   mode: dsr
 localRedirectPolicy: true
-nodePort:
-  addresses:
-    - 10.1.8.0/24
 operator:
   rollOutPods: true
 rollOutCiliumPods: true
