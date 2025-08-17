@@ -1,28 +1,3 @@
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &name envoy-gateway-certificates
-  namespace: &namespace network
-spec:
-  targetNamespace: *namespace
-  interval: 1h
-  retryInterval: 2m
-  timeout: 5m
-  prune: false
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: envoy-gateway
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-    namespace: flux-system
-  path: ./k8s/apps/network/envoy-gateway/certificates
-  wait: false
-  dependsOn:
-    - name: cert-manager-issuers
-      namespace: cert-manager
 # ---
 # # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
