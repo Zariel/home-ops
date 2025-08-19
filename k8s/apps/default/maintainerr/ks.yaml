@@ -12,7 +12,12 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
+  components:
+    - ../../../../components/volsync
   interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
   path: ./k8s/apps/default/maintainerr/app
   prune: true
   retryInterval: 2m
