@@ -13,23 +13,22 @@ spec:
     spec:
       containers:
         - name: tautulli
-          env:
-            - name: TZ
-              value: Europe/London
-          image: ghcr.io/tautulli/tautulli:v2.15.3
-          command: ["/usr/local/bin/python", "Tautulli.py"]
-          args:
-            - "--config=/config/config.ini"
-            - "--datadir=/config"
-            - "--port=80"
+          image: ghcr.io/home-operations/tautulli:2.15.3@sha256:3e0eaca8c082ebe121a0ae9125bea1b4e2d177fca34ac8df4ec14a28e62f63a4
           imagePullPolicy: IfNotPresent
+          env:
+            TZ: Europe/London
+            TAUTULLI_HTTP_BASE_URL: https://tautulli.cbannister.xyz
+            TAUTULLI_HTTP_PORT: &port 80
+          envFrom:
+            - secretRef:
+                name: tautulli
           ports:
-            - containerPort: &port 80
+            - containerPort: *port
               name: http
               protocol: TCP
           resources:
             limits:
-              memory: 500Mi
+              memory: 1Gi
             requests:
               cpu: 10m
           livenessProbe:
@@ -62,6 +61,8 @@ spec:
               name: cache
             - mountPath: /scripts
               name: scripts
+            - mountPath: /config/logs
+              name: logs
           securityContext: &securityContext
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -101,4 +102,6 @@ spec:
           configMap:
             name: tautulli-scripts
         - name: tmp
+          emptyDir: {}
+        - name: logs
           emptyDir: {}
