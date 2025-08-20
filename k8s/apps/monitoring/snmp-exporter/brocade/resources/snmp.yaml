@@ -41,130 +41,153 @@ modules:
       - 1.3.6.1.4.1.1991.1.1.2.1.54.0  # Total memory
       - 1.3.6.1.4.1.1991.1.1.2.1.55.0  # Free memory
     metrics:
-      # Standard interface metrics
-      - name: ifDescr
+      # Interface description - info metric
+      - name: brocade_interface_info
         oid: 1.3.6.1.2.1.2.2.1.2
         type: DisplayString
-        help: Interface description
+        help: Interface information including description
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifType  
+        lookups:
+        - labels: [ifIndex]
+          labelname: ifDescr
+          oid: 1.3.6.1.2.1.2.2.1.2
+          type: DisplayString
+      
+      - name: brocade_interface_type
         oid: 1.3.6.1.2.1.2.2.1.3
         type: gauge
-        help: Interface type
+        help: Interface type (6=ethernetCsmacd, 24=loopback, etc)
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifSpeed
+          
+      - name: brocade_interface_speed_bits_per_second
         oid: 1.3.6.1.2.1.2.2.1.5
         type: gauge
         help: Interface speed in bits per second
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifOperStatus
+          
+      - name: brocade_interface_operational_status
         oid: 1.3.6.1.2.1.2.2.1.8
         type: gauge
-        help: Interface operational status
+        help: Interface operational status (1=up, 2=down, 3=testing)
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifInOctets
+          
+      - name: brocade_interface_received_bytes_total
         oid: 1.3.6.1.2.1.2.2.1.10
         type: counter
-        help: Total octets received
+        help: Total bytes received on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifInUcastPkts
+          
+      - name: brocade_interface_received_unicast_packets_total
         oid: 1.3.6.1.2.1.2.2.1.11
         type: counter
-        help: Unicast packets received
+        help: Unicast packets received on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifInNUcastPkts
+          
+      - name: brocade_interface_received_multicast_packets_total
         oid: 1.3.6.1.2.1.2.2.1.12
         type: counter
-        help: Non-unicast packets received
+        help: Non-unicast (multicast/broadcast) packets received on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifInDiscards
+          
+      - name: brocade_interface_received_discards_total
         oid: 1.3.6.1.2.1.2.2.1.13
         type: counter
-        help: Inbound packets discarded
+        help: Inbound packets discarded on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifInErrors
+          
+      - name: brocade_interface_received_errors_total
         oid: 1.3.6.1.2.1.2.2.1.14
         type: counter
-        help: Inbound packets with errors
+        help: Inbound packets with errors on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifOutOctets
+          
+      - name: brocade_interface_transmitted_bytes_total
         oid: 1.3.6.1.2.1.2.2.1.16
         type: counter
-        help: Total octets transmitted
+        help: Total bytes transmitted on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifOutUcastPkts
+          
+      - name: brocade_interface_transmitted_unicast_packets_total
         oid: 1.3.6.1.2.1.2.2.1.17
         type: counter
-        help: Unicast packets transmitted
+        help: Unicast packets transmitted on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifOutNUcastPkts
+          
+      - name: brocade_interface_transmitted_multicast_packets_total
         oid: 1.3.6.1.2.1.2.2.1.18
         type: counter
-        help: Non-unicast packets transmitted
+        help: Non-unicast (multicast/broadcast) packets transmitted on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifOutDiscards
+          
+      - name: brocade_interface_transmitted_discards_total
         oid: 1.3.6.1.2.1.2.2.1.19
         type: counter
-        help: Outbound packets discarded
+        help: Outbound packets discarded on interface
         indexes:
         - labelname: ifIndex
           type: gauge
-      - name: ifOutErrors
+          
+      - name: brocade_interface_transmitted_errors_total
         oid: 1.3.6.1.2.1.2.2.1.20
         type: counter
-        help: Outbound packets with errors
+        help: Outbound packets with errors on interface
         indexes:
         - labelname: ifIndex
           type: gauge
+
       # Temperature sensors
-      - name: snAgentTempSensorDescr
+      - name: brocade_temperature_sensor_info
         oid: 1.3.6.1.4.1.1991.1.1.2.13.1.1.3
         type: DisplayString
         help: Temperature sensor description
         indexes:
         - labelname: sensorIndex
           type: gauge
-      - name: snAgentTempValue
+          
+      - name: brocade_temperature_celsius
         oid: 1.3.6.1.4.1.1991.1.1.2.13.3.1.5
         type: gauge
-        help: Temperature sensor reading in Celsius
+        help: Temperature sensor reading in degrees Celsius
         indexes:
         - labelname: sensorIndex
           type: gauge
+
       # System metrics 
-      - name: snAgentCpuUtil
+      - name: brocade_cpu_utilisation_percent
         oid: 1.3.6.1.4.1.1991.1.1.2.1.50.0
         type: gauge
-        help: CPU utilisation percentage
-      - name: snAgentTotalMemory
+        help: CPU utilisation as a percentage
+
+      - name: brocade_memory_total_bytes
         oid: 1.3.6.1.4.1.1991.1.1.2.1.54.0
         type: gauge
         help: Total system memory in bytes
-      - name: snAgentFreeMemory
+        
+      - name: brocade_memory_free_bytes
         oid: 1.3.6.1.4.1.1991.1.1.2.1.55.0
         type: gauge
         help: Free system memory in bytes
