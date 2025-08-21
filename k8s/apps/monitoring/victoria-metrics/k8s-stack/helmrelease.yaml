@@ -1,0 +1,109 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: victoria-metrics-k8s-stack
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.31.1
+  url: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics-k8s-stack
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: victoria-metrics-k8s-stack
+  dependsOn:
+    - name: victoria-metrics-operator
+      namespace: monitoring
+  values:
+    # Create default monitoring rules
+    defaultRules:
+      create: true
+      
+    # Enable Grafana dashboards
+    defaultDashboards:
+      enabled: true
+      
+    # Create ServiceMonitors for kubeApiServer, kubeScheduler, kubeControllerManager, kubeEtcd
+    kubeApiServer:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        selector:
+          k8s-app: kube-apiserver
+          
+    kubeScheduler:
+      enabled: true
+      service:
+        enabled: true
+        selector:
+          k8s-app: kube-scheduler
+      serviceMonitor:
+        enabled: true
+        
+    kubeControllerManager:
+      enabled: true
+      service:
+        enabled: true
+        selector:
+          k8s-app: kube-controller-manager
+      serviceMonitor:
+        enabled: true
+        
+    kubeEtcd:
+      enabled: true
+      service:
+        enabled: true
+        selector:
+          k8s-app: kube-controller-manager  # etcd runs on control plane nodes
+      serviceMonitor:
+        enabled: true
+        
+    kubelet:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      
+    # Disable all Victoria Metrics components to avoid conflicts with existing setup
+    vmsingle:
+      enabled: false
+      
+    vmcluster:
+      enabled: false
+      
+    vmagent:
+      enabled: false
+      
+    vmalert:
+      enabled: false
+      
+    alertmanager:
+      enabled: false
+      
+    grafana:
+      enabled: false
+      
+    vmauth:
+      enabled: false
+      
+    # Disable exporters since you may have them separately
+    prometheus-node-exporter:
+      enabled: false
+      
+    kube-state-metrics:
+      enabled: false
+      
+    # Disable operator since you already have it
+    victoria-metrics-operator:
+      enabled: false
