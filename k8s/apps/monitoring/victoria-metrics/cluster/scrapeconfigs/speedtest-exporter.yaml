@@ -11,6 +11,6 @@ spec:
       labels:
         job: speedtest-exporter
   path: /metrics
-  scrapeInterval: 60m
-  scrapeTimeout: 60s
+  interval: 60m
+  timeout: 60s
   honorTimestamps: true
