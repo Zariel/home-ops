@@ -46,3 +46,26 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 15m
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app victoria-metrics-k8s-stack
+spec:
+  path: ./k8s/apps/monitoring/victoria-metrics/k8s-stack
+  targetNamespace: monitoring
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  dependsOn:
+    - name: victoria-metrics-operator
+  wait: false
+  interval: 1h
+  retryInterval: 1m
+  timeout: 15m
