@@ -3,14 +3,11 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMScrapeConfig
 metadata:
-  name: speedtest-exporter
+  name: dnsdist
 spec:
   staticConfigs:
     - targets:
-        - gateway.cbannister.casa:9798
+        - 10.5.0.4:8083
       labels:
-        job: speedtest-exporter
+        job: dnsdist
   path: /metrics
-  scrapeInterval: 60m
-  scrapeTimeout: 60s
-  honorTimestamps: true

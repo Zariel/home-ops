@@ -11,4 +11,4 @@ spec:
         - nas.cbannister.casa:9633
       labels:
         job: smartctl
-  metricsPath: /metrics
+  path: /metrics
