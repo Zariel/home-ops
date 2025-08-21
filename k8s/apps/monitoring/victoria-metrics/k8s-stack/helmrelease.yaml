@@ -40,8 +40,6 @@ spec:
       enabled: true
       serviceMonitor:
         enabled: true
-        selector:
-          k8s-app: kube-apiserver
           
     kubeScheduler:
       enabled: true
@@ -62,13 +60,7 @@ spec:
         enabled: true
         
     kubeEtcd:
-      enabled: true
-      service:
-        enabled: true
-        selector:
-          k8s-app: kube-controller-manager  # etcd runs on control plane nodes
-      serviceMonitor:
-        enabled: true
+      enabled: false  # etcd runs on host in Talos, not as pods
         
     kubelet:
       enabled: true
