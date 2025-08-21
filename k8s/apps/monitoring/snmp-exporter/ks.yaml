@@ -13,7 +13,7 @@ spec:
   path: ./k8s/apps/monitoring/snmp-exporter/brocade
   prune: true
   dependsOn:
-    - name: kube-prometheus-stack
+    - name: prometheus-operator-crds
       namespace: monitoring
   sourceRef:
     kind: GitRepository

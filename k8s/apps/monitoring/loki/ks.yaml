@@ -25,6 +25,6 @@ spec:
     name: home-kubernetes
     namespace: flux-system
   dependsOn:
-    - name: kube-prometheus-stack
+    - name: prometheus-operator-crds
     - name: rook-ceph-cluster
       namespace: rook-ceph
