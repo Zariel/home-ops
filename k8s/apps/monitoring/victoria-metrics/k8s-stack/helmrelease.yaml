@@ -69,6 +69,7 @@ spec:
       serviceMonitor:
         enabled: true
         scheme: http
+        insecureSkipVerify: true
         
     kubelet:
       enabled: true
