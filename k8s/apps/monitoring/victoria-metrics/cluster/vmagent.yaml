@@ -8,6 +8,9 @@ spec:
   useStrictSecurity: true
   # metrics config
   selectAllByDefault: true
+  # Ensure VMNodeScrape resources are selected
+  nodeScrapeNamespaceSelector: {}
+  nodeScrapeSelector: {}
   remoteWrite:
     - url: "http://vmsingle-victoria.monitoring.svc:8429/api/v1/write"
   scrapeInterval: 30s
