@@ -8,7 +8,7 @@ spec:
   retentionPeriod: "12"
   extraArgs:
     dedup.minScrapeInterval: 30s
-    maxLabelsPerTimeseries: "40"
+    maxLabelsPerTimeseries: "100"
     search.minStalenessInterval: 5m
   storage:
     accessModes: ["ReadWriteOnce"]
