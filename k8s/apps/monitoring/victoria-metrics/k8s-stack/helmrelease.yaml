@@ -60,7 +60,7 @@ spec:
         enabled: true
         
     kubeEtcd:
-      enabled: false  # etcd runs on host in Talos, not as pods
+      enabled: true
         
     kubelet:
       enabled: true
