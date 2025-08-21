@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://crds.jank.ing/operator.victoriametrics.com/vmscrapeconfig_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMScrapeConfig
+metadata:
+  name: smartctl
+spec:
+  staticConfigs:
+    - targets:
+        - pve.cbannister.casa:9633
+        - nas.cbannister.casa:9633
+      labels:
+        job: smartctl
+  metricsPath: /metrics
