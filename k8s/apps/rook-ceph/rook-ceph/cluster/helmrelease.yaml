@@ -104,9 +104,6 @@ spec:
           compression:
             enabled: true
           requireMsgr2: true
-      csi:
-        readAffinity:
-          enabled: true
       dashboard:
         enabled: true
         urlPrefix: /
