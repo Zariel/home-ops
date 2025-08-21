@@ -13,4 +13,4 @@ spec:
         - am6b.cbannister.casa:9100
       labels:
         job: node-exporter
-  metricsPath: /metrics
+  path: /metrics
