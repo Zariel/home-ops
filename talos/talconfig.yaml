@@ -7,11 +7,9 @@ kubernetesVersion: v1.33.4
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
 allowSchedulingOnControlPlanes: true
-additionalMachineCertSans: &certSAN
-  - 127.0.0.1
-  - 10.45.0.2
+additionalMachineCertSans:
   - k8s.cbannister.casa
-additionalApiServerCertSans: *certSAN
+  - 127.0.0.1
 clusterPodNets:
   - 172.20.0.0/16
 clusterSvcNets:
@@ -26,6 +24,7 @@ patches:
           rotate-server-certificates: "true"
         extraConfig:
           maxPods: 150
+          serializeImagePulls: false
         extraMounts:
           - destination: /var/openebs/local
             type: bind
@@ -36,7 +35,7 @@ patches:
               - rw
         nodeIP:
           validSubnets:
-            - 10.8.1.0/24
+            - 10.1.1.0/24
         disableManifestsDirectory: true
         defaultRuntimeSeccompProfileEnabled: true
       logging:
@@ -50,12 +49,12 @@ patches:
         net.core.rmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
         net.core.wmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
         net.ipv4.tcp_congestion_control: bbr   # 10Gb/s
-        net.ipv4.tcp_fastopen: 3               # Send and accept data in the opening SYN packet
+        net.ipv4.tcp_fastopen: 0               # Cilum explicitly says this can cause issue with DSR
         net.ipv4.tcp_mtu_probing: 1            # 10Gb/s | Jumbo frames
         net.ipv4.tcp_rmem: 4096 65536 33554432 # 10Gb/s
         net.ipv4.tcp_wmem: 4096 65536 33554432 # 10Gb/s
         net.ipv4.tcp_window_scaling: 1         # 10Gb/s
-        net.ipv4.tcp_slow_start_after_idle: 1
+        net.ipv4.tcp_slow_start_after_idle: 0
         sunrpc.tcp_slot_table_entries: 128     # 10Gb/s | NFS
         sunrpc.tcp_max_slot_table_entries: 128 # 10Gb/s | NFS
         vm.nr_hugepages: 1024                  # PostgreSQL
@@ -64,6 +63,9 @@ patches:
           enabled: true
           resolveMemberNames: true
           forwardKubeDNSToHost: false
+        kubePrism:
+          enabled: true
+          port: 7445
     cluster:
       proxy:
         disabled: true
@@ -71,7 +73,11 @@ patches:
         disabled: true
       apiServer:
         disablePodSecurityPolicy: true
-
+      discovery:
+        enabled: true
+        registries:
+          kubernetes: { disabled: true }
+          service: { disabled: false }
 controlPlane:
   schematic:
     customization:
@@ -99,6 +105,7 @@ controlPlane:
           extraArgs:
             feature-gates: MutatingAdmissionPolicy=true
             runtime-config: admissionregistration.k8s.io/v1alpha1=true
+            anonymous-auth: true
         controllerManager:
           extraArgs:
             bind-address: 0.0.0.0
@@ -125,6 +132,7 @@ controlPlane:
         etcd:
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
+            # initial-cluster: "k8s-0=https://10.1.1.10:2380,k8s-1=https://10.1.1.11:2380,k8s-2=https://10.1.1.12:2380"
       machine:
         sysfs:
           devices.system.cpu.intel_pstate.hwp_dynamic_boost: 1
@@ -220,8 +228,8 @@ worker:
     node-role.kubernetes.io/worker: worker
 
 nodes:
-  - hostname: k8s-0
-    ipAddress: "10.1.8.10"
+  - hostname: k8s-0.cbannister.casa
+    ipAddress: "10.1.1.10"
     controlPlane: true
     installDiskSelector:
       wwid: eui.343335304ea054640025384100000001
@@ -231,14 +239,9 @@ nodes:
           driver: i40e
           physical: true
         mtu: 9000
-        # default vlan is servers so let it get an ip
         dhcp: true
-        vlans: &vlans
-          - vlanId: 80
-            dhcp: true
-            mtu: 9000
-  - hostname: k8s-1
-    ipAddress: "10.1.8.11"
+  - hostname: k8s-1.cbannister.casa
+    ipAddress: "10.1.1.11"
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -247,11 +250,10 @@ nodes:
           physical: true
         dhcp: true
         mtu: 9000
-        vlans: *vlans
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
-  - hostname: k8s-2
-    ipAddress: "10.1.8.12"
+  - hostname: k8s-2.cbannister.casa
+    ipAddress: "10.1.1.12"
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -260,21 +262,19 @@ nodes:
           physical: true
         dhcp: true
         mtu: 9000
-        vlans: *vlans
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
-  - hostname: k8s-3
-    ipAddress: "10.1.8.13"
-    controlPlane: false
-    installDiskSelector:
-      wwid: eui.343335304eb046460025384100000001
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: b8:59:9f:cf:ff:b2
-          physical: true
-        dhcp: true
-        mtu: 9000
-        vlans: *vlans
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
-    extraManifests:
-      - manifests/k8s-3.yaml
+  # - hostname: k8s-3
+  #   ipAddress: "10.1.1.13"
+  #   controlPlane: false
+  #   installDiskSelector:
+  #     wwid: eui.343335304eb046460025384100000001
+  #   networkInterfaces:
+  #     - deviceSelector:
+  #         hardwareAddr: b8:59:9f:cf:ff:b2
+  #         physical: true
+  #       dhcp: false
+  #       mtu: 9000
+  #   talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+  #   extraManifests:
+  #     - manifests/k8s-3.yaml
