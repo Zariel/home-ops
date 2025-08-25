@@ -1,13 +1,7 @@
-home-cluster-k8s-0.yaml
-home-cluster-k8s-1.yaml
-home-cluster-k8s-2.yaml
-talosconfig
-holywoo-k8s-0.yaml
-holywoo-k8s-1.yaml
-holywoo-k8s-2.yaml
-holywoo-k8s-3.yaml
-holywoo-k8s-4.yaml
 hollywoo-k8s-0.yaml
 hollywoo-k8s-1.yaml
 hollywoo-k8s-2.yaml
-hollywoo-k8s-3.yaml
+talosconfig
+hollywoo-k8s-0.cbannister.casa.yaml
+hollywoo-k8s-1.cbannister.casa.yaml
+hollywoo-k8s-2.cbannister.casa.yaml
