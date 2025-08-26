@@ -37,7 +37,6 @@ spec:
           app.kubernetes.io/instance: victoria
   resources:
     requests:
-      cpu: 150m
-      memory: 256Mi
+      cpu: 250m
     limits:
-      memory: 1Gi
+      memory: 2Gi
