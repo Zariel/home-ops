@@ -23,7 +23,7 @@ quality_profiles:
         - "DV HDR10+ Boost"
         - "Home Groups"
         - "Sign Languages"
-        - "WiLDCAT"
+        - "Pref Groups"
     quality_sort: top
     qualities:
       - name: Remux-2160p
