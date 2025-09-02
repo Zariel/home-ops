@@ -9,7 +9,9 @@ metadata:
     app.kubernetes.io/instance: atuin
     app.kubernetes.io/name: atuin
 spec:
-  replicas: 2
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/component: atuin
@@ -22,16 +24,6 @@ spec:
         app.kubernetes.io/instance: atuin
         app.kubernetes.io/name: atuin
     spec:
-      initContainers:
-        - name: init-db
-          image: ghcr.io/home-operations/postgres-init:17
-          imagePullPolicy: IfNotPresent
-          envFrom:
-            - secretRef:
-                name: atuin-secret
-          volumeMounts:
-            - mountPath: /config
-              name: config
       containers:
         - name: app
           image: ghcr.io/atuinsh/atuin:v18.8.0@sha256:8a8a8ef4eb5865656072bace5cc49390b56caa81360f9f0869054777155b6ef1
@@ -54,9 +46,8 @@ spec:
               value: "80"
             - name: ATUIN_TLS__ENABLE
               value: "false"
-          envFrom:
-            - secretRef:
-                name: atuin-secret
+            - name: ATUIN_DB_URI
+              value: sqlite:///config/atuin.db
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -96,5 +87,6 @@ spec:
         runAsNonRoot: true
         runAsUser: 568
       volumes:
-        - emptyDir: {}
-          name: config
+        - name: config
+          persistentVolumeClaim:
+            claimName: atuin
