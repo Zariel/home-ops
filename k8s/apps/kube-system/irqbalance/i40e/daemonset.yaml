@@ -32,6 +32,16 @@ spec:
             - name: shared-scripts
               mountPath: /shared
       containers:
+        - name: set-queues
+          image: alpine
+          restart: Never
+          command:
+            - sh
+            - -c
+            - |
+              apk add ethtool
+              ethtool -L enp2s0f1np0 combined 12
+              ethtool -L enp2s0f1np1 combined 12
         - name: irq-affinity
           image: ubuntu:24.04
           command:
