@@ -172,7 +172,7 @@ spec:
           datasource:
             - { name: DS_PROMETHEUS, value: victoriametrics }
         cert-manager:
-          url: https://raw.githubusercontent.com/imusmanmalik/cert-manager-mixin/main/dashboards/overview.json
+          url: https://gitlab.com/uneeq-oss/cert-manager-mixin/-/raw/master/dashboards/cert-manager.json
           datasource: *datasource
         external-secrets:
           url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
