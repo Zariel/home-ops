@@ -34,6 +34,8 @@ spec:
     # Enable Grafana dashboards
     defaultDashboards:
       enabled: true
+      labels:
+        grafana_dashboard: "1"
       
     # Create ServiceMonitors for kubeApiServer, kubeScheduler, kubeControllerManager, kubeEtcd
     kubeApiServer:
