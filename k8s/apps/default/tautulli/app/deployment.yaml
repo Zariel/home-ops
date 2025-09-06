@@ -35,7 +35,7 @@ spec:
             limits:
               memory: 1Gi
             requests:
-              cpu: 10m
+              cpu: 200m
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
