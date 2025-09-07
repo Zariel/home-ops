@@ -97,6 +97,7 @@ custom_formats:
     trash_ids:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
+
   - assign_scores_to:
       - name: *remux
       - name: *bd1080
@@ -111,7 +112,6 @@ custom_formats:
       - 240770601cc226190c367ef59aba7463 # AAC
       - c2998bd0d90ed5621d8df281e839436e # DD
       - 8e109e50e0a0b83a5098b056e13bf6db # DTS-HD HRA
-      - a570d4a0e56a2874b64e5bfa55202a1b # FLAC
       - 6ba9033150e7896bdc9ec4b44f2b230f # MP3
       - a061e2e700f81932daf888599f8a8273 # Opus
       - e7c2fcae07cbada050a0af3357491d7b # PCM
@@ -219,6 +219,13 @@ custom_formats:
     trash_ids:
       - dcf3ec6938fa32445f590a4da84256cd # DTS-HD MA
       - 3cafb66171b47f226146a0770576870f # TrueHD
+  - assign_scores_to:
+      - name: *remux
+        score: 3000
+      - name: *bd1080
+        score: 3000
+    trash_ids:
+      - a570d4a0e56a2874b64e5bfa55202a1b # FLAC
   - assign_scores_to:
       - name: *remux
         score: 2500
