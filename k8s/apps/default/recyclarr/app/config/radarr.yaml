@@ -119,7 +119,7 @@ custom_formats:
       # HDR Formats
       - 493b6d1dbec3c3364c59d7607f7e3405 # HDR
       - b337d6812e06c200ec9a2d3cfa9d20a7 # DV Boost
-      - f700d29429c023a5734505e77daeaea7 # DV (disk)
+      # - f700d29429c023a5734505e77daeaea7 # DV (disk)
 
       # HQ Release Groups
       - ed27ebfef2f323e964fb1f61391bcb35 # HD Bluray Tier 01
