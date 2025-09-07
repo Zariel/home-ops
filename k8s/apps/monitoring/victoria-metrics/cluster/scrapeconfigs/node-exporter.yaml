@@ -15,4 +15,8 @@ spec:
         - gaming.cbannister.casa:9100
       labels:
         job: node-exporter
+    - targets:
+        - pve.cbannister.casa:9290
+      labels:
+        job: impi-exporter
   path: /metrics
