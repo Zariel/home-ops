@@ -33,7 +33,7 @@ spec:
       
     # Enable Grafana dashboards
     defaultDashboards:
-      enabled: true
+      enabled: false  # Disabled to avoid duplicate dashboards with Grafana HelmRelease
       labels:
         grafana_dashboard: "1"
       
