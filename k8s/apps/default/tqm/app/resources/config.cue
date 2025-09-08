@@ -125,7 +125,7 @@ filters: default: remove: [
 
 	for t in #trackers if t.seedDays != _|_ || t.ratio != _|_ {
 		if t.seedDays != _|_ && t.ratio != _|_ {
-			"HasAllTags(\"site:\(t.name)\") && (Ratio > \(t.ratio) && SeedingDays >= \(t.seedDays))"
+			"HasAllTags(\"site:\(t.name)\") && (Ratio > \(t.ratio) || SeedingDays >= \(t.seedDays))"
 		}
 		if t.seedDays != _|_ && t.ratio == _|_ {
 			"HasAllTags(\"site:\(t.name)\") && SeedingDays >= \(t.seedDays)"
