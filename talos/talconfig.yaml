@@ -91,8 +91,8 @@ controlPlane:
       cluster:
         apiServer:
           extraArgs:
-            # feature-gates: MutatingAdmissionPolicy=true
-            # runtime-config: admissionregistration.k8s.io/v1alpha1=true
+            feature-gates: ImageVolume=true,MutatingAdmissionPolicy=true
+            runtime-config: admissionregistration.k8s.io/v1beta1=true
             anonymous-auth: true
         controllerManager:
           extraArgs:
