@@ -20,19 +20,9 @@ patches:
   - |-
     machine:
       kubelet:
-        extraArgs:
-          rotate-server-certificates: "true"
         extraConfig:
           maxPods: 150
           serializeImagePulls: false
-        extraMounts:
-          - destination: /var/openebs/local
-            type: bind
-            source: /var/openebs/local
-            options:
-              - bind
-              - rshared
-              - rw
         nodeIP:
           validSubnets:
             - 10.1.1.0/24
@@ -49,12 +39,11 @@ patches:
         net.core.rmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
         net.core.wmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
         net.ipv4.tcp_congestion_control: bbr   # 10Gb/s
-        net.ipv4.tcp_fastopen: 0               # Cilum explicitly says this can cause issue with DSR
+        net.ipv4.tcp_fastopen: 3               # Cilum explicitly says this can cause issue with DSR
         net.ipv4.tcp_mtu_probing: 1            # 10Gb/s | Jumbo frames
-        net.ipv4.tcp_rmem: 4096 65536 33554432 # 10Gb/s
+        net.ipv4.tcp_rmem: 4096 87380 33554432 # 10Gb/s
         net.ipv4.tcp_wmem: 4096 65536 33554432 # 10Gb/s
         net.ipv4.tcp_window_scaling: 1         # 10Gb/s
-        net.ipv4.tcp_slow_start_after_idle: 0
         sunrpc.tcp_slot_table_entries: 128     # 10Gb/s | NFS
         sunrpc.tcp_max_slot_table_entries: 128 # 10Gb/s | NFS
         vm.nr_hugepages: 1024                  # PostgreSQL
@@ -90,7 +79,6 @@ controlPlane:
         - mitigations=off
         - apparmor=0
         - security=none
-        - module_blacklist=igc
         - talos.logging.kernel=udp://10.45.0.2:6002/
         - talos.auditd.disabled=1
       systemExtensions:
@@ -103,8 +91,8 @@ controlPlane:
       cluster:
         apiServer:
           extraArgs:
-            feature-gates: MutatingAdmissionPolicy=true
-            runtime-config: admissionregistration.k8s.io/v1alpha1=true
+            # feature-gates: MutatingAdmissionPolicy=true
+            # runtime-config: admissionregistration.k8s.io/v1alpha1=true
             anonymous-auth: true
         controllerManager:
           extraArgs:
@@ -130,44 +118,33 @@ controlPlane:
                           topologyKey: kubernetes.io/hostname
                           whenUnsatisfiable: ScheduleAnyway
         etcd:
+          advertisedSubnets:
+            - 10.1.1.0/24
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
-            # initial-cluster: "k8s-0=https://10.1.1.10:2380,k8s-1=https://10.1.1.11:2380,k8s-2=https://10.1.1.12:2380"
       machine:
         sysfs:
           devices.system.cpu.intel_pstate.hwp_dynamic_boost: 1
-          devices.system.cpu.cpu0.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu1.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu2.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu3.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu4.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu5.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu6.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu7.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu8.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu9.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu10.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu11.cpufreq.energy_performance_preference: performance
-          devices.system.cpu.cpu12.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu13.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu14.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu15.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu16.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu17.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu18.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu19.cpufreq.energy_performance_preference: balance_performance
-          devices.system.cpu.cpu0.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu1.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu2.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu3.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu4.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu5.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu6.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu7.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu8.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu9.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu10.power.energy_perf_bias: 4 # balance_performance
-          devices.system.cpu.cpu11.power.energy_perf_bias: 4 # balance_performance
+          devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu12.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu13.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu14.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu15.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu16.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu17.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu18.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.cpu19.cpufreq.energy_performance_preference: balance_power
         features:
           kubernetesTalosAPIAccess:
             enabled: true
@@ -184,16 +161,13 @@ controlPlane:
     - manifests/x710.yaml
   machineFiles: &machineFiles
     - content: |-
-        [plugins."io.containerd.grpc.v1.cri"]
-          enable_unprivileged_ports = true
-          enable_unprivileged_icmp = true
-        [plugins."io.containerd.grpc.v1.cri".containerd]
+        [plugins."io.containerd.cri.v1.images"]
           discard_unpacked_layers = false
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-          discard_unpacked_layers = false
-      permissions: 0
+        [plugins."io.containerd.cri.v1.runtime"]
+          device_ownership_from_security_context = true
       path: /etc/cri/conf.d/20-customization.part
       op: create
+        # nodiratime=True
     - content: |-
         [ NFSMount_Global_Options ]
         nfsvers=4.2
@@ -228,40 +202,31 @@ worker:
     node-role.kubernetes.io/worker: worker
 
 nodes:
-  - hostname: k8s-0.cbannister.casa
+  - hostname: k8s-0
     ipAddress: "10.1.1.10"
     controlPlane: true
     installDiskSelector:
       wwid: eui.343335304ea054640025384100000001
-    networkInterfaces:
+    networkInterfaces: &networkConfig
       - deviceSelector:
-          hardwareAddr: 58:47:ca:78:d2:42
+          hardwareAddr: "58:47:ca:78:d*"
           driver: i40e
           physical: true
         mtu: 9000
         dhcp: true
-  - hostname: k8s-1.cbannister.casa
+      - deviceSelector:
+          driver: igc
+        ignore: true
+  - hostname: k8s-1
     ipAddress: "10.1.1.11"
     controlPlane: true
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: 58:47:ca:78:d7:fa
-          driver: i40e
-          physical: true
-        dhcp: true
-        mtu: 9000
+    networkInterfaces: *networkConfig
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
-  - hostname: k8s-2.cbannister.casa
+  - hostname: k8s-2
     ipAddress: "10.1.1.12"
     controlPlane: true
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: 58:47:ca:78:d8:42
-          driver: i40e
-          physical: true
-        dhcp: true
-        mtu: 9000
+    networkInterfaces: *networkConfig
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
   # - hostname: k8s-3
