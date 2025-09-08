@@ -180,9 +180,6 @@ spec:
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: *datasource
-        nvidia:
-          url: https://raw.githubusercontent.com/NVIDIA/dcgm-exporter/refs/heads/main/grafana/dcgm-exporter-dashboard.json
-          datasource: *datasource
         speedtest-exporter-hub:
           # renovate: depName="Speedtest-Exporter Dashboard"
           gnetId: 13665
@@ -190,12 +187,6 @@ spec:
           datasource:
             - name: "DS_PROMETHEUS"
               value: *datasource
-        envoy:
-          # renovate: depName="Envoy Proxy Monitoring gRPC"
-          gnetId: 23239
-          revision: 1
-          datasource:
-            - { name: DS_AFRANET_PROMETHEUS, value: *datasource }
         zfs:
           # renovate: depName="ZFS"
           gnetId: 7845
@@ -206,11 +197,6 @@ spec:
           revision: 22
           datasource: *datasource
       dns:
-        dnsdist:
-          # renovate: depName="dnsdist"
-          gnetId: 18044
-          revision: 1
-          datasource: *datasource
         external-dns:
           # renovate: depName="External-dns"
           gnetId: 15038
@@ -270,18 +256,46 @@ spec:
           gnetId: 11454
           revision: 14
           datasource: *datasource
-      nginx:
-        nginx:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
+        controller-manager:
+          # renovate: depName="Kubernetes / Controller Manager"
+          gnetId: 12109
+          revision: 1
           datasource: *datasource
-        nginx-request-handling-performance:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
+        scheduler:
+          # renovate: depName="Kubernetes / Scheduler"
+          gnetId: 12130
+          revision: 1
           datasource: *datasource
-      prometheus:
-        prometheus:
-          # renovate: depName="Prometheus"
-          gnetId: 19105
-          revision: 7
+        kubelet:
+          # renovate: depName="Kubernetes / Kubelet"
+          gnetId: 12129
+          revision: 1
+          datasource: *datasource
+        etcd:
+          # renovate: depName="etcd"
+          gnetId: 3070
+          revision: 3
+          datasource: *datasource
+        coredns:
+          # renovate: depName="Kubernetes / System / CoreDNS"
+          gnetId: 15762
+          revision: 1
+          datasource: *datasource
+      victoria-metrics:
+        vmagent:
+          # renovate: depName="VictoriaMetrics - vmagent"
+          gnetId: 12683
+          revision: 1
+          datasource: *datasource
+        vmalert:
+          # renovate: depName="VictoriaMetrics - vmalert"
+          gnetId: 14950
+          revision: 1
+          datasource: *datasource
+        vm-operator:
+          # renovate: depName="VictoriaMetrics - operator"
+          gnetId: 17869
+          revision: 1
           datasource: *datasource
       unifi:
         unifi-insights:
