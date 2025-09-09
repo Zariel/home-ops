@@ -10,13 +10,10 @@ metadata:
     gateway: external
 spec:
   gatewayClassName: envoy-gateway
-  addresses:
-    - type: IPAddress
-      value: &addr 10.45.0.11
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
-      io.cilium/lb-ipam-ips: *addr
+      io.cilium/lb-ipam-ips: 10.45.0.11
   listeners:
     - name: http
       protocol: HTTP
