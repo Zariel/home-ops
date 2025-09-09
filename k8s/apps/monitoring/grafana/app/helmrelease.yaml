@@ -281,6 +281,51 @@ spec:
           gnetId: 15762
           revision: 1
           datasource: *datasource
+        k8s-compute-resources-workloads:
+          # renovate: depName="Kubernetes / Compute Resources / Namespace (Workloads)"
+          gnetId: 12118
+          revision: 1
+          datasource: *datasource
+        k8s-compute-resources-namespace-pods:
+          # renovate: depName="Kubernetes / Compute Resources / Namespace (Pods)"
+          gnetId: 12117
+          revision: 1
+          datasource: *datasource
+        k8s-compute-resources-pod:
+          # renovate: depName="Kubernetes / Compute Resources / Pod"
+          gnetId: 14438
+          revision: 1
+          datasource: *datasource
+        k8s-compute-resources-node-pods:
+          # renovate: depName="Kubernetes / Compute Resources / Node (Pods)"
+          gnetId: 12119
+          revision: 1
+          datasource: *datasource
+        k8s-pods-resources:
+          # renovate: depName="Kubernetes Pods Resources"
+          gnetId: 21811
+          revision: 1
+          datasource: *datasource
+        k8s-pods-containers-resources:
+          # renovate: depName="Kubernetes Pods Containers Resources"
+          gnetId: 9810
+          revision: 1
+          datasource: *datasource
+        k8s-workloads-cpu-memory:
+          # renovate: depName="Kubernetes Workloads CPU and Memory Metrics"
+          gnetId: 20372
+          revision: 1
+          datasource: *datasource
+        k8s-detailed-pods-resources:
+          # renovate: depName="Detailed Pods Resources"
+          gnetId: 11594
+          revision: 1
+          datasource: *datasource
+        k8s-resource-monitoring:
+          # renovate: depName="K8s Resource Monitoring"
+          gnetId: 17375
+          revision: 1
+          datasource: *datasource
       victoria-metrics:
         vmagent:
           # renovate: depName="VictoriaMetrics - vmagent"
