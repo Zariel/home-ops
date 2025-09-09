@@ -36,6 +36,13 @@ spec:
       retries: 5
   values:
     config:
+      global:
+        imageRegistry: mirror.gcr.io
       envoyGateway:
         gateway:
           controllerName: gateway.envoyproxy.io/gatewayclass-controller
+        provider:
+          type: Kubernetes
+          kubernetes:
+            deploy:
+              type: GatewayNamespace
