@@ -126,6 +126,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/unifi
+          - name: victoria-metrics
+            orgId: 1
+            folder: "Victoria Metrics"
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/victoria-metrics
 
     datasources:
       datasources.yaml:
@@ -226,35 +234,11 @@ spec:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
           datasource: *datasource
       kubernetes:
+        # System Components
         k8s-system-api-server:
           # renovate: depName="Kubernetes / System / API Server"
           gnetId: 15761
           revision: 19
-          datasource: *datasource
-        k8s-views-global:
-          # renovate: depName="Kubernetes / Views / Global"
-          gnetId: 15757
-          revision: 43
-          datasource: *datasource
-        k8s-views-nodes:
-          # renovate: depName="Kubernetes / Views / Nodes"
-          gnetId: 15759
-          revision: 37
-          datasource: *datasource
-        k8s-views-namespaces:
-          # renovate: depName="Kubernetes / Views / Namespaces"
-          gnetId: 15758
-          revision: 42
-          datasource: *datasource
-        k8s-views-pods:
-          # renovate: depName="Kubernetes / Views / Pods"
-          gnetId: 15760
-          revision: 36
-          datasource: *datasource
-        k8s-volumes:
-          # renovate: depName="K8s / Storage / Volumes / Cluster"
-          gnetId: 11454
-          revision: 14
           datasource: *datasource
         controller-manager:
           # renovate: depName="Kubernetes / Controller Manager"
@@ -281,6 +265,33 @@ spec:
           gnetId: 15762
           revision: 1
           datasource: *datasource
+        # Views & Storage
+        k8s-views-global:
+          # renovate: depName="Kubernetes / Views / Global"
+          gnetId: 15757
+          revision: 43
+          datasource: *datasource
+        k8s-views-nodes:
+          # renovate: depName="Kubernetes / Views / Nodes"
+          gnetId: 15759
+          revision: 37
+          datasource: *datasource
+        k8s-views-namespaces:
+          # renovate: depName="Kubernetes / Views / Namespaces"
+          gnetId: 15758
+          revision: 42
+          datasource: *datasource
+        k8s-views-pods:
+          # renovate: depName="Kubernetes / Views / Pods"
+          gnetId: 15760
+          revision: 36
+          datasource: *datasource
+        k8s-volumes:
+          # renovate: depName="K8s / Storage / Volumes / Cluster"
+          gnetId: 11454
+          revision: 14
+          datasource: *datasource
+        # Resource Monitoring
         k8s-compute-resources-workloads:
           # renovate: depName="Kubernetes / Compute Resources / Namespace (Workloads)"
           gnetId: 12118
