@@ -4,7 +4,7 @@ originRequest:
 
 ingress:
   - hostname: cbannister.xyz
-    service: &svc https://envoy-external.network.svc.cluster.local
+    service: &svc https://external.network.svc.cluster.local
   - hostname: "*.cbannister.xyz"
     service: *svc
   - service: http_status:404
