@@ -330,7 +330,7 @@ spec:
         k8s-detailed-pods-resources:
           # renovate: depName="Detailed Pods Resources"
           gnetId: 11594
-          revision: 1
+          revision: 5
           datasource: *datasource
         k8s-resource-monitoring:
           # renovate: depName="K8s Resource Monitoring"
