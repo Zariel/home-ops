@@ -346,7 +346,7 @@ spec:
         vmalert:
           # renovate: depName="VictoriaMetrics - vmalert"
           gnetId: 14950
-          revision: 1
+          revision: 16
           datasource: *datasource
         vm-operator:
           # renovate: depName="VictoriaMetrics - operator"
