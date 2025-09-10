@@ -263,7 +263,7 @@ spec:
         coredns:
           # renovate: depName="Kubernetes / System / CoreDNS"
           gnetId: 15762
-          revision: 1
+          revision: 21
           datasource: *datasource
         # Views & Storage
         k8s-views-global:
