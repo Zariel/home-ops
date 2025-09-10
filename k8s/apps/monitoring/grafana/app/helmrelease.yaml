@@ -351,7 +351,7 @@ spec:
         vm-operator:
           # renovate: depName="VictoriaMetrics - operator"
           gnetId: 17869
-          revision: 1
+          revision: 3
           datasource: *datasource
       unifi:
         unifi-insights:
