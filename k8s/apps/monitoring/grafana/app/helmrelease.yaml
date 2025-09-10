@@ -320,7 +320,7 @@ spec:
         k8s-pods-containers-resources:
           # renovate: depName="Kubernetes Pods Containers Resources"
           gnetId: 9810
-          revision: 1
+          revision: 2
           datasource: *datasource
         k8s-workloads-cpu-memory:
           # renovate: depName="Kubernetes Workloads CPU and Memory Metrics"
