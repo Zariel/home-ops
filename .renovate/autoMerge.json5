@@ -54,8 +54,8 @@
     {
       description: ["auto merge grafana dashboards"],
       matchDatasources: ["custom.grafana-dashboards"],
-      autoMerge: true
-      autoMergeType: branch
+      autoMerge: true,
+      autoMergeType: "branch",
       ignoreTests: true,
     },
   ]
