@@ -76,7 +76,7 @@ spec:
             initialDelaySeconds: 15
         - <<: *container
           name: onepassword-sync
-          image: docker.io/1password/connect-sync:1.8.0
+          image: docker.io/1password/connect-sync:1.8.1
           env:
             - name: XDG_DATA_HOME
               value: *configDir
