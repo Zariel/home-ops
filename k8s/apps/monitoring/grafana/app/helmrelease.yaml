@@ -188,6 +188,11 @@ spec:
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: *datasource
+        smartctl-monitor:
+          gnetId: 22604
+          revision: 2
+          datasource:
+            - { name: DS_PROMETHEUS, value: victoriametrics }
         speedtest-exporter-hub:
           # renovate: depName="Speedtest-Exporter Dashboard"
           gnetId: 13665
