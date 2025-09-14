@@ -31,7 +31,6 @@ spec:
           volumeMounts:
             - name: shared-scripts
               mountPath: /shared
-      containers:
         - name: set-queues
           image: alpine
           restart: Never
@@ -44,6 +43,7 @@ spec:
               ethtool -L enp2s0f1np1 combined 12
           securityContext:
             privileged: true
+      containers:
         - name: irq-affinity
           image: ubuntu:24.04
           command:
