@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://schemas.budimanjojo.com/gateway.networking.k8s.io/gatewayclass_v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/gatewayclass_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
@@ -12,7 +12,7 @@ spec:
     name: proxy-config
     namespace: network
 ---
-# yaml-language-server: $schema=https://schemas.budimanjojo.com/gateway.envoyproxy.io/envoyproxy_v1alpha1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.envoyproxy.io/envoyproxy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
 metadata:
@@ -29,5 +29,19 @@ spec:
     kubernetes:
       envoyDeployment:
         replicas: 2
+        container:
+          image: mirror.gcr.io/envoyproxy/envoy:v1.35.3
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              memory: 1Gi
       envoyService:
-        externalTrafficPolicy: Cluster
+        externalTrafficPolicy: Local
+  shutdown:
+    drainTimeout: 180s
+  telemetry:
+    metrics:
+      prometheus:
+        compression:
+          type: Gzip
