@@ -42,6 +42,8 @@ spec:
               apk add ethtool
               ethtool -L enp2s0f1np0 combined 12
               ethtool -L enp2s0f1np1 combined 12
+          securityContext:
+            privileged: true
         - name: irq-affinity
           image: ubuntu:24.04
           command:
