@@ -5,7 +5,7 @@ kind: OCIRepository
 metadata:
   name: victoria-metrics-operator
 spec:
-  interval: 5m
+  interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
@@ -19,18 +19,26 @@ kind: HelmRelease
 metadata:
   name: victoria-metrics-operator
 spec:
-  interval: 1h
+  interval: 5m
   chartRef:
     kind: OCIRepository
     name: victoria-metrics-operator
-  dependsOn:
-    - name: prometheus-operator-crds
-      namespace: monitoring
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
+  install:
+    crds: Skip
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    crds: Skip
+    remediation:
+      retries: 3
   values:
-    createCRD: true
-    replicaCount: 2
+    crds:
+      enable: false
+    global:
+      image:
+        registry: ghcr.io
+    replicaCount: 1
     operator:
       enable_converter_ownership: true
       useCustomConfigReloader: true
