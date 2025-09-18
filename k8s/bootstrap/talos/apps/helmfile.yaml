@@ -1,36 +1,36 @@
 ---
-repositories:
-  - name: coredns
-    url: https://coredns.github.io/helm
-  - name: cilium
-    url: https://helm.cilium.io
-  - name: postfinance
-    url: https://postfinance.github.io/kubelet-csr-approver
+helmDefaults:
+  cleanupOnFail: true
+  wait: true
+  waitForJobs: true
 
 releases:
   - name: cilium
     namespace: kube-system
-    chart: cilium/cilium
+    chart: oci://ghcr.io/home-operations/charts-mirror/cilium
     version: 1.18.2
     wait: true
     values:
       - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/cilium/app/values.yaml'
+    hooks:
+      - # Advertise Kubernetes VIP
+        events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --server-side
+          - --namespace=kube-system
+          - --field-manager=kustomize-controller
+          - --kustomize
+          - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/cilium/networks'
+        showlogs: true
+
   - name: coredns
     namespace: kube-system
-    chart: coredns/coredns
+    chart: oci://ghcr.io/coredns/charts/coredns
     version: 1.43.3
-    wait: true
+    version: 1.43.2
     values:
       - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/coredns/app/values.yaml'
     needs:
       - cilium
-  - name: kubelet-csr-approver
-    namespace: kube-system
-    chart: postfinance/kubelet-csr-approver
-    version: 1.2.11
-    wait: true
-    values:
-      - '{{ requiredEnv "CLUSTER_DIR" }}/apps/kube-system/kubelet-csr-approver/app/values.yaml'
-    needs:
-      - cilium
-      - coredns
