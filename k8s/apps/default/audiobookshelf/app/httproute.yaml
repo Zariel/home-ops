@@ -10,7 +10,7 @@ spec:
   hostnames:
     - audiobookshelf.cbannister.xyz
   parentRefs:
-    - name: internal
+    - name: external
       namespace: network
       sectionName: https
   rules:
