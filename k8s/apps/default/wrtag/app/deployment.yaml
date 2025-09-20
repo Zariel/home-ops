@@ -65,20 +65,20 @@ spec:
           ports:
             - containerPort: 80
               name: web
-          readinessProbe:
-            httpGet: &probe
-              port: web
-              path: /
-          startupProbe:
-            httpGet: *probe
-            failureThreshold: 6
-            periodSeconds: 10
-          livenessProbe:
-            httpGet: *probe
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 5
-            failureThreshold: 5
+          # readinessProbe:
+          #   httpGet: &probe
+          #     port: web
+          #     path: /debug/pprof
+          # startupProbe:
+          #   httpGet: *probe
+          #   failureThreshold: 6
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   httpGet: *probe
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 20
+          #   timeoutSeconds: 5
+          #   failureThreshold: 5
           resources:
             requests:
               cpu: 100m
