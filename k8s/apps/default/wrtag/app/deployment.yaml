@@ -91,5 +91,6 @@ spec:
               mountPath: /config
             - name: music-downloads
               mountPath: /data/downloads/torrents/complete/music
+              readOnly: true
             - name: music-output
               mountPath: /music
