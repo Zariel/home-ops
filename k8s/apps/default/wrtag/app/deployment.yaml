@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrtag
+  labels:
+    app: wrtag
+spec:
+  selector:
+    matchLabels:
+      app: wrtag
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wrtag
+    spec:
+      hostname: wrtag
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: wrtag
+        - name: music-downloads
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/music/downloads/library
+        - name: music-output
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/music/downloads/wrtag
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: wrtag
+          image: sentriz/wrtag:v0.18.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: WRTAG_WEB_LISTEN_ADDR
+              value: ":80"
+            - name: WRTAG_WEB_DB_PATH
+              value: /config/wrtag.db
+            - name: WRTAG_LOG_LEVEL
+              value: info
+            - name: WRTAG_WEB_PUBLIC_URL
+              value: https://wrtag.cbannister.xyz
+            - name: WRTAG_CONFIG_PATH
+              value: /config
+            - name: WRTAG_PATH_FORMAT
+              value: |-
+                /music/{{ artists .Release.Artists | sort | join "; " | safepath }}/({{ .Release.ReleaseGroup.FirstReleaseDate.Year }}) {{ .Release.Title | safepath }}{{ if not (eq .ReleaseDisambiguation "") }} ({{ .ReleaseDisambiguation | safepath }}){{ end }}/{{ pad0 2 .TrackNum }}. {{ if .IsCompilation }}{{ artistsString .Track.Artists | safepath }} - {{ end }}{{ .Track.Title | safepath }}{{ .Ext }}
+            - name: WRTAG_TAG_CONFIG
+              value: "keep DISCNUMBER"
+          envFrom:
+            - secretRef:
+                name: wrtag-secret
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - containerPort: 80
+              name: web
+          readinessProbe:
+            httpGet: &probe
+              port: web
+              path: /
+          startupProbe:
+            httpGet: *probe
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: *probe
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: music-downloads
+              mountPath: /data/downloads/torrents/complete/music
+            - name: music-output
+              mountPath: /music
