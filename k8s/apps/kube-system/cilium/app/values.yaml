@@ -1,4 +1,3 @@
-autoDirectNodeRoutes: true
 bandwidthManager:
   enabled: true
   bbr: true
@@ -45,11 +44,13 @@ l2announcements:
 loadBalancer:
   algorithm: maglev
   mode: dsr
+  dsrDispatch: geneve
 localRedirectPolicy: true
 operator:
   rollOutPods: true
 rollOutCiliumPods: true
-routingMode: native
+routingMode: tunnel
+tunnelProtocol: geneve
 securityContext:
   capabilities:
     ciliumAgent:
