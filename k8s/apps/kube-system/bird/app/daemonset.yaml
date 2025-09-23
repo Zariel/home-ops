@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: bird
+  labels:
+    app.kubernetes.io/name: bird
+    app.kubernetes.io/instance: bird
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: bird
+      app.kubernetes.io/instance: bird
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: bird
+        app.kubernetes.io/instance: bird
+    spec:
+      # Use host networking for direct access to network interfaces
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+
+      tolerations:
+        - operator: Exists
+          effect: NoSchedule
+        - operator: Exists
+          effect: NoExecute
+
+      containers:
+        - name: bird
+          image: pierky/bird:3.1.2
+          imagePullPolicy: IfNotPresent
+
+          # Security context - requires privileged access for routing
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+                - SYS_ADMIN
+
+          # Resource limits
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              memory: 256Mi
+
+          # Volume mounts
+          volumeMounts:
+            - name: bird-config
+              mountPath: /etc/bird
+              readOnly: true
+            - name: bird-logs
+              mountPath: /var/log
+            - name: bird-run
+              mountPath: /var/run/bird
+
+          # Health checks
+          livenessProbe:
+            exec:
+              command:
+                - /usr/sbin/birdc
+                - show
+                - status
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+
+          readinessProbe:
+            exec:
+              command:
+                - /usr/sbin/birdc
+                - show
+                - protocols
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+      volumes:
+        - name: bird-config
+          configMap:
+            name: bird-config
+        - name: bird-logs
+          hostPath:
+            path: /var/log/bird
+            type: DirectoryOrCreate
+        - name: bird-run
+          emptyDir: {}
