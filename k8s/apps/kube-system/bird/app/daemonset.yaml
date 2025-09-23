@@ -32,23 +32,12 @@ spec:
           image: pierky/bird:3.1.2
           imagePullPolicy: IfNotPresent
 
-          # Security context - requires privileged access for routing
-          securityContext:
-            privileged: true
-            capabilities:
-              add:
-                - NET_ADMIN
-                - NET_RAW
-                - SYS_ADMIN
-
-          # Resource limits
           resources:
             requests:
               cpu: 100m
             limits:
               memory: 256Mi
 
-          # Volume mounts
           volumeMounts:
             - name: bird-config
               mountPath: /etc/bird
@@ -58,7 +47,6 @@ spec:
             - name: bird-run
               mountPath: /var/run/bird
 
-          # Health checks
           livenessProbe:
             exec:
               command:
