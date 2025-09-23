@@ -5,6 +5,7 @@ namespace: kube-system
 components:
   - ../../components/common
 resources:
+  - bird/ks.yaml
   - cilium/ks.yaml
   - csi-driver-smb/ks.yaml
   - metrics-server

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bird-monitoring
+  labels:
+    app.kubernetes.io/name: bird
+    app.kubernetes.io/instance: bird
+spec:
+  type: ClusterIP
+  clusterIP: None  # Headless service for DaemonSet
+  selector:
+    app.kubernetes.io/name: bird
+    app.kubernetes.io/instance: bird
+  ports:
+    - name: bird-control
+      port: 2609
+      targetPort: 2609
+      protocol: TCP
