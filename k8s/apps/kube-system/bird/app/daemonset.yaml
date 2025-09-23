@@ -51,27 +51,27 @@ spec:
             - name: bird-run
               mountPath: /var/run/bird
 
-          # livenessProbe:
-          #   exec:
-          #     command:
-          #       - /usr/sbin/birdc
-          #       - show
-          #       - status
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 30
-          #   timeoutSeconds: 10
-          #   failureThreshold: 3
+          livenessProbe:
+            exec:
+              command:
+                - /usr/local/sbin/birdcl
+                - show
+                - status
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
 
-          # readinessProbe:
-          #   exec:
-          #     command:
-          #       - /usr/sbin/birdc
-          #       - show
-          #       - protocols
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 10
-          #   timeoutSeconds: 5
-          #   failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /usr/local/sbin/birdcl
+                - show
+                - protocols
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
 
       volumes:
         - name: bird-config
