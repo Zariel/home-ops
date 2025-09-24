@@ -32,6 +32,10 @@ spec:
         - name: bird
           image: pierky/bird:3.1.2
           imagePullPolicy: IfNotPresent
+          command:
+            - /usr/local/sbin/bird
+          args:
+            - "-f"
 
           securityContext:
             privileged: true
