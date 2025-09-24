@@ -132,7 +132,7 @@ sinks:
     type: loki
     inputs:
       - kubernetes_remap
-    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
+    endpoint: http://loki.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
     batch:
@@ -151,7 +151,7 @@ sinks:
     inputs:
       - vyos_firewall_wan_route._unmatched
       - vyos_firewall_geoip_remap
-    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
+    endpoint: http://loki.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
     batch:
@@ -165,7 +165,7 @@ sinks:
     type: loki
     inputs:
       - talos_kernel_transform
-    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
+    endpoint: http://loki.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
       except_fields:
@@ -182,7 +182,7 @@ sinks:
     type: loki
     inputs:
       - talos_service_transform
-    endpoint: http://loki-write.monitoring.svc.cluster.local:3100
+    endpoint: http://loki.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
       except_fields:
