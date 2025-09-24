@@ -36,6 +36,8 @@ spec:
             - /usr/local/sbin/bird
           args:
             - "-f"
+            - "-c"
+            - /etc/bird.conf
 
           securityContext:
             privileged: true
