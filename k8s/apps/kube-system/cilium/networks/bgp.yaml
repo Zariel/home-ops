@@ -19,14 +19,6 @@ spec:
     matchLabels:
       kubernetes.io/os: linux
   bgpInstances:
-    - name: gateway
-      localASN: 64513
-      peers:
-        - name: gateway
-          peerASN: 64512
-          peerAddress: "10.1.1.1"
-          peerConfigRef:
-            name: gateway
     - name: bird
       localASN: 64513
       peers:
@@ -36,26 +28,6 @@ spec:
           peerConfigRef:
             name: bird
 
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2.json
-apiVersion: cilium.io/v2
-kind: CiliumBGPPeerConfig
-metadata:
-  name: gateway
-spec:
-  timers:
-    connectRetryTimeSeconds: 12
-    holdTimeSeconds: 9
-    keepAliveTimeSeconds: 3
-  gracefulRestart:
-    enabled: true
-    restartTimeSeconds: 15
-  families:
-    - afi: ipv4
-      safi: unicast
-      advertisements:
-        matchLabels:
-          advertise: "bgp"
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2.json
 apiVersion: cilium.io/v2
