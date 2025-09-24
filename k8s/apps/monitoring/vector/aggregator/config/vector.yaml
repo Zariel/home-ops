@@ -109,22 +109,20 @@ transforms:
     inputs:
       - talos_kernel_logs
     source: |-
-      r1 = replace!(.__host, "10.1.1.10", "k8s-0")
-      r2 = replace(r1, "10.1.1.11", "k8s-1")
-      r3 = replace(r2, "10.1.1.12", "k8s-2")
-      r4 = replace(r3, "10.1.1.13", "k8s-3")
-      .node = r4
+      r1 = replace!(.__host, "10.254.1.1", "k8s-0")
+      r2 = replace(r1, "10.254.1.3", "k8s-1")
+      r3 = replace(r2, "10.254.1.5", "k8s-2")
+      .node = r3
 
   talos_service_transform:
     type: remap
     inputs:
       - talos_service_logs
     source: |-
-      r1 = replace!(.__host, "10.1.1.10", "k8s-0")
-      r2 = replace(r1, "10.1.1.11", "k8s-1")
-      r3 = replace(r2, "10.1.1.12", "k8s-2")
-      r4 = replace(r3, "10.1.1.13", "k8s-3")
-      .node = r4
+      r1 = replace!(.__host, "10.254.1.1", "k8s-0")
+      r2 = replace(r1, "10.254.1.3", "k8s-1")
+      r3 = replace(r2, "10.254.1.5", "k8s-2")
+      .node = r3
 
 # Sinks
 sinks:
