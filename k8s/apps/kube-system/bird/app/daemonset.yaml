@@ -44,11 +44,12 @@ spec:
             requests:
               cpu: 100m
             limits:
-              memory: 256Mi
+              memory: 512Mi
 
           volumeMounts:
             - name: bird-config
-              mountPath: /etc/bird
+              mountPath: /etc/bird.conf
+              subPath: bird.conf
               readOnly: true
             - name: bird-logs
               mountPath: /var/log
