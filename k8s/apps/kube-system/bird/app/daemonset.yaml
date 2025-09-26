@@ -22,6 +22,8 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       enableServiceLinks: false
 
+      priorityClassName: system-node-critical
+
       tolerations:
         - operator: Exists
           effect: NoSchedule
