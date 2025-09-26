@@ -87,8 +87,9 @@ spec:
           persistentVolumeClaim:
             claimName: *name
         - name: media
-          persistentVolumeClaim:
-            claimName: bighorse-arr-media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
         - name: secret-file
           secret:
             secretName: fertilizer-secret

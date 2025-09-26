@@ -18,8 +18,9 @@ spec:
       hostname: radarr
       volumes:
         - name: arr-media
-          persistentVolumeClaim:
-            claimName: bighorse-arr-media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
         - name: config
           persistentVolumeClaim:
             claimName: radarr

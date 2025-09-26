@@ -19,8 +19,9 @@ spec:
           persistentVolumeClaim:
             claimName: lidarr-music-bighorse
         - name: arr-media
-          persistentVolumeClaim:
-            claimName: bighorse-arr-media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
         - name: config
           persistentVolumeClaim:
             claimName: lidarr-config
