@@ -35,8 +35,9 @@ spec:
           persistentVolumeClaim:
             claimName: plex-cache
         - name: arr-media
-          persistentVolumeClaim:
-            claimName: bighorse-arr-media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
             readOnly: true
       containers:
         - name: plex
