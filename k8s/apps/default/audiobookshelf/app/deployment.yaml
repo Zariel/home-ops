@@ -83,5 +83,6 @@ spec:
         - name: cache
           emptyDir: {}
         - name: data
-          persistentVolumeClaim:
-            claimName: bighorse-arr-media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr

@@ -90,8 +90,9 @@ spec:
           persistentVolumeClaim:
             claimName: cross-seed
         - name: data
-          persistentVolumeClaim:
-            claimName: bighorse-arr-media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
         - name: music
           nfs:
             server: nas.cbannister.casa
