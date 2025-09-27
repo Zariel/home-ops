@@ -8,7 +8,7 @@ spec:
   staticConfigs:
     - targets:
         - pve.cbannister.casa:9633
-        - nas.cbannister.casa:9633
+        - 10.254.1.101:9633
       labels:
         job: smartctl
   path: /metrics

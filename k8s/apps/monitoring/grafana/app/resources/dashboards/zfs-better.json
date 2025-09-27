@@ -1403,8 +1403,8 @@
       {
         "current": {
           "selected": false,
-          "text": "nas.cbannister.casa:9100",
-          "value": "nas.cbannister.casa:9100"
+          "text": "10.254.1.101:9100",
+          "value": "10.254.1.101:9100"
         },
         "datasource": {
           "type": "prometheus",

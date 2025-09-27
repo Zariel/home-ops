@@ -11,6 +11,6 @@ spec:
   targets:
     staticConfig:
       static:
-        - nas.cbannister.casa
+        - 10.254.1.101
         - pikvm.cbannister.casa
         - pve.cbannister.casa

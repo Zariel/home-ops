@@ -10,7 +10,7 @@ spec:
         - gateway.cbannister.casa:9100
         - pve.cbannister.casa:9100
         - 10.1.1.14:9100 # pbs
-        - nas.cbannister.casa:9100
+        - 10.254.1.101:9100
         - am6b.cbannister.casa:9100
         - gaming.cbannister.casa:9100
       labels:

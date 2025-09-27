@@ -22,11 +22,11 @@ spec:
             claimName: wrtag
         - name: music-downloads
           nfs:
-            server: nas.cbannister.casa
+            server: 10.254.1.101
             path: /mnt/bighorse/music/downloads/library
         - name: music-output
           nfs:
-            server: nas.cbannister.casa
+            server: 10.254.1.101
             path: /mnt/bighorse/music/downloads/wrtag
       securityContext:
         runAsNonRoot: true

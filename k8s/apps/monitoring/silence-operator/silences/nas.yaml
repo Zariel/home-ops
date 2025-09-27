@@ -9,4 +9,4 @@ spec:
     - name: alertname
       value: NodeMemoryHighUtilization
     - name: instance
-      value: nas.cbannister.casa:9100
+      value: 10.254.1.101:9100

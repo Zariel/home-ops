@@ -83,5 +83,5 @@ spec:
             claimName: filebrowser
         - name: data
           nfs:
-            server: nas.cbannister.casa
+            server: 10.254.1.101
             path: /mnt/bighorse/arr

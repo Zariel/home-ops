@@ -91,11 +91,11 @@ spec:
             claimName: cross-seed
         - name: data
           nfs:
-            server: nas.cbannister.casa
+            server: 10.254.1.101
             path: /mnt/bighorse/arr
         - name: music
           nfs:
-            server: nas.cbannister.casa
+            server: 10.254.1.101
             path: /mnt/bighorse/music/downloads
         - name: secret-file
           secret:

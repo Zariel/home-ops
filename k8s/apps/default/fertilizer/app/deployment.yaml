@@ -88,7 +88,7 @@ spec:
             claimName: *name
         - name: media
           nfs:
-            server: nas.cbannister.casa
+            server: 10.254.1.101
             path: /mnt/bighorse/arr
         - name: secret-file
           secret:
