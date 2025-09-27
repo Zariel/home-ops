@@ -48,6 +48,7 @@ l2announcements:
 loadBalancer:
   algorithm: maglev
   mode: dsr
+  dsrDispatch: geneve
 localRedirectPolicy: true
 operator:
   rollOutPods: true
