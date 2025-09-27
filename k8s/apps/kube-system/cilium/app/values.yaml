@@ -1,4 +1,5 @@
 autoDirectNodeRoutes: true
+directRoutingSkipUnreachable: true
 bandwidthManager:
   enabled: true
   bbr: true
