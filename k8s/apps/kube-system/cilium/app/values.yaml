@@ -1,5 +1,5 @@
-autoDirectNodeRoutes: true
-directRoutingSkipUnreachable: true
+autoDirectNodeRoutes: false
+# directRoutingSkipUnreachable: true
 bandwidthManager:
   enabled: true
   bbr: true
@@ -7,7 +7,7 @@ bgpControlPlane:
   enabled: true
 bpf:
   datapathMode: netkit
-  masquerade: true
+  # masquerade: true
   preallocateMaps: true
   hostRouting: true
   hostLegacyRouting: false
@@ -20,7 +20,8 @@ cgroup:
 cluster:
   id: 1
   name: hollywoo
-enableRuntimeDeviceDetection: true
+# enableRuntimeDeviceDetection: true
+devices: enp2s0f1np1
 enableIPv4BIGTCP: true
 enableIPv4Masquerade: true
 endpointRoutes:
@@ -32,7 +33,8 @@ gatewayAPI:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 172.20.0.0/16
+ipv4NativeRoutingCIDR: 0.0.0.0/0
+enableIPv4Masquerade: false
 ingressController:
   enabled: false
   secretsNamespace:
