@@ -31,8 +31,7 @@ gatewayAPI:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 0.0.0.0/0
-enableIPv4Masquerade: false
+ipv4NativeRoutingCIDR: 172.20.0.0/16
 ingressController:
   enabled: false
   secretsNamespace:
@@ -42,10 +41,11 @@ k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: false
+  enabled: true
 loadBalancer:
   algorithm: maglev
   mode: dsr
+localRedirectPolicy: true
 operator:
   rollOutPods: true
 rollOutCiliumPods: true
