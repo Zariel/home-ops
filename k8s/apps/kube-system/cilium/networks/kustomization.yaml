@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - bgp.yaml
   - vip.yaml
-  - l2.yaml
