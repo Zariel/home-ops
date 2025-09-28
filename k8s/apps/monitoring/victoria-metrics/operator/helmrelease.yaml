@@ -35,9 +35,6 @@ spec:
   values:
     crds:
       enable: false
-    global:
-      image:
-        registry: ghcr.io
     replicaCount: 1
     operator:
       enable_converter_ownership: true
