@@ -12,6 +12,7 @@ bpf:
   hostRouting: true
   hostLegacyRouting: false
   tproxy: true
+  disableExternalIPMitigation: true
 bpfClockProbe: true
 cgroup:
   automount:
