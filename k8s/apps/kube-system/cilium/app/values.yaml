@@ -12,7 +12,6 @@ bpf:
   hostRouting: true
   hostLegacyRouting: false
   tproxy: true
-  disableExternalIPMitigation: true
 bpfClockProbe: true
 cgroup:
   automount:
@@ -49,6 +48,8 @@ l2announcements:
 loadBalancer:
   algorithm: maglev
   mode: dsr
+socketLB:
+  enabled: true
 localRedirectPolicy: true
 operator:
   rollOutPods: true
