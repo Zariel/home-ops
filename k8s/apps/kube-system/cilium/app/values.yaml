@@ -23,7 +23,6 @@ cluster:
 # enableRuntimeDeviceDetection: true
 devices: enp2s0f1np1
 enableIPv4BIGTCP: true
-enableIPv4Masquerade: true
 endpointRoutes:
   enabled: true
 envoy:
