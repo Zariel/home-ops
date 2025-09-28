@@ -8,7 +8,6 @@ spec:
   selector:
     app: plex
   type: LoadBalancer
-  externalTrafficPolicy: Local
   ipFamilies:
     - IPv4
   ports:
