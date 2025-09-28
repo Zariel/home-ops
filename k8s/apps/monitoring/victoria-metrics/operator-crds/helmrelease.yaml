@@ -32,3 +32,10 @@ spec:
     crds: CreateReplace
     remediation:
       retries: 3
+  values:
+    crds:
+      enabled: true
+      # plain == false results in CRDs being rendered as templates which allows them to be upgraded
+      plain: false
+      cleanup:
+        enabled: false
