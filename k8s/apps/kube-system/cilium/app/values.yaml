@@ -47,6 +47,8 @@ l2announcements:
 loadBalancer:
   algorithm: maglev
   mode: dsr
+  dsrDispatch: geneve
+tunnelProtocol: geneve
 socketLB:
   enabled: true
 localRedirectPolicy: true
