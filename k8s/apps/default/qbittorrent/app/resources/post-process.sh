@@ -71,7 +71,7 @@ main() {
     fi
 
     # Update permissions on the release directory
-    chmod -R 755 "${RELEASE_DIR}"
+    chmod -R 777 "${RELEASE_DIR}"
 
     # Search for cross-seed
     search_cross_seed
