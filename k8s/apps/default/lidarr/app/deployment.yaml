@@ -33,7 +33,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: lidarr
-          image: ghcr.io/zariel/lidarr-develop:2.14.4.4809
+          image: ghcr.io/zariel/lidarr-develop:2.14.5.4824
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
