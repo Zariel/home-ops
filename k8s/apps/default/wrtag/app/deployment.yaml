@@ -37,7 +37,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: wrtag
-          image: sentriz/wrtag:v0.18.0
+          image: sentriz/wrtag:v0.19.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
