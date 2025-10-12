@@ -216,9 +216,9 @@ spec:
           revision: 3
           datasource: *datasource
         dnsdist:
-          # renovate: depName="dnsdist"
-          gnetId: 18044
-          revision: 1
+          # renovate: depName="Dnsdist"
+          gnetId: 20422
+          revision: 4
           datasource: *datasource
       ceph:
         ceph-cluster:
