@@ -215,6 +215,11 @@ spec:
           gnetId: 15038
           revision: 3
           datasource: *datasource
+        dnsdist:
+          # renovate: depName="dnsdist"
+          gnetId: 18044
+          revision: 1
+          datasource: *datasource
       ceph:
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
