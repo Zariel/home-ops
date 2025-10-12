@@ -62,7 +62,7 @@ spec:
           - name: forward
             parameters: cbannister.xyz 10.45.0.55
           - name: forward
-            parameters: cbannister.casa 173.53.53.53
+            parameters: cbannister.casa 172.53.53.53
           - name: forward
             parameters: . 1.1.1.1 1.0.0.1
           - name: cache
