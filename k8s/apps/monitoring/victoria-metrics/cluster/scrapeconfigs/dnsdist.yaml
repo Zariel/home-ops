@@ -8,6 +8,9 @@ spec:
   staticConfigs:
     - targets:
         - 10.5.0.4:8083
+        - dns1.cbannister.casa:5383
+        - dns2.cbannister.casa:5383
+        - dns3.cbannister.casa:5383
       labels:
         job: dnsdist
   path: /metrics
