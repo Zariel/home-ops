@@ -16,6 +16,7 @@ spec:
         - dns1.cbannister.casa:9100
         - dns2.cbannister.casa:9100
         - dns3.cbannister.casa:9100
+        - builder.cbannister.casa:9100
       labels:
         job: node-exporter
     - targets:
