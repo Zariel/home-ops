@@ -19,6 +19,9 @@ cniConfig:
 patches:
   - |-
     machine:
+      time:
+        servers:
+          - 10.1.0.1
       kubelet:
         extraConfig:
           maxPods: 150
@@ -88,6 +91,8 @@ controlPlane:
           - siderolabs/i915
           - siderolabs/intel-ucode
           - siderolabs/mei
+  nameservers:
+    - 172.53.53.53
   patches:
     - |-
       cluster:
@@ -170,7 +175,8 @@ controlPlane:
         [plugins."io.containerd.cri.v1.runtime"]
           device_ownership_from_security_context = true
       path: /etc/cri/conf.d/20-customization.part
-      op: create
+      op:
+        create
         # nodiratime=True
     - content: |-
         [ NFSMount_Global_Options ]
