@@ -9,6 +9,7 @@ spec:
     - targets:
         - gateway.cbannister.casa:9100
         - pve.cbannister.casa:9100
+        - pve2.cbannister.casa:9100
         # - 10.1.1.14:9100 # pbs
         - nas.cbannister.casa:9100
         - am6b.cbannister.casa:9100
