@@ -30,19 +30,19 @@ spec:
     # Create default monitoring rules
     defaultRules:
       create: true
-      
+
     # Enable Grafana dashboards
     defaultDashboards:
-      enabled: false  # Disabled to avoid duplicate dashboards with Grafana HelmRelease
+      enabled: false # Disabled to avoid duplicate dashboards with Grafana HelmRelease
       labels:
         grafana_dashboard: "1"
-      
+
     # Create ServiceMonitors for kubeApiServer, kubeScheduler, kubeControllerManager, kubeEtcd
     kubeApiServer:
       enabled: true
       serviceMonitor:
         enabled: true
-          
+
     kubeScheduler:
       enabled: true
       service:
@@ -61,7 +61,7 @@ spec:
               tlsConfig:
                 caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
                 insecureSkipVerify: true
-        
+
     kubeControllerManager:
       enabled: true
       service:
@@ -80,10 +80,13 @@ spec:
               tlsConfig:
                 caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
                 insecureSkipVerify: true
-        
+
     kubeEtcd:
       enabled: true
-      endpoints: ["10.1.1.10", "10.1.1.11", "10.1.1.12"]
+      endpoints:
+        - 10.254.1.1
+        - 10.254.1.3
+        - 10.254.1.5
       service:
         enabled: true
         port: 2381
@@ -96,41 +99,41 @@ spec:
           endpoints:
             - port: http-metrics
               scheme: http
-        
+
     kubelet:
       enabled: true
       serviceMonitor:
         enabled: true
-      
+
     # Disable all Victoria Metrics components to avoid conflicts with existing setup
     vmsingle:
       enabled: false
-      
+
     vmcluster:
       enabled: false
-      
+
     vmagent:
       enabled: false
-      
+
     vmalert:
       enabled: false
-      
+
     alertmanager:
       enabled: false
-      
+
     grafana:
       enabled: false
-      
+
     vmauth:
       enabled: false
-      
+
     # Disable exporters since you may have them separately
     prometheus-node-exporter:
       enabled: false
-      
+
     kube-state-metrics:
       enabled: false
-      
+
     # Disable operator since you already have it
     victoria-metrics-operator:
       enabled: false
