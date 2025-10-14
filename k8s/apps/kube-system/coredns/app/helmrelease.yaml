@@ -64,7 +64,7 @@ spec:
           - name: forward
             parameters: cbannister.casa 172.53.53.53
           - name: forward
-            parameters: . 1.1.1.1 1.0.0.1
+            parameters: . 172.53.53.53
           - name: cache
             parameters: 30
           - name: loop
