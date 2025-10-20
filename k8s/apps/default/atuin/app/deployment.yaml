@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/atuinsh/atuin:v18.8.0@sha256:8a8a8ef4eb5865656072bace5cc49390b56caa81360f9f0869054777155b6ef1
+          image: ghcr.io/atuinsh/atuin:v18.9.0@sha256:86ab9638b278486ccb4e75645272f332b4d5ff590bacb3ae1c4194c0d7233424
           imagePullPolicy: IfNotPresent
           args:
             - server
