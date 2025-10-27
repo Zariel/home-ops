@@ -54,6 +54,10 @@ filters: default: {
 		"SeedingHours < 26",
 		"HardlinkedOutsideClient == true",
 		"Label startsWith \"music\"",
+		// Protect all torrents until minSeedDays is met (HnR protection)
+		for t in #trackers if t.minSeedDays != _|_ {
+			"HasAllTags(\"site:\(t.name)\") && SeedingDays < \(t.minSeedDays)"
+		},
 	]
 	orphan: {
 		grace_period: "1h"
