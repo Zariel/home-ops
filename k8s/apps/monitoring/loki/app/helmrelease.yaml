@@ -90,7 +90,6 @@ spec:
           max_retries: 5
         querier:
           max_concurrent: 4
-          query_timeout: 5m
         query_scheduler:
           max_outstanding_requests_per_tenant: 32768
         ruler:
