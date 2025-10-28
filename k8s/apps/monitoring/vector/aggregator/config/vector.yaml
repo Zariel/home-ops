@@ -49,8 +49,90 @@ transforms:
     source: |
       # Standardize 'app' index
       .custom_app_name = .pod_labels."app.kubernetes.io/name" || .pod_labels.app || .pod_labels."k8s-app" || "unknown"
-      # Drop pod_labels
+
+      # Move high-cardinality fields to structured metadata (for Loki 3.0+)
+      # These can be queried but won't be indexed as labels
+      if exists(.kubernetes.pod_uid) {
+        .structured_metadata.pod_uid = .kubernetes.pod_uid
+      }
+      if exists(.kubernetes.pod_ip) {
+        .structured_metadata.pod_ip = .kubernetes.pod_ip
+      }
+      if exists(.kubernetes.container_id) {
+        .structured_metadata.container_id = .kubernetes.container_id
+      }
+
+      # Remove high-cardinality fields from main event
+      del(.kubernetes.pod_uid)
+      del(.kubernetes.pod_ip)
+      del(.kubernetes.pod_ips)
+      del(.kubernetes.container_id)
+      del(.kubernetes.container_image_id)
+      del(.file)
+      del(.container_image)
+
+      # Keep useful low-cardinality fields
+      .namespace = .kubernetes.pod_namespace
+      .node_name = .kubernetes.pod_node_name
+
+      # Extract pod name pattern (remove unique suffix)
+      if exists(.pod_name) {
+        pod_pattern, _ = parse_regex(.pod_name, r'^(?P<base>.+?)(-[a-z0-9]{5,10})?(-[a-z0-9]{5})?$')
+        if pod_pattern != null {
+          .structured_metadata.pod_name_full = .pod_name
+          .pod_name_pattern = pod_pattern.base
+        }
+      }
+
+      # Parse log messages for better searchability (stored as fields, not labels)
+      if is_string(.message) {
+        msg_str = string!(.message)
+        # Try to parse as JSON first (for structured logs)
+        parsed, err = parse_json(msg_str)
+        if err == null {
+          # If message is JSON, extract useful fields as searchable attributes
+          if exists(parsed.level) {
+            .log_level = upcase(to_string!(parsed.level))
+          }
+          if exists(parsed.message) {
+            .log_message = parsed.message
+          }
+          if exists(parsed.module) || exists(parsed.component) {
+            .component = parsed.module || parsed.component
+          }
+          # Keep structured data for querying
+          .message_json = parsed
+        } else {
+          # Try to extract from text patterns
+          # Pattern 1: [YYYY-MM-DDTHH:MM:SSZ] LEVEL component : message
+          match_result, match_err = parse_regex(msg_str, r'^\[(?P<timestamp>[^\]]+)\]\s+(?P<level>\w+)\s+(?P<component>[^:]+)\s*:\s*(?P<msg>.+)$')
+          if match_err == null {
+            .log_level = upcase(string!(match_result.level))
+            .component = strip_whitespace(string!(match_result.component))
+            .log_message = string!(match_result.msg)
+          } else {
+            # Pattern 2: Simple level keyword detection
+            if match(msg_str, r'(?i)\b(ERROR|WARN|WARNING|INFO|DEBUG|TRACE|FATAL)\b') {
+              level_match, _ = parse_regex(msg_str, r'(?i)\b(?P<level>ERROR|WARN|WARNING|INFO|DEBUG|TRACE|FATAL)\b')
+              if level_match != null {
+                .log_level = upcase(string!(level_match.level))
+                # Normalize WARN/WARNING
+                if .log_level == "WARNING" {
+                  .log_level = "WARN"
+                }
+              }
+            }
+          }
+        }
+      }
+
+      # Drop original pod_labels after extraction
       del(.pod_labels)
+
+      # Truncate very long messages to prevent cardinality issues
+      if exists(.message) && is_string(.message) {
+        .message = truncate!(.message, limit: 4000, ellipsis: true)
+      }
 
   # [63950.153039] [wan-local-default-D]IN=eth4 OUT= MAC=xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx SRC=xxx.xxx.xxx.xxx DST=xxx.xxx.xxx.xxx LEN=40 TOS=0x00 PREC=0x00 TTL=240 ID=60610 PROTO=TCP SPT=53451 DPT=2002 WINDOW=1024 RES=0x00 SYN URGP=0
   vyos_firewall_route:
@@ -133,16 +215,27 @@ sinks:
     endpoint: http://loki.monitoring.svc.cluster.local:3100
     encoding:
       codec: json
+    # Compression for better network efficiency (snappy = fast + efficient)
+    compression: snappy
+    # Optimized batching
     batch:
-      max_bytes: 524288
+      max_bytes: 1048576  # 1MB (up from 512KB)
+      max_events: 1000
+      timeout_secs: 2
+    # Multi-tier buffering for reliability
+    buffer:
+      type: memory
+      max_events: 10000
+      when_full: block
     out_of_order_action: rewrite_timestamp
     remove_label_fields: true
     remove_timestamp: true
+    # Low-cardinality labels for efficient indexing
     labels:
       app: "{{ custom_app_name }}"
-      namespace: "{{ kubernetes.pod_namespace }}"
+      namespace: "{{ namespace }}"
       container: "{{ container_name }}"
-      node: "{{ kubernetes.pod_node_name }}"
+      node: "{{ node_name }}"
 
   loki_vyos:
     type: loki

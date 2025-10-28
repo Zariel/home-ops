@@ -26,3 +26,8 @@ sinks:
     address: "vector-aggregator.monitoring.svc.cluster.local:6000"
     inputs:
       - kubernetes_logs
+    # Batching for better throughput
+    batch:
+      max_bytes: 1048576  # 1MB
+      max_events: 1000
+      timeout_secs: 2
