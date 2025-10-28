@@ -10,11 +10,11 @@ spec:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
-    metadata:
-      labels:
-        app: tqm
     spec:
       template:
+        metadata:
+          labels:
+            app: tqm
         spec:
           restartPolicy: OnFailure
           securityContext:
