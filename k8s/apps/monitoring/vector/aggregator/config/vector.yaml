@@ -131,7 +131,7 @@ transforms:
 
       # Truncate very long messages to prevent cardinality issues
       if exists(.message) && is_string(.message) {
-        .message = truncate!(.message, limit: 4000, ellipsis: true)
+        .message = truncate!(.message, limit: 4000, suffix: "...")
       }
 
   # [63950.153039] [wan-local-default-D]IN=eth4 OUT= MAC=xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx SRC=xxx.xxx.xxx.xxx DST=xxx.xxx.xxx.xxx LEN=40 TOS=0x00 PREC=0x00 TTL=240 ID=60610 PROTO=TCP SPT=53451 DPT=2002 WINDOW=1024 RES=0x00 SYN URGP=0
@@ -236,6 +236,9 @@ sinks:
       namespace: "{{ namespace }}"
       container: "{{ container_name }}"
       node: "{{ node_name }}"
+    # Send structured metadata to Loki 3.0+ (queryable but not indexed)
+    structured_metadata:
+      "*": "{{ structured_metadata }}"
 
   loki_vyos:
     type: loki
