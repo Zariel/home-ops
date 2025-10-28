@@ -129,13 +129,14 @@ spec:
       enabled: false
     test:
       enabled: false
-    # Enable ServiceMonitor for VictoriaMetrics scraping
-    serviceMonitor:
-      enabled: true
-      interval: 30s
-      scrapeTimeout: 10s
-      labels: {}
-      annotations: {}
+    # Enable monitoring features
+    monitoring:
+      serviceMonitor:
+        enabled: true
+        interval: 30s
+        scrapeTimeout: 10s
+        labels: {}
+        annotations: {}
     backend:
       replicas: 0
     read:
