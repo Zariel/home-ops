@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "Read(//tmp/tqm/**)",
+      "Read(//tmp/**)",
+      "Read(//Users/chrisbannister/dev/holywoo/k8s/apps/default/**)",
+      "Read(//Users/chrisbannister/dev/holywoo/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
