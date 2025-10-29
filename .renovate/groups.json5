@@ -82,6 +82,15 @@
       }
     },
     {
+      "description": ["Victoria Metrics Group"],
+      "groupName": "Victoria Metrics",
+      "matchPackagePatterns": ["/victoriametrics/"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/thelounge/thelounge", "docker.io/internetsystemsconsortium/bind9"],
       "matchUpdateTypes": ["digest"],
