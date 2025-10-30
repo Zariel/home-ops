@@ -5,12 +5,22 @@ metadata:
   name: &app registry-ui
 spec:
   hostnames:
-    - registry-ui.cbannister.xyz
+    - registry.cbannister.xyz
   parentRefs:
     - name: internal
       namespace: network
       sectionName: https
   rules:
-    - backendRefs:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /ui
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
         - name: *app
           port: 80
