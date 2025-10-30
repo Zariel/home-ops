@@ -1,0 +1,75 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  labels:
+    app: registry
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: registry
+          image: docker.io/library/registry:3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: registry
+              containerPort: 5000
+              protocol: TCP
+          env:
+            - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+              value: /var/lib/registry
+            - name: REGISTRY_HTTP_ADDR
+              value: :5000
+            - name: REGISTRY_STORAGE_DELETE_ENABLED
+              value: "true"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/registry
+          livenessProbe:
+            httpGet:
+              path: /
+              port: registry
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: registry
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: 2000m
+              memory: 4Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: registry
