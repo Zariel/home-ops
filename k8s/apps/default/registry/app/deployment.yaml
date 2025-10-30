@@ -40,6 +40,8 @@ spec:
               value: :5000
             - name: REGISTRY_STORAGE_DELETE_ENABLED
               value: "true"
+            - name: REGISTRY_CATALOG_MAXENTRIES
+              value: "10000"
           volumeMounts:
             - name: data
               mountPath: /var/lib/registry
