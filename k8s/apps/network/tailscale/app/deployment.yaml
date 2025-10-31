@@ -17,7 +17,7 @@ spec:
       serviceAccountName: tailscale-subnet-router
       containers:
         - name: tailscale-subnet-router
-          image: ghcr.io/tailscale/tailscale:v1.86.2
+          image: ghcr.io/tailscale/tailscale:v1.90.6
           resources:
             requests:
               memory: "1Gi"
