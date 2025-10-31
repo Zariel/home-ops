@@ -37,8 +37,8 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: wrtag
-          image: sentriz/wrtag:v0.19.0
-          imagePullPolicy: IfNotPresent
+          image: registry.cbannister.xyz/wrtag:multi-disk-handling
+          imagePullPolicy: Always
           env:
             - name: TZ
               value: Europe/London
