@@ -39,8 +39,6 @@ spec:
         - name: wrtag
           image: registry.cbannister.xyz/wrtag:multi-disk-handling
           imagePullPolicy: Always
-          args:
-            - -log-level=DEBUG
           env:
             - name: TZ
               value: Europe/London
@@ -49,7 +47,7 @@ spec:
             - name: WRTAG_WEB_DB_PATH
               value: /config/wrtag.db
             - name: WRTAG_LOG_LEVEL
-              value: info
+              value: debug
             - name: WRTAG_WEB_PUBLIC_URL
               value: https://wrtag.cbannister.xyz
             - name: WRTAG_PATH_FORMAT
