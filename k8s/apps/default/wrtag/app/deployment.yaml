@@ -39,6 +39,8 @@ spec:
         - name: wrtag
           image: registry.cbannister.xyz/wrtag:multi-disk-handling
           imagePullPolicy: Always
+          args:
+            - -log-level=DEBUG
           env:
             - name: TZ
               value: Europe/London
