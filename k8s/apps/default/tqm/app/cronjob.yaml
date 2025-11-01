@@ -64,7 +64,6 @@ spec:
               args:
                 - orphan
                 - qb
-                - --dry-run
               <<: *container
           volumes:
             - name: config-dir
