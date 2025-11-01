@@ -284,7 +284,7 @@ spec:
         k8s-views-nodes:
           # renovate: depName="Kubernetes / Views / Nodes"
           gnetId: 15759
-          revision: 39
+          revision: 40
           datasource: *datasource
         k8s-views-namespaces:
           # renovate: depName="Kubernetes / Views / Namespaces"
