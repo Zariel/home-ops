@@ -65,6 +65,7 @@ filters: default: {
 			"/data/downloads/torrents/complete/music",
 			"/data/downloads/torrents/complete/uploads",
 			"/data/downloads/torrents/complete/manual",
+			"/data/downloads/torrents/complete/shared",
 		]
 	}
 }
