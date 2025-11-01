@@ -248,7 +248,7 @@ spec:
         k8s-system-api-server:
           # renovate: depName="Kubernetes / System / API Server"
           gnetId: 15761
-          revision: 19
+          revision: 20
           datasource: *datasource
         controller-manager:
           # renovate: depName="Kubernetes / Controller Manager"
