@@ -74,6 +74,11 @@ spec:
         log_level: info
       storage:
         type: filesystem
+        # Required by Helm chart validation even for filesystem storage (since v6.34.0)
+        bucketNames:
+          chunks: chunks
+          ruler: ruler
+          admin: admin
       schemaConfig:
         configs:
           - from: "2024-04-01" # quote
