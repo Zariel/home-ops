@@ -32,8 +32,10 @@ spec:
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/music/downloads
-        - name: music-incomplete
-          emptyDir: {}
+        - name: incomplete
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/incompletes
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -113,5 +115,5 @@ spec:
               subPath: post-process.sh
             - name: music
               mountPath: /data/downloads/torrents/complete/music
-            - name: music-incomplete
-              mountPath: /data/downloads/torrents/incomplete/music/library
+            - name: incomplete
+              mountPath: /data/downloads/torrents/incomplete
