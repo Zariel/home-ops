@@ -30,3 +30,4 @@ resources:
   - tqm/ks.yaml
   - qui/ks.yaml
   - wrtag/ks.yaml
+  - forgejo/ks.yaml
