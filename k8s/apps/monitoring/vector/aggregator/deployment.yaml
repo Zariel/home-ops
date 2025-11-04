@@ -38,7 +38,7 @@ spec:
           args:
             - --config
             - /etc/vector/vector.yaml
-          image: docker.io/timberio/vector:0.50.0-alpine@sha256:93761c26fa3a3793f5f200de0f4cfc6102b5e9803ab33b4830d0873ba8dbdc4f
+          image: docker.io/timberio/vector:0.51.0-alpine@sha256:cef2a4d33b43b3e9196ba0bd9f1d8b9006a03bfe15363514c5a0f78b8cb8e9d9
           imagePullPolicy: IfNotPresent
           livenessProbe: &probe
             failureThreshold: 3
