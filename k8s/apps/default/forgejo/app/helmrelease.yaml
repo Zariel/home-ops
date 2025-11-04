@@ -32,6 +32,8 @@ spec:
       retries: 2
       strategy: rollback
   values:
+    strategy:
+      type: Recreate
     image:
       rootless: true
     persistence:
