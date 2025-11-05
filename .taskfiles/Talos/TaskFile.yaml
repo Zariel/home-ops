@@ -9,42 +9,6 @@ vars:
   TALOS_SCRIPTS_DIR: "{{.ROOT_DIR}}/.taskfiles/Talos/scripts"
 
 tasks:
-  bootstrap:
-    desc: Bootstrap Talos
-    summary: |
-      Args:
-        cluster: Cluster to run command against (required)
-        controller: Controller node to run command against (required)
-    prompt: Bootstrap Talos on the '{{.cluster}}' cluster... continue?
-    cmds:
-      - task: bootstrap-etcd
-        vars: &vars
-          controller: "{{.controller}}"
-      - task: fetch-kubeconfig
-        vars: *vars
-      - task: bootstrap-apps
-        vars: *vars
-    requires:
-      vars: ["controller"]
-
-  bootstrap-etcd:
-    desc: Bootstrap Etcd
-    cmd: until talosctl --nodes {{.controller}} bootstrap; do sleep 10; done
-    requires:
-      vars: ["controller"]
-
-  bootstrap-apps:
-    desc: Bootstrap core apps needed for Talos
-    cmds:
-      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=600s; do sleep 10; done
-      - helmfile --file {{.KUBERNETES_DIR}}/main/bootstrap/talos/apps/helmfile.yaml apply
-      - until kubectl wait --for=condition=Ready nodes --all --timeout=600s; do sleep 10; done
-    preconditions:
-      - kubectl config get-contexts main
-      - test -f {{.KUBERNETES_DIR}}/main/bootstrap/talos/apps/helmfile.yaml
-    env:
-      CLUSTER_DIR: "{{.KUBERNETES_DIR}}/main" # required for helmfile
-
   generate:
     desc: Run talhelper to generate manifests
     dir: "{{.ROOT_DIR}}/talos"
@@ -62,61 +26,10 @@ tasks:
       - talosctl --nodes {{.NODES}} get machineconfig
       - which jq talosctl
 
-  upgrade-talos:
-    desc: Upgrade Talos on a node
-    cmd: talosctl --nodes {{.node}} upgrade --image {{.image}} --preserve=true
-    requires:
-      vars: ["node", "image"]
-    preconditions:
-      - talosctl --nodes {{.node}} get machineconfig
-
-  upgrade-k8s:
-    desc: Upgrade the clusters k8s version
-    cmd: talosctl --nodes {{.controller}} upgrade-k8s --to {{.KUBERNETES_VERSION}}
-    vars:
-      controller:
-        sh: talosctl config info --output json | jq --raw-output '.endpoints[0]'
-    preconditions:
-      - talosctl --nodes {{.node}} get machineconfig >/dev/null 2>&1
-
   fetch-kubeconfig:
     desc: Fetch kubeconfig from Talos controllers
     cmd: |
-      talosctl --context {{.cluster}} kubeconfig --nodes {{.controller}} \
-          --force --force-context-name {{.cluster}} {{.KUBERNETES_DIR}}/{{.cluster}}
+      talosctl kubeconfig --nodes {{.controller}} \
+          --force {{.ROOT_DIR}}/kubeconfig.yaml
     requires:
-      vars: ["cluster"]
-    preconditions:
-      - talosctl config get-contexts | grep {{.cluster}}
-
-  upgrade:
-    desc: Upgrade Talos on a node
-    cmd: bash {{.TALOS_SCRIPTS_DIR}}/upgrade.sh "{{.node}}" "{{.TALOS_SCHEMATIC_ID}}:{{.TALOS_VERSION}}" "{{.rollout}}"
-    vars:
-      rollout: '{{.rollout | default "false"}}'
-    requires:
-      vars: ["node"]
-    preconditions:
-      - talosctl config info >/dev/null 2>&1
-      - talosctl --nodes {{.node}} get machineconfig >/dev/null 2>&1
-
-  upgrade-rollout:
-    desc: Rollout Talos upgrade on all nodes
-    cmds:
-      - flux suspend kustomization --all
-      - kubectl cnpg maintenance set --reusePVC --all-namespaces
-      - for: { var: nodes, split: "," }
-        task: upgrade
-        vars:
-          node: "{{.ITEM}}"
-          rollout: "true"
-      - kubectl cnpg maintenance unset --reusePVC --all-namespaces
-      - flux resume kustomization --all
-      - task: :kubernetes:delete-failed-pods
-
-    vars:
-      nodes:
-        sh: talosctl config info --output json | jq --join-output '[.nodes[]] | join(",")'
-    preconditions:
-      - talosctl config info >/dev/null 2>&1
-      - talosctl --nodes {{.nodes}} get machineconfig >/dev/null 2>&1
+      vars: ["controller"]

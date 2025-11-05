@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kube-system
+
+# Install Cilium via Helm chart using production values
+helmCharts:
+  - name: cilium
+    repo: oci://ghcr.io/home-operations/charts-mirror
+    version: 1.18.3
+    releaseName: cilium
+    namespace: kube-system
+    valuesFile: ../../apps/kube-system/cilium/app/values.yaml
+
+# Apply BGP configuration and LoadBalancer VIP service
+resources:
+  - ../../apps/kube-system/cilium/networks
