@@ -61,7 +61,7 @@ tasks:
 
       # Install Bird BGP daemon
       - echo "Installing Bird BGP daemon..."
-      - kubectl apply -k {{.KUBERNETES_DIR}}/bootstrap/bird
+      - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/bootstrap/bird
       - kubectl rollout status daemonset/bird -n kube-system --timeout=300s
 
       # Wait for nodes to become Ready (networking functional)
@@ -106,13 +106,13 @@ tasks:
 
       # Decrypt and apply secrets
       - echo "Installing SOPS age secret..."
-      - sops --decrypt sops-age.sops.yaml | kubectl apply -f -
+      - sops --decrypt sops-age.sops.yaml | kubectl apply --server-side -f -
       - echo "Installing GitHub deploy key..."
-      - sops --decrypt github-deploy-key.sops.yaml | kubectl apply -f -
+      - sops --decrypt github-deploy-key.sops.yaml | kubectl apply --server-side -f -
 
       # Apply Flux config (GitRepository + Kustomization)
       - echo "Applying Flux configuration..."
-      - kubectl apply -k {{.KUBERNETES_DIR}}/flux/config
+      - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/flux/config
 
       # Wait for Flux to reconcile
       - echo "Waiting for Flux to reconcile cluster apps..."
