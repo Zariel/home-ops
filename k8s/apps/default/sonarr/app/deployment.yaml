@@ -17,6 +17,8 @@ spec:
       labels:
         app.kubernetes.io/name: sonarr
         app.kubernetes.io/instance: sonarr
+      annotations:
+        reloader.stakater.com/auto: "true"
     spec:
       hostname: sonarr
       volumes:
@@ -30,6 +32,10 @@ spec:
         - name: cache
           persistentVolumeClaim:
             claimName: sonarr-cache
+        - name: scripts
+          configMap:
+            name: sonarr-scripts
+            defaultMode: 0755
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -74,6 +80,9 @@ spec:
               mountPath: /data
             - name: cache
               mountPath: /config/MediaCover
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
           startupProbe:
             httpGet:
               path: /ping
