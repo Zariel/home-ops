@@ -7,10 +7,8 @@ components:
 resources:
   - bird/ks.yaml
   - cilium/ks.yaml
-  - csi-driver-smb/ks.yaml
   - metrics-server
   - spegel/ks.yaml
-  - kubelet-csr-approver/ks.yaml
   - coredns/ks.yaml
   - reloader/ks.yaml
   - node-feature-discovery/ks.yaml
