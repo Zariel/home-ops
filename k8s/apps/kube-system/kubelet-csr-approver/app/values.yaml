@@ -1,4 +1,0 @@
----
-providerRegex: ^k8s-\d$
-bypassDnsResolution: true
-tolerations: {}
