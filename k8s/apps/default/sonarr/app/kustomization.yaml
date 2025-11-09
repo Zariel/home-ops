@@ -7,3 +7,10 @@ resources:
   - externalsecret.yaml
   - httproute.yaml
   - pvc.yaml
+
+configMapGenerator:
+  - name: sonarr-scripts
+    files:
+      - resources/season-pack-detector.py
+    options:
+      disableNameSuffixHash: true
