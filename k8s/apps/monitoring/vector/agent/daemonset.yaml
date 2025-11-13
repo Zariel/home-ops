@@ -22,7 +22,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: vector
-          image: docker.io/timberio/vector:0.51.0-alpine@sha256:cef2a4d33b43b3e9196ba0bd9f1d8b9006a03bfe15363514c5a0f78b8cb8e9d9
+          image: docker.io/timberio/vector:0.51.1-alpine@sha256:2d16ae87ec395508366f3c064899d374fbe04de6e64c3a613ed64aedbee034b4
           args:
             - --config
             - /etc/vector/vector.yaml
