@@ -37,7 +37,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: wrtag
-          image: registry.cbannister.xyz/wrtag:multi-disk-handling@sha256:7b0b502b9bcaba30409b9feb5e6f10c3ce8900eea92aeddc69ae4b0f92da7d9d
+          image: registry.cbannister.xyz/wrtag:multi-disk-handling@sha256:ac8117c5a915e50ee410d6208d86bc83d99d7a99f8932cf9866909f210f1d45a
           imagePullPolicy: Always
           env:
             - name: TZ
@@ -50,6 +50,8 @@ spec:
               value: debug
             - name: WRTAG_WEB_PUBLIC_URL
               value: https://wrtag.cbannister.xyz
+            - name: WRTAG_MIN_SCORE
+              value: "0.92"
             - name: WRTAG_PATH_FORMAT
               value: |-
                 /music/{{ artists .Release.Artists | sort | join "; " | safepath }}/({{ .Release.ReleaseGroup.FirstReleaseDate.Year }}) {{ .Release.Title | safepath }}{{ if ne .Release.Date.Year .Release.ReleaseGroup.FirstReleaseDate.Year }} ({{ .Release.Date.Year }}){{ end }}{{ if .Release.LabelInfo }}{{ if ge (len .Release.LabelInfo) 1 }}{{ if (index .Release.LabelInfo 0).CatalogNumber }} [{{ (index .Release.LabelInfo 0).CatalogNumber }}]{{ else if .Release.Barcode }} [{{ .Release.Barcode }}]{{ end }}{{ else if .Release.Barcode }} [{{ .Release.Barcode }}]{{ end }}{{ else if .Release.Barcode }} [{{ .Release.Barcode }}]{{ end }}{{ if gt .TotalDiscs 1 }}/Disc {{ pad0 2 .DiscNum }}{{ end }}/{{ pad0 2 .Track.Position }}. {{ if .IsCompilation }}{{ artistsString .Track.Artists | safepath }} - {{ end }}{{ .Track.Title | safepath }}{{ .Ext }}
