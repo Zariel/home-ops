@@ -37,7 +37,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: wrtag
-          image: registry.cbannister.xyz/wrtag:multi-disk-handling@sha256:c4bd95648841c6628c3da8f9213fa8bd36859781efe401c575b0985fdfe5150e
+          image: registry.cbannister.xyz/wrtag:multi-disk-handling@sha256:0328452f5500d8a936111132db620693139679aeb3ffbe708594f5476bdb951d
           imagePullPolicy: Always
           env:
             - name: TZ
