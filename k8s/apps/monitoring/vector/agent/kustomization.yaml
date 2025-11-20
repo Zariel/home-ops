@@ -3,12 +3,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./serviceaccount.yaml
-  - ./rbac.yaml
-  - ./daemonset.yaml
+  - ocirepository.yaml
+  - helmrelease.yaml
 configMapGenerator:
   - name: vector-agent-configmap
     files:
       - vector.yaml=./config/vector.yaml
-configurations:
-  - kustomizeconfig.yaml
+generatorOptions:
+  disableNameSuffixHash: true
