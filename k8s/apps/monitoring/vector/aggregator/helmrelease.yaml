@@ -1,0 +1,158 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vector-aggregator
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: vector
+    namespace: monitoring
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 2
+      strategy: rollback
+  values:
+    role: Stateless-Aggregator
+
+    replicas: 2
+
+    image:
+      repository: ghcr.io/vectordotdev/vector
+      tag: 0.51.0-alpine
+      sha: ""
+
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+
+    # Keep chart default selector labels; add only non-conflicting labels if needed
+    podLabels: {}
+
+    resources:
+      requests:
+        cpu: 200m
+      limits:
+        memory: 1Gi
+
+    topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: vector-aggregator
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+
+    # GeoIP init container
+    initContainers:
+      - name: init-geoip
+        image: ghcr.io/maxmind/geoipupdate:v7.1
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: GEOIPUPDATE_EDITION_IDS
+            value: GeoLite2-Country
+          - name: GEOIPUPDATE_FREQUENCY
+            value: "0"
+          - name: GEOIPUPDATE_VERBOSE
+            value: "1"
+        envFrom:
+          - secretRef:
+              name: vector-maxmind
+        volumeMounts:
+          - mountPath: /usr/share/GeoIP
+            name: geoip
+
+    extraVolumes:
+      - name: geoip
+        emptyDir: {}
+
+    extraVolumeMounts:
+      - name: geoip
+        mountPath: /usr/share/GeoIP
+
+    # Use existing ConfigMap for Vector configuration
+    existingConfigMaps:
+      - vector-aggregator-configmap
+
+    dataDir: /vector-data-dir
+
+    # Configure container ports manually
+    containerPorts:
+      - name: api
+        containerPort: 8686
+        protocol: TCP
+      - name: kubernetes
+        containerPort: 6000
+        protocol: TCP
+      - name: vyos
+        containerPort: 6001
+        protocol: TCP
+      - name: taloskernel
+        containerPort: 6002
+        protocol: UDP
+      - name: talosservice
+        containerPort: 6003
+        protocol: UDP
+
+    livenessProbe:
+      failureThreshold: 3
+      periodSeconds: 10
+      successThreshold: 1
+      tcpSocket:
+        port: 8686
+      timeoutSeconds: 1
+
+    readinessProbe:
+      failureThreshold: 3
+      periodSeconds: 10
+      successThreshold: 1
+      tcpSocket:
+        port: 8686
+      timeoutSeconds: 1
+
+    service:
+      enabled: true
+      type: LoadBalancer
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: vector.cbannister.xyz
+        io.cilium/lb-ipam-ips: 10.45.0.2
+      ipFamilies:
+        - IPv4
+      ports:
+        - name: http
+          port: 8686
+          targetPort: 8686
+          protocol: TCP
+        - name: kubernetes
+          port: 6000
+          targetPort: 6000
+          protocol: TCP
+        - name: vyos
+          port: 6001
+          targetPort: 6001
+          protocol: TCP
+        - name: taloskernel
+          port: 6002
+          targetPort: 6002
+          protocol: UDP
+        - name: talosservice
+          port: 6003
+          targetPort: 6003
+          protocol: UDP
+
+    # Disable headless service to avoid duplicate exposure and DNS/LB annotations leaking to it
+    serviceHeadless:
+      enabled: false
+
+    # Disable persistence (using emptyDir via data volume)
+    persistence:
+      enabled: false
+
+    # Disable default volumes for aggregator
+    defaultVolumes: []
+    defaultVolumeMounts: []

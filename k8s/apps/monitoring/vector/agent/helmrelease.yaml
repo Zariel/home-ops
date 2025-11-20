@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vector-agent
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: vector
+    namespace: monitoring
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 2
+      strategy: rollback
+  values:
+    role: Agent
+
+    image:
+      repository: ghcr.io/vectordotdev/vector
+      tag: 0.51.0-alpine
+      sha: ""
+
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+
+    # Keep chart default selector labels; add only non-conflicting labels if needed
+    podLabels: {}
+
+    resources:
+      requests:
+        cpu: 23m
+        memory: 249M
+
+    securityContext:
+      privileged: true
+
+    env:
+      - name: PROCFS_ROOT
+        value: /host/proc
+      - name: SYSFS_ROOT
+        value: /host/sys
+      - name: VECTOR_SELF_NODE_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: spec.nodeName
+      - name: VECTOR_SELF_POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: VECTOR_SELF_POD_NAMESPACE
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.namespace
+
+    tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+
+    # Use existing ConfigMap for Vector configuration
+    existingConfigMaps:
+      - vector-agent-configmap
+
+    dataDir: /vector-data-dir
+
+    # RBAC for agent
+    rbac:
+      create: true
+
+    serviceAccount:
+      create: true
+      name: vector-agent
+
+    # Agent uses default volumes (hostPath for log collection)
+    # Keep the defaults but they're explicitly defined here for clarity
+    defaultVolumes:
+      - name: var-log
+        hostPath:
+          path: "/var/log/"
+      - name: var-lib
+        hostPath:
+          path: "/var/lib/"
+      - name: procfs
+        hostPath:
+          path: "/proc"
+      - name: sysfs
+        hostPath:
+          path: "/sys"
+
+    defaultVolumeMounts:
+      - name: var-log
+        mountPath: "/var/log/"
+        readOnly: true
+      - name: var-lib
+        mountPath: "/var/lib"
+        readOnly: true
+      - name: procfs
+        mountPath: "/host/proc"
+        readOnly: true
+      - name: sysfs
+        mountPath: "/host/sys"
+        readOnly: true
+
+    # Agent uses hostPath persistence
+    persistence:
+      hostPath:
+        enabled: true
+        path: /var/lib/vector
+
+    updateStrategy:
+      type: RollingUpdate
+
+    # Disable service for agent (it forwards to aggregator)
+    service:
+      enabled: false
+
+    serviceHeadless:
+      enabled: false
