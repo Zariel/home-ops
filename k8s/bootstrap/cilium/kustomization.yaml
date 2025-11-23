@@ -12,6 +12,4 @@ helmCharts:
     namespace: kube-system
     valuesFile: ../../apps/kube-system/cilium/app/values.yaml
 
-# Apply BGP configuration and LoadBalancer VIP service
-resources:
-  - ../../apps/kube-system/cilium/networks
+# Cilium BGP + LoadBalancer resources are applied separately after CRDs exist
