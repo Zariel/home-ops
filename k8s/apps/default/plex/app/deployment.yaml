@@ -52,10 +52,10 @@ spec:
           resources:
             requests:
               cpu: 1000m
-              memory: 4096Mi
+              memory: 1536Mi
               gpu.intel.com/i915: 1
             limits:
-              memory: 4096Mi
+              memory: 2048Mi
               gpu.intel.com/i915: 1
           ports:
             - containerPort: 32400

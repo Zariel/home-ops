@@ -18,7 +18,6 @@ resources:
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
   - cross-seed/ks.yaml
-  - unpackerr/ks.yaml
   - filebrowser/ks.yaml
   - jellyseerr/ks.yaml
   - thelounge/ks.yaml
