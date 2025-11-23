@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 30m
   timeout: 60s
-  url: oci://docker.io/envoyproxy/gateway-helm
+  url: oci://mirror.gcr.io/envoyproxy/gateway-helm
   ref:
     tag: 1.6.0
   layerSelector:
