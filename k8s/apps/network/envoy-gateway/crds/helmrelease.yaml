@@ -6,7 +6,7 @@ metadata:
   name: envoy-gateway-crds
 spec:
   interval: 10m
-  url: oci://docker.io/envoyproxy/gateway-crds-helm
+  url: oci://mirror.ghcr.io/envoyproxy/gateway-crds-helm
   ref:
     tag: 1.6.0
   layerSelector:

@@ -21,21 +21,18 @@ spec:
   logging:
     level:
       default: info
-  backendTLS:
-    minVersion: "1.3"
-    maxVersion: "1.3"
   provider:
     type: Kubernetes
     kubernetes:
       envoyDeployment:
         replicas: 2
         container:
-          image: mirror.gcr.io/envoyproxy/envoy:v1.36.2
+          imageRepository: mirror.gcr.io/envoyproxy/envoy
           resources:
             requests:
               cpu: 100m
             limits:
-              memory: 1Gi
+              memory: 2Gi
       envoyService:
         externalTrafficPolicy: Cluster
   shutdown:
@@ -44,4 +41,4 @@ spec:
     metrics:
       prometheus:
         compression:
-          type: Gzip
+          type: Zstd
