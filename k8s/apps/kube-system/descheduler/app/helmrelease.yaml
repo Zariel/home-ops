@@ -63,10 +63,21 @@ spec:
                   - requiredDuringSchedulingIgnoredDuringExecution
             - name: RemovePodsViolatingNodeTaints
             - name: RemovePodsViolatingTopologySpreadConstraint
+            - name: LowNodeUtilization
+              args:
+                thresholds:
+                  cpu: 60
+                  memory: 60
+                  pods: 60
+                targetThresholds:
+                  cpu: 30
+                  memory: 30
+                  pods: 30
           plugins:
             balance:
               enabled:
                 - RemovePodsViolatingTopologySpreadConstraint
+                - LowNodeUtilization
             deschedule:
               enabled:
                 - RemoveFailedPods
