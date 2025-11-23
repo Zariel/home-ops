@@ -41,10 +41,11 @@ spec:
               port: 6246
             timeoutSeconds: 1
           resources:
-            limits:
-              memory: 2Gi
             requests:
               cpu: 10m
+              memory: 1Gi
+            limits:
+              memory: 1536Mi
           startupProbe:
             failureThreshold: 30
             periodSeconds: 5

@@ -65,10 +65,10 @@ spec:
                 name: sabnzbd-secret
           resources:
             requests:
-              memory: &ram 8Gi
+              memory: 1Gi
               cpu: 2000m
             limits:
-              memory: *ram
+              memory: 2Gi
           ports:
             - containerPort: 8080
               name: web
