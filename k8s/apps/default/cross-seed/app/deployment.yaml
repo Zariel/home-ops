@@ -52,10 +52,11 @@ spec:
               port: 80
             timeoutSeconds: 1
           resources:
-            limits:
-              memory: 3Gi
             requests:
               cpu: 10m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
