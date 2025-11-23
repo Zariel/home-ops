@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=null
 autoDirectNodeRoutes: false
 # directRoutingSkipUnreachable: true
 bandwidthManager:
@@ -20,6 +21,8 @@ cgroup:
 cluster:
   id: 1
   name: hollywoo
+cni:
+  exclusive: false
 # enableRuntimeDeviceDetection: true
 devices: enp2s0f1np1
 enableIPv4BIGTCP: true
