@@ -23,9 +23,9 @@ tasks:
     prompt: Bootstrap Talos cluster... continue?
     cmds:
       - task: etcd
-        vars: {controller: "{{.controller}}"}
+        vars: { controller: "{{.controller}}" }
       - task: kubeconfig
-        vars: {controller: "{{.controller}}"}
+        vars: { controller: "{{.controller}}" }
       - task: networking
       - task: kubeconfig-vip
       - task: dns
@@ -36,108 +36,94 @@ tasks:
 
   etcd:
     desc: Bootstrap etcd cluster
-    cmd: until talosctl --nodes {{.controller}} bootstrap; do sleep 10; done
+    cmd: |
+      set -euo pipefail
+      if talosctl --nodes {{.controller}} service etcd >/dev/null 2>&1; then
+        echo "Etcd already bootstrapped, skipping"
+        exit 0
+      fi
+      echo "Bootstrapping etcd..."
+      until talosctl --nodes {{.controller}} bootstrap; do
+        echo "Retrying etcd bootstrap in 10s..."
+        sleep 10
+      done
     requires:
       vars: ["controller"]
 
   kubeconfig:
     desc: Fetch kubeconfig from controller node
-    cmd: |
-      talosctl kubeconfig --nodes {{.controller}} \
-          --force {{.ROOT_DIR}}/kubeconfig.yaml
+    cmds:
+      - |
+        talosctl kubeconfig --nodes {{.controller}} \
+            --force {{.ROOT_DIR}}/kubeconfig.yaml
+      - |
+        kubectl config set-cluster hollywoo \
+          --server=https://{{.controller}}:6443 \
+          --kubeconfig={{.ROOT_DIR}}/kubeconfig.yaml
     requires:
       vars: ["controller"]
 
   networking:
     desc: Install CNI (Cilium) and BGP (Bird)
     cmds:
-      # Wait for API to be available but nodes NotReady (no CNI)
-      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=600s; do sleep 10; done
+      - kustomize build --enable-helm --load-restrictor=LoadRestrictionsNone {{.KUBERNETES_DIR}}/bootstrap/cilium | kubectl apply --server-side -f -
+      - kubectl wait --for=condition=Established crd/ciliumloadbalancerippools.cilium.io --timeout=120s
+      - kubectl wait --for=condition=Established crd/ciliumbgpclusterconfigs.cilium.io --timeout=120s
+      - kubectl wait --for=condition=Established crd/ciliumbgppeerconfigs.cilium.io --timeout=120s
+      - kubectl wait --for=condition=Established crd/ciliumbgpadvertisements.cilium.io --timeout=120s
+      - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/bootstrap/cilium-networks
 
-      # Install Cilium + BGP configs + LoadBalancer VIP service
-      - echo "Installing Cilium CNI with BGP control plane..."
-      - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/bootstrap/cilium
-      - kubectl rollout status daemonset/cilium -n kube-system --timeout=600s
-
-      # Install Bird BGP daemon
-      - echo "Installing Bird BGP daemon..."
       - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/bootstrap/bird
       - kubectl rollout status daemonset/bird -n kube-system --timeout=300s
 
-      # Wait for nodes to become Ready (networking functional)
       - until kubectl wait --for=condition=Ready nodes --all --timeout=600s; do sleep 10; done
 
-      # Wait for LoadBalancer IP to be assigned
-      - echo "Waiting for kube-apiserver LoadBalancer IP..."
       - until kubectl get service kube-vip -n kube-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}' | grep -q '10.45.0.100'; do sleep 5; done
-      - echo "LoadBalancer IP assigned successfully"
 
   kubeconfig-vip:
     desc: Update kubeconfig to use LoadBalancer VIP
     cmds:
       - |
-        kubectl config set-cluster hollywoo \
-          --server=https://10.45.0.100:6443 \
-          --kubeconfig={{.ROOT_DIR}}/kubeconfig.yaml
-      - echo "Kubeconfig updated to use LoadBalancer VIP (10.45.0.100)"
+        talosctl kubeconfig --nodes {{.controller}} \
+          --endpoints 10.45.0.100 \
+          --force {{.ROOT_DIR}}/kubeconfig.yaml
 
   dns:
     desc: Install CoreDNS
     cmds:
-      - echo "Installing CoreDNS..."
-      - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/bootstrap/coredns
+      - kustomize build --enable-helm --load-restrictor=LoadRestrictionsNone {{.KUBERNETES_DIR}}/bootstrap/coredns | kubectl apply --server-side -f -
       - kubectl rollout status deployment/coredns -n kube-system --timeout=300s
-      - echo "CoreDNS ready"
 
   crds:
     desc: Install CRDs required by Flux apps
     cmds:
-      - echo "Installing Prometheus Operator and Gateway API CRDs..."
       - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/bootstrap/crds
-      - echo "CRDs installed"
 
   flux:
     desc: Bootstrap Flux GitOps
     dir: "{{.KUBERNETES_DIR}}/bootstrap/flux"
     cmds:
-      # Install Flux controllers
-      - echo "Installing Flux controllers..."
       - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/bootstrap/flux
 
-      # Decrypt and apply secrets
-      - echo "Installing SOPS age secret..."
       - sops --decrypt sops-age.sops.yaml | kubectl apply --server-side -f -
-      - echo "Installing GitHub deploy key..."
       - sops --decrypt github-deploy-key.sops.yaml | kubectl apply --server-side -f -
 
-      # Apply Flux config (GitRepository + Kustomization)
-      - echo "Applying Flux configuration..."
       - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/flux/config
-
-      # Wait for Flux to reconcile
-      - echo "Waiting for Flux to reconcile cluster apps..."
-      - kubectl wait --for=condition=Ready kustomization/cluster-apps -n flux-system --timeout=600s
-      - echo "Flux bootstrap complete! Cluster is now GitOps-managed"
 
   validate-bgp:
     desc: Validate BGP peering between Cilium and Bird
     cmds:
-      - echo "Checking Cilium BGP peering status..."
       - kubectl exec -n kube-system daemonset/cilium -- cilium bgp peers
-      - echo "Checking Bird BGP session..."
       - kubectl exec -n kube-system daemonset/bird -- birdcl show protocols cilium
 
   validate-ospf:
     desc: Validate OSPF peering between Bird and upstream router
     cmds:
-      - echo "Checking Bird OSPF neighbors..."
       - kubectl exec -n kube-system daemonset/bird -- birdcl show protocols beefchunk
       - kubectl exec -n kube-system daemonset/bird -- birdcl show ospf neighbors
 
   validate-routing:
     desc: Validate pod routing across nodes
     cmds:
-      - echo "Checking pod CIDR routes..."
       - kubectl exec -n kube-system daemonset/bird -- birdcl show route all
-      - echo "Checking LoadBalancer IP allocation..."
       - kubectl get svc kube-vip -n kube-system
