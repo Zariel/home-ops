@@ -213,7 +213,7 @@ worker:
 
 nodes:
   - hostname: k8s-0
-    ipAddress: "10.254.1.1"
+    ipAddress: 10.1.1.10
     controlPlane: true
     installDiskSelector:
       wwid: eui.343335304ea054640025384100000001
@@ -229,11 +229,22 @@ nodes:
             gateway: 10.254.1.0
         mtu: 9000
         dhcp: false
-      - deviceSelector:
-          driver: igc
-        ignore: true
+        vlans: &vlans
+          - vlanId: 140
+            mtu: 1500
+            dhcp: false
+      - interface: bond1
+        bond:
+          deviceSelectors:
+            - driver: igc
+              physical: true
+          mode: active-backup
+        dhcp: false
+        mtu: 9000
+        addresses:
+          - 10.1.1.10/24
   - hostname: k8s-1
-    ipAddress: "10.254.1.3"
+    ipAddress: 10.1.1.11
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -247,13 +258,21 @@ nodes:
             gateway: 10.254.1.2
         mtu: 9000
         dhcp: false
-      - deviceSelector:
-          driver: igc
-        ignore: true
+        vlans: *vlans
+      - interface: bond1
+        bond:
+          deviceSelectors:
+            - driver: igc
+              physical: true
+          mode: active-backup
+        dhcp: false
+        mtu: 9000
+        addresses:
+          - 10.1.1.11/24
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
   - hostname: k8s-2
-    ipAddress: "10.254.1.5"
+    ipAddress: 10.1.1.12
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -267,9 +286,17 @@ nodes:
             gateway: 10.254.1.4
         mtu: 9000
         dhcp: false
-      - deviceSelector:
-          driver: igc
-        ignore: true
+        vlans: *vlans
+      - interface: bond1
+        bond:
+          deviceSelectors:
+            - driver: igc
+              physical: true
+          mode: active-backup
+        dhcp: false
+        mtu: 9000
+        addresses:
+          - 10.1.1.12/24
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
   # - hostname: k8s-3
