@@ -86,6 +86,9 @@ spec:
         wipeDevicesFromOtherClusters: true
       crashCollector:
         disable: false
+      csi:
+        readAffinity:
+          enabled: true
       mgr:
         modules:
           - name: diskprediction_local
@@ -100,6 +103,11 @@ spec:
         provider: host
         ipFamily: IPv4
         dualStack: false
+        addressRanges:
+          public:
+            - 169.254.255.0/24
+          cluster:
+            - 169.254.255.0/24
         connections:
           compression:
             enabled: true
