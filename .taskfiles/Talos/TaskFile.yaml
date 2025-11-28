@@ -3,9 +3,6 @@
 version: "3"
 
 vars:
-  TALOS_VERSION: v1.7.1
-  TALOS_SCHEMATIC_ID: 6052c254ad4865b0d7b905cd00bbdb54053e7dbe0615e1dedbf8121256f328d7
-  KUBERNETES_VERSION: v1.30.0
   TALOS_SCRIPTS_DIR: "{{.ROOT_DIR}}/.taskfiles/Talos/scripts"
 
 tasks:
@@ -33,3 +30,22 @@ tasks:
           --force {{.ROOT_DIR}}/kubeconfig.yaml
     requires:
       vars: ["controller"]
+
+  matchbox:bundle:
+    desc: Build matchbox bundle (assets, profiles, groups) using talhelper outputs
+    cmds:
+      - bash {{.ROOT_DIR}}/.taskfiles/Talos/scripts/matchbox_bundle.sh
+
+  matchbox:push:
+    desc: Build and push matchbox bundle to VyOS (rsync --delete)
+    deps: ["matchbox:bundle"]
+    env:
+      HOST: "{{.host | default \"vyos@gateway\"}}"
+    cmds:
+      - rsync -av --delete {{.ROOT_DIR}}/artifacts/matchbox/ ${HOST}:/config/containers/matchbox/
+
+  matchbox:clean:
+    desc: Remove generated matchbox artifacts and cached schematic id
+    cmds:
+      - rm -rf {{.ROOT_DIR}}/artifacts/matchbox
+      - rm -f {{.ROOT_DIR}}/talos/.cache/schematic.id {{.ROOT_DIR}}/talos/.cache/schematic.key
