@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vrf-mgmt
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: vrf-mgmt
+    app.kubernetes.io/part-of: networking
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vrf-mgmt
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vrf-mgmt
+        app.kubernetes.io/part-of: networking
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: vrf-mgmt
+          image: ghcr.io/linuxcontainers/alpine:3.20@sha256:28a33e0390da2b341d05e53803c6766977039baedfc8a82a4910d5acc4755b66
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              VRF_NAME="vrf-mgmt"
+              VRF_TABLE=1001
+              IFACE="bond1"
+              if ip link show "$VRF_NAME" >/dev/null 2>&1; then
+                existing_table=$(ip -d link show "$VRF_NAME" | awk '/table/ {print $NF; exit}')
+                if [ "$existing_table" != "$VRF_TABLE" ]; then
+                  ip link delete "$VRF_NAME" || true
+                  ip link add "$VRF_NAME" type vrf table "$VRF_TABLE"
+                fi
+              else
+                ip link add "$VRF_NAME" type vrf table "$VRF_TABLE"
+              fi
+              ip link set "$VRF_NAME" up || true
+              if ip link show "$IFACE" >/dev/null 2>&1; then
+                ip link set "$IFACE" master "$VRF_NAME" || true
+                ip link set "$IFACE" up || true
+              else
+                echo "$IFACE not present; skipping enslave" >&2
+              fi
+              sleep infinity
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/os: linux
