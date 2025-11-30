@@ -52,6 +52,10 @@ patches:
         sunrpc.tcp_slot_table_entries: 128     # 10Gb/s | NFS
         sunrpc.tcp_max_slot_table_entries: 128 # 10Gb/s | NFS
         vm.nr_hugepages: 1024                  # PostgreSQL
+      udev:
+        rules:
+          - # Thunderbolt - Disable Power Management
+            ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{power/control}="on"
       features:
         hostDNS:
           enabled: true
@@ -86,11 +90,16 @@ controlPlane:
         - security=none
         - talos.logging.kernel=udp://10.45.0.2:6002/
         - talos.auditd.disabled=1
+        # - pcie_aspm=force
       systemExtensions:
         officialExtensions:
           - siderolabs/i915
           - siderolabs/intel-ucode
           - siderolabs/mei
+          - siderolabs/thunderbolt
+  kernelModules:
+    - name: thunderbolt
+    - name: thunderbolt_net
   nameservers:
     - 172.53.53.53
   patches:
@@ -242,7 +251,32 @@ nodes:
         dhcp: false
         mtu: 9000
         addresses:
-          - 10.1.1.10/24
+          - 10.1.1.10/32
+        routes:
+          - network: 10.1.1.11/32
+          - network: 10.1.1.12/32
+      - # k8s-1
+        deviceSelector:
+          driver: thunderbolt-net
+          busPath: 1-*
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.20/32
+        routes:
+          - network: 169.254.255.21/32
+            metric: 2048
+      - # k8s-2
+        deviceSelector:
+          driver: thunderbolt-net
+          busPath: 0-*
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.20/32
+        routes:
+          - network: 169.254.255.22/32
+            metric: 2048
   - hostname: k8s-1
     ipAddress: 10.1.1.11
     controlPlane: true
@@ -268,7 +302,32 @@ nodes:
         dhcp: false
         mtu: 9000
         addresses:
-          - 10.1.1.11/24
+          - 10.1.1.11/32
+        routes:
+          - network: 10.1.1.10/32
+          - network: 10.1.1.12/32
+      - # k8s-0
+        deviceSelector:
+          driver: thunderbolt-net
+          busPath: 1-*
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.21/32
+        routes:
+          - network: 169.254.255.20/32
+            metric: 2048
+      - # k8s-2
+        deviceSelector:
+          driver: thunderbolt-net
+          busPath: 0-*
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.21/32
+        routes:
+          - network: 169.254.255.22/32
+            metric: 2048
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
   - hostname: k8s-2
@@ -296,7 +355,32 @@ nodes:
         dhcp: false
         mtu: 9000
         addresses:
-          - 10.1.1.12/24
+          - 10.1.1.12/32
+        routes:
+          - network: 10.1.1.10/32
+          - network: 10.1.1.11/32
+      - # k8s-0
+        deviceSelector:
+          driver: thunderbolt-net
+          busPath: 1-*
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.22/32
+        routes:
+          - network: 169.254.255.20/32
+            metric: 2048
+      - # k8s-1
+        deviceSelector:
+          driver: thunderbolt-net
+          busPath: 0-*
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.22/32
+        routes:
+          - network: 169.254.255.21/32
+            metric: 2048
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
   # - hostname: k8s-3
