@@ -16,3 +16,4 @@ resources:
   - descheduler/ks.yaml
   - irqbalance/ks.yaml
   - multus/ks.yaml
+  - vrf-mgmt/ks.yaml
