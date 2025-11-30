@@ -1,111 +1,299 @@
 {
-  "uid": "brocade-temp",
-  "title": "Brocade ICX7250 Temperatures",
-  "description": "Live chassis and per-sensor temperatures from snmp-exporter",
-  "schemaVersion": 39,
-  "version": 1,
-  "refresh": "30s",
-  "tags": ["brocade", "snmp", "temperature"],
-  "timezone": "",
-  "time": { "from": "now-3h", "to": "now" },
-  "templating": {
+  "annotations": {
     "list": [
       {
-        "name": "instance",
-        "type": "query",
-        "datasource": { "type": "prometheus", "uid": "victoriametrics" },
-        "refresh": 1,
-        "definition": "label_values(brocade_temperature_celsius, instance)",
-        "query": { "query": "label_values(brocade_temperature_celsius, instance)", "refId": "Templating" },
-        "current": { "selected": false, "text": "All", "value": ".*" },
-        "includeAll": true,
-        "multi": false,
-        "label": "Instance",
-        "regex": "",
-        "sort": 1
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
       }
     ]
   },
+  "description": "Live chassis and per-sensor temperatures from snmp-exporter",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
   "panels": [
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
-      "type": "stat",
-      "title": "Chassis Temperature",
-      "datasource": { "type": "prometheus", "uid": "victoriametrics" },
-      "targets": [
-        { "refId": "A", "expr": "brocade_chassis_temperature_celsius{instance=~\"$instance\"}" }
-      ],
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "value_and_name"
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.1",
+      "targets": [
+        {
+          "expr": "brocade_chassis_temperature_celsius{instance=~\"$instance\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Chassis Temperature",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "victoriametrics"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "orange", "value": 80 },
-              { "color": "red", "value": 100 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
             ]
-          }
+          },
+          "unit": "celsius"
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 }
+      "gridPos": {
+        "h": 9,
+        "w": 18,
+        "x": 6,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "asc"
+        }
+      },
+      "targets": [
+        {
+          "expr": "brocade_temperature_celsius{instance=~\"$instance\"}",
+          "legendFormat": "slot={{slot}} sensor={{sensor}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Per-Sensor Temperature",
+      "type": "timeseries"
     },
     {
-      "id": 2,
-      "type": "timeseries",
-      "title": "Per-Sensor Temperature",
-      "datasource": { "type": "prometheus", "uid": "victoriametrics" },
-      "targets": [
-        { "refId": "A", "expr": "brocade_temperature_celsius{instance=~\"$instance\"}", "legendFormat": "slot={{slot}} sensor={{sensor}}" }
-      ],
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
       "fieldConfig": {
-        "defaults": { "unit": "celsius", "color": { "mode": "palette-classic" } },
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
         "overrides": []
       },
-      "options": {
-        "legend": { "displayMode": "list", "placement": "right", "showLegend": true },
-        "tooltip": { "mode": "multi", "sort": "asc" }
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 6
       },
-      "gridPos": { "h": 9, "w": 18, "x": 6, "y": 0 }
-    },
-    {
       "id": 3,
-      "type": "stat",
-      "title": "Max Sensor Temp",
-      "datasource": { "type": "prometheus", "uid": "victoriametrics" },
-      "targets": [
-        { "refId": "A", "expr": "max(brocade_temperature_celsius{instance=~\"$instance\"})" }
-      ],
       "options": {
         "colorMode": "background",
         "graphMode": "none",
         "justifyMode": "center",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "value_and_name"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "orange", "value": 80 },
-              { "color": "red", "value": 100 }
-            ]
-          }
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
-        "overrides": []
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 6 }
+      "pluginVersion": "11.2.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "max(brocade_temperature_celsius{instance=~\"$instance\"})",
+          "instant": true,
+          "legendFormat": "{{}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Max Sensor Temp",
+      "type": "stat"
     }
-  ]
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": [
+    "brocade",
+    "snmp",
+    "temperature"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "victoriametrics"
+        },
+        "definition": "label_values(brocade_temperature_celsius, instance)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instance",
+        "multi": false,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "label_values(brocade_temperature_celsius, instance)",
+          "refId": "Templating"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Brocade ICX7250 Temperatures",
+  "uid": "brocade-temp",
+  "version": 1,
+  "weekStart": ""
 }
