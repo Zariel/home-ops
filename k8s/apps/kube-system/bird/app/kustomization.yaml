@@ -8,3 +8,5 @@ configMapGenerator:
   - name: bird-config
     files:
       - bird.conf=resources/bird.conf
+generatorOptions:
+  disableNameSuffixHash: true
