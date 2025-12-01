@@ -16,6 +16,8 @@ spec:
       labels:
         app.kubernetes.io/name: bird
         app.kubernetes.io/instance: bird
+      annotations:
+        reloader.stakater.com/auto: "true"
     spec:
       # Use host networking for direct access to network interfaces
       hostNetwork: true
