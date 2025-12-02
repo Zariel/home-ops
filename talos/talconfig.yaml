@@ -176,7 +176,7 @@ controlPlane:
         path: /cluster/apiServer/admissionControl
 
   extraManifests:
-    - manifests/x710.yaml
+    - manifests/ms01.yaml
   machineFiles: &machineFiles
     - content: |-
         [plugins."io.containerd.cri.v1.images"]
@@ -222,26 +222,36 @@ worker:
 
 nodes:
   - hostname: k8s-0
-    ipAddress: 10.1.1.10
+    ipAddress: 10.254.1.1
     controlPlane: true
     installDiskSelector:
       wwid: eui.343335304ea054640025384100000001
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "58:47:ca:78:d*"
-          driver: i40e
-          physical: true
+      - interface: bond0
+        bond: &bond0
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - driver: mlx5_core
+              physical: true
+        dhcp: false
+        mtu: 9000
         addresses:
           - 10.254.1.1/31
         routes:
           - network: 0.0.0.0/0
             gateway: 10.254.1.0
-        mtu: 9000
-        dhcp: false
         vlans: &vlans
           - vlanId: 140
             mtu: 1500
             dhcp: false
+      # - deviceSelector:
+      #     driver: igc
+      #     physical: true
+      #   ignore: true
+      - deviceSelector:
+          driver: i40e
+        ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
@@ -278,21 +288,26 @@ nodes:
           - network: 169.254.255.22/32
             metric: 2048
   - hostname: k8s-1
-    ipAddress: 10.1.1.11
+    ipAddress: 10.254.1.3
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "58:47:ca:78:d*"
-          driver: i40e
-          physical: true
+      - interface: bond0
+        bond: *bond0
+        dhcp: false
+        mtu: 9000
         addresses:
           - 10.254.1.3/31
         routes:
           - network: 0.0.0.0/0
             gateway: 10.254.1.2
-        mtu: 9000
-        dhcp: false
         vlans: *vlans
+      # - deviceSelector:
+      #     driver: igc
+      #     physical: true
+      #   ignore: true
+      - deviceSelector:
+          driver: i40e
+        ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
@@ -331,21 +346,26 @@ nodes:
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
   - hostname: k8s-2
-    ipAddress: 10.1.1.12
+    ipAddress: 10.254.1.5
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "58:47:ca:78:d*"
-          driver: i40e
-          physical: true
+      - interface: bond0
+        bond: *bond0
+        dhcp: false
+        mtu: 9000
         addresses:
           - 10.254.1.5/31
         routes:
           - network: 0.0.0.0/0
             gateway: 10.254.1.4
-        mtu: 9000
-        dhcp: false
         vlans: *vlans
+      # - deviceSelector:
+      #     driver: igc
+      #     physical: true
+      #   ignore: true
+      - deviceSelector:
+          driver: i40e
+        ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
