@@ -388,7 +388,7 @@ spec:
       dashboards:
         enabled: true
         searchNamespace: ALL
-        labelValue: ""
+        labelValue: "1"
         label: grafana_dashboard
         folderAnnotation: grafana_folder
         provider:
@@ -397,7 +397,7 @@ spec:
       datasources:
         enabled: true
         searchNamespace: ALL
-        labelValue: ""
+        labelValue: "1"
     plugins:
       - grafana-clock-panel
       - grafana-piechart-panel
