@@ -23,9 +23,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: victoria-metrics-k8s-stack
-  dependsOn:
-    - name: victoria-metrics-operator
-      namespace: monitoring
   values:
     # Create default monitoring rules
     defaultRules:
@@ -33,7 +30,7 @@ spec:
 
     # Enable Grafana dashboards
     defaultDashboards:
-      enabled: false # Disabled to avoid duplicate dashboards with Grafana HelmRelease
+      enabled: true
       labels:
         grafana_dashboard: "1"
 
@@ -134,6 +131,8 @@ spec:
     kube-state-metrics:
       enabled: false
 
-    # Disable operator since you already have it
     victoria-metrics-operator:
-      enabled: false
+      enabled: true
+
+    victoria-metrics-operator-crds:
+      enabled: true
