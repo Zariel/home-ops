@@ -86,6 +86,7 @@
     },
     {
       "datasource": {
+        "default": true,
         "type": "prometheus",
         "uid": "victoriametrics"
       },
@@ -166,8 +167,14 @@
       },
       "targets": [
         {
-          "expr": "brocade_temperature_celsius{instance=~\"$instance\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(brocade_temperature_celsius{instance=~\"$instance\"}) by (slot, sensor)",
           "legendFormat": "slot={{slot}} sensor={{sensor}}",
+          "range": true,
           "refId": "A"
         }
       ],
