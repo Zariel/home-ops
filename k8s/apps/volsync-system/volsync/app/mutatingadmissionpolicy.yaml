@@ -99,7 +99,7 @@ spec:
                 name: "repository",
                 nfs: Object.spec.template.spec.volumes.nfs{
                   server: "nas.cbannister.casa",
-                  path: "/mnt/bighorse/volsync"
+                  path: "/mnt/bighorse/volsync/restic"
                 }
               }
             }
