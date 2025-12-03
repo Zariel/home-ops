@@ -33,9 +33,8 @@ spec:
             server: nas.cbannister.casa
             path: /mnt/bighorse/music/downloads
         - name: incomplete
-          nfs:
-            server: nas.cbannister.casa
-            path: /mnt/bighorse/incompletes
+          persistentVolumeClaim:
+            claimName: qbittorrent-incomplete
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
