@@ -21,7 +21,7 @@ spec:
   statefulStorage:
     volumeClaimTemplate:
       spec:
-        storageClassName: ceph-block
+        storageClassName: openebs-hostpath
         accessModes:
           - ReadWriteOnce
         resources:
