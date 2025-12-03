@@ -13,6 +13,8 @@ spec:
   dependsOn:
     - name: snapshot-controller
       namespace: volsync-system
+    - name: openebs
+      namespace: openebs-system
   path: ./k8s/apps/volsync-system/volsync/app
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
