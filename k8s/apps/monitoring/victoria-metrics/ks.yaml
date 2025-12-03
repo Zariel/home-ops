@@ -3,52 +3,6 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app victoria-metrics-operator-crds
-  namespace: &namespace monitoring
-spec:
-  path: ./k8s/apps/monitoring/victoria-metrics/operator-crds
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-    namespace: flux-system
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 15m
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app victoria-metrics-operator
-spec:
-  path: ./k8s/apps/monitoring/victoria-metrics/operator
-  targetNamespace: monitoring
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-    namespace: flux-system
-  dependsOn:
-    - name: prometheus-operator-crds
-    - name: victoria-metrics-operator-crds
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 15m
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: &app victoria-metrics-cluster
 spec:
   path: ./k8s/apps/monitoring/victoria-metrics/cluster
@@ -62,7 +16,7 @@ spec:
     name: home-kubernetes
     namespace: flux-system
   dependsOn:
-    - name: victoria-metrics-operator
+    - name: victoria-metrics-k8s-stack
     - name: rook-ceph-cluster
       namespace: rook-ceph
   wait: false
@@ -86,8 +40,6 @@ spec:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  dependsOn:
-    - name: victoria-metrics-operator
   wait: false
   interval: 1h
   retryInterval: 1m
