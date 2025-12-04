@@ -14,7 +14,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 20Ti
+      VOLSYNC_CAPACITY: 20Gi
       VOLSYNC_CACHE_CAPACITY: 10Gi
   dependsOn:
     - name: rook-ceph-cluster
