@@ -1,0 +1,161 @@
+# WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
+auths:
+  public_v2:
+    community: public
+    security_level: noAuthNoPriv
+    auth_protocol: MD5
+    priv_protocol: DES
+    version: 2
+modules:
+  brocade:
+    walk:
+      - 1.3.6.1.4.1.1991.1.1.2.13.1.1.4  # snAgentTempValue (0.5°C units)
+      - 1.3.6.1.4.1.1991.1.1.2.13.1.1.5  # snAgentTempWarningValue (0.5°C units)
+      - 1.3.6.1.4.1.1991.1.1.2.13.1.1.6  # snAgentTempShutdownValue (0.5°C units)
+
+      - 1.3.6.1.4.1.1991.1.1.1.1.18      # snChasActualTemperature (0.5°C units)
+      - 1.3.6.1.4.1.1991.1.1.1.1.19      # snChasWarningTemperature (0.5°C units)
+      - 1.3.6.1.4.1.1991.1.1.1.1.20      # snChasShutdownTemperature (0.5°C units)
+
+    get: []
+
+    metrics:
+      # Temperature and thermal management
+      - name: brocade_temperature_celsius
+        oid: 1.3.6.1.4.1.1991.1.1.2.13.1.1.4
+        type: gauge
+        help: Current per-sensor temperature; vendor reports in 0.5°C units, scaled to °C
+        indexes:
+        - labelname: slot
+          type: gauge
+        - labelname: sensor
+          type: gauge
+        scale: 0.5
+
+      - name: brocade_temperature_warning_threshold_celsius
+        oid: 1.3.6.1.4.1.1991.1.1.2.13.1.1.5
+        type: gauge
+        help: Per-sensor warning threshold (0.5°C units, scaled to °C)
+        indexes:
+        - labelname: slot
+          type: gauge
+        - labelname: sensor
+          type: gauge
+        scale: 0.5
+
+      - name: brocade_temperature_shutdown_threshold_celsius
+        oid: 1.3.6.1.4.1.1991.1.1.2.13.1.1.6
+        type: gauge
+        help: Per-sensor shutdown threshold (0.5°C units, scaled to °C)
+        indexes:
+        - labelname: slot
+          type: gauge
+        - labelname: sensor
+          type: gauge
+        scale: 0.5
+
+      - name: brocade_chassis_temperature_celsius
+        oid: 1.3.6.1.4.1.1991.1.1.1.1.18.0
+        type: gauge
+        help: Chassis ambient temperature (0.5°C units, scaled to °C)
+        scale: 0.5
+
+      - name: brocade_chassis_temperature_warning_threshold_celsius
+        oid: 1.3.6.1.4.1.1991.1.1.1.1.19.0
+        type: gauge
+        help: Chassis warning temperature threshold (0.5°C units, scaled to °C)
+        scale: 0.5
+
+      - name: brocade_chassis_temperature_shutdown_threshold_celsius
+        oid: 1.3.6.1.4.1.1991.1.1.1.1.20.0
+        type: gauge
+        help: Chassis shutdown temperature threshold (0.5°C units, scaled to °C)
+        scale: 0.5
+
+  raritan_px2:
+    walk:
+      # Outlet metadata and per-outlet sensors
+      - 1.3.6.1.4.1.13742.6.3.5.3   # outletConfigurationTable
+      - 1.3.6.1.4.1.13742.6.3.5.4   # outletSensorConfigurationTable
+      - 1.3.6.1.4.1.13742.6.5.4.3   # outletSensorMeasurementsTable
+      - 1.3.6.1.4.1.13742.6.4.1.2   # outletSwitchControlTable (on/off state)
+
+      # Inlet metadata and sensors
+      - 1.3.6.1.4.1.13742.6.3.3.3   # inletConfigurationTable
+      - 1.3.6.1.4.1.13742.6.3.3.4   # inletSensorConfigurationTable
+      - 1.3.6.1.4.1.13742.6.5.2.3   # inletSensorMeasurementsTable
+
+    get: []
+
+    lookups:
+      # Outlet labels/names for readability
+      - source_indexes: [pduId, outletId]
+        lookup: 1.3.6.1.4.1.13742.6.3.5.3.1.2   # outletLabel
+      - source_indexes: [pduId, outletId]
+        lookup: 1.3.6.1.4.1.13742.6.3.5.3.1.3   # outletName (user-defined)
+
+      # Inlet labels/names
+      - source_indexes: [pduId, inletId]
+        lookup: 1.3.6.1.4.1.13742.6.3.3.3.1.2   # inletLabel
+      - source_indexes: [pduId, inletId]
+        lookup: 1.3.6.1.4.1.13742.6.3.3.3.1.3   # inletName
+
+    metrics:
+      # Expose raw sensor values; scaling is applied in PromQL using the associated DecimalDigits columns.
+      - name: raritan_outlet_sensor_value
+        oid: 1.3.6.1.4.1.13742.6.5.4.3.1.4.1
+        type: gauge
+        help: Raw outlet sensor value (index: pduId,outletId,sensorType); scale using outletSensorDecimalDigits.
+        indexes:
+          - labelname: pduId
+            type: gauge
+          - labelname: outletId
+            type: gauge
+          - labelname: sensorType
+            type: gauge
+
+      - name: raritan_outlet_sensor_decimal_digits
+        oid: 1.3.6.1.4.1.13742.6.3.5.4.1.7
+        type: gauge
+        help: Decimal digits for outlet sensors (index: pduId,outletId,sensorType).
+        indexes:
+          - labelname: pduId
+            type: gauge
+          - labelname: outletId
+            type: gauge
+          - labelname: sensorType
+            type: gauge
+
+      - name: raritan_outlet_switch_state
+        oid: 1.3.6.1.4.1.13742.6.4.1.2.1.3
+        type: gauge
+        help: Outlet switching state (SensorStateEnumeration; on=7, off=8).
+        indexes:
+          - labelname: pduId
+            type: gauge
+          - labelname: outletId
+            type: gauge
+
+      - name: raritan_inlet_sensor_value
+        oid: 1.3.6.1.4.1.13742.6.5.2.3.1.4.1
+        type: gauge
+        help: Raw inlet sensor value (index: pduId,inletId,sensorType); scale using inletSensorDecimalDigits.
+        indexes:
+          - labelname: pduId
+            type: gauge
+          - labelname: inletId
+            type: gauge
+          - labelname: sensorType
+            type: gauge
+
+      - name: raritan_inlet_sensor_decimal_digits
+        oid: 1.3.6.1.4.1.13742.6.3.3.4.1.7
+        type: gauge
+        help: Decimal digits for inlet sensors (index: pduId,inletId,sensorType).
+        indexes:
+          - labelname: pduId
+            type: gauge
+          - labelname: inletId
+            type: gauge
+          - labelname: sensorType
+            type: gauge
