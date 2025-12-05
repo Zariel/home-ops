@@ -17,7 +17,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app snmp-exporter-brocade
+  name: &app snmp-exporter
 spec:
   interval: 30m
   chartRef:
@@ -35,7 +35,7 @@ spec:
     fullnameOverride: *app
     extraArgs: ["--config.file=/config/snmp.yaml"]
     extraConfigmapMounts:
-      - name: &name brocade-snmp-configmap
+      - name: &name snmp-exporter-config
         mountPath: /config/snmp.yaml
         subPath: snmp.yaml
         configMap: *name
@@ -49,6 +49,10 @@ spec:
         - name: beefchunk
           module: ["brocade"]
           target: 10.1.0.10
+          auth: ["public_v2"]
+        - name: pdu
+          module: ["raritan_px2"]
+          target: 10.1.0.31
           auth: ["public_v2"]
       path: /snmp
       scrapeTimeout: 60s
