@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: raritan-px2-rules
+spec:
+  groups:
+    - name: raritan-px2.scaled
+      rules:
+        # Per-outlet metrics (sensorType: 5=activePower, 1=rmsCurrent, 4=rmsVoltage)
+        - record: raritan_outlet_active_power_watts
+          expr: |
+            raritan_outlet_sensor_value{sensorType="5"}
+              * on(pduId, outletId, sensorType)
+                pow(10, -1 * raritan_outlet_sensor_decimal_digits{sensorType="5"})
+        - record: raritan_outlet_rms_current_amps
+          expr: |
+            raritan_outlet_sensor_value{sensorType="1"}
+              * on(pduId, outletId, sensorType)
+                pow(10, -1 * raritan_outlet_sensor_decimal_digits{sensorType="1"})
+        - record: raritan_outlet_rms_voltage_volts
+          expr: |
+            raritan_outlet_sensor_value{sensorType="4"}
+              * on(pduId, outletId, sensorType)
+                pow(10, -1 * raritan_outlet_sensor_decimal_digits{sensorType="4"})
+        - record: raritan_outlet_on
+          expr: |
+            raritan_outlet_switch_state == 7
+
+        # Per-inlet metrics
+        - record: raritan_inlet_active_power_watts
+          expr: |
+            raritan_inlet_sensor_value{sensorType="5"}
+              * on(pduId, inletId, sensorType)
+                pow(10, -1 * raritan_inlet_sensor_decimal_digits{sensorType="5"})
+        - record: raritan_inlet_rms_current_amps
+          expr: |
+            raritan_inlet_sensor_value{sensorType="1"}
+              * on(pduId, inletId, sensorType)
+                pow(10, -1 * raritan_inlet_sensor_decimal_digits{sensorType="1"})
+        - record: raritan_inlet_rms_voltage_volts
+          expr: |
+            raritan_inlet_sensor_value{sensorType="4"}
+              * on(pduId, inletId, sensorType)
+                pow(10, -1 * raritan_inlet_sensor_decimal_digits{sensorType="4"})
