@@ -276,6 +276,9 @@ nodes:
         routes:
           - network: 169.254.255.21/32
             metric: 2048
+          - network: 169.254.255.22/32
+            gateway: 169.254.255.21
+            metric: 4096
       - # k8s-2
         deviceSelector:
           driver: thunderbolt-net
@@ -287,6 +290,9 @@ nodes:
         routes:
           - network: 169.254.255.22/32
             metric: 2048
+          - network: 169.254.255.21/32
+            gateway: 169.254.255.22
+            metric: 4096
   - hostname: k8s-1
     ipAddress: 10.254.1.3
     controlPlane: true
@@ -332,6 +338,9 @@ nodes:
         routes:
           - network: 169.254.255.20/32
             metric: 2048
+          - network: 169.254.255.22/32
+            gateway: 169.254.255.20
+            metric: 4096
       - # k8s-2
         deviceSelector:
           driver: thunderbolt-net
@@ -343,6 +352,9 @@ nodes:
         routes:
           - network: 169.254.255.22/32
             metric: 2048
+          - network: 169.254.255.20/32
+            gateway: 169.254.255.22
+            metric: 4096
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
   - hostname: k8s-2
@@ -390,6 +402,9 @@ nodes:
         routes:
           - network: 169.254.255.20/32
             metric: 2048
+          - network: 169.254.255.21/32
+            gateway: 169.254.255.20
+            metric: 4096
       - # k8s-1
         deviceSelector:
           driver: thunderbolt-net
@@ -401,6 +416,9 @@ nodes:
         routes:
           - network: 169.254.255.21/32
             metric: 2048
+          - network: 169.254.255.20/32
+            gateway: 169.254.255.21
+            metric: 4096
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
   # - hostname: k8s-3
