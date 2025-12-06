@@ -9,6 +9,7 @@ configMapGenerator:
   - name: snmp-exporter-config
     files:
       - snmp.yaml=./resources/snmp.yaml
+      - snmp-raritan.yaml=./resources/snmp-raritan.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
