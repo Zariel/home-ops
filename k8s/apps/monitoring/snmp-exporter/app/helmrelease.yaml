@@ -64,18 +64,13 @@ spec:
           auth: ["public_v2"]
       path: /snmp
       scrapeTimeout: 60s
-      metricRelabelings:
+      additionalMetricsRelabels:
         # Keep module as a label for troubleshooting and optional selectors
         - sourceLabels: [__param_module]
           targetLabel: module
           action: replace
         # Prefix Raritan metrics without touching Brocade metrics
         - sourceLabels: [__param_module, __name__]
-          regex: raritan_px2;(.*)
-          targetLabel: __name__
-          replacement: raritan_pdu_${1}
-        # Fallback for environments where the module label is exposed as "module"
-        - sourceLabels: [module, __name__]
           regex: raritan_px2;(.*)
           targetLabel: __name__
           replacement: raritan_pdu_${1}
