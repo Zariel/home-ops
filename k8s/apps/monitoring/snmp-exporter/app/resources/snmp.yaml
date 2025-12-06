@@ -3,8 +3,6 @@ auths:
   public_v2:
     community: public
     security_level: noAuthNoPriv
-    auth_protocol: MD5
-    priv_protocol: DES
     version: 2
 modules:
   brocade:
@@ -105,7 +103,7 @@ modules:
       - name: raritan_outlet_sensor_value
         oid: 1.3.6.1.4.1.13742.6.5.4.3.1.4.1
         type: gauge
-        help: Raw outlet sensor value (index: pduId,outletId,sensorType); scale using outletSensorDecimalDigits.
+        help: "Raw outlet sensor value (index: pduId,outletId,sensorType); scale using outletSensorDecimalDigits."
         indexes:
           - labelname: pduId
             type: gauge
@@ -117,7 +115,7 @@ modules:
       - name: raritan_outlet_sensor_decimal_digits
         oid: 1.3.6.1.4.1.13742.6.3.5.4.1.7
         type: gauge
-        help: Decimal digits for outlet sensors (index: pduId,outletId,sensorType).
+        help: "Decimal digits for outlet sensors (index: pduId,outletId,sensorType)."
         indexes:
           - labelname: pduId
             type: gauge
@@ -139,7 +137,7 @@ modules:
       - name: raritan_inlet_sensor_value
         oid: 1.3.6.1.4.1.13742.6.5.2.3.1.4.1
         type: gauge
-        help: Raw inlet sensor value (index: pduId,inletId,sensorType); scale using inletSensorDecimalDigits.
+        help: "Raw inlet sensor value (index: pduId,inletId,sensorType); scale using inletSensorDecimalDigits."
         indexes:
           - labelname: pduId
             type: gauge
@@ -151,7 +149,7 @@ modules:
       - name: raritan_inlet_sensor_decimal_digits
         oid: 1.3.6.1.4.1.13742.6.3.3.4.1.7
         type: gauge
-        help: Decimal digits for inlet sensors (index: pduId,inletId,sensorType).
+        help: "Decimal digits for inlet sensors (index: pduId,inletId,sensorType)."
         indexes:
           - labelname: pduId
             type: gauge
