@@ -33,11 +33,19 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
-    extraArgs: ["--config.file=/config/snmp.yaml"]
+    extraArgs:
+      - --config.file=/config/snmp.yaml
+      - --config.file=/config/snmp-raritan.yaml
     extraConfigmapMounts:
       - name: &name snmp-exporter-config
         mountPath: /config/snmp.yaml
         subPath: snmp.yaml
+        configMap: *name
+        readOnly: true
+        defaultMode: 420
+      - name: snmp-exporter-config
+        mountPath: /config/snmp-raritan.yaml
+        subPath: snmp-raritan.yaml
         configMap: *name
         readOnly: true
         defaultMode: 420
