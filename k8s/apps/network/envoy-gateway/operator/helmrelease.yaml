@@ -35,9 +35,9 @@ spec:
     remediation:
       retries: 5
   values:
+    global:
+      imageRegistry: mirror.gcr.io
     config:
-      global:
-        imageRegistry: mirror.gcr.io
       envoyGateway:
         gateway:
           controllerName: gateway.envoyproxy.io/gatewayclass-controller
