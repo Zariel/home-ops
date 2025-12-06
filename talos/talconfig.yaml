@@ -248,10 +248,6 @@ nodes:
           - vlanId: 140
             mtu: 1500
             dhcp: false
-        # - deviceSelector:
-        #     driver: igc
-        #     physical: true
-        #   ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
@@ -307,10 +303,6 @@ nodes:
           - network: 0.0.0.0/0
             gateway: 10.254.1.2
         vlans: *vlans
-        # - deviceSelector:
-        #     driver: igc
-        #     physical: true
-        #   ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
@@ -368,10 +360,6 @@ nodes:
           - network: 0.0.0.0/0
             gateway: 10.254.1.4
         vlans: *vlans
-      # - deviceSelector:
-      #     driver: igc
-      #     physical: true
-      #   ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
@@ -415,17 +403,3 @@ nodes:
             metric: 4096
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
-  # - hostname: k8s-3
-  #   ipAddress: "10.1.1.13"
-  #   controlPlane: false
-  #   installDiskSelector:
-  #     wwid: eui.343335304eb046460025384100000001
-  #   networkInterfaces:
-  #     - deviceSelector:
-  #         hardwareAddr: b8:59:9f:cf:ff:b2
-  #         physical: true
-  #       dhcp: false
-  #       mtu: 9000
-  #   talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
-  #   extraManifests:
-  #     - manifests/k8s-3.yaml
