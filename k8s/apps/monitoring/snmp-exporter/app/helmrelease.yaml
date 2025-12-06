@@ -56,7 +56,7 @@ spec:
       params:
         - name: beefchunk
           module: ["brocade"]
-          target: 10.1.0.10
+          target: 10.254.255.1
           auth: ["public_v2"]
         - name: pdu
           module: ["raritan_px2"]
