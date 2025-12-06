@@ -248,13 +248,10 @@ nodes:
           - vlanId: 140
             mtu: 1500
             dhcp: false
-      # - deviceSelector:
-      #     driver: igc
-      #     physical: true
-      #   ignore: true
-      - deviceSelector:
-          driver: i40e
-        ignore: true
+        # - deviceSelector:
+        #     driver: igc
+        #     physical: true
+        #   ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
@@ -310,13 +307,10 @@ nodes:
           - network: 0.0.0.0/0
             gateway: 10.254.1.2
         vlans: *vlans
-      # - deviceSelector:
-      #     driver: igc
-      #     physical: true
-      #   ignore: true
-      - deviceSelector:
-          driver: i40e
-        ignore: true
+        # - deviceSelector:
+        #     driver: igc
+        #     physical: true
+        #   ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
@@ -378,9 +372,6 @@ nodes:
       #     driver: igc
       #     physical: true
       #   ignore: true
-      - deviceSelector:
-          driver: i40e
-        ignore: true
       - interface: bond1
         bond:
           deviceSelectors:
