@@ -64,7 +64,7 @@ spec:
           auth: ["public_v2"]
       path: /snmp
       scrapeTimeout: 60s
-      additionalMetricsRelabels:
+      additionalMetricRelabels:
         # Keep module as a label for troubleshooting and optional selectors
         - sourceLabels: [__param_module]
           targetLabel: module
