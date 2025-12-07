@@ -13,25 +13,25 @@ spec:
           expr: |
             (measurementsOutletSensorValue{sensorType="5"} or raritan_pdu_measurementsOutletSensorValue{sensorType="5"})
               * on(pduId, outletId, sensorType)
-                pow(
-                  10,
-                  -1 * (outletSensorDecimalDigits{sensorType="5"} or raritan_pdu_outletSensorDecimalDigits{sensorType="5"})
+                exp(
+                  ln(10)
+                  * -1 * (outletSensorDecimalDigits{sensorType="5"} or raritan_pdu_outletSensorDecimalDigits{sensorType="5"})
                 )
         - record: raritan_pdu_outlet_rms_current_amps
           expr: |
             (measurementsOutletSensorValue{sensorType="1"} or raritan_pdu_measurementsOutletSensorValue{sensorType="1"})
               * on(pduId, outletId, sensorType)
-                pow(
-                  10,
-                  -1 * (outletSensorDecimalDigits{sensorType="1"} or raritan_pdu_outletSensorDecimalDigits{sensorType="1"})
+                exp(
+                  ln(10)
+                  * -1 * (outletSensorDecimalDigits{sensorType="1"} or raritan_pdu_outletSensorDecimalDigits{sensorType="1"})
                 )
         - record: raritan_pdu_outlet_rms_voltage_volts
           expr: |
             (measurementsOutletSensorValue{sensorType="4"} or raritan_pdu_measurementsOutletSensorValue{sensorType="4"})
               * on(pduId, outletId, sensorType)
-                pow(
-                  10,
-                  -1 * (outletSensorDecimalDigits{sensorType="4"} or raritan_pdu_outletSensorDecimalDigits{sensorType="4"})
+                exp(
+                  ln(10)
+                  * -1 * (outletSensorDecimalDigits{sensorType="4"} or raritan_pdu_outletSensorDecimalDigits{sensorType="4"})
                 )
         - record: raritan_pdu_outlet_on
           expr: |
@@ -42,23 +42,23 @@ spec:
           expr: |
             (measurementsInletSensorValue{sensorType="5"} or raritan_pdu_measurementsInletSensorValue{sensorType="5"})
               * on(pduId, inletId, sensorType)
-                pow(
-                  10,
-                  -1 * (inletSensorDecimalDigits{sensorType="5"} or raritan_pdu_inletSensorDecimalDigits{sensorType="5"})
+                exp(
+                  ln(10)
+                  * -1 * (inletSensorDecimalDigits{sensorType="5"} or raritan_pdu_inletSensorDecimalDigits{sensorType="5"})
                 )
         - record: raritan_pdu_inlet_rms_current_amps
           expr: |
             (measurementsInletSensorValue{sensorType="1"} or raritan_pdu_measurementsInletSensorValue{sensorType="1"})
               * on(pduId, inletId, sensorType)
-                pow(
-                  10,
-                  -1 * (inletSensorDecimalDigits{sensorType="1"} or raritan_pdu_inletSensorDecimalDigits{sensorType="1"})
+                exp(
+                  ln(10)
+                  * -1 * (inletSensorDecimalDigits{sensorType="1"} or raritan_pdu_inletSensorDecimalDigits{sensorType="1"})
                 )
         - record: raritan_pdu_inlet_rms_voltage_volts
           expr: |
             (measurementsInletSensorValue{sensorType="4"} or raritan_pdu_measurementsInletSensorValue{sensorType="4"})
               * on(pduId, inletId, sensorType)
-                pow(
-                  10,
-                  -1 * (inletSensorDecimalDigits{sensorType="4"} or raritan_pdu_inletSensorDecimalDigits{sensorType="4"})
+                exp(
+                  ln(10)
+                  * -1 * (inletSensorDecimalDigits{sensorType="4"} or raritan_pdu_inletSensorDecimalDigits{sensorType="4"})
                 )
