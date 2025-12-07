@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://crds.jank.ing/operator.victoriametrics.com/vmrule_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: raritan-px2-rules
+spec:
+  groups:
+    - name: raritan-px2.scaled
+      rules:
+        # Per-outlet metrics (sensorType: 5=activePower, 1=rmsCurrent, 4=rmsVoltage)
+        - record: raritan_pdu_outlet_active_power_watts
+          expr: |
+            (measurementsOutletSensorValue{sensorType="5"} or raritan_pdu_measurementsOutletSensorValue{sensorType="5"})
+              * on(pduId, outletId, sensorType)
+                pow(
+                  10,
+                  -1 * (outletSensorDecimalDigits{sensorType="5"} or raritan_pdu_outletSensorDecimalDigits{sensorType="5"})
+                )
+        - record: raritan_pdu_outlet_rms_current_amps
+          expr: |
+            (measurementsOutletSensorValue{sensorType="1"} or raritan_pdu_measurementsOutletSensorValue{sensorType="1"})
+              * on(pduId, outletId, sensorType)
+                pow(
+                  10,
+                  -1 * (outletSensorDecimalDigits{sensorType="1"} or raritan_pdu_outletSensorDecimalDigits{sensorType="1"})
+                )
+        - record: raritan_pdu_outlet_rms_voltage_volts
+          expr: |
+            (measurementsOutletSensorValue{sensorType="4"} or raritan_pdu_measurementsOutletSensorValue{sensorType="4"})
+              * on(pduId, outletId, sensorType)
+                pow(
+                  10,
+                  -1 * (outletSensorDecimalDigits{sensorType="4"} or raritan_pdu_outletSensorDecimalDigits{sensorType="4"})
+                )
+        - record: raritan_pdu_outlet_on
+          expr: |
+            (outletSwitchingState or raritan_pdu_outletSwitchingState) == 7
+
+        # Per-inlet metrics
+        - record: raritan_pdu_inlet_active_power_watts
+          expr: |
+            (measurementsInletSensorValue{sensorType="5"} or raritan_pdu_measurementsInletSensorValue{sensorType="5"})
+              * on(pduId, inletId, sensorType)
+                pow(
+                  10,
+                  -1 * (inletSensorDecimalDigits{sensorType="5"} or raritan_pdu_inletSensorDecimalDigits{sensorType="5"})
+                )
+        - record: raritan_pdu_inlet_rms_current_amps
+          expr: |
+            (measurementsInletSensorValue{sensorType="1"} or raritan_pdu_measurementsInletSensorValue{sensorType="1"})
+              * on(pduId, inletId, sensorType)
+                pow(
+                  10,
+                  -1 * (inletSensorDecimalDigits{sensorType="1"} or raritan_pdu_inletSensorDecimalDigits{sensorType="1"})
+                )
+        - record: raritan_pdu_inlet_rms_voltage_volts
+          expr: |
+            (measurementsInletSensorValue{sensorType="4"} or raritan_pdu_measurementsInletSensorValue{sensorType="4"})
+              * on(pduId, inletId, sensorType)
+                pow(
+                  10,
+                  -1 * (inletSensorDecimalDigits{sensorType="4"} or raritan_pdu_inletSensorDecimalDigits{sensorType="4"})
+                )
