@@ -4,7 +4,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - helmrelease.yaml
-  - prometheusrule.yaml
+  # - prometheusrule.yaml
+  - vmrules.yaml
 configMapGenerator:
   - name: snmp-exporter-config
     files:
