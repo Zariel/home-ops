@@ -500,8 +500,8 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}",
-          "legendFormat": "Outlet {{outletLabel}} ({{outletId}})",
+          "expr": "raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\", outletLabel=~\"$outlet\"}",
+          "legendFormat": "Outlet {{outletLabel}}",
           "range": true,
           "refId": "A"
         }
@@ -620,7 +620,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}",
+          "expr": "raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\", outletLabel=~\"$outlet\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -633,7 +633,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_on{instance=~\"$instance\", pduId=~\"$pduId\"}",
+          "expr": "raritan_pdu_outlet_on{instance=~\"$instance\", pduId=~\"$pduId\", outletLabel=~\"$outlet\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -722,6 +722,28 @@
         "query": {
           "query": "label_values(raritan_pdu_inlet_active_power_watts{instance=~\"$instance\"}, pduId)",
           "refId": "Prometheus-pduId"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1
+      },
+      {
+        "name": "outlet",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "victoriametrics"
+        },
+        "definition": "label_values(raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}, outletLabel)",
+        "description": "Outlet label from Raritan MIB",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Outlet",
+        "multi": true,
+        "options": [],
+        "query": {
+          "query": "label_values(raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}, outletLabel)",
+          "refId": "Prometheus-outlet"
         },
         "refresh": 2,
         "regex": "",
