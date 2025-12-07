@@ -173,12 +173,6 @@ spec:
           revision: 6
           datasource:
             - { name: DS_PROMETHEUS, value: &datasource victoriametrics }
-        node-exporter-full:
-          # renovate: depName="Node Exporter Full"
-          gnetId: 1860
-          revision: 42
-          datasource:
-            - { name: DS_PROMETHEUS, value: victoriametrics }
         cert-manager:
           url: https://gitlab.com/uneeq-oss/cert-manager-mixin/-/raw/master/dashboards/cert-manager.json
           datasource: *datasource
@@ -204,10 +198,6 @@ spec:
           # renovate: depName="ZFS"
           gnetId: 7845
           revision: 4
-          datasource: *datasource
-        victoriametrics:
-          gnetId: 10229
-          revision: 22
           datasource: *datasource
       dns:
         external-dns:
@@ -243,126 +233,6 @@ spec:
         flux-control-plane:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
           datasource: *datasource
-      kubernetes:
-        # System Components
-        k8s-system-api-server:
-          # renovate: depName="Kubernetes / System / API Server"
-          gnetId: 15761
-          revision: 20
-          datasource: *datasource
-        controller-manager:
-          # renovate: depName="Kubernetes / Controller Manager"
-          gnetId: 12109
-          revision: 1
-          datasource: *datasource
-        scheduler:
-          # renovate: depName="Kubernetes / Scheduler"
-          gnetId: 12130
-          revision: 1
-          datasource: *datasource
-        kubelet:
-          # renovate: depName="Kubernetes / Kubelet"
-          gnetId: 12129
-          revision: 1
-          datasource: *datasource
-        etcd:
-          # renovate: depName="etcd"
-          gnetId: 3070
-          revision: 3
-          datasource: *datasource
-        coredns:
-          # renovate: depName="Kubernetes / System / CoreDNS"
-          gnetId: 15762
-          revision: 22
-          datasource: *datasource
-        # Views & Storage
-        k8s-views-global:
-          # renovate: depName="Kubernetes / Views / Global"
-          gnetId: 15757
-          revision: 43
-          datasource: *datasource
-        k8s-views-nodes:
-          # renovate: depName="Kubernetes / Views / Nodes"
-          gnetId: 15759
-          revision: 40
-          datasource: *datasource
-        k8s-views-namespaces:
-          # renovate: depName="Kubernetes / Views / Namespaces"
-          gnetId: 15758
-          revision: 44
-          datasource: *datasource
-        k8s-views-pods:
-          # renovate: depName="Kubernetes / Views / Pods"
-          gnetId: 15760
-          revision: 37
-          datasource: *datasource
-        k8s-volumes:
-          # renovate: depName="K8s / Storage / Volumes / Cluster"
-          gnetId: 11454
-          revision: 14
-          datasource: *datasource
-        # Resource Monitoring
-        k8s-compute-resources-workloads:
-          # renovate: depName="Kubernetes / Compute Resources / Namespace (Workloads)"
-          gnetId: 12118
-          revision: 1
-          datasource: *datasource
-        k8s-compute-resources-namespace-pods:
-          # renovate: depName="Kubernetes / Compute Resources / Namespace (Pods)"
-          gnetId: 12117
-          revision: 1
-          datasource: *datasource
-        k8s-compute-resources-pod:
-          # renovate: depName="Kubernetes / Compute Resources / Pod"
-          gnetId: 14438
-          revision: 1
-          datasource: *datasource
-        k8s-compute-resources-node-pods:
-          # renovate: depName="Kubernetes / Compute Resources / Node (Pods)"
-          gnetId: 12119
-          revision: 1
-          datasource: *datasource
-        k8s-pods-resources:
-          # renovate: depName="Kubernetes Pods Resources"
-          gnetId: 21811
-          revision: 1
-          datasource: *datasource
-        k8s-pods-containers-resources:
-          # renovate: depName="Kubernetes Pods Containers Resources"
-          gnetId: 9810
-          revision: 2
-          datasource: *datasource
-        k8s-workloads-cpu-memory:
-          # renovate: depName="Kubernetes Workloads CPU and Memory Metrics"
-          gnetId: 20372
-          revision: 3
-          datasource: *datasource
-        k8s-detailed-pods-resources:
-          # renovate: depName="Detailed Pods Resources"
-          gnetId: 11594
-          revision: 5
-          datasource: *datasource
-        k8s-resource-monitoring:
-          # renovate: depName="K8s Resource Monitoring"
-          gnetId: 17375
-          revision: 1
-          datasource: *datasource
-      victoria-metrics:
-        vmagent:
-          # renovate: depName="VictoriaMetrics - vmagent"
-          gnetId: 12683
-          revision: 26
-          datasource: *datasource
-        vmalert:
-          # renovate: depName="VictoriaMetrics - vmalert"
-          gnetId: 14950
-          revision: 17
-          datasource: *datasource
-        vm-operator:
-          # renovate: depName="VictoriaMetrics - operator"
-          gnetId: 17869
-          revision: 5
-          datasource: *datasource
       unifi:
         unifi-insights:
           # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
@@ -388,8 +258,8 @@ spec:
       dashboards:
         enabled: true
         searchNamespace: ALL
-        labelValue: "1"
         label: grafana_dashboard
+        labelValue: "1"
         folderAnnotation: grafana_folder
         provider:
           disableDelete: true
