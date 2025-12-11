@@ -37,6 +37,28 @@ spec:
           expr: |
             (outletSwitchingState or raritan_pdu_outletSwitchingState) == 7
 
+        # Outlet metrics enriched with outletName for easier dashboard legends
+        - record: raritan_pdu_outlet_active_power_watts_named
+          expr: |
+            raritan_pdu_outlet_active_power_watts
+              * on(pduId, outletId) group_left(outletName)
+                (raritan_pdu_outletLabel{outletName!=""})
+        - record: raritan_pdu_outlet_rms_current_amps_named
+          expr: |
+            raritan_pdu_outlet_rms_current_amps
+              * on(pduId, outletId) group_left(outletName)
+                (raritan_pdu_outletLabel{outletName!=""})
+        - record: raritan_pdu_outlet_rms_voltage_volts_named
+          expr: |
+            raritan_pdu_outlet_rms_voltage_volts
+              * on(pduId, outletId) group_left(outletName)
+                (raritan_pdu_outletLabel{outletName!=""})
+        - record: raritan_pdu_outlet_on_named
+          expr: |
+            raritan_pdu_outlet_on
+              * on(pduId, outletId) group_left(outletName)
+                (raritan_pdu_outletLabel{outletName!=""})
+
         # Per-inlet metrics
         - record: raritan_pdu_inlet_active_power_watts
           expr: |
