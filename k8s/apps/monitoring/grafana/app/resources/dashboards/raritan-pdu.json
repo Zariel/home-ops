@@ -500,8 +500,8 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\", outletLabel=~\"$outlet\"}",
-          "legendFormat": "Outlet {{outletLabel}}",
+          "expr": "raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\"}",
+          "legendFormat": "Outlet {{outletName}}",
           "range": true,
           "refId": "A"
         }
@@ -620,7 +620,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\", outletLabel=~\"$outlet\"}",
+          "expr": "raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -633,7 +633,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_on{instance=~\"$instance\", pduId=~\"$pduId\", outletLabel=~\"$outlet\"}",
+          "expr": "raritan_pdu_outlet_on_named{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -734,15 +734,15 @@
           "type": "prometheus",
           "uid": "victoriametrics"
         },
-        "definition": "label_values(raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}, outletLabel)",
-        "description": "Outlet label from Raritan MIB",
+        "definition": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\"}, outletName)",
+        "description": "Outlet name from Raritan MIB",
         "hide": 0,
         "includeAll": true,
         "label": "Outlet",
         "multi": true,
         "options": [],
         "query": {
-          "query": "label_values(raritan_pdu_outlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}, outletLabel)",
+          "query": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\"}, outletName)",
           "refId": "Prometheus-outlet"
         },
         "refresh": 2,
@@ -757,7 +757,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Raritan PX2 PDU (SNMP)",
+  "title": "Raritan PX2 PDU",
   "uid": "raritan-pdu-snmp",
   "version": 1,
   "weekStart": ""
