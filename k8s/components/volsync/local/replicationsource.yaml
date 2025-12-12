@@ -3,31 +3,28 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: ${APP}
+  name: "${APP}"
 spec:
-  sourcePVC: ${APP}
+  sourcePVC: "${APP}"
   trigger:
-    schedule: 0 * * * *
-  kopia:
-    accessModes:
-      - ${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}
-    cacheAccessModes:
-      - ${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}
-    cacheCapacity: ${VOLSYNC_CAPACITY:=5Gi}
-    cacheStorageClassName: ${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-hostpath}
-    compression: zstd-fastest
-    copyMethod: Snapshot
+    schedule: "0 * * * *"
+  restic:
+    copyMethod: "${VOLSYNC_COPYMETHOD:=Snapshot}"
+    pruneIntervalDays: 14
+    repository: "${APP}-volsync-secret"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=csi-ceph-blockpool}"
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=5Gi}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-hostpath}"
+    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
+    storageClassName: "${VOLSYNC_STORAGECLASS:=ceph-block}"
+    accessModes: ["${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}"]
+    moverPodLabels:
+      app: "volsync-${APP}-source"
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=568}
       runAsGroup: ${VOLSYNC_PGID:=568}
       fsGroup: ${VOLSYNC_PGID:=568}
       fsGroupChangePolicy: OnRootMismatch
-    moverPodLabels:
-      app: "volsync-${APP}-source"
-    parallelism: 2
-    repository: ${APP}-volsync-secret
     retain:
       hourly: 24
       daily: 7
-    storageClassName: ${VOLSYNC_STORAGECLASS:=ceph-block}
-    volumeSnapshotClassName: ${VOLSYNC_SNAPSHOTCLASS:=csi-ceph-blockpool}
