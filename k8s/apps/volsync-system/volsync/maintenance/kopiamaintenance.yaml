@@ -4,7 +4,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: KopiaMaintenance
 metadata:
   name: daily
-  namespace: volsync
 spec:
   enabled: true
   trigger:
