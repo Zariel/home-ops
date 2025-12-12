@@ -55,5 +55,15 @@ spec:
                 name: "repository",
                 mountPath: "/repository"
               }
+            },
+            JSONPatch{
+              op: "add", path: "/spec/template/spec/securityContext",
+              value: Object.spec.template.spec.securityContext{
+                runAsNonRoot: true,
+                runAsUser: 568,
+                runAsGroup: 568,
+                fsGroup: 568,
+                fsGroupChangePolicy: "OnRootMismatch"
+              }
             }
           ]
