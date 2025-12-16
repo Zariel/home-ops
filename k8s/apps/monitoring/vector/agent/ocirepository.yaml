@@ -8,4 +8,4 @@ spec:
   interval: 12h
   url: oci://ghcr.io/vectordotdev/helm-charts/vector
   ref:
-    tag: 0.48.0
+    tag: 0.49.0
