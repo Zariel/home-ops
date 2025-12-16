@@ -23,7 +23,7 @@ spec:
 
     image:
       repository: ghcr.io/vectordotdev/vector
-      tag: 0.51.1-alpine
+      tag: 0.52.0-alpine
       sha: ""
 
     podAnnotations:
