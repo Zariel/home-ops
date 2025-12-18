@@ -10,7 +10,7 @@ spec:
   selector:
     app: qbittorrent
   type: LoadBalancer
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
   ipFamilies:
     - IPv4
   ports:
