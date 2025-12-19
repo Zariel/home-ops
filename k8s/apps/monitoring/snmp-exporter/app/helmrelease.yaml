@@ -37,13 +37,13 @@ spec:
       - --config.file=/config/snmp.yaml
       - --config.file=/config/snmp-raritan.yaml
     extraConfigmapMounts:
-      - name: &name snmp-exporter-config
+      - name: snmp-exporter-config-snmp
         mountPath: /config/snmp.yaml
         subPath: snmp.yaml
-        configMap: *name
+        configMap: &name snmp-exporter-config
         readOnly: true
         defaultMode: 420
-      - name: snmp-exporter-config
+      - name: snmp-exporter-config-raritan
         mountPath: /config/snmp-raritan.yaml
         subPath: snmp-raritan.yaml
         configMap: *name
@@ -74,4 +74,8 @@ spec:
       relabelings:
         - { sourceLabels: ["__param_target"], targetLabel: instance }
         # carry the module param into a real label so metric relabel can see it
-        - { sourceLabels: ["__param_module"], targetLabel: module, action: replace }
+        - {
+            sourceLabels: ["__param_module"],
+            targetLabel: module,
+            action: replace,
+          }
