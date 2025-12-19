@@ -105,12 +105,12 @@ spec:
         dualStack: false
         addressRanges:
           public:
-            - 169.254.255.0/24
+            - 10.254.3.0/29
           cluster:
-            - 169.254.255.0/24
+            - 10.254.3.0/29
         connections:
           compression:
-            enabled: true
+            enabled: false
           requireMsgr2: true
       dashboard:
         enabled: true
@@ -132,9 +132,6 @@ spec:
           - name: k8s-2
             devices:
               - name: /dev/disk/by-id/nvme-eui.34333830522016880025384300000001
-          - name: k8s-3
-            devices:
-              - name: /dev/disk/by-id/nvme-eui.34333830522049920025384300000001
     cephBlockPools:
       - name: ceph-blockpool
         spec:
@@ -151,7 +148,7 @@ spec:
           mountOptions: ["discard"]
           parameters:
             compression_mode: aggressive
-            compression_algorithm: zstd
+            compression_algorithm: lz4
             imageFormat: "2"
             imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
