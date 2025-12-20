@@ -31,3 +31,11 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: "default"
+  - name: homelab-power-cpu-thermals-dashboard
+    files:
+      - resources/dashboards/homelab-power-cpu-thermals.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: "default"
