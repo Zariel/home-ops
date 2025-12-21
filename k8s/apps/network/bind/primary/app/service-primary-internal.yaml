@@ -4,6 +4,7 @@ metadata:
   name: bind-primary-internal
 spec:
   type: ClusterIP
+  clusterIP: 172.21.53.53
   selector:
     app: bind
     role: primary
