@@ -50,8 +50,8 @@
       },
       "targets": [
         {
-          "expr": "1 - avg by (node) (rate(node_cpu_seconds_total{node=~\"$node\", job=\"node-exporter\", mode=\"idle\"}[$window]))",
-          "legendFormat": "{{node}}",
+          "expr": "1 - avg by (kubernetes_node) (rate(node_cpu_seconds_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", mode=\"idle\"}[$window]))",
+          "legendFormat": "{{kubernetes_node}}",
           "refId": "A"
         }
       ],
@@ -115,12 +115,12 @@
       },
       "targets": [
         {
-          "expr": "avg by (node) (avg_over_time(node_cpu_scaling_frequency_hertz{node=~\"$node\", job=\"node-exporter\"}[$window])) / 1e9",
+          "expr": "avg by (kubernetes_node) (avg_over_time(node_cpu_scaling_frequency_hertz{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\"}[$window])) / 1e9",
           "legendFormat": "avg GHz",
           "refId": "A"
         },
         {
-          "expr": "quantile(0.95, avg_over_time(node_cpu_scaling_frequency_hertz{node=~\"$node\", job=\"node-exporter\"}[$window])) / 1e9",
+          "expr": "quantile(0.95, avg_over_time(node_cpu_scaling_frequency_hertz{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\"}[$window])) / 1e9",
           "legendFormat": "p95 GHz",
           "refId": "B"
         }
@@ -155,12 +155,12 @@
       },
       "targets": [
         {
-          "expr": "avg by (node) (avg_over_time(node_hwmon_temp_celsius{node=~\"$node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
+          "expr": "avg by (kubernetes_node) (avg_over_time(node_hwmon_temp_celsius{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
           "legendFormat": "avg temp",
           "refId": "A"
         },
         {
-          "expr": "quantile(0.95, avg_over_time(node_hwmon_temp_celsius{node=~\"$node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
+          "expr": "quantile(0.95, avg_over_time(node_hwmon_temp_celsius{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
           "legendFormat": "p95 temp",
           "refId": "B"
         }
@@ -195,7 +195,7 @@
       },
       "targets": [
         {
-          "expr": "(\n  avg by (node) (avg_over_time(node_cpu_scaling_frequency_hertz{node=~\"$node\", job=\"node-exporter\"}[$window])) / 1e9\n) * (\n  1 - avg by (node) (rate(node_cpu_seconds_total{node=~\"$node\", job=\"node-exporter\", mode=\"idle\"}[$window]))\n)",
+          "expr": "(\n  avg by (kubernetes_node) (avg_over_time(node_cpu_scaling_frequency_hertz{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\"}[$window])) / 1e9\n) * (\n  1 - avg by (kubernetes_node) (rate(node_cpu_seconds_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", mode=\"idle\"}[$window]))\n)",
           "legendFormat": "effective GHz",
           "refId": "A"
         }
@@ -230,7 +230,7 @@
       },
       "targets": [
         {
-          "expr": "avg by (node) (rate(node_cpu_seconds_total{node=~\"$node\", job=\"node-exporter\", mode!=\"idle\"}[$window]))",
+          "expr": "avg by (kubernetes_node) (rate(node_cpu_seconds_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", mode!=\"idle\"}[$window]))",
           "legendFormat": "busy rate",
           "refId": "A"
         }
@@ -265,13 +265,13 @@
       },
       "targets": [
         {
-          "expr": "sum by (node) (rate(node_network_receive_bytes_total{node=~\"$node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
-          "legendFormat": "rx {{node}}",
+          "expr": "sum by (kubernetes_node) (rate(node_network_receive_bytes_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
+          "legendFormat": "rx {{kubernetes_node}}",
           "refId": "A"
         },
         {
-          "expr": "sum by (node) (rate(node_network_transmit_bytes_total{node=~\"$node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
-          "legendFormat": "tx {{node}}",
+          "expr": "sum by (kubernetes_node) (rate(node_network_transmit_bytes_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
+          "legendFormat": "tx {{kubernetes_node}}",
           "refId": "B"
         }
       ],
@@ -329,14 +329,14 @@
           "type": "prometheus",
           "uid": "victoriametrics"
         },
-        "definition": "label_values(node_cpu_seconds_total{job=\"node-exporter\", node=~\"k8s-[0-2]\"}, node)",
+        "definition": "label_values(node_cpu_seconds_total{job=\"node-exporter\", kubernetes_node=~\"k8s-[0-2]\"}, kubernetes_node)",
         "hide": 0,
         "includeAll": false,
         "label": "Node",
         "multi": true,
-        "name": "node",
+        "name": "kubernetes_node",
         "query": {
-          "query": "label_values(node_cpu_seconds_total{job=\"node-exporter\", node=~\"k8s-[0-2]\"}, node)",
+          "query": "label_values(node_cpu_seconds_total{job=\"node-exporter\", kubernetes_node=~\"k8s-[0-2]\"}, kubernetes_node)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
