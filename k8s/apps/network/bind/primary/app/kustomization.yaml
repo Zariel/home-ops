@@ -8,8 +8,10 @@ resources:
   - service.yaml
   - service-primary.yaml
   - service-primary-internal.yaml
+  - service-metrics.yaml
   - pdb.yaml
   - externalsecret.yaml
+  - servicemonitor.yaml
 configMapGenerator:
   - name: bind-config
     files:

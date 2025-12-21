@@ -109,3 +109,12 @@ spec:
               subPath: rndc.key
             - mountPath: /var/cache/bind
               name: bind-cache
+        - name: bind-exporter
+          image: ghcr.io/prometheuscommunity/bind-exporter:v0.8.0
+          args:
+            - --bind.stats-url=http://127.0.0.1:8053/
+            - --web.listen-address=:9119
+          ports:
+            - containerPort: 9119
+              name: metrics
+              protocol: TCP
