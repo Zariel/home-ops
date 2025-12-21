@@ -28,130 +28,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "watt",
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 1,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "right"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\"})",
-          "legendFormat": "total",
-          "refId": "A"
-        },
-        {
-          "expr": "min_over_time(sum(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\"})[24h:])",
-          "legendFormat": "24h min (floor)",
-          "refId": "B"
-        },
-        {
-          "expr": "avg_over_time(sum(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\"})[$window])",
-          "legendFormat": "moving avg ($window)",
-          "refId": "C"
-        }
-      ],
-      "title": "Total rack power (W)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "victoriametrics"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right"
-        },
-        "stacking": {
-          "mode": "normal",
-          "group": "A"
-        }
-      },
-      "targets": [
-        {
-          "expr": "raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\", outletName=~\"$outlet\"}",
-          "legendFormat": "{{outletName}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Per-outlet power (stacked)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "victoriametrics"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 18
-      },
-      "id": 3,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        }
-      },
-      "targets": [
-        {
-          "expr": "raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\", outletName=\"$selected_outlet\"}",
-          "legendFormat": "{{outletName}}",
-          "refId": "A"
-        },
-        {
-          "expr": "avg_over_time(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\", outletName=\"$selected_outlet\"}[$window])",
-          "legendFormat": "moving avg ($window)",
-          "refId": "B"
-        }
-      ],
-      "title": "Selected outlet power (W)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "victoriametrics"
-      },
-      "fieldConfig": {
-        "defaults": {
           "unit": "percentunit",
           "decimals": 3,
           "min": 0,
@@ -163,7 +39,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 18
+        "y": 0
       },
       "id": 4,
       "options": {
@@ -174,8 +50,8 @@
       },
       "targets": [
         {
-          "expr": "1 - avg by (instance) (rate(node_cpu_seconds_total{instance=~\"$instance\", job=\"node-exporter\", mode=\"idle\"}[$window]))",
-          "legendFormat": "{{instance}}",
+          "expr": "1 - avg by (node) (rate(node_cpu_seconds_total{node=~\"$node\", job=\"node-exporter\", mode=\"idle\"}[$window]))",
+          "legendFormat": "{{node}}",
           "refId": "A"
         }
       ],
@@ -228,7 +104,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 18
+        "y": 0
       },
       "id": 5,
       "options": {
@@ -239,12 +115,12 @@
       },
       "targets": [
         {
-          "expr": "avg by (instance) (avg_over_time(node_cpu_scaling_frequency_hertz{instance=~\"$instance\", job=\"node-exporter\"}[$window])) / 1e9",
+          "expr": "avg by (node) (avg_over_time(node_cpu_scaling_frequency_hertz{node=~\"$node\", job=\"node-exporter\"}[$window])) / 1e9",
           "legendFormat": "avg GHz",
           "refId": "A"
         },
         {
-          "expr": "quantile(0.95, avg_over_time(node_cpu_scaling_frequency_hertz{instance=~\"$instance\", job=\"node-exporter\"}[$window])) / 1e9",
+          "expr": "quantile(0.95, avg_over_time(node_cpu_scaling_frequency_hertz{node=~\"$node\", job=\"node-exporter\"}[$window])) / 1e9",
           "legendFormat": "p95 GHz",
           "refId": "B"
         }
@@ -268,7 +144,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 26
+        "y": 8
       },
       "id": 6,
       "options": {
@@ -279,12 +155,12 @@
       },
       "targets": [
         {
-          "expr": "avg by (instance) (avg_over_time(node_hwmon_temp_celsius{instance=~\"$instance\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
+          "expr": "avg by (node) (avg_over_time(node_hwmon_temp_celsius{node=~\"$node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
           "legendFormat": "avg temp",
           "refId": "A"
         },
         {
-          "expr": "quantile(0.95, avg_over_time(node_hwmon_temp_celsius{instance=~\"$instance\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
+          "expr": "quantile(0.95, avg_over_time(node_hwmon_temp_celsius{node=~\"$node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
           "legendFormat": "p95 temp",
           "refId": "B"
         }
@@ -308,7 +184,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 26
+        "y": 8
       },
       "id": 7,
       "options": {
@@ -319,7 +195,7 @@
       },
       "targets": [
         {
-          "expr": "(\n  avg by (instance) (avg_over_time(node_cpu_scaling_frequency_hertz{instance=~\"$instance\", job=\"node-exporter\"}[$window])) / 1e9\n) * (\n  1 - avg by (instance) (rate(node_cpu_seconds_total{instance=~\"$instance\", job=\"node-exporter\", mode=\"idle\"}[$window]))\n)",
+          "expr": "(\n  avg by (node) (avg_over_time(node_cpu_scaling_frequency_hertz{node=~\"$node\", job=\"node-exporter\"}[$window])) / 1e9\n) * (\n  1 - avg by (node) (rate(node_cpu_seconds_total{node=~\"$node\", job=\"node-exporter\", mode=\"idle\"}[$window]))\n)",
           "legendFormat": "effective GHz",
           "refId": "A"
         }
@@ -343,7 +219,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 26
+        "y": 8
       },
       "id": 8,
       "options": {
@@ -354,12 +230,12 @@
       },
       "targets": [
         {
-          "expr": "(\n  (\n    avg by (instance) (avg_over_time(node_cpu_scaling_frequency_hertz{instance=~\"$instance\", job=\"node-exporter\"}[$window])) / 1e9\n  ) * (\n    1 - avg by (instance) (rate(node_cpu_seconds_total{instance=~\"$instance\", job=\"node-exporter\", mode=\"idle\"}[$window]))\n  )\n)\n/\nscalar(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\", outletName=\"$selected_outlet\"})",
-          "legendFormat": "effective GHz / W",
+          "expr": "avg by (node) (rate(node_cpu_seconds_total{node=~\"$node\", job=\"node-exporter\", mode!=\"idle\"}[$window]))",
+          "legendFormat": "busy rate",
           "refId": "A"
         }
       ],
-      "title": "Efficiency proxy (Effective GHz per Watt, selected outlet)",
+      "title": "CPU busy rate (all modes)",
       "type": "timeseries"
     },
     {
@@ -378,7 +254,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 16
       },
       "id": 9,
       "options": {
@@ -389,13 +265,13 @@
       },
       "targets": [
         {
-          "expr": "sum by (instance) (rate(node_network_receive_bytes_total{instance=~\"$instance\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
-          "legendFormat": "rx {{instance}}",
+          "expr": "sum by (node) (rate(node_network_receive_bytes_total{node=~\"$node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
+          "legendFormat": "rx {{node}}",
           "refId": "A"
         },
         {
-          "expr": "sum by (instance) (rate(node_network_transmit_bytes_total{instance=~\"$instance\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
-          "legendFormat": "tx {{instance}}",
+          "expr": "sum by (node) (rate(node_network_transmit_bytes_total{node=~\"$node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
+          "legendFormat": "tx {{node}}",
           "refId": "B"
         }
       ],
@@ -407,10 +283,10 @@
   "schemaVersion": 39,
   "style": "dark",
   "tags": [
-    "power",
     "cpufreq",
     "thermal",
-    "efficiency"
+    "efficiency",
+    "kubernetes"
   ],
   "templating": {
     "list": [
@@ -453,90 +329,14 @@
           "type": "prometheus",
           "uid": "victoriametrics"
         },
-        "definition": "label_values(node_cpu_seconds_total{job=\"node-exporter\"}, instance)",
+        "definition": "label_values(node_cpu_seconds_total{job=\"node-exporter\", node=~\"k8s-[0-2]\"}, node)",
         "hide": 0,
         "includeAll": false,
-        "label": "Node (node-exporter instance)",
+        "label": "Node",
         "multi": true,
-        "name": "instance",
+        "name": "node",
         "query": {
-          "query": "label_values(node_cpu_seconds_total{job=\"node-exporter\"}, instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "victoriametrics"
-        },
-        "definition": "label_values(raritan_pdu_outlet_active_power_watts_named, instance)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "PDU instance",
-        "multi": true,
-        "name": "pdu_instance",
-        "query": {
-          "query": "label_values(raritan_pdu_outlet_active_power_watts_named, instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "victoriametrics"
-        },
-        "definition": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\"}, pduId)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "PDU ID",
-        "multi": true,
-        "name": "pdu_id",
-        "query": {
-          "query": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\"}, pduId)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "victoriametrics"
-        },
-        "definition": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\"}, outletName)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Outlets (stacked)",
-        "multi": true,
-        "name": "outlet",
-        "query": {
-          "query": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\"}, outletName)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "victoriametrics"
-        },
-        "definition": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\"}, outletName)",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Selected outlet (efficiency)",
-        "multi": false,
-        "name": "selected_outlet",
-        "query": {
-          "query": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$pdu_instance\", pduId=~\"$pdu_id\"}, outletName)",
+          "query": "label_values(node_cpu_seconds_total{job=\"node-exporter\", node=~\"k8s-[0-2]\"}, node)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
