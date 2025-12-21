@@ -61,6 +61,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-dns
+    - name: bind-primary
   prune: true
   sourceRef:
     kind: GitRepository
