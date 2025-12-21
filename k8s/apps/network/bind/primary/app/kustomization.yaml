@@ -3,13 +3,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - statefulset.yaml
+  - deployment.yaml
+  - pvc.yaml
   - service.yaml
+  - service-master.yaml
+  - service-primary-headless.yaml
+  - pdb.yaml
+  - config/bind.secret.sops.yaml
 configMapGenerator:
   - name: bind-config
     files:
-      - config/named.conf
-      - config/externaldns.key
+      - config/named-primary.conf
   - name: bind-zones
     files:
       - config/zones/db.cbannister.xyz
