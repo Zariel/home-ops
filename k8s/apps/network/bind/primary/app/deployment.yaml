@@ -1,33 +1,28 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: bind
+  name: bind-primary
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
-  serviceName: bind
+  replicas: 1
   selector:
     matchLabels:
       app: bind
-  replicas: 2
-  volumeClaimTemplates:
-    - apiVersion: v1
-      kind: PersistentVolumeClaim
-      metadata:
-        name: bind-cache
-      spec:
-        storageClassName: ceph-block
-        resources:
-          requests:
-            storage: 1Gi
-        volumeMode: Filesystem
-        accessModes:
-          - ReadWriteOnce
+      role: primary
   template:
     metadata:
       labels:
         app: bind
+        role: primary
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: bind
       volumes:
         - name: bind-config
           configMap:
@@ -35,9 +30,12 @@ spec:
         - name: bind-zones
           configMap:
             name: bind-zones
+        - name: bind-keys
+          secret:
+            secretName: bind-rfc2136
         - name: bind-cache
           persistentVolumeClaim:
-            claimName: bind-cache
+            claimName: bind-primary-cache
       initContainers:
         - name: zone-init
           image: alpine:3.23
@@ -92,14 +90,17 @@ spec:
             periodSeconds: 10
           ports:
             - containerPort: 53
-              name: dns
+              name: dns-udp
               protocol: UDP
+            - containerPort: 53
+              name: dns-tcp
+              protocol: TCP
           volumeMounts:
             - mountPath: /etc/bind/named.conf
               name: bind-config
-              subPath: named.conf
-            - mountPath: /etc/bind/externaldns.key
-              name: bind-config
+              subPath: named-primary.conf
+            - mountPath: /etc/bind/keys/externaldns.key
+              name: bind-keys
               subPath: externaldns.key
             - mountPath: /var/cache/bind
               name: bind-cache

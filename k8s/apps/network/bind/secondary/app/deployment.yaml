@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind-secondary
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bind
+      role: secondary
+  template:
+    metadata:
+      labels:
+        app: bind
+        role: secondary
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: bind
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: bind
+                    role: primary
+                topologyKey: kubernetes.io/hostname
+      volumes:
+        - name: bind-config
+          configMap:
+            name: bind-secondary-config
+        - name: bind-keys
+          secret:
+            secretName: bind-rfc2136
+        - name: bind-cache
+          emptyDir: {}
+      containers:
+        - name: bind
+          image: docker.io/internetsystemsconsortium/bind9:9.21@sha256:df18689f808f3ef49723a5fc5e8979f114601d21d2d97ab360a4fdb70b979536
+          command:
+            - /usr/sbin/named
+          args:
+            - "-4"
+            - -g
+            - -c
+            - /etc/bind/named.conf
+          resources:
+            requests:
+              memory: &ram "512Mi"
+              cpu: "100m"
+            limits:
+              memory: *ram
+          startupProbe:
+            tcpSocket:
+              port: 53
+          livenessProbe:
+            tcpSocket:
+              port: 53
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  # Check if named is responding to queries
+                  dig @127.0.0.1 +short SOA cbannister.xyz. >/dev/null 2>&1 || exit 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          ports:
+            - containerPort: 53
+              name: dns-udp
+              protocol: UDP
+            - containerPort: 53
+              name: dns-tcp
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/bind/named.conf
+              name: bind-config
+              subPath: named-secondary.conf
+            - mountPath: /etc/bind/keys/externaldns.key
+              name: bind-keys
+              subPath: externaldns.key
+            - mountPath: /var/cache/bind
+              name: bind-cache
