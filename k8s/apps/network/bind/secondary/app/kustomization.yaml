@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+  - service-secondary-headless.yaml
+  - pdb.yaml
+configMapGenerator:
+  - name: bind-secondary-config
+    files:
+      - config/named-secondary.conf
