@@ -144,7 +144,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 8
+        "y": 0
       },
       "id": 6,
       "options": {
@@ -155,12 +155,12 @@
       },
       "targets": [
         {
-          "expr": "avg by (kubernetes_node) (avg_over_time(node_hwmon_temp_celsius{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
+          "expr": "avg by (kubernetes_node) (avg_over_time(node_hwmon_temp_celsius{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", chip=~\".*coretemp.*|k10temp.*|platform_coretemp_0\"}[$window]))",
           "legendFormat": "avg temp",
           "refId": "A"
         },
         {
-          "expr": "quantile(0.95, avg_over_time(node_hwmon_temp_celsius{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", chip=~\"$cpu_chip\"}[$window]))",
+          "expr": "quantile(0.95, avg_over_time(node_hwmon_temp_celsius{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", chip=~\".*coretemp.*|k10temp.*|platform_coretemp_0\"}[$window]))",
           "legendFormat": "p95 temp",
           "refId": "B"
         }
@@ -182,8 +182,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 8,
-        "x": 8,
+        "w": 12,
+        "x": 0,
         "y": 8
       },
       "id": 7,
@@ -210,15 +210,15 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none",
-          "decimals": 6
+          "unit": "watt",
+          "decimals": 0
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 8,
-        "x": 16,
+        "w": 12,
+        "x": 12,
         "y": 8
       },
       "id": 8,
@@ -230,52 +230,12 @@
       },
       "targets": [
         {
-          "expr": "avg by (kubernetes_node) (rate(node_cpu_seconds_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", mode!=\"idle\"}[$window]))",
-          "legendFormat": "busy rate",
+          "expr": "raritan_pdu_outlet_active_power_watts_named{outletName=~\"$kubernetes_node\"}",
+          "legendFormat": "{{outletName}}",
           "refId": "A"
         }
       ],
-      "title": "CPU busy rate (all modes)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "victoriametrics"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes",
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 16
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum by (kubernetes_node) (rate(node_network_receive_bytes_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
-          "legendFormat": "rx {{kubernetes_node}}",
-          "refId": "A"
-        },
-        {
-          "expr": "sum by (kubernetes_node) (rate(node_network_transmit_bytes_total{kubernetes_node=~\"$kubernetes_node\", job=\"node-exporter\", device!~\"lo|cilium.*|veth.*|docker.*|br.*|flannel.*\"}[$window]))",
-          "legendFormat": "tx {{kubernetes_node}}",
-          "refId": "B"
-        }
-      ],
-      "title": "Network throughput (bytes/s)",
+      "title": "PDU outlet power (selected node)",
       "type": "timeseries"
     }
   ],
@@ -333,7 +293,7 @@
         "hide": 0,
         "includeAll": false,
         "label": "Node",
-        "multi": true,
+        "multi": false,
         "name": "kubernetes_node",
         "query": {
           "query": "label_values(node_cpu_seconds_total{job=\"node-exporter\", kubernetes_node=~\"k8s-[0-2]\"}, kubernetes_node)",
@@ -342,19 +302,6 @@
         "refresh": 2,
         "sort": 1,
         "type": "query"
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": ".*coretemp.*|k10temp.*|platform_coretemp_0",
-          "value": ".*coretemp.*|k10temp.*|platform_coretemp_0"
-        },
-        "hide": 0,
-        "label": "CPU chip regex (hwmon)",
-        "name": "cpu_chip",
-        "options": [],
-        "query": ".*coretemp.*|k10temp.*|platform_coretemp_0",
-        "type": "textbox"
       }
     ]
   },
