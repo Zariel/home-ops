@@ -48,9 +48,9 @@ spec:
             - name: TUNNEL_METRICS
               value: 0.0.0.0:8080
             - name: TUNNEL_TRANSPORT_PROTOCOL
-              value: quic
+              value: http2
             - name: TUNNEL_POST_QUANTUM
-              value: "true"
+              value: "false"
           volumeMounts:
             - mountPath: /etc/cloudflared/config/config.yaml
               name: config
