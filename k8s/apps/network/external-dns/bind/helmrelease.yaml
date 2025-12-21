@@ -39,7 +39,7 @@ spec:
     provider: rfc2136
     env:
       - name: EXTERNAL_DNS_RFC2136_HOST
-        value: bind-master.network.svc.cluster.local
+        value: bind-primary.network.svc.cluster.local
       - name: EXTERNAL_DNS_RFC2136_PORT
         value: "53"
       - name: EXTERNAL_DNS_RFC2136_ZONE
@@ -53,7 +53,7 @@ spec:
       - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
         valueFrom:
           secretKeyRef:
-            name: bind-rfc2136
+            name: bind
             key: externaldns-secret
     policy: sync
     sources: ["gateway-httproute", "service"]

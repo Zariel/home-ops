@@ -8,7 +8,7 @@ resources:
   - service.yaml
   - service-primary.yaml
   - pdb.yaml
-  - config/bind.secret.sops.yaml
+  - externalsecret.yaml
 configMapGenerator:
   - name: bind-config
     files:
