@@ -34,7 +34,7 @@ spec:
             name: bind-zones
         - name: bind-keys
           secret:
-            secretName: bind-rfc2136
+            secretName: bind
         - name: bind-cache
           persistentVolumeClaim:
             claimName: bind-primary-cache
@@ -104,5 +104,8 @@ spec:
             - mountPath: /etc/bind/keys/externaldns.key
               name: bind-keys
               subPath: externaldns.key
+            - mountPath: /etc/bind/keys/rndc.key
+              name: bind-keys
+              subPath: rndc.key
             - mountPath: /var/cache/bind
               name: bind-cache
