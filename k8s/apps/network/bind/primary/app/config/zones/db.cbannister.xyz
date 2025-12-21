@@ -6,7 +6,7 @@ $ORIGIN cbannister.xyz.
   1m               ; refresh period
   1m               ; retry period
   14d              ; expire time
-  5m               ; minimum ttl
+  0                ; minimum ttl
 )
 
 ; NS Records
