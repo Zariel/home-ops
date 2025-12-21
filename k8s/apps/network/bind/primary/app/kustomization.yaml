@@ -7,6 +7,7 @@ resources:
   - pvc.yaml
   - service.yaml
   - service-primary.yaml
+  - service-primary-internal.yaml
   - pdb.yaml
   - externalsecret.yaml
 configMapGenerator:
