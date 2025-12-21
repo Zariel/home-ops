@@ -6,8 +6,7 @@ resources:
   - deployment.yaml
   - pvc.yaml
   - service.yaml
-  - service-master.yaml
-  - service-primary-headless.yaml
+  - service-primary.yaml
   - pdb.yaml
   - config/bind.secret.sops.yaml
 configMapGenerator:
