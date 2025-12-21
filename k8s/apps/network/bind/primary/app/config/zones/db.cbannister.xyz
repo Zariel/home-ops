@@ -2,13 +2,15 @@
 $TTL 1h
 $ORIGIN cbannister.xyz.
 @ IN SOA ns.cbannister.xyz. admin.cbannister.xyz. (; TODO: make this the gateway like bjw-s?
-  1708606198        ; serial number; date +%s
-  2h               ; refresh period
-  1h               ; retry period
+  1734800000        ; serial number; date +%s
+  1m               ; refresh period
+  1m               ; retry period
   14d              ; expire time
-  1h               ; minimum ttl
+  5m               ; minimum ttl
 )
 
 ; NS Records
 @                        IN  NS ns ; TODO: make this gateway?
 ns                       IN  A  10.45.0.55
+@                        IN  NS ns2
+ns2                      IN  A  10.45.0.55
