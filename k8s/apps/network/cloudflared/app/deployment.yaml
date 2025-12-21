@@ -6,6 +6,8 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: *app
+  strategy:
+    type: Recreate
   replicas: 2
   template:
     metadata:
