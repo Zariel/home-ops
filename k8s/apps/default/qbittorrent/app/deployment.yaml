@@ -99,9 +99,10 @@ spec:
             failureThreshold: 5
           resources:
             requests:
-              cpu: 2000m
-              memory: 6Gi
+              cpu: 4
+              memory: 8Gi
             limits:
+              cpu: 4
               memory: 8Gi
           volumeMounts:
             - name: config
