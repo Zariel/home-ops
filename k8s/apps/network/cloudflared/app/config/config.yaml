@@ -1,10 +1,8 @@
 ---
-originRequest:
-  originServerName: external.cbannister.xyz
-
 ingress:
-  - hostname: cbannister.xyz
-    service: &svc https://external.network.svc.cluster.local
   - hostname: "*.cbannister.xyz"
-    service: *svc
+    service: https://external.network.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.cbannister.xyz
   - service: http_status:404
