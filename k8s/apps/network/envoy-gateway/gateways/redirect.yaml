@@ -31,6 +31,7 @@ spec:
     - group: gateway.networking.k8s.io
       kind: Gateway
   compression:
+    - type: Zstd
     - type: Brotli
     - type: Gzip
   connection:
@@ -48,7 +49,8 @@ metadata:
 spec:
   clientIPDetection:
     xForwardedFor:
-      numTrustedHops: 1
+      trustedCIDRs:
+        - 172.20.0.0/16
   connection:
     bufferLimit: 8Mi
     maxAcceptPerSocketEvent: 0
@@ -56,7 +58,7 @@ spec:
     initialStreamWindowSize: 2Mi
     initialConnectionWindowSize: 32Mi
     onInvalidMessage: TerminateStream
-  # http3: {}
+  http3: {}
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
