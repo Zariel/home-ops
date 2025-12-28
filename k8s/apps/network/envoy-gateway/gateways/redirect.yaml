@@ -58,14 +58,12 @@ spec:
     initialStreamWindowSize: 2Mi
     initialConnectionWindowSize: 32Mi
     onInvalidMessage: TerminateStream
-  http3: {}
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
   tls:
     minVersion: "1.2"
     alpnProtocols:
-      - h3
       - h2
       - http/1.1
   tcpKeepalive: {}
