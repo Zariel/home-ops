@@ -51,8 +51,6 @@ loadBalancer:
   mode: dsr
   dsrDispatch: geneve
 tunnelProtocol: geneve
-socketLB:
-  enabled: true
 localRedirectPolicy: true
 operator:
   rollOutPods: true
