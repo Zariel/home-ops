@@ -28,3 +28,4 @@ resources:
   - qui/ks.yaml
   - wrtag/ks.yaml
   - forgejo/ks.yaml
+  - wizarr/ks.yaml

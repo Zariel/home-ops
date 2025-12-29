@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wizarr
+  labels:
+    app.kubernetes.io/name: wizarr
+    app.kubernetes.io/instance: wizarr
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wizarr
+      app.kubernetes.io/instance: wizarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wizarr
+        app.kubernetes.io/instance: wizarr
+      annotations:
+        reloader.stakater.com/auto: "true"
+    spec:
+      hostname: wizarr
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: wizarr
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 3005
+        supplementalGroups: [3005]
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+      containers:
+        - name: wizarr
+          image: ghcr.io/wizarrrr/wizarr:v2025.12.0
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: TZ
+              value: Europe/London
+          resources:
+            requests:
+              cpu: 512m
+            limits:
+              memory: 512Mi
+          ports:
+            - containerPort: 5690
+              name: web
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          # startupProbe:
+          #   httpGet:
+          #     path: /ping
+          #     port: web
+          #   failureThreshold: 6
+          #   periodSeconds: 10
+          # livenessProbe: &probe
+          #   httpGet:
+          #     path: /ping
+          #     port: web
+          #   periodSeconds: 20
+          #   timeoutSeconds: 5
+          #   failureThreshold: 5
+          # readinessProbe: *probe
