@@ -27,13 +27,15 @@ spec:
             claimName: wizarr
         - name: cache
           emptyDir: {}
+        - name: etc
+          emptyDir: {}
       securityContext:
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 3005
         supplementalGroups: [3005]
         fsGroupChangePolicy: OnRootMismatch
-        # runAsNonRoot: true
+        runAsNonRoot: true
       containers:
         - name: wizarr
           image: ghcr.io/wizarrrr/wizarr:v2025.12.0
@@ -55,9 +57,11 @@ spec:
               name: web
           volumeMounts:
             - name: config
-              mountPath: /data/database
+              mountPath: /data
             - name: cache
               mountPath: /.cache
+            - name: etc
+              mountPath: /etc/wizarr
           # startupProbe:
           #   httpGet:
           #     path: /ping
