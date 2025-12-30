@@ -32,6 +32,14 @@ spec:
         - operator: Exists
           effect: NoExecute
 
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: extensions.talos.dev/bird2
+                    operator: DoesNotExist
+
       containers:
         - name: bird
           image: pierky/bird:3.1.2
