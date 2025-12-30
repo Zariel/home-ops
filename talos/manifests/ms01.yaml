@@ -7,7 +7,9 @@ rings:
   rx: 8192
   tx: 8192
 channels:
-  combined: 8
+  combined: 6
+features:
+  rx-udp-gro-forwarding: on
 ---
 # connectx-4
 apiVersion: v1alpha1
@@ -17,7 +19,25 @@ rings:
   rx: 8192
   tx: 8192
 channels:
-  combined: 8
+  combined: 6
+features:
+  rx-udp-gro-forwarding: on
+---
+apiVersion: v1alpha1
+kind: BondConfig
+name: bond0
+links:
+  - enp1s0f0np0
+  - enp1s0f1np1
+bondMode: active-backup
+miimon: 100
+mtu: 9000
+---
+apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.300
+vlanID: 300
+mtu: 9000
 ---
 apiVersion: v1alpha1
 kind: UserVolumeConfig
