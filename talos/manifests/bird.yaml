@@ -1,0 +1,71 @@
+---
+apiVersion: v1alpha1
+kind: ExtensionServiceConfig
+name: bird2
+configFiles:
+  - mountPath: /usr/local/etc/bird.conf
+    content: |-
+      router id from "cilium_host";
+
+      log stderr all;
+      debug protocols all;
+
+      protocol device {
+      }
+
+      protocol direct {
+          ipv4 {
+              import all;
+          };
+      }
+
+      protocol static {
+          disabled;
+          ipv4;
+      }
+
+      protocol bgp cilium {
+          local port 61790 as 64513;
+          neighbor 127.0.0.1 as 64513 internal;
+          passive;
+          multihop;
+          graceful restart;
+
+          ipv4 {
+              next hop self off;
+              import all;
+              export none;
+          };
+      }
+
+      # OSPF to ICX only
+      protocol ospf beefchunk {
+          graceful restart;
+          ipv4 {
+              export filter {
+                  if proto = "cilium" then accept;
+                  reject;
+              };
+              import none;  # Don't learn OSPF routes from ICX
+          };
+          area 0 {
+              interface "enp2s0f1np1" {
+                  # set to ptp when doing /31 l3 only networks
+                  type ptp;
+                  cost 10;
+              };
+              interface "bond0" {
+                  # bonded dataplane replacement for enp2s0f1np1
+                  type ptp;
+                  cost 10;
+              };
+          };
+      }
+
+      # Kernel routing table synchronization
+      protocol kernel {
+          ipv4 {
+              import none;  # Don't import kernel routes
+              export none;  # Don't install routes to kernel (Cilium handles this)
+          };
+      }

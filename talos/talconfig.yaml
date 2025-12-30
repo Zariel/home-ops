@@ -1,7 +1,7 @@
 ---
 clusterName: hollywoo
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: v1.11.6
+talosVersion: v1.12.0
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.34.3
 endpoint: https://k8s.cbannister.casa:6443
@@ -43,8 +43,10 @@ patches:
         net.core.default_qdisc: fq             # 10Gb/s
         net.core.rmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
         net.core.wmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
+        net.core.rmem_default: 1048576   # 1 MiB
+        net.core.wmem_default: 1048576   # 1 MiB
         net.ipv4.tcp_congestion_control: bbr   # 10Gb/s
-        net.ipv4.tcp_fastopen: 3               # Cilum explicitly says this can cause issue with DSR
+        net.ipv4.tcp_fastopen: 3               #
         net.ipv4.tcp_mtu_probing: 1            # 10Gb/s | Jumbo frames
         net.ipv4.tcp_window_scaling: 1         # 10Gb/s
         net.ipv4.tcp_slow_start_after_idle: 0  # 10Gb/s
@@ -94,16 +96,25 @@ controlPlane:
           - siderolabs/i915
           - siderolabs/intel-ucode
           - siderolabs/mei
+          - siderolabs/bird2
   nameservers:
     - 172.53.53.53
   patches:
     - |-
       cluster:
         apiServer:
+          auditPolicy:
+            apiVersion: audit.k8s.io/v1
+            kind: Policy
+            rules:
+              - level: Metadata
           extraArgs:
-            feature-gates: ImageVolume=true,MutatingAdmissionPolicy=true
+            feature-gates: MutatingAdmissionPolicy=true
             runtime-config: admissionregistration.k8s.io/v1beta1=true
             anonymous-auth: true
+          admissionControl:
+            - name: PodSecurity
+              $$patch: delete
         controllerManager:
           extraArgs:
             bind-address: 0.0.0.0
@@ -135,28 +146,34 @@ controlPlane:
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
       machine:
+        install:
+          grubUseUKICmdline:
+            $$patch: delete
         sysfs:
           devices.system.cpu.intel_pstate.hwp_dynamic_boost: 1
-          devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu12.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu13.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu14.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu15.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu16.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu17.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu18.cpufreq.energy_performance_preference: balance_power
-          devices.system.cpu.cpu19.cpufreq.energy_performance_preference: balance_power
+          devices.system.cpu.intel_pstate.no_turbo: 0
+          devices.system.cpu.intel_pstate.max_perf_pct: 100
+          devices.system.cpu.intel_pstate.min_perf_pct: 9
+          devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu12.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu13.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu14.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu15.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu16.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu17.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu18.cpufreq.energy_performance_preference: balance_performance
+          devices.system.cpu.cpu19.cpufreq.energy_performance_preference: balance_performance
         features:
           kubernetesTalosAPIAccess:
             enabled: true
@@ -165,13 +182,10 @@ controlPlane:
             allowedKubernetesNamespaces:
               - system-upgrade
 
-    - |-
-      - op: remove
-        path: /cluster/apiServer/admissionControl
+    - "@./manifests/ms01.yaml"
+    - "@./manifests/bird.yaml"
 
-  extraManifests:
-    - manifests/ms01.yaml
-  machineFiles: &machineFiles
+  machineFiles:
     - content: |-
         [plugins."io.containerd.cri.v1.images"]
           discard_unpacked_layers = false
@@ -194,142 +208,27 @@ controlPlane:
       path: /etc/nfsmount.conf
       op: overwrite
 
-worker:
-  schematic:
-    customization:
-      extraKernelArgs:
-        - "-selinux"
-        - init_on_alloc=0
-        - init_on_free=0
-        - mitigations=off
-        - apparmor=0
-        - security=none
-        - talos.logging.kernel=udp://10.45.0.2:6002/
-        - talos.auditd.disabled=1
-      systemExtensions:
-        officialExtensions:
-          - siderolabs/qemu-guest-agent
-
-  machineFiles: *machineFiles
-  nodeLabels:
-    node-role.kubernetes.io/worker: worker
-
 nodes:
   - hostname: k8s-0
     ipAddress: 10.254.1.1
     controlPlane: true
     installDiskSelector:
       wwid: eui.343335304ea054640025384100000001
-    networkInterfaces:
-      - interface: bond0
-        bond: &bond0
-          mode: active-backup
-          miimon: 100
-          deviceSelectors:
-            - driver: mlx5_core
-              physical: true
-        dhcp: false
-        mtu: 9000
-        addresses:
-          - 10.254.1.1/31
-        routes:
-          - network: 0.0.0.0/0
-            gateway: 10.254.1.0
-        vlans:
-          - &vlan140
-            vlanId: 140
-            mtu: 1500
-            dhcp: false
-          - vlanId: 300
-            mtu: 9000
-            dhcp: false
-            addresses:
-              - 10.254.3.1/29
-
-      - interface: bond1
-        bond:
-          deviceSelectors:
-            - driver: igc
-              physical: true
-          mode: active-backup
-        dhcp: false
-        mtu: 9000
-        addresses:
-          - 10.1.1.10/32
-        routes:
-          - network: 10.1.1.11/32
-          - network: 10.1.1.12/32
+    patches:
+      - "@./manifests/k8s-0.yaml"
 
   - hostname: k8s-1
     ipAddress: 10.254.1.3
     controlPlane: true
     installDiskSelector:
       wwid: eui.34333530541060910025384300000001
-    networkInterfaces:
-      - interface: bond0
-        bond: *bond0
-        dhcp: false
-        mtu: 9000
-        addresses:
-          - 10.254.1.3/31
-        routes:
-          - network: 0.0.0.0/0
-            gateway: 10.254.1.2
-        vlans:
-          - *vlan140
-          - vlanId: 300
-            mtu: 9000
-            dhcp: false
-            addresses:
-              - 10.254.3.2/29
-
-      - interface: bond1
-        bond:
-          deviceSelectors:
-            - driver: igc
-              physical: true
-          mode: active-backup
-        dhcp: false
-        mtu: 9000
-        addresses:
-          - 10.1.1.11/32
-        routes:
-          - network: 10.1.1.10/32
-          - network: 10.1.1.12/32
+    patches:
+      - "@./manifests/k8s-1.yaml"
 
   - hostname: k8s-2
     ipAddress: 10.254.1.5
     controlPlane: true
     installDiskSelector:
       wwid: eui.343335304ea054700025384100000001
-    networkInterfaces:
-      - interface: bond0
-        bond: *bond0
-        dhcp: false
-        mtu: 9000
-        addresses:
-          - 10.254.1.5/31
-        routes:
-          - network: 0.0.0.0/0
-            gateway: 10.254.1.4
-        vlans:
-          - *vlan140
-          - vlanId: 300
-            mtu: 9000
-            dhcp: false
-            addresses:
-              - 10.254.3.3/29
-
-      - interface: bond1
-        bond:
-          deviceSelectors:
-            - driver: igc
-              physical: true
-          mode: active-backup
-        dhcp: false
-        mtu: 9000
-        addresses:
-          - 10.1.1.12/32
-        routes:
-          - network: 10.1.1.10/32
-          - network: 10.1.1.11/32
+    patches:
+      - "@./manifests/k8s-2.yaml"
