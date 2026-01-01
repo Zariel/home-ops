@@ -33,7 +33,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
       envoyService:
         externalTrafficPolicy: Local
   shutdown:
