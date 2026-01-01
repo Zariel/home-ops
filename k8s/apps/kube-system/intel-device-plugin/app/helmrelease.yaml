@@ -36,3 +36,8 @@ spec:
     manager:
       devices:
         gpu: true
+    resources:
+      requests:
+        memory: 160Mi
+      limits:
+        memory: 160Mi

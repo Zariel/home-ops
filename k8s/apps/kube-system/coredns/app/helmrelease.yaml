@@ -38,6 +38,11 @@ spec:
   values:
     serviceAccount:
       create: true
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 128Mi
     servers:
       - zones:
           - zone: .

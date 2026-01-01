@@ -34,6 +34,11 @@ spec:
   values:
     replicas: 2
     kind: Deployment
+    resources:
+      requests:
+        memory: 160Mi
+      limits:
+        memory: 160Mi
     deschedulerPolicyAPIVersion: descheduler/v1alpha2
     deschedulerPolicy:
       profiles:

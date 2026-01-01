@@ -39,5 +39,22 @@ spec:
               - "03"
             deviceLabelFields:
               - vendor
+      resources:
+        requests:
+          memory: 96Mi
+        limits:
+          memory: 96Mi
+    master:
+      resources:
+        requests:
+          memory: 96Mi
+        limits:
+          memory: 96Mi
+    gc:
+      resources:
+        requests:
+          memory: 64Mi
+        limits:
+          memory: 64Mi
     prometheus:
       enable: true
