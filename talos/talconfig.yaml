@@ -3,7 +3,7 @@ clusterName: hollywoo
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
 talosVersion: v1.12.0
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.34.3
+kubernetesVersion: v1.35.0
 endpoint: https://k8s.cbannister.casa:6443
 domain: cluster.local
 allowSchedulingOnControlPlanes: true
@@ -76,6 +76,11 @@ patches:
         registries:
           kubernetes: { disabled: true }
           service: { disabled: false }
+  - |-
+    apiVersion: v1alpha1
+    kind: OOMConfig
+    triggerExpression: false
+
 controlPlane:
   schematic:
     customization:
@@ -108,6 +113,13 @@ controlPlane:
             kind: Policy
             rules:
               - level: Metadata
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 3Gi
+            limits:
+              cpu: 1000m
+              memory: 3Gi
           extraArgs:
             feature-gates: MutatingAdmissionPolicy=true
             runtime-config: admissionregistration.k8s.io/v1beta1=true
@@ -116,9 +128,23 @@ controlPlane:
             - name: PodSecurity
               $$patch: delete
         controllerManager:
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           extraArgs:
             bind-address: 0.0.0.0
         scheduler:
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
           extraArgs:
             bind-address: 0.0.0.0
           config:
