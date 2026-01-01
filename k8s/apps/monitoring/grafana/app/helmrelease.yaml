@@ -262,9 +262,9 @@ spec:
     sidecar:
       resources:
         requests:
-          memory: 128Mi
+          memory: 256Mi
         limits:
-          memory: 128Mi
+          memory: 256Mi
       dashboards:
         enabled: true
         searchNamespace: ALL
