@@ -32,6 +32,11 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
+    resources:
+      requests:
+        memory: 64Mi
+      limits:
+        memory: 64Mi
     prometheus:
       monitor:
         enabled: true

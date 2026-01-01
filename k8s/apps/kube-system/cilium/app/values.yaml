@@ -55,6 +55,11 @@ localRedirectPolicy: true
 operator:
   rollOutPods: true
 rollOutCiliumPods: true
+resources:
+  requests:
+    memory: 1Gi
+  limits:
+    memory: 1Gi
 routingMode: native
 securityContext:
   capabilities:

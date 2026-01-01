@@ -33,6 +33,11 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
+    resources:
+      requests:
+        memory: 64Mi
+      limits:
+        memory: 64Mi
     extraArgs:
       - --config.file=/config/snmp.yaml
       - --config.file=/config/snmp-raritan.yaml

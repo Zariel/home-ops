@@ -30,6 +30,17 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 128Mi
+    configmapReload:
+      resources:
+        requests:
+          memory: 64Mi
+        limits:
+          memory: 64Mi
     route:
       main:
         enabled: true

@@ -19,6 +19,11 @@ spec:
         image:
           registry: quay.io/
         basePath: &hostPath /var/mnt/local-hostpath
+      resources:
+        requests:
+          memory: 96Mi
+        limits:
+          memory: 96Mi
       hostpathClass:
         enabled: true
         name: openebs-hostpath

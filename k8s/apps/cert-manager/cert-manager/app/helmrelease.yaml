@@ -39,6 +39,11 @@ spec:
       enabled: true
     dns01RecursiveNameservers: https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query
     dns01RecursiveNameserversOnly: true
+    resources:
+      requests:
+        memory: 192Mi
+      limits:
+        memory: 192Mi
     prometheus:
       enabled: true
       servicemonitor:
@@ -46,5 +51,15 @@ spec:
         prometheusInstance: monitoring
     webhook:
       replicaCount: 2
+      resources:
+        requests:
+          memory: 128Mi
+        limits:
+          memory: 128Mi
     cainjector:
       replicaCount: 2
+      resources:
+        requests:
+          memory: 256Mi
+        limits:
+          memory: 256Mi

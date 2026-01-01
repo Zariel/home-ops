@@ -32,6 +32,17 @@ spec:
       - pods=[*]
       - deployments=[*]
       - persistentvolumeclaims=[*]
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 128Mi
+    kubeRBACProxy:
+      resources:
+        requests:
+          memory: 64Mi
+        limits:
+          memory: 64Mi
     releaseLabel: true
     prometheus:
       monitor:

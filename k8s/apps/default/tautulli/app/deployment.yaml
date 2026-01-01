@@ -33,9 +33,10 @@ spec:
               protocol: TCP
           resources:
             limits:
-              memory: 1Gi
+              memory: 256Mi
             requests:
               cpu: 200m
+              memory: 256Mi
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
@@ -80,6 +81,11 @@ spec:
             - --ref=master
             - --period=24h
             - --root=/add-ons
+          resources:
+            requests:
+              memory: 64Mi
+            limits:
+              memory: 64Mi
           volumeMounts:
             - mountPath: /add-ons
               name: add-ons
