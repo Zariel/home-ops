@@ -44,3 +44,13 @@ spec:
       runAsUser: 1000
       runAsGroup: 1000
       seccompProfile: { type: RuntimeDefault }
+    resources:
+      requests:
+        memory: 192Mi
+      limits:
+        memory: 192Mi
+    kube-rbac-proxy-resources:
+      requests:
+        memory: 64Mi
+      limits:
+        memory: 64Mi

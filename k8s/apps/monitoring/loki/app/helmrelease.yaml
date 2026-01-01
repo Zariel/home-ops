@@ -116,10 +116,16 @@ spec:
       resources:
         requests:
           cpu: 500m
-          memory: 4Gi
+          memory: 1536Mi
         limits:
           cpu: 4
-          memory: 6Gi
+          memory: 1536Mi
+    sidecar:
+      resources:
+        requests:
+          memory: 128Mi
+        limits:
+          memory: 128Mi
     gateway:
       enabled: false
       replicas: 0
@@ -127,9 +133,25 @@ spec:
     chunksCache:
       enabled: true
       allocatedMemory: 2048  # 2GB for chunks cache
+      resources:
+        requests:
+          memory: 2560Mi
+        limits:
+          memory: 2560Mi
     resultsCache:
       enabled: true
       allocatedMemory: 1024  # 1GB for results cache
+      resources:
+        requests:
+          memory: 1280Mi
+        limits:
+          memory: 1280Mi
+    memcachedExporter:
+      resources:
+        requests:
+          memory: 64Mi
+        limits:
+          memory: 64Mi
     lokiCanary:
       enabled: false
     test:

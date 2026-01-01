@@ -34,3 +34,8 @@ spec:
       enabled: true
     serviceMonitor:
       enabled: true
+    resources:
+      requests:
+        memory: 192Mi
+      limits:
+        memory: 192Mi

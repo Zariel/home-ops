@@ -34,6 +34,11 @@ spec:
   values:
     annotations:
       reloader.stakater.com/auto: "true"
+    resources:
+      requests:
+        memory: 1Gi
+      limits:
+        memory: 1Gi
     replicas: 1
     image:
       tag: 11.2.1
@@ -255,6 +260,11 @@ spec:
           revision: 9
           datasource: *datasource
     sidecar:
+      resources:
+        requests:
+          memory: 128Mi
+        limits:
+          memory: 128Mi
       dashboards:
         enabled: true
         searchNamespace: ALL

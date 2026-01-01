@@ -33,6 +33,11 @@ spec:
       retries: 3
   values:
     fullnameOverride: blackbox-exporter
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 128Mi
     securityContext:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false

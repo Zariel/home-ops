@@ -40,6 +40,11 @@ spec:
     installCRDs: true
     image: &image
       repository: ghcr.io/external-secrets/external-secrets
+    resources:
+      requests:
+        memory: 256Mi
+      limits:
+        memory: 256Mi
     serviceMonitor:
       enabled: true
       interval: 1m
@@ -48,8 +53,18 @@ spec:
       serviceMonitor:
         enabled: true
         interval: 1m
+      resources:
+        requests:
+          memory: 256Mi
+        limits:
+          memory: 256Mi
     certController:
       image: *image
       serviceMonitor:
         enabled: true
         interval: 1m
+      resources:
+        requests:
+          memory: 128Mi
+        limits:
+          memory: 128Mi

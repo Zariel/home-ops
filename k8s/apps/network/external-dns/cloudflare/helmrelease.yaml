@@ -26,6 +26,11 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
+    resources:
+      requests:
+        memory: 192Mi
+      limits:
+        memory: 192Mi
     provider: cloudflare
     extraArgs:
       - --cloudflare-dns-records-per-page=1000

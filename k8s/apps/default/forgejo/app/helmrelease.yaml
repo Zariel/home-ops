@@ -36,6 +36,11 @@ spec:
       type: Recreate
     image:
       rootless: true
+    resources:
+      requests:
+        memory: 192Mi
+      limits:
+        memory: 192Mi
     persistence:
       enabled: true
       create: false

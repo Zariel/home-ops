@@ -20,3 +20,8 @@ spec:
       retries: 3
   values:
     replicaCount: 2
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 128Mi
