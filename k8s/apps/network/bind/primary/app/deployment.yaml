@@ -70,7 +70,7 @@ spec:
             - /etc/bind/named.conf
           resources:
             requests:
-              memory: &ram "512Mi"
+              memory: &ram "128Mi"
               cpu: "100m"
             limits:
               memory: *ram
