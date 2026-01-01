@@ -116,10 +116,10 @@ spec:
       resources:
         requests:
           cpu: 500m
-          memory: 1056Mi
+          memory: 1.875Gi
         limits:
           cpu: 4
-          memory: 1056Mi
+          memory: 1.875Gi
     sidecar:
       resources:
         requests:

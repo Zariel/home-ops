@@ -34,9 +34,9 @@ spec:
     fullnameOverride: *app
     resources:
       requests:
-        memory: 64Mi
+        memory: 160Mi
       limits:
-        memory: 64Mi
+        memory: 160Mi
     prometheus:
       monitor:
         enabled: true

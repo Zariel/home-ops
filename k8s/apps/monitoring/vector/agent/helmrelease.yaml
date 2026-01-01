@@ -35,9 +35,9 @@ spec:
     resources:
       requests:
         cpu: 23m
-        memory: 96Mi
+        memory: 256Mi
       limits:
-        memory: 96Mi
+        memory: 256Mi
 
     securityContext:
       privileged: true
