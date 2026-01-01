@@ -35,9 +35,9 @@ spec:
     fullnameOverride: *app
     resources:
       requests:
-        memory: 64Mi
+        memory: 192Mi
       limits:
-        memory: 64Mi
+        memory: 192Mi
     serviceAccount:
       create: false
       name: external-dns
