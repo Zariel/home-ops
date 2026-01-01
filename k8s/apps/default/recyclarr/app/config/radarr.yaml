@@ -81,10 +81,8 @@ quality_profiles:
         qualities:
           - WEBDL-2160p
           - WEBRip-2160p
-          - Bluray-2160p
           - WEBDL-1080p
           - WEBRip-1080p
-          - Bluray-1080p
       - *720
       - *trash
 
@@ -302,11 +300,11 @@ custom_formats:
     trash_ids:
       - e71939fae578037e7aed3ee219bbe7c1 # UHD Bluray Tier 03
   - trash_ids:
-    - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
-    - cc444569854e9de0b084ab2b8b1532b2 # Black and White Editions
-    - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
-    - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
-    - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
-    - f537cf427b64c38c8e36298f657e4828 # Scene
+      - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
+      - cc444569854e9de0b084ab2b8b1532b2 # Black and White Editions
+      - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
+      - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
+      - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
+      - f537cf427b64c38c8e36298f657e4828 # Scene
     assign_scores_to:
       - name: SQP-2
