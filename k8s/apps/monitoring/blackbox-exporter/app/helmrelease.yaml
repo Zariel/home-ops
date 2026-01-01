@@ -35,9 +35,9 @@ spec:
     fullnameOverride: blackbox-exporter
     resources:
       requests:
-        memory: 128Mi
+        memory: 64Mi
       limits:
-        memory: 128Mi
+        memory: 64Mi
     securityContext:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false

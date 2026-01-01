@@ -37,3 +37,8 @@ spec:
       tag: 0.18.0@sha256:24d561a207f910b52eab533ee9c2acfc5a6a75287561a73661768e76dea142b9
     networkPolicy:
       enabled: false
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 128Mi
