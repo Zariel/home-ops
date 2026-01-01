@@ -43,9 +43,9 @@ spec:
           resources:
             requests:
               cpu: 10m
-              memory: 1Gi
+              memory: 448Mi
             limits:
-              memory: 1536Mi
+              memory: 448Mi
           startupProbe:
             failureThreshold: 30
             periodSeconds: 5

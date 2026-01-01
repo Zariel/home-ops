@@ -84,8 +84,9 @@ spec:
           resources:
             requests:
               cpu: 100m
+              memory: 64Mi
             limits:
-              memory: 1Gi
+              memory: 64Mi
           volumeMounts:
             - name: config
               mountPath: /config
