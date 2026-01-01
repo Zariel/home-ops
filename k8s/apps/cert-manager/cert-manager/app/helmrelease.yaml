@@ -41,9 +41,9 @@ spec:
     dns01RecursiveNameserversOnly: true
     resources:
       requests:
-        memory: 192Mi
+        memory: 160Mi
       limits:
-        memory: 192Mi
+        memory: 160Mi
     prometheus:
       enabled: true
       servicemonitor:
@@ -60,6 +60,6 @@ spec:
       replicaCount: 2
       resources:
         requests:
-          memory: 256Mi
+          memory: 160Mi
         limits:
-          memory: 256Mi
+          memory: 160Mi
