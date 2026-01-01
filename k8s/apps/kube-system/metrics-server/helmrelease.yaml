@@ -36,6 +36,6 @@ spec:
       enabled: true
     resources:
       requests:
-        memory: 192Mi
+        memory: 160Mi
       limits:
-        memory: 192Mi
+        memory: 160Mi
