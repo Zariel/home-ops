@@ -133,9 +133,9 @@ spec:
       enabled: true
       resources:
         requests:
-          memory: 192Mi
+          memory: 224Mi
         limits:
-          memory: 192Mi
+          memory: 224Mi
 
     victoria-metrics-operator-crds:
       enabled: true

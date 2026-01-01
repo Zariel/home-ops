@@ -38,9 +38,9 @@ spec:
   resources:
     requests:
       cpu: 250m
-      memory: 896Mi
+      memory: 0.91Gi
     limits:
-      memory: 896Mi
+      memory: 0.91Gi
   configReloaderResources:
     requests:
       memory: 64Mi
