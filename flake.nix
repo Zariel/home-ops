@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    talhelper.url = "github:budimanjojo/talhelper";
   };
 
   outputs =
@@ -11,7 +12,8 @@
       self,
       nixpkgs,
       flake-utils,
-    }:
+      ...
+    }@inputs:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
@@ -21,7 +23,7 @@
         devShells.default = pkgs.mkShell {
           name = "holywoo-dev";
           buildInputs = with pkgs; [
-            talhelper
+            inputs.talhelper.packages.${system}.default
             talosctl
             yq-go
             jq
@@ -35,15 +37,6 @@
             kubectl
             kustomize
           ];
-          shellHook = ''
-            if [ -f "$PWD/kubeconfig.yaml" ]; then
-              export KUBECONFIG="$PWD/kubeconfig.yaml"
-            fi
-            if [ -f "$PWD/age.key" ]; then
-              export SOPS_AGE_KEY_FILE="$PWD/age.key"
-            fi
-            echo "Dev shell ready (talhelper/matchbox tooling)."
-          '';
         };
       }
     );
