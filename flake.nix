@@ -36,6 +36,7 @@
             gnupg
             kubectl
             kustomize
+            fluxcd
           ];
         };
       }
