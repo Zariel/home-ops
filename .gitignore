@@ -11,4 +11,5 @@ Thumbs.db
 *.pem
 kubeconfig*
 config.xml
+.direnv/
 
