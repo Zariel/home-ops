@@ -34,11 +34,12 @@ spec:
     - type: Zstd
     - type: Brotli
     - type: Gzip
-  connection:
-    bufferLimit: 8Mi
+  retry:
+    numRetries: 2
   tcpKeepalive: {}
   timeout:
     http:
+      connectionIdleTimeout: 15s
       requestTimeout: 0s
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/charts/gateway-helm/crds/generated/gateway.envoyproxy.io_clienttrafficpolicies.yaml
@@ -52,21 +53,19 @@ spec:
       trustedCIDRs:
         - 172.20.0.0/16
   connection:
-    bufferLimit: 8Mi
     maxAcceptPerSocketEvent: 0
   http2:
-    initialStreamWindowSize: 2Mi
-    initialConnectionWindowSize: 32Mi
     onInvalidMessage: TerminateStream
+  http3: {}
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
+  tcpKeepalive: {}
+  timeout:
+    http:
+      idleTimeout: 60s
   tls:
     minVersion: "1.2"
     alpnProtocols:
       - h2
       - http/1.1
-  tcpKeepalive: {}
-  timeout:
-    http:
-      requestReceivedTimeout: 0s
