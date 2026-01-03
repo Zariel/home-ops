@@ -55,6 +55,8 @@ localRedirectPolicy: true
 operator:
   rollOutPods: true
 rollOutCiliumPods: true
+pmtuDiscovery:
+  enabled: true
 resources:
   requests:
     cpu: 1500m
