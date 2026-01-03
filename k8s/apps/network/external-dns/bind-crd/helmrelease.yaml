@@ -46,6 +46,7 @@ spec:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
       - --label-filter=external-dns.home/visibility=internal
+      - --managed-record-types=HTTPS
     txtOwnerId: internal-crd
     txtPrefix: k8s.
     domainFilters: [*domain]
