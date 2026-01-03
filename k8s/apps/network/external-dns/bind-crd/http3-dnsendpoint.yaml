@@ -9,7 +9,7 @@ metadata:
     external-dns.home/visibility: internal
 spec:
   endpoints:
-    - dnsName: "*.cbannister.xyz"
+    - dnsName: "internal.cbannister.xyz"
       recordTTL: 300
       recordType: HTTPS
       targets:
