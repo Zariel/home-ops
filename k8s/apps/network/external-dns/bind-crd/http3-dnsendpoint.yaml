@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: http3-internal
+  namespace: network
+  labels:
+    external-dns.home/visibility: internal
+spec:
+  endpoints:
+    - dnsName: "*.cbannister.xyz"
+      recordTTL: 300
+      recordType: HTTPS
+      targets:
+        - "1 . (alpn=h3,h2 port=443)"
