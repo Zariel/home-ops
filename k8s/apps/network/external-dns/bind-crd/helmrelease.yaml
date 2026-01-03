@@ -47,6 +47,7 @@ spec:
       - --crd-source-kind=DNSEndpoint
       - --label-filter=external-dns.home/visibility=internal
       - --managed-record-types=HTTPS
+      - --managed-record-types=TXT
     txtOwnerId: internal-crd
     txtPrefix: k8s.
     domainFilters: [*domain]
