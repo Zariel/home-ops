@@ -9,7 +9,7 @@ rings:
 channels:
   combined: 6
 features:
-  rx-udp-gro-forwarding: on
+  rx-udp-gro-forwarding: off
 ---
 # connectx-4
 apiVersion: v1alpha1
@@ -21,7 +21,7 @@ rings:
 channels:
   combined: 6
 features:
-  rx-udp-gro-forwarding: on
+  rx-udp-gro-forwarding: off
 ---
 apiVersion: v1alpha1
 kind: BondConfig
