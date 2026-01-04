@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/service: smtp-relay
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   ipFamilies:
     - IPv4
   ipFamilyPolicy: SingleStack
