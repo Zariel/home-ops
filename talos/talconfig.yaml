@@ -79,7 +79,9 @@ patches:
   - |-
     apiVersion: v1alpha1
     kind: OOMConfig
-    triggerExpression: false
+    triggerExpression: "false"
+    cgroupRankingExpression: "0.0"
+    sampleInterval: "5s"
 
 controlPlane:
   schematic:
