@@ -44,10 +44,10 @@ spec:
               value: "1"
           resources:
             requests:
-              memory: 64Mi
               cpu: 10m
+              memory: 512Mi
             limits:
-              memory: 64Mi
+              memory: 512Mi
           volumeMounts:
             - name: config
               mountPath: /config/
