@@ -206,6 +206,23 @@ transforms:
       r3 = replace(r2, "10.254.1.5", "k8s-2")
       .node = r3
 
+  vlogs_normalize:
+    type: remap
+    inputs:
+      - kubernetes_remap
+      - vyos_firewall_wan_route._unmatched
+      - vyos_firewall_geoip_remap
+      - talos_kernel_transform
+      - talos_service_transform
+    source: |-
+      if !exists(.msg) {
+        if exists(.message) {
+          .msg = .message
+        } else if exists(.log_message) {
+          .msg = .log_message
+        }
+      }
+
 # Sinks
 sinks:
   loki_kubernetes:
@@ -292,11 +309,7 @@ sinks:
   vlogs:
     type: elasticsearch
     inputs:
-      - kubernetes_remap
-      - vyos_firewall_wan_route._unmatched
-      - vyos_firewall_geoip_remap
-      - talos_kernel_transform
-      - talos_service_transform
+      - vlogs_normalize
     endpoints:
       - http://vlsingle-vlogs.monitoring.svc.cluster.local:9428/insert/elasticsearch/
     api_version: v8
@@ -307,7 +320,7 @@ sinks:
     bulk:
       index: vector-logs
     query:
-      _msg_field: message
+      _msg_field: msg
       _time_field: timestamp
       _stream_fields: host,node,namespace,custom_app_name,container_name
     batch:
