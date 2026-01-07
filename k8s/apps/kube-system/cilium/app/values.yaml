@@ -58,10 +58,10 @@ pmtuDiscovery:
 resources:
   requests:
     cpu: 1500m
-    memory: 1Gi
+    memory: 2Gi
   limits:
     cpu: 1500m
-    memory: 1Gi
+    memory: 2Gi
 rollOutCiliumPods: true
 routingMode: native
 securityContext:
