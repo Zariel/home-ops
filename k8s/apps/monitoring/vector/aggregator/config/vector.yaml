@@ -288,3 +288,21 @@ sinks:
       node: "{{ node }}"
       talos_service: '{{ "talos-service" }}'
       namespace: "talos:service"
+
+  vlogs:
+    type: elasticsearch
+    inputs:
+      - kubernetes_remap
+      - vyos_firewall_wan_route._unmatched
+      - vyos_firewall_geoip_remap
+      - talos_kernel_transform
+      - talos_service_transform
+    endpoints:
+      - http://vlsingle-vlogs.monitoring.svc.cluster.local:9428/insert/elasticsearch/
+    mode: bulk
+    bulk:
+      index: vector-logs
+    batch:
+      max_bytes: 1048576
+      max_events: 1000
+      timeout_secs: 2

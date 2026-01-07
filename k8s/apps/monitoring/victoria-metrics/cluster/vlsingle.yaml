@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://crds.jank.ing/operator.victoriametrics.com/vlsingle_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VLSingle
+metadata:
+  name: vlogs
+spec:
+  retentionPeriod: "14d"
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 25Gi
+    storageClassName: ceph-block
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      memory: 1Gi
