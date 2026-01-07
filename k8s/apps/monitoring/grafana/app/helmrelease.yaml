@@ -46,7 +46,7 @@ spec:
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel,victoriametrics-logs-datasource
       GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
       GF_SERVER_ROOT_URL: https://grafana.cbannister.xyz
     envFromSecrets:
@@ -149,6 +149,7 @@ spec:
           - { name: Loki, orgId: 1 }
           - { name: Prometheus, orgId: 1 }
           - { name: "Victoria Metrics", orgId: 1 }
+          - { name: VictoriaLogs, orgId: 1 }
         datasources:
           - name: Loki
             type: loki
@@ -157,6 +158,11 @@ spec:
             url: http://loki.monitoring.svc.cluster.local:3100
             jsonData:
               maxLines: 1000
+          - name: VictoriaLogs
+            type: victoriametrics-logs-datasource
+            uid: victorialogs
+            access: proxy
+            url: http://vlsingle-vlogs.monitoring.svc.cluster.local:9428
           - name: Alertmanager
             type: alertmanager
             uid: alertmanager
@@ -285,6 +291,7 @@ spec:
       - natel-discrete-panel
       - pr0ps-trackmap-panel
       - vonage-status-panel
+      - victoriametrics-logs-datasource
     serviceMonitor:
       enabled: true
     route:
