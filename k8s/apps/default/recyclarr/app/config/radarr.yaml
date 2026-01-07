@@ -145,7 +145,7 @@ custom_formats:
       # Movie Versions
       - eca37840c13c6ef2dd0262b141a5482f # 4K Remaster
       - e0c07d59beb37348e975a930d5e50319 # Criterion Collection
-      - 0f12c086e289cf966fa5948eac571f44 # Hybrid
+      # - 0f12c086e289cf966fa5948eac571f44 # Hybrid
       - eecf3a857724171f968a66cb5719e152 # IMAX
       - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
       - 9d27d9d2181838f76dee150882bdc58c # Masters of Cinema
