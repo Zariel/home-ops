@@ -299,9 +299,17 @@ sinks:
       - talos_service_transform
     endpoints:
       - http://vlsingle-vlogs.monitoring.svc.cluster.local:9428/insert/elasticsearch/
+    api_version: v8
+    compression: zstd
+    healthcheck:
+      enabled: false
     mode: bulk
     bulk:
       index: vector-logs
+    query:
+      _msg_field: message
+      _time_field: timestamp
+      _stream_fields: host,node,namespace,custom_app_name,container_name
     batch:
       max_bytes: 1048576
       max_events: 1000
