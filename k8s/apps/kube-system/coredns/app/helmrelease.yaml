@@ -40,9 +40,9 @@ spec:
       create: true
     resources:
       requests:
-        memory: 128Mi
+        memory: 512Mi
       limits:
-        memory: 128Mi
+        memory: 512Mi
     servers:
       - zones:
           - zone: .
@@ -58,22 +58,26 @@ spec:
           - name: kubernetes
             parameters: cluster.local in-addr.arpa ip6.arpa
             configBlock: |-
-              pods insecure
+              pods verified
               fallthrough in-addr.arpa ip6.arpa
-              ttl 30
-          - name: prometheus
-            parameters: 0.0.0.0:9153
+          - name: autopath
+            parameters: "@kubernetes"
           - name: forward
             parameters: cbannister.xyz 10.45.0.55
           - name: forward
-            parameters: cbannister.casa 172.53.53.53
-          - name: forward
             parameters: . 172.53.53.53
           - name: cache
-            parameters: 30
+            configBlock: |-
+              prefetch 20
+              serve_stale
           - name: loop
           - name: reload
           - name: loadbalance
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: log
+            configBlock: |-
+              class error
     tolerations:
       - key: CriticalAddonsOnly
         operator: Exists
