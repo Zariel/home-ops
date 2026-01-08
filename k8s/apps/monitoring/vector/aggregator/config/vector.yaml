@@ -206,15 +206,49 @@ transforms:
       r3 = replace(r2, "10.254.1.5", "k8s-2")
       .node = r3
 
-  vlogs_normalize:
+  vlogs_kubernetes_tag:
     type: remap
     inputs:
       - kubernetes_remap
+    source: |-
+      .source_stream = "kubernetes"
+
+  vlogs_vyos_tag:
+    type: remap
+    inputs:
       - vyos_firewall_wan_route._unmatched
       - vyos_firewall_geoip_remap
+    source: |-
+      .source_stream = "vyos"
+
+  vlogs_talos_kernel_tag:
+    type: remap
+    inputs:
       - talos_kernel_transform
+    source: |-
+      .source_stream = "talos-kernel"
+
+  vlogs_talos_service_tag:
+    type: remap
+    inputs:
       - talos_service_transform
     source: |-
+      .source_stream = "talos-service"
+
+  vlogs_common_normalize:
+    type: remap
+    inputs:
+      - vlogs_kubernetes_tag
+      - vlogs_vyos_tag
+      - vlogs_talos_kernel_tag
+      - vlogs_talos_service_tag
+    source: |-
+      if !exists(.node) && exists(.node_name) {
+        .node = .node_name
+      }
+      if !exists(.host) && exists(.__host) {
+        .host = .__host
+      }
       if !exists(.msg) {
         if exists(.message) {
           .msg = .message
@@ -270,7 +304,7 @@ sinks:
     out_of_order_action: rewrite_timestamp
     labels:
       hostname: "{{ host }}"
-      namespce: "vyos:wan"
+      namespace: "vyos:wan"
 
   talos_kernel:
     type: loki
@@ -309,7 +343,7 @@ sinks:
   vlogs:
     type: elasticsearch
     inputs:
-      - vlogs_normalize
+      - vlogs_common_normalize
     endpoints:
       - http://vlsingle-vlogs.monitoring.svc.cluster.local:9428/insert/elasticsearch/
     api_version: v8
