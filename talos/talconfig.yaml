@@ -82,7 +82,6 @@ patches:
     triggerExpression: "false"
     cgroupRankingExpression: "0.0"
     sampleInterval: "5s"
-
 controlPlane:
   schematic:
     customization:
