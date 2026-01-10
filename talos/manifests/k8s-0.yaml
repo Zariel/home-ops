@@ -10,6 +10,5 @@ routes:
 apiVersion: v1alpha1
 kind: VLANConfig
 name: bond0.300
-parent: bond0
 addresses:
   - address: 10.254.3.1/29
