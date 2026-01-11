@@ -32,6 +32,9 @@ spec:
     admins:
       - ["cbannister", "c.bannister@gmail.com"]
     loginRequired: true
+    extraConfig:
+      - secret:
+          secretName: netbox-extra-config
     storages:
       default:
         BACKEND: storages.backends.s3.S3Storage
