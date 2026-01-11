@@ -164,4 +164,38 @@ spec:
       isDefault: false
       deletionPolicy: Delete
     cephFileSystems: []
-    cephObjectStores: []
+    cephObjectStores:
+      - name: ceph-objectstore
+        spec:
+          metadataPool:
+            enableCrushUpdates: true
+            failureDomain: osd
+            replicated:
+              size: 3
+          dataPool:
+            enableCrushUpdates: true
+            failureDomain: osd
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 1
+            parameters:
+              bulk: "true"
+              compression_algorithm: lz4
+              compression_mode: aggressive
+          preservePoolsOnDelete: true
+          gateway:
+            instances: 2
+            priorityClassName: system-cluster-critical
+            port: 80
+            resources:
+              limits: null
+        storageClass:
+          enabled: true
+          name: ceph-bucket
+          reclaimPolicy: Delete
+          volumeBindingMode: Immediate
+          annotations: {}
+          labels: {}
+          parameters:
+            region: us-west-1
+            # endpoint: <hostname including port>
