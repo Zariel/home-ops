@@ -30,3 +30,4 @@ resources:
   - forgejo/ks.yaml
   - wizarr/ks.yaml
   - home-assistant/ks.yaml
+  - netbox/ks.yaml
