@@ -8,6 +8,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
   path: ./k8s/apps/cnpg-system/barman-cloud/app
   prune: true
   sourceRef:

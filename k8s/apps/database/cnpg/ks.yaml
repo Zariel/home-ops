@@ -12,6 +12,10 @@ spec:
   dependsOn:
     - name: cloudnative-pg
       namespace: cnpg-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: external-secrets
+      namespace: external-secrets
   healthChecks:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster

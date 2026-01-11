@@ -9,6 +9,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: external-secrets
+      namespace: external-secrets
   path: ./k8s/apps/network/bind/primary/app
   prune: true
   sourceRef:
@@ -33,6 +38,10 @@ spec:
   path: ./k8s/apps/network/bind/secondary/app
   dependsOn:
     - name: bind-primary
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: external-secrets
+      namespace: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository
