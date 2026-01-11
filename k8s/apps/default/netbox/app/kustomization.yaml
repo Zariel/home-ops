@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./job-device-type-import.yaml
   - ./objectbucketclaim.yaml
   - ./route.yaml
