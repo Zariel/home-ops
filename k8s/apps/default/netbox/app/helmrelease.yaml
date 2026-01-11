@@ -1,0 +1,87 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: netbox
+spec:
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 7.3.0
+  url: oci://ghcr.io/netbox-community/netbox-chart/netbox
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app netbox
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: netbox
+  values:
+    commonAnnotations:
+      reloader.stakater.com/auto: "true"
+    superuser:
+      name: cbannister
+      email: c.bannister@gmail.com
+      # existingSecret: ?
+    admins:
+      - ["cbannister", "c.bannister@gmail.com"]
+    loginRequired: true
+    storages:
+      default:
+        BACKEND: storages.backends.s3.S3Storage
+        OPTIONS:
+          bucket_name: netbox
+          endpoint_url: http://rook-ceph-rgw-ceph-objectstore.rook-ceph.svc.cluster.local
+          region_name: auto
+    plugins: []
+    preferIPv4: true
+    releaseCheck:
+      url: null
+    timeZone: Europe/London
+    persistence:
+      enabled: true
+      existingClaim: netbox
+    initContainers:
+      - name: init-db
+        image: ghcr.io/home-operations/postgres-init:18.1.0@sha256:866f15038ed5185a2b8118821f470bb7ca0df8c4231b8e277446e681ebb1ed84
+        envFrom:
+          - secretRef:
+              name: netbox-db
+          - secretRef:
+              name: netbox-initdb
+    resourcesPreset: none
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    postgresql:
+      enabled: false
+    externalDatabase:
+      host: pg18vc-rw.database.svc.cluster.local
+      port: 5432
+      database: netbox
+      username: netbox
+      existingSecretName: netbox-db
+      existingSecretKey: DB_PASSWORD
+    valkey:
+      enabled: true
+      architecture: standalone
+    housekeeping:
+      enabled: false
+    worker:
+      enabled: false
+  valuesFrom:
+    - targetPath: storages.default.OPTIONS.access_key
+      kind: Secret
+      name: netbox-obc
+      valuesKey: AWS_ACCESS_KEY_ID
+    - targetPath: storages.default.OPTIONS.secret_key
+      kind: Secret
+      name: netbox-obc
+      valuesKey: AWS_SECRET_ACCESS_KEY
