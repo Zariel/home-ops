@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app pg18vc
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: cnpg
+      app.kubernetes.io/instance: *app
+  dependsOn:
+    - name: cloudnative-pg
+      namespace: cnpg-system
+  healthChecks:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: *app
+      namespace: database
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
+  path: ./k8s/apps/database/cnpg/pg18vc
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
+  targetNamespace: database
