@@ -169,12 +169,12 @@ spec:
         spec:
           metadataPool:
             enableCrushUpdates: true
-            failureDomain: osd
+            failureDomain: host
             replicated:
               size: 3
           dataPool:
             enableCrushUpdates: true
-            failureDomain: osd
+            failureDomain: host
             erasureCoded:
               dataChunks: 2
               codingChunks: 1
@@ -197,5 +197,5 @@ spec:
           annotations: {}
           labels: {}
           parameters:
-            region: us-west-1
+            region: eu-west-1
             # endpoint: <hostname including port>
