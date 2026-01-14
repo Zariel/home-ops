@@ -91,7 +91,9 @@ spec:
                 memory: 250Mi
               limits:
                 gpu.intel.com/i915: 1
-            securityContext: *csc
+            securityContext:
+              <<: *csc
+              readOnlyRootFilesystem: false
       server:
         annotations:
           reloader.stakater.com/auto: "true"
