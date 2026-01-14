@@ -11,7 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: cert-manager
-  path: ./ks/apps/cert-manager/trust-manager/app
+  path: ./k8s/apps/cert-manager/trust-manager/app
   prune: true
   sourceRef:
     kind: GitRepository
