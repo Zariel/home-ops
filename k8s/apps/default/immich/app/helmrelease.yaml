@@ -22,6 +22,7 @@ spec:
     controllers:
       machine-learning:
         strategy: Recreate
+        replicas: 1
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -60,6 +61,15 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           microservices:
+            command:
+              - /bin/bash
+              - -c
+              - |
+                set -eo pipefail
+                set -x
+                sed -e "s:VECTORCHORD_VERSION_RANGE = '>=0.3 <0.6':VECTORCHORD_VERSION_RANGE = '>=0.3 <2':g" -i /usr/src/app/server/dist/constants.js
+                sed -e 's:VECTORCHORD_VERSION_RANGE = ">=0.3 <0.6":VECTORCHORD_VERSION_RANGE = ">=0.3 <2":g' -i /usr/src/app/server/dist/constants.d.ts
+                exec tini -- /bin/bash /usr/src/app/server/bin/start.sh
             image:
               repository: ghcr.io/immich-app/immich-server
               tag: v2.4.1
@@ -87,6 +97,15 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           server:
+            command:
+              - /bin/bash
+              - -c
+              - |
+                set -eo pipefail
+                set -x
+                sed -e "s:VECTORCHORD_VERSION_RANGE = '>=0.3 <0.6':VECTORCHORD_VERSION_RANGE = '>=0.3 <2':g" -i /usr/src/app/server/dist/constants.js
+                sed -e 's:VECTORCHORD_VERSION_RANGE = ">=0.3 <0.6":VECTORCHORD_VERSION_RANGE = ">=0.3 <2":g' -i /usr/src/app/server/dist/constants.d.ts
+                exec tini -- /bin/bash /usr/src/app/server/bin/start.sh
             image:
               repository: ghcr.io/immich-app/immich-server
               tag: v2.4.1
