@@ -31,3 +31,5 @@ resources:
   - wizarr/ks.yaml
   - home-assistant/ks.yaml
   - netbox/ks.yaml
+  - common/ks.yaml
+  - immich/ks.yaml
