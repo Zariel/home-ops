@@ -187,7 +187,7 @@ spec:
       photos:
         type: nfs
         server: nas.cbannister.casa
-        path: /mnt/bighorse/Photos/immich
+        path: /mnt/bighorse/Photos/Immich
       tmpfs:
         type: emptyDir
         medium: Memory
