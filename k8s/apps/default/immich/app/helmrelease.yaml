@@ -21,7 +21,7 @@ spec:
   values:
     controllers:
       machine-learning:
-        strategy: RollingUpdate
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
