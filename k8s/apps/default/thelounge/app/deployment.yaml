@@ -47,12 +47,15 @@ spec:
               name: web
           startupProbe:
             httpGet:
+              path: /
               port: web
           livenessProbe:
             httpGet:
+              path: /
               port: web
           readinessProbe:
             httpGet:
+              path: /
               port: web
             successThreshold: 3
           resources:
