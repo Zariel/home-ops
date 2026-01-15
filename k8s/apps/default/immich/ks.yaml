@@ -15,6 +15,8 @@ spec:
       namespace: external-secrets
     - name: rook-ceph
       namespace: rook-ceph
+    - name: cert-manager
+      namespace: cert-manager
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
