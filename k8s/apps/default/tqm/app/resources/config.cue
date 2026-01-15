@@ -46,6 +46,14 @@ filters: [string]: {
 
 bypassIgnoreIfUnregistered: true
 
+_#ignoreCats: [
+	"music",
+	"games",
+	"shared",
+	"upload",
+	"manual",
+]
+
 filters: default: {
 	MapHardlinksFor: ["retag", "clean"]
 	ignore: [
@@ -53,7 +61,10 @@ filters: default: {
 		"Downloaded == false",
 		"SeedingHours < 26",
 		"HardlinkedOutsideClient == true",
-		"Label startsWith \"music\"",
+		for cat in _#ignoreCats {
+			"Label startsWith \"\(cat)\""
+		},
+
 		// Protect unlinked torrents until minSeedDays is met (grace period before removal)
 		for t in #trackers if t.minSeedDays != _|_ {
 			"HasAllTags(\"site:\(t.name)\", \"not-linked\") && SeedingDays < \(t.minSeedDays)"
@@ -62,10 +73,9 @@ filters: default: {
 	orphan: {
 		grace_period: "1h"
 		ignore_paths: [
-			"/data/downloads/torrents/complete/music",
-			"/data/downloads/torrents/complete/uploads",
-			"/data/downloads/torrents/complete/manual",
-			"/data/downloads/torrents/complete/shared",
+			for cat in _#ignoreCats {
+				"/data/downloads/torrents/complete/\(cat)"
+			},
 		]
 	}
 }
@@ -87,8 +97,8 @@ filters: default: tag: [
 		]
 	},
 	{
-		name:   "not-linked"
-		mode:   "remove"
+		name: "not-linked"
+		mode: "remove"
 		update: ["HardlinkedOutsideClient == true"]
 	},
 
