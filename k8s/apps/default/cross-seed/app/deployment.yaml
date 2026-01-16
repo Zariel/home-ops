@@ -34,24 +34,21 @@ spec:
             failureThreshold: 3
             periodSeconds: 10
             successThreshold: 1
-            httpGet:
-              path: /api/ping
+            tcpSocket:
               port: 80
             timeoutSeconds: 1
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
             successThreshold: 1
-            httpGet:
-              path: /api/ping
+            tcpSocket:
               port: 80
             timeoutSeconds: 1
           readinessProbe:
             failureThreshold: 3
             periodSeconds: 10
             successThreshold: 1
-            httpGet:
-              path: /api/ping
+            tcpSocket:
               port: 80
             timeoutSeconds: 1
           resources:
