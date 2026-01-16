@@ -24,6 +24,7 @@ cluster:
 cni:
   exclusive: false
 # enableRuntimeDeviceDetection: true
+devices: bond0
 enableIPv4BIGTCP: true
 enableIPv4Masquerade: false
 endpointRoutes:
