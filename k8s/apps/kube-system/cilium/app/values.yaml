@@ -50,6 +50,7 @@ loadBalancer:
   algorithm: maglev
   mode: dsr
   dsrDispatch: geneve
+  acceleration: best-effort
 localRedirectPolicy: true
 operator:
   rollOutPods: true
