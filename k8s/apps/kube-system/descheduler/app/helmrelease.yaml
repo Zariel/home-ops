@@ -41,14 +41,30 @@ spec:
         memory: 160Mi
     deschedulerPolicyAPIVersion: descheduler/v1alpha2
     deschedulerPolicy:
+      metricsProviders:
+        - source: KubernetesMetrics
       profiles:
         - name: Default
           pluginConfig:
             - name: DefaultEvictor
               args:
-                evictFailedBarePods: true
-                evictLocalStoragePods: true
-                evictSystemCriticalPods: true
+                podProtections:
+                  defaultDisabled:
+                    - FailedBarePods
+                    - PodsWithLocalStorage
+                    - SystemCriticalPods
+            - name: LowNodeUtilization
+              args:
+                metricsUtilization:
+                  source: KubernetesMetrics
+                thresholds:
+                  cpu: 20
+                  memory: 20
+                  pods: 20
+                targetThresholds:
+                  cpu: 50
+                  memory: 50
+                  pods: 50
             - name: RemoveFailedPods
               args:
                 reasons:
@@ -68,23 +84,11 @@ spec:
                   - requiredDuringSchedulingIgnoredDuringExecution
             - name: RemovePodsViolatingNodeTaints
             - name: RemovePodsViolatingTopologySpreadConstraint
-            - name: LowNodeUtilization
-              args:
-                metricsUtilization:
-                  source: KubernetesMetrics
-                thresholds:
-                  cpu: 20
-                  memory: 20
-                  pods: 20
-                targetThresholds:
-                  cpu: 50
-                  memory: 50
-                  pods: 50
           plugins:
             balance:
               enabled:
-                - RemovePodsViolatingTopologySpreadConstraint
                 - LowNodeUtilization
+                - RemovePodsViolatingTopologySpreadConstraint
             deschedule:
               enabled:
                 - RemoveFailedPods
