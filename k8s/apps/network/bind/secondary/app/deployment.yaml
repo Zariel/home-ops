@@ -33,6 +33,12 @@ spec:
                     app: bind
                     role: primary
                 topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: bind
+                  role: secondary
       volumes:
         - name: bind-config
           configMap:
