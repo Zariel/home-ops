@@ -23,7 +23,7 @@ cluster:
   name: hollywoo
 cni:
   exclusive: false
-devices: "!bond0.300,bond0"
+# devices: "!bond0.300,bond0"
 # enableRuntimeDeviceDetection: true
 # cant disable bigtcp for tunnels which is broken in 1.19rc0
 enableIPv4BIGTCP: false
