@@ -13,6 +13,7 @@ bpf:
   hostRouting: true
   hostLegacyRouting: false
   tproxy: true
+  vlanBypass: [300]
 bpfClockProbe: true
 cgroup:
   automount:
