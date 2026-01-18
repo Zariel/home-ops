@@ -24,7 +24,7 @@ cluster:
   name: hollywoo
 cni:
   exclusive: false
-# devices: "!bond0.300,bond0"
+devices: "bond0"
 # enableRuntimeDeviceDetection: true
 enableIPv4BIGTCP: true
 enableIPv4Masquerade: false
