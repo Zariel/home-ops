@@ -26,8 +26,7 @@ cni:
   exclusive: false
 devices: "bond0"
 # enableRuntimeDeviceDetection: true
-# cant disable bigtcp for tunnels which is broken in 1.19rc0
-enableIPv4BIGTCP: false
+enableIPv4BIGTCP: true
 enableIPv4Masquerade: false
 endpointRoutes:
   enabled: true
