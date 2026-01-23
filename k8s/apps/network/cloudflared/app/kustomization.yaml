@@ -11,12 +11,10 @@ resources:
   - deployment.yaml
   - service.yaml
   - servicemonitor.yaml
+  - ./externalsecret.yaml
 configMapGenerator:
   - name: cloudflared-config
     files:
       - ./config/config.yaml
-secretGenerator:
-  - name: cloudflared-tunnel-secret
-    type: Opaque
-    files:
-      - ./config/credentials.sops.json
+generatorOptions:
+  disableNameSuffixHash: true

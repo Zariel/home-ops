@@ -9,4 +9,4 @@ spec:
   endpoints:
     - dnsName: external.cbannister.xyz
       recordType: CNAME
-      targets: ["${CLUSTER_CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com"]
+      targets: ["${CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com"]
