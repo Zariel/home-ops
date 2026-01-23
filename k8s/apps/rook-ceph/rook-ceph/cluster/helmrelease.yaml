@@ -179,7 +179,6 @@ spec:
               dataChunks: 2
               codingChunks: 1
             parameters:
-              bulk: "true"
               compression_algorithm: lz4
               compression_mode: aggressive
           gateway:
