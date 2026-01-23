@@ -15,10 +15,9 @@ spec:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+  wait: false
+  interval: 1h
   postBuild:
-    substitute:
-      CLUSTER_CLOUDFLARE_TUNNEL_ID: "36c776dc-349e-4415-b1f6-26a83c07a440"
+    substituteFrom:
+      - kind: Secret
+        name: cloudflared-secret

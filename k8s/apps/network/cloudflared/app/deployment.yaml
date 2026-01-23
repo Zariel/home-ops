@@ -2,12 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: &app cloudflared
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: *app
-  strategy:
-    type: Recreate
   replicas: 2
   template:
     metadata:
@@ -23,41 +23,36 @@ spec:
             secretName: cloudflared-tunnel-secret
       affinity:
         podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  gateway.envoyproxy.io/owning-gateway-namespace: network
-                  gateway.envoyproxy.io/owning-gateway-name: external
-              topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    gateway.envoyproxy.io/owning-gateway-namespace: network
+                    gateway.envoyproxy.io/owning-gateway-name: external
+              weight: 100
       containers:
         - name: cloudflared
           image: mirror.gcr.io/cloudflare/cloudflared:2026.1.1@sha256:5bb6a0870686742d00e171f36c892ba91e5994631bc363d808b9ba822262dad6
           args:
             - tunnel
-            - --config
-            - /etc/cloudflared/config/config.yaml
-            - --loglevel
-            - debug
             - run
-            - "${CLUSTER_CLOUDFLARE_TUNNEL_ID}"
           env:
             - name: NO_AUTOUPDATE
               value: "true"
-            - name: TUNNEL_CRED_FILE
-              value: /etc/cloudflared/creds/credentials.json
             - name: TUNNEL_METRICS
               value: 0.0.0.0:8080
             - name: TUNNEL_TRANSPORT_PROTOCOL
               value: http2
             - name: TUNNEL_POST_QUANTUM
               value: "false"
+          envFrom:
+            - secretRef:
+                name: cloudflared-secret
           volumeMounts:
             - mountPath: /etc/cloudflared/config/config.yaml
               name: config
               subPath: config.yaml
-            - mountPath: /etc/cloudflared/creds/credentials.json
-              name: creds
-              subPath: credentials.sops.json
           ports:
             - containerPort: 8080
               name: http
