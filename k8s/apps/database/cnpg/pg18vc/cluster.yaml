@@ -41,5 +41,5 @@ spec:
       shared_buffers: 64MB
     shared_preload_libraries:
       - vchord
-  bootstrap:
-    initdb: {}
+  # bootstrap:
+  #   initdb: {}
