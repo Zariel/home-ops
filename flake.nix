@@ -1,5 +1,5 @@
 {
-  description = "holywoo devShell with Talos/Matchbox tooling";
+  description = "home-ops devShell";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -21,7 +21,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          name = "holywoo-dev";
+          name = "home-ops-dev";
           buildInputs = with pkgs; [
             inputs.talhelper.packages.${system}.default
             talosctl
