@@ -40,7 +40,15 @@ tasks:
     desc: Build and push matchbox bundle to VyOS (rsync --delete)
     deps: ["matchbox:bundle"]
     env:
-      HOST: "{{.host | default \"vyos@gateway\"}}"
+      HOST: '{{.host | default "vyos@gateway"}}'
+    cmds:
+      - rsync -av --delete {{.ROOT_DIR}}/artifacts/matchbox/ ${HOST}:/config/containers/matchbox/
+
+  matchbox:push:new:
+    desc: Build and push matchbox bundle to new matchbox (rsync --delete)
+    deps: ["matchbox:bundle"]
+    env:
+      HOST: '{{.host | default ""}}'
     cmds:
       - rsync -av --delete {{.ROOT_DIR}}/artifacts/matchbox/ ${HOST}:/config/containers/matchbox/
 
