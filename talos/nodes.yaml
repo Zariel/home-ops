@@ -1,0 +1,7 @@
+nodes:
+  - hostname: k8s-0
+    mac: 58:47:ca:78:d2:44
+  - hostname: k8s-1
+    mac: 58:47:ca:78:d7:fc
+  - hostname: k8s-2
+    mac: 58:47:ca:78:d8:44
