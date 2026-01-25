@@ -14,6 +14,12 @@ addresses:
   - address: 10.254.3.2/29
 ---
 apiVersion: v1alpha1
+kind: DummyLinkConfig
+name: bird0
+addresses:
+  - address: 10.254.254.129/32
+---
+apiVersion: v1alpha1
 kind: UserVolumeConfig
 name: local-hostpath
 provisioning:

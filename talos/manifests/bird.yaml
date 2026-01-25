@@ -5,7 +5,7 @@ name: bird2
 configFiles:
   - mountPath: /usr/local/etc/bird.conf
     content: |-
-      router id from "cilium_host";
+      router id from "bird0";
 
       log stderr all;
       debug protocols all;

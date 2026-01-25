@@ -13,6 +13,19 @@ Personal home-ops repo for my homelab. This repository tracks my Kubernetes and 
 
 This homelab is fully L3 routed. Cluster nodes are not on a shared L2 domain.
 
+### Loopback Addressing
+
+Loopbacks live in `10.254.254.0/24` and are carved by role:
+- `10.254.254.0/26`: L3 switches
+- `10.254.254.64/26`: Hypervisors / routers
+- `10.254.254.128/26`: Kubernetes nodes
+- `10.254.254.192/26`: Reserved / future
+
+Current assignments:
+- `k8s-0` (bird0): `10.254.254.128/32`
+- `k8s-1` (bird0): `10.254.254.129/32`
+- `k8s-2` (bird0): `10.254.254.130/32`
+
 ## Hardware
 
 ### Kubernetes Nodes (3)
