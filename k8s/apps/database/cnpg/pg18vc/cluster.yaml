@@ -43,5 +43,8 @@ spec:
       shared_buffers: 64MB
     shared_preload_libraries:
       - vchord
+  affinity:
+    podAntiAffinityType: required
+    topologyKey: kubernetes.io/hostname
   # bootstrap:
   #   initdb: {}
