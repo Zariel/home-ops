@@ -48,9 +48,11 @@ vlanID: 300
 mtu: 9000
 ---
 apiVersion: v1alpha1
-kind: UserVolumeConfig
-name: local-hostpath
-provisioning:
-  diskSelector:
-    match: disk.model == "Samsung SSD 970 EVO Plus 1TB"
-  minSize: 1TB
+kind: LinkConfig
+name: enp87s0
+up: false
+---
+apiVersion: v1alpha1
+kind: LinkConfig
+name: enp90s0
+up: false

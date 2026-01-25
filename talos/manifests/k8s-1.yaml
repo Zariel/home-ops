@@ -12,3 +12,13 @@ kind: VLANConfig
 name: bond0.300
 addresses:
   - address: 10.254.3.2/29
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: local-hostpath
+provisioning:
+  minSize: 1GiB
+  diskSelector:
+    match: disk.wwid == "eui.343335304ea058240025384100000001"
+filesystem:
+  type: xfs
