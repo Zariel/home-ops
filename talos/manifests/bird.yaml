@@ -49,13 +49,7 @@ configFiles:
               import none;  # Don't learn OSPF routes from ICX
           };
           area 0 {
-              interface "enp2s0f1np1" {
-                  # set to ptp when doing /31 l3 only networks
-                  type ptp;
-                  cost 10;
-              };
               interface "bond0" {
-                  # bonded dataplane replacement for enp2s0f1np1
                   type ptp;
                   cost 10;
               };

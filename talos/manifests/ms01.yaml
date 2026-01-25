@@ -52,5 +52,5 @@ kind: UserVolumeConfig
 name: local-hostpath
 provisioning:
   diskSelector:
-    match: disk.model == "Samsung SSD 970 EVO Plus 1TB" && !system_disk
+    match: disk.model == "Samsung SSD 970 EVO Plus 1TB"
   minSize: 1TB
