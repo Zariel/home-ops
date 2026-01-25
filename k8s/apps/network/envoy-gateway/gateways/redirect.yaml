@@ -27,17 +27,21 @@ kind: BackendTrafficPolicy
 metadata:
   name: envoy
 spec:
+  compressor:
+    - type: Zstd
+      zstd: {}
+    - type: Brotli
+      brotli: {}
+    - type: Gzip
+      gzip: {}
+  retry:
+    numRetries: 2
+    retryOn:
+      triggers:
+        - reset
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
-  compression:
-    - type: Zstd
-    - type: Brotli
-    - type: Gzip
-  connection:
-    bufferLimit: 8Mi
-  retry:
-    numRetries: 2
   tcpKeepalive: {}
   timeout:
     http:
@@ -53,21 +57,13 @@ spec:
     xForwardedFor:
       trustedCIDRs:
         - 172.20.0.0/16
-  connection:
-    bufferLimit: 8Mi
-    maxAcceptPerSocketEvent: 0
   http2:
-    initialStreamWindowSize: 2Mi
-    initialConnectionWindowSize: 32Mi
     onInvalidMessage: TerminateStream
   http3: {}
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
   tcpKeepalive: {}
-  timeout:
-    http:
-      requestReceivedTimeout: 0s
   tls:
     minVersion: "1.2"
     alpnProtocols:
