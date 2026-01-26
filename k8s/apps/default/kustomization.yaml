@@ -33,4 +33,3 @@ resources:
   - netbox/ks.yaml
   - common/ks.yaml
   - immich/ks.yaml
-  - sportarr/ks.yaml
