@@ -42,4 +42,7 @@
       '/(^|/)k8s/.+\\.ya?ml$/',
     ],
   },
+  registryAliases: {
+    "mirror.gcr.io": "docker.io"
+  },
 }
