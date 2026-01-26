@@ -50,9 +50,6 @@ spec:
               value: "1"
             - name: TZ
               value: Europe/London
-          envFrom:
-            - secretRef:
-                name: sportarr-secret
           resources:
             requests:
               cpu: "512m"
