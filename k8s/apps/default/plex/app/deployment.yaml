@@ -72,6 +72,9 @@ spec:
             - name: arr-media
               mountPath: /data/media
               subPath: media/
+            - name: arr-media
+              mountPath: /data/media/sports/tennis
+              subPath: downloads/torrents/complete/sports/tennis
             - name: tmp
               mountPath: /tmp
           securityContext:
