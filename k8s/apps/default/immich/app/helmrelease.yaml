@@ -61,9 +61,6 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           microservices:
-            image: &image
-              repository: registry.cbannister.xyz/immich-server
-              tag: v2.4.1-vc1
             envFrom:
               - secretRef:
                   name: immich-db
@@ -88,7 +85,6 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           server:
-            image: *image
             envFrom:
               - secretRef:
                   name: immich-db
