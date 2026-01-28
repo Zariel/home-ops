@@ -21,7 +21,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_CAPACITY: 10Gi
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
