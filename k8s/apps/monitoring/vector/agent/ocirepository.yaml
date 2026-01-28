@@ -5,7 +5,7 @@ kind: OCIRepository
 metadata:
   name: vector
 spec:
-  interval: 12h
+  interval: 15m
   url: oci://ghcr.io/vectordotdev/helm-charts/vector
   ref:
-    tag: 0.49.0
+    tag: 0.50.0
