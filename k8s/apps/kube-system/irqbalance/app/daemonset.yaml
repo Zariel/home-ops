@@ -25,7 +25,7 @@ spec:
           image: ghcr.io/home-operations/irqbalance:1.9.4@sha256:6cc768c3f074c221412d56b341a19c8432f9a6d76eda0b346285f9c5e2d3b2cc
           env:
             - name: IRQBALANCE_BANNED_CPULIST
-              value: "0"
+              value: "12-19"
           resources:
             requests:
               cpu: 25m
