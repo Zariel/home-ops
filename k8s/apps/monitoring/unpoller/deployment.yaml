@@ -22,7 +22,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: unpoller
-          image: ghcr.io/unpoller/unpoller:v2.17.0
+          image: ghcr.io/unpoller/unpoller:v2.32.0
           env:
             - name: TZ
               value: Europe/London
