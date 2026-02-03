@@ -7,7 +7,7 @@ rings:
   rx: 8192
   tx: 8192
 channels:
-  combined: 6
+  combined: 12
 features:
   rx-udp-gro-forwarding: off
 ---
@@ -19,7 +19,7 @@ rings:
   rx: 8192
   tx: 8192
 channels:
-  combined: 6
+  combined: 12
 features:
   rx-udp-gro-forwarding: off
 ---
