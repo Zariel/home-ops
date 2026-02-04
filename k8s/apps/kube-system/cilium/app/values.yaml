@@ -12,7 +12,6 @@ bpf:
   preallocateMaps: true
   hostRouting: true
   hostLegacyRouting: false
-  tproxy: true
   vlanBypass: [300]
 bpfClockProbe: true
 cgroup:
@@ -26,7 +25,7 @@ cni:
   exclusive: false
 devices: "bond0"
 # enableRuntimeDeviceDetection: true
-enableIPv4BIGTCP: true
+enableIPv4BIGTCP: false
 enableIPv4Masquerade: false
 endpointRoutes:
   enabled: true
