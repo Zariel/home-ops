@@ -14,6 +14,9 @@ spec:
       labels:
         app: plex
     spec:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: plex-gpu
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -53,10 +56,10 @@ spec:
             requests:
               cpu: 1000m
               memory: 4Gi
-              gpu.intel.com/i915: 1
             limits:
               memory: 4Gi
-              gpu.intel.com/i915: 1
+            claims:
+              - name: gpu
           ports:
             - containerPort: 32400
               name: plex

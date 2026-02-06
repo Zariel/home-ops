@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/resource.k8s.io/deviceclass_v1.json
+apiVersion: resource.k8s.io/v1
+kind: DeviceClass
+metadata:
+  name: intel-gpu-shared
+spec:
+  # Prefer allocatable shared devices when the driver exposes this capability.
+  selectors:
+    - cel:
+        expression: device.allowMultipleAllocations == true

@@ -17,6 +17,8 @@ spec:
       namespace: rook-ceph
     - name: cert-manager
       namespace: cert-manager
+    - name: intel-gpu-resource-driver
+      namespace: kube-system
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
