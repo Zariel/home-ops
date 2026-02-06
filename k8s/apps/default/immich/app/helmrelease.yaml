@@ -25,6 +25,10 @@ spec:
         replicas: 1
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: immich-ml-gpu
         containers:
           machine-learning:
             image:
@@ -51,14 +55,18 @@ spec:
               startup:
                 enabled: false
             resources:
-              limits:
-                gpu.intel.com/i915: 1
+              claims:
+                - name: gpu
             securityContext: &csc
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
       microservices:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: immich-microservices-gpu
         containers:
           microservices:
             image: &serverImage
@@ -80,8 +88,8 @@ spec:
               requests:
                 cpu: 100m
                 memory: 250Mi
-              limits:
-                gpu.intel.com/i915: 1
+              claims:
+                - name: gpu
             securityContext: *csc
       server:
         annotations:

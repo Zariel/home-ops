@@ -15,6 +15,8 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
+    - name: intel-gpu-resource-driver
+      namespace: kube-system
   postBuild:
     substitute:
       APP: *name
