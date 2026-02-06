@@ -80,12 +80,16 @@ spec:
     worker:
       enabled: false
     livenessProbe:
-      enabled: true
+      enabled: false
+    customLivenessProbe:
+      failureThreshold: 5
       initialDelaySeconds: 10
       periodSeconds: 10
-      timeoutSeconds: 5
-      failureThreshold: 5
       successThreshold: 1
+      timeoutSeconds: 5
+      httpGet:
+        path: /login/
+        port: http
     startupProbe:
       enabled: true
       initialDelaySeconds: 5
