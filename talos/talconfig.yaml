@@ -53,8 +53,8 @@ patches:
         net.ipv4.tcp_rmem: 4096 87380 33554432 # 10Gb/s
         net.ipv4.tcp_wmem: 4096 65536 33554432 # 10Gb/s
         net.ipv4.tcp_notsent_lowat: 131072     # 10Gb/s
-        sunrpc.tcp_slot_table_entries: 128     # 10Gb/s | NFS
-        sunrpc.tcp_max_slot_table_entries: 128 # 10Gb/s | NFS
+        sunrpc.tcp_slot_table_entries: 256     # 10Gb/s | NFS
+        sunrpc.tcp_max_slot_table_entries: 256 # 10Gb/s | NFS
         vm.nr_hugepages: 1024                  # PostgreSQL
       features:
         hostDNS:
@@ -213,20 +213,19 @@ controlPlane:
     - "@./manifests/bird.yaml"
 
   machineFiles:
-    - content: |-
+    - op: create
+      path: /etc/cri/conf.d/20-customization.part
+      content: |
         [plugins."io.containerd.cri.v1.images"]
           discard_unpacked_layers = false
         [plugins."io.containerd.cri.v1.runtime"]
+          cdi_spec_dirs = ["/var/cdi/static", "/var/cdi/dynamic"]
           device_ownership_from_security_context = true
-      path: /etc/cri/conf.d/20-customization.part
-      op:
-        create
-        # nodiratime=True
     - content: |-
         [ NFSMount_Global_Options ]
         nfsvers=4.2
         hard=True
-        nconnect=8
+        nconnect=16
         noatime=True
         rsize=1048576
         wsize=1048576
