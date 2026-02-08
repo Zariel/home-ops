@@ -35,6 +35,11 @@ spec:
     - kind: ConfigMap
       name: spegel-helm-values
   values:
+    resources:
+      requests:
+        memory: 256Mi
+      limits:
+        memory: 256Mi
     serviceMonitor:
       enabled: true
     grafanaDashboard:
