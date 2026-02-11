@@ -19,9 +19,6 @@ spec:
             "name": "iot",
             "namespace": "kube-system",
             "ips": ["10.1.3.121/24", "fd74:f571:d3bd:40:41d7:bb2e:6c90:a8f5/64"]
-          },
-          {
-            "name": "otbr-tuning"
           }]
     spec:
       containers:
@@ -45,3 +42,9 @@ spec:
             limits:
               memory: 512Mi
               kernel.org/zbt: 1
+      securityContext:
+        sysctls:
+          - name: net.ipv6.conf.all.forwarding
+            value: "1"
+          - name: net.ipv6.conf.all.accept_ra
+            value: "2"
