@@ -50,7 +50,7 @@ spec:
               memory: 512Mi
               kernel.org/zbt: 1
           volumeMounts:
-            - mountPath: /var/lib/thread
+            - mountPath: /data
               name: config
       securityContext:
         sysctls:
