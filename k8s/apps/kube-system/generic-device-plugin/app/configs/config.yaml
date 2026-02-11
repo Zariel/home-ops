@@ -1,0 +1,8 @@
+---
+devices:
+  - name: zbt
+    groups:
+      - count: 1
+        usb:
+          - vendor: 303a
+            product: 831a
