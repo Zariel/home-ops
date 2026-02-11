@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/k8s.cni.cncf.io/networkattachmentdefinition_v1.json
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: otbr-tuning
+spec:
+  config: |-
+    {
+      "cniVersion": "0.3.1",
+      "name": "otbr-tuning",
+      "plugins": [
+        {
+          "type": "tuning",
+          "sysctl": {
+            "net.ipv6.conf.all.disable_ipv6": "0",
+            "net.ipv4.conf.all.forwarding": "1",
+            "net.ipv6.conf.all.forwarding": "1",
+            "net.ipv6.conf.all.accept_ra_rt_info_max_plen": "64",
+            "net.ipv6.conf.all.accept_ra": "2"
+          }
+        }
+      ]
+    }
