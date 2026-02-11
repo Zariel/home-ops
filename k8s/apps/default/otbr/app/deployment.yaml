@@ -36,6 +36,8 @@ spec:
               value: "460800"
             - name: FLOW_CONTROL
               value: "1"
+            - name: NAT64
+              value: "0"
           securityContext:
             privileged: true
           ports:
