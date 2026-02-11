@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: otbr
+        app.kubernetes.io/name: otbr
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{
