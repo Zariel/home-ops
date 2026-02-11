@@ -31,6 +31,10 @@ spec:
               value: net1
             - name: OTBR_REST_PORT
               value: "8081"
+            - name: BAUDRATE
+              value: "460800"
+            - name: FLOW_CONTROL
+              value: "1"
           securityContext:
             privileged: true
           ports:
