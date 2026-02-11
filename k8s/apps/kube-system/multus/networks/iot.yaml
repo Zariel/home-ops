@@ -36,10 +36,6 @@ spec:
             "net.core.wmem_default": "1048576",
             "net.core.rmem_max": "67108864",
             "net.core.wmem_max": "67108864",
-
-            "net.ipv6.neigh.default.gc_thresh1": "512",
-            "net.ipv6.neigh.default.gc_thresh2": "1024",
-            "net.ipv6.neigh.default.gc_thresh3": "2048"
           }
         },
         {
