@@ -41,7 +41,7 @@ spec:
           [{
             "name": "iot",
             "namespace": "kube-system",
-            "ips": ["10.1.3.120/24", "fd74:f571:d3bd:40:54c2:8f19:eb67:3d21/64"]
+            "ips": ["10.1.3.120/24"]
           }]
       securityContext:
         runAsNonRoot: true
