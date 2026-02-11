@@ -17,8 +17,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.2.1@sha256:79f5a2e8d0aa2b8a7dcfbc4fe7e0930321248724bce219d97acf9f5ce7ff854b
+              repository: ghcr.io/home-assistant/home-assistant
+              tag: 2026.2.1@sha256:17441c45ba14560b4ef727ee06aac4d605cf0dc0625fc4f2e043cb2551d72749
             env:
               TZ: Europe/London
               HASS_HTTP_TRUSTED_PROXY_1: 10.45.0.0/24
