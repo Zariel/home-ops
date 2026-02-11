@@ -12,7 +12,7 @@ bpf:
   preallocateMaps: true
   hostRouting: true
   hostLegacyRouting: false
-  vlanBypass: [300]
+  vlanBypass: [40, 300]
 bpfClockProbe: true
 cgroup:
   automount:
