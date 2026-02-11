@@ -1,4 +1,5 @@
 ---
+log-level: info
 domain: kernel.org
 devices:
   - name: zbt
