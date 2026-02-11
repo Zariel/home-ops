@@ -1,4 +1,5 @@
 ---
+domain: kernel.org
 devices:
   - name: zbt
     groups:
