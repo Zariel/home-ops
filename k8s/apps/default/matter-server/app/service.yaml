@@ -8,7 +8,6 @@ spec:
     app.kubernetes.io/name: matter-server
   ports:
     - name: http
-      appProtocol: kubernetes.io/ws
       port: 80
       protocol: TCP
       targetPort: http
