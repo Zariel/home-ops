@@ -90,4 +90,5 @@ securityContext:
       - BPF
 socketLB:
   enabled: true
+  hostNamespaceOnly: true
 tunnelProtocol: geneve
