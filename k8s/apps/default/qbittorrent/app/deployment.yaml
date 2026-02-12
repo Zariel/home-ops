@@ -16,6 +16,7 @@ spec:
         app: qbittorrent
     spec:
       hostname: qbittorrent
+      terminationGracePeriodSeconds: 120
       volumes:
         - name: arr-media
           nfs:
