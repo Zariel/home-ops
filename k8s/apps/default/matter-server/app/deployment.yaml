@@ -26,6 +26,9 @@ spec:
         runAsUser: 0
         runAsGroup: 0
         runAsNonRoot: false
+        sysctls:
+          - name: net.ipv6.conf.all.accept_ra
+            value: "2"
       containers:
         - name: matter-server
           image: ghcr.io/home-assistant-libs/python-matter-server:8.1.0@sha256:170aa093ce91c76cde4cc390918307590f0f5558fcec93f913af3cb019e6562a
