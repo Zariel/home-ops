@@ -27,9 +27,9 @@ spec:
         runAsGroup: 0
         runAsNonRoot: false
         sysctls:
-          - name: net.ipv6.conf.all.accept_ra
+          - name: net.ipv6.conf.net1.accept_ra
             value: "1"
-          - name: net.ipv6.conf.all.accept_ra_rt_info_max_plen
+          - name: net.ipv6.conf.net1.accept_ra_rt_info_max_plen
             value: "64"
       containers:
         - name: matter-server
