@@ -26,6 +26,8 @@ patches:
         extraConfig:
           maxPods: 150
           serializeImagePulls: false
+          allowedUnsafeSysctls:
+            - net.ipv6.conf.*
         nodeIP:
           validSubnets:
             - 10.254.1.0/31
@@ -208,6 +210,9 @@ controlPlane:
               - os:admin
             allowedKubernetesNamespaces:
               - system-upgrade
+        udev:
+          rules:
+            - SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", ATTRS{idProduct}=="831a", MODE="0666", SYMLINK+="zbt2"
 
     - "@./manifests/ms01.yaml"
     - "@./manifests/bird.yaml"

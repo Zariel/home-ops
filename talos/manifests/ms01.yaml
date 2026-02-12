@@ -48,6 +48,13 @@ vlanID: 300
 mtu: 9000
 ---
 apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.1100
+parent: bond0
+vlanID: 1100
+mtu: 1500
+---
+apiVersion: v1alpha1
 kind: LinkConfig
 name: enp87s0
 up: false
