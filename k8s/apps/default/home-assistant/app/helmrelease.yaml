@@ -43,6 +43,11 @@ spec:
             "namespace": "kube-system",
             "ips": ["10.1.3.120/24"],
             "mac": "02:b4:5f:2a:9d:61"
+          }, {
+            "name": "matter",
+            "namespace": "kube-system",
+            "ips": ["fd74:f571:d3bd:1100::120/64"],
+            "mac": "02:74:f5:71:11:20"
           }]
       securityContext:
         runAsNonRoot: true
