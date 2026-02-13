@@ -55,6 +55,8 @@ spec:
             - name: http
               containerPort: 5580
               protocol: TCP
+          securityContext:
+            privileged: true
           startupProbe:
             exec:
               command:
