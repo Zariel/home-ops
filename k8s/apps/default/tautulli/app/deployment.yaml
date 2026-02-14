@@ -77,7 +77,7 @@ spec:
             readOnlyRootFilesystem: true
             capabilities: { drop: ["ALL"] }
         - name: jbops
-          image: registry.k8s.io/git-sync/git-sync:v4.5.1
+          image: registry.k8s.io/git-sync/git-sync:v4.6.0
           imagePullPolicy: IfNotPresent
           args:
             - --repo=https://github.com/blacktwin/JBOPS
