@@ -62,7 +62,7 @@ spec:
           - "{{ .Release.Name }}.cbannister.xyz"
           - hass.cbannister.xyz
         parentRefs:
-          - name: external
+          - name: internal
             namespace: network
     persistence:
       config:
