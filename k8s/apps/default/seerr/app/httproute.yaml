@@ -3,10 +3,10 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: jellyseerr
+  name: seerr
   labels:
-    app.kubernetes.io/instance: jellyseerr
-    app.kubernetes.io/name: jellyseerr
+    app.kubernetes.io/instance: seerr
+    app.kubernetes.io/name: seerr
 spec:
   hostnames:
     - requests.cbannister.xyz
@@ -16,7 +16,7 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: jellyseerr
+        - name: seerr
           port: 80
       matches:
         - path:
