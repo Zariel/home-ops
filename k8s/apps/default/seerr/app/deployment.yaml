@@ -78,11 +78,11 @@ spec:
             - mountPath: /tmp
               name: tmp
       securityContext:
-        fsGroup: 1000
+        fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        runAsGroup: 1000
+        runAsGroup: 568
         runAsNonRoot: true
-        runAsUser: 1000
+        runAsUser: 568
       volumes:
         - name: config
           persistentVolumeClaim:
