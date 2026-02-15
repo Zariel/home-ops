@@ -19,7 +19,7 @@ resources:
   - autobrr/ks.yaml
   - cross-seed/ks.yaml
   - filebrowser/ks.yaml
-  - jellyseerr/ks.yaml
+  - seerr/ks.yaml
   - thelounge/ks.yaml
   - maintainerr/ks.yaml
   - fertilizer/ks.yaml
