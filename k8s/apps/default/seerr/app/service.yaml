@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: seerr
+  labels:
+    app.kubernetes.io/instance: seerr
+    app.kubernetes.io/name: seerr
+    app.kubernetes.io/service: seerr
+spec:
+  type: ClusterIP
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app.kubernetes.io/component: seerr
+    app.kubernetes.io/instance: seerr
+    app.kubernetes.io/name: seerr
