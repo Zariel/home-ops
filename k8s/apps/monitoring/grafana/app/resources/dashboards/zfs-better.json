@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "Graphs ZFS ARC and ARC L2 Hit %, Hits, Misses, Size, and Zpool",
+  "description": "NAS ZFS Monitoring",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 7845,
@@ -1416,7 +1416,130 @@
         }
       ],
       "title": "Host Read Throughput Sources",
-      "description": "Measured host-level read throughput: Total from node_zfs_zpool_dataset_nread, L2ARC from node_zfs_arc_l2_read_bytes, and Non-L2ARC = Total - L2ARC. ARC and Main VDEV byte counters are not exposed separately by node-exporter.",
+      "description": "Host read throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 45
+      },
+      "id": 31,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$instance\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Main VDEV disks (sd[c-n])",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$instance\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "L2ARC cache devices (nvme1n1,nvme2n1)",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$instance\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Special metadata devices (nvme0n1,nvme3n1)",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "NAS Tier Device Read Throughput",
+      "description": "Tier device read throughput",
       "type": "timeseries"
     }
   ],
@@ -1424,36 +1547,7 @@
   "schemaVersion": 39,
   "tags": [],
   "templating": {
-    "list": [
-      {
-        "current": {
-          "selected": false,
-          "text": "nas.cbannister.casa:9100",
-          "value": "nas.cbannister.casa:9100"
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "victoriametrics"
-        },
-        "definition": "label_values(node_zfs_arc_size,instance)",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Instance",
-        "multi": false,
-        "name": "instance",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(node_zfs_arc_size,instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
-      }
-    ]
+    "list": []
   },
   "time": {
     "from": "now-3h",
@@ -1485,7 +1579,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "ZFS Better",
+  "title": "NAS ZFS Monitoring",
   "uid": "fenxnl14yokjka",
   "version": 1,
   "weekStart": ""
