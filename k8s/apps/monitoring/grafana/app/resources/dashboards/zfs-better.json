@@ -1384,14 +1384,51 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "rate(node_zfs_arc_evict_l2_cached{instance=\"$instance\"}[$__rate_interval])",
+          "expr": "clamp_min(sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval])) - ((rate(node_zfs_arc_hits{instance=~\"$instance\"}[$__rate_interval]) / clamp_min(sum(rate(node_zfs_zpool_dataset_reads{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval])), 1)) * sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval]))) - ((rate(node_zfs_arc_l2_hits{instance=~\"$instance\"}[$__rate_interval]) / clamp_min(sum(rate(node_zfs_zpool_dataset_reads{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval])), 1)) * sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval]))), 0)",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "Main VDEV",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "(rate(node_zfs_arc_hits{instance=~\"$instance\"}[$__rate_interval]) / clamp_min(sum(rate(node_zfs_zpool_dataset_reads{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval])), 1)) * sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "ARC",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "(rate(node_zfs_arc_l2_hits{instance=~\"$instance\"}[$__rate_interval]) / clamp_min(sum(rate(node_zfs_zpool_dataset_reads{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval])), 1)) * sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "L2ARC",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\",zpool=~\"$pool\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Pool Total",
+          "range": true,
+          "refId": "D"
         }
       ],
-      "title": "Panel Title",
+      "title": "Pool Read Sources",
+      "description": "Pool total read throughput is measured from node_zfs_zpool_dataset_nread. ARC and Main VDEV series are estimated from read counters because node-exporter does not expose direct ARC/VDEV read bytes metrics.",
       "type": "timeseries"
     }
   ],
@@ -1420,6 +1457,34 @@
         "query": {
           "qryType": 1,
           "query": "label_values(node_zfs_arc_size,instance)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "victoriametrics"
+        },
+        "definition": "label_values(node_zfs_zpool_dataset_reads{instance=~\"$instance\"},zpool)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Pool",
+        "multi": false,
+        "name": "pool",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(node_zfs_zpool_dataset_reads{instance=~\"$instance\"},zpool)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
