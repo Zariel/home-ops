@@ -1541,6 +1541,727 @@
       "title": "NAS Tier Device Read Throughput",
       "description": "Tier device read throughput",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 53
+      },
+      "id": 32,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Pool Layout Devices",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 54
+      },
+      "id": 33,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Main VDEV Read",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Main VDEV Write",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Special Read",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Special Write",
+          "range": true,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "L2ARC Read",
+          "range": true,
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "L2ARC Write",
+          "range": true,
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme4n1\"}[$__rate_interval])",
+          "instant": false,
+          "legendFormat": "SLOG Write",
+          "range": true,
+          "refId": "G"
+        }
+      ],
+      "title": "Tier Device Throughput (RW)",
+      "description": "Tier throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "iops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 62
+      },
+      "id": 34,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_reads_completed_total{instance=\"nas.cbannister.casa:9100\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Main Read IOPS",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_writes_completed_total{instance=\"nas.cbannister.casa:9100\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Main Write IOPS",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(node_disk_writes_completed_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme4n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "SLOG Write IOPS",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "Main/SLOG IOPS",
+      "description": "IOPS",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 62
+      },
+      "id": 35,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "100 * avg(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Main Avg Busy",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "100 * max(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Main Max Busy",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "100 * avg(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "Special Avg Busy",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "100 * avg(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "instant": false,
+          "legendFormat": "L2ARC Avg Busy",
+          "range": true,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "100 * rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme4n1\"}[$__rate_interval])",
+          "instant": false,
+          "legendFormat": "SLOG Busy",
+          "range": true,
+          "refId": "E"
+        }
+      ],
+      "title": "Device Busy %",
+      "description": "Busy percent",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.8
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 70
+      },
+      "id": 36,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) / clamp_min(rate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) + rate(node_zfs_arc_misses{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]), 1)",
+          "instant": false,
+          "legendFormat": "ARC %",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_zfs_arc_l2_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) / clamp_min(rate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) + rate(node_zfs_arc_misses{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]), 1)",
+          "instant": false,
+          "legendFormat": "L2ARC %",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "clamp_min(rate(node_zfs_arc_misses{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) - rate(node_zfs_arc_l2_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]), 0) / clamp_min(rate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) + rate(node_zfs_arc_misses{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]), 1)",
+          "instant": false,
+          "legendFormat": "VDEV %",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "Read IOPS Served %",
+      "description": "ARC/L2ARC/VDEV read share",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "victoriametrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "iops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 70
+      },
+      "id": 37,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval])",
+          "instant": false,
+          "legendFormat": "ARC IOPS",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_zfs_arc_l2_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval])",
+          "instant": false,
+          "legendFormat": "L2ARC IOPS",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "editorMode": "code",
+          "expr": "clamp_min(rate(node_zfs_arc_misses{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) - rate(node_zfs_arc_l2_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]), 0)",
+          "instant": false,
+          "legendFormat": "VDEV IOPS",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "Read IOPS Served",
+      "description": "ARC/L2ARC/VDEV read IOPS",
+      "type": "timeseries"
     }
   ],
   "refresh": "10s",
