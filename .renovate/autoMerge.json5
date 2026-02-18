@@ -27,7 +27,11 @@
       "automerge": true,
       "automergeType": "pr",
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackagePatterns": ["ghcr.io/prometheus-community/charts", "ghcr.io/grafana/helm-charts"],
+      "matchPackagePatterns": [
+        "ghcr.io/prometheus-community/charts",
+        "ghcr.io/grafana/helm-charts",
+        "ghcr.io/netbox-community/netbox-chart/netbox"
+      ],
       "ignoreTests": false,
     },
     {
