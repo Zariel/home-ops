@@ -105,3 +105,9 @@ spec:
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
+      media:
+        type: nfs
+        server: nas.cbannister.casa
+        path: /mnt/bighorse/arr
+        globalMounts:
+          - path: /data
