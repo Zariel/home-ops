@@ -6,7 +6,6 @@ quality_definition:
   type: series
 
 delete_old_custom_formats: true
-replace_existing_custom_formats: true
 
 media_naming:
   series: plex-imdb
