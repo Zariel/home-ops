@@ -26,7 +26,8 @@ static_resources:
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
                       log_format:
-                        text_format: "[%START_TIME%] \"%REQ(:METHOD)% https://%REQ(:AUTHORITY)%%DYNAMIC_METADATA(qb_log:path)% %PROTOCOL%\" %RESPONSE_CODE% %BYTES_SENT% %DURATION% upstream=%UPSTREAM_HOST% cluster=%UPSTREAM_CLUSTER% flags=%RESPONSE_FLAGS% upstream_failure=%UPSTREAM_TRANSPORT_FAILURE_REASON% upstream_service_time=%UPSTREAM_SERVICE_TIME%\n"
+                        text_format_source:
+                          inline_string: "[%START_TIME%] \"%REQ(:METHOD)% https://%REQ(:AUTHORITY)%%DYNAMIC_METADATA(qb_log:path)% %PROTOCOL%\" %RESPONSE_CODE% %BYTES_SENT% %DURATION% upstream=%UPSTREAM_HOST% cluster=%UPSTREAM_CLUSTER% flags=%RESPONSE_FLAGS% upstream_failure=%UPSTREAM_TRANSPORT_FAILURE_REASON%\n"
                 common_http_protocol_options:
                   idle_timeout: 60s
                 stream_idle_timeout: 30s
