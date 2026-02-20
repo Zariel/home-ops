@@ -37,7 +37,7 @@ static_resources:
                             sinks:
                               - format: JSON_BODY_AS_STRING
                                 streaming_admin:
-                                  tap_id: echo-tap
+                                  {}
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
