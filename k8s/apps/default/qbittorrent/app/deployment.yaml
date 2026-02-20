@@ -52,33 +52,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [3005]
         seccompProfile: { type: RuntimeDefault }
-      initContainers:
-        - name: qbittorrent-envoy-redirect
-          image: docker.io/library/alpine:3.20
-          command:
-            - /bin/sh
-            - -c
-          args:
-            - |
-              set -eu
-              apk add --no-cache nftables >/dev/null
-              if nft list table ip qb_envoy_egress >/dev/null 2>&1; then
-                nft flush table ip qb_envoy_egress
-              else
-                nft add table ip qb_envoy_egress
-              fi
-              nft 'add chain ip qb_envoy_egress output { type nat hook output priority -100; policy accept; }' 2>/dev/null || true
-              nft 'add rule ip qb_envoy_egress output meta skuid 1337 return'
-              nft 'add rule ip qb_envoy_egress output ip daddr 127.0.0.1/32 return'
-              nft 'add rule ip qb_envoy_egress output tcp dport 443 redirect to 15006'
-              # IPv6 not configured here; add nft ip6 rules if IPv6 is enabled.
-          securityContext:
-            runAsUser: 0
-            runAsGroup: 0
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
-              add: ["NET_ADMIN"]
       containers:
         - name: qbittorrent
           image: ghcr.io/home-operations/qbittorrent:5.1.4@sha256:56ecd30a7f5e1357daf5eea2a6935134d329b7b268a3a9b9c67041b65fb87fc6
