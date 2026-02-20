@@ -114,7 +114,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_zfs_arc_hits{instance=\"$instance\"}[$__rate_interval]) / (irate(node_zfs_arc_misses{instance=\"$instance\"}[$__rate_interval]) + irate(node_zfs_arc_hits{instance=\"$instance\"}[$__rate_interval]))",
+          "expr": "irate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) / (irate(node_zfs_arc_misses{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) + irate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "ARC",
@@ -127,7 +127,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_zfs_arc_l2_hits{instance=\"$instance\"}[$__rate_interval]) / (irate(node_zfs_arc_l2_misses{instance=\"$instance\"}[$__rate_interval]) + irate(node_zfs_arc_l2_hits{instance=\"$instance\"}[$__rate_interval]))",
+          "expr": "irate(node_zfs_arc_l2_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) / (irate(node_zfs_arc_l2_misses{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) + irate(node_zfs_arc_l2_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "L2ARC",
@@ -257,7 +257,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_zfs_arc_demand_data_hits{job=\"node-exporter\",instance=~\"$instance\"}[$__rate_interval]) / (irate(node_zfs_arc_demand_data_hits{job=\"node-exporter\",instance=~\"$instance\"}[$__rate_interval]) + irate(node_zfs_arc_demand_data_misses{job=\"node-exporter\",instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "irate(node_zfs_arc_demand_data_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]) / (irate(node_zfs_arc_demand_data_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]) + irate(node_zfs_arc_demand_data_misses{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "data",
@@ -272,7 +272,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_zfs_arc_demand_metadata_hits{job=\"node-exporter\",instance=~\"$instance\"}[$__rate_interval]) / (irate(node_zfs_arc_demand_metadata_hits{job=\"node-exporter\",instance=~\"$instance\"}[$__rate_interval]) + irate(node_zfs_arc_demand_metadata_misses{job=\"node-exporter\",instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "irate(node_zfs_arc_demand_metadata_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]) / (irate(node_zfs_arc_demand_metadata_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]) + irate(node_zfs_arc_demand_metadata_misses{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "metadata",
@@ -390,7 +390,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "irate(node_zfs_arc_demand_data_hits{job=\"node-exporter\",instance=~\"$instance\"}[5m])",
+          "expr": "irate(node_zfs_arc_demand_data_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "data_hits",
@@ -403,7 +403,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "irate(node_zfs_arc_demand_metadata_hits{job=\"node-exporter\",instance=~\"$instance\"}[5m])",
+          "expr": "irate(node_zfs_arc_demand_metadata_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "metadata_hits",
@@ -416,7 +416,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "irate(node_zfs_arc_demand_data_misses{job=\"node-exporter\",instance=~\"$instance\"}[5m])",
+          "expr": "irate(node_zfs_arc_demand_data_misses{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "data_misses",
@@ -429,7 +429,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "irate(node_zfs_arc_demand_metadata_misses{job=\"node-exporter\",instance=~\"$instance\"}[5m])",
+          "expr": "irate(node_zfs_arc_demand_metadata_misses{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "metadata_misses",
@@ -566,7 +566,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "node_zfs_arc_data_size{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_data_size{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -581,7 +581,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "node_zfs_arc_metadata_size{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_metadata_size{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "metadata",
@@ -594,7 +594,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "node_zfs_arc_anon_size{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_anon_size{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -609,7 +609,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "node_zfs_arc_hdr_size{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_hdr_size{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "hdr",
@@ -622,7 +622,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "node_zfs_arc_other_size{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_other_size{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "other",
@@ -636,7 +636,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "node_zfs_arc_l2_hdr_size{instance=\"$instance\"}",
+          "expr": "node_zfs_arc_l2_hdr_size{instance=\"nas.cbannister.casa:9100\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "l2arc hdr",
@@ -735,7 +735,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "rate(node_zfs_arc_mfu_hits{instance=\"$instance\"}[$__rate_interval]) / (rate(node_zfs_arc_hits{instance=\"$instance\"}[$__rate_interval]))",
+          "expr": "rate(node_zfs_arc_mfu_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) / (rate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "MFU",
           "range": true,
@@ -747,7 +747,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "rate(node_zfs_arc_mru_hits{instance=\"$instance\"}[$__rate_interval]) / (rate(node_zfs_arc_hits{instance=\"$instance\"}[$__rate_interval]))",
+          "expr": "rate(node_zfs_arc_mru_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]) / (rate(node_zfs_arc_hits{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "MRU",
@@ -877,7 +877,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_zfs_arc_l2_hits{job=\"node-exporter\",instance=~\"$instance\"}[5m]) / (irate(node_zfs_arc_l2_hits{job=\"node-exporter\",instance=~\"$instance\"}[5m]) + irate(node_zfs_arc_l2_misses{job=\"node-exporter\",instance=~\"$instance\"}[5m])) * 100",
+          "expr": "irate(node_zfs_arc_l2_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m]) / (irate(node_zfs_arc_l2_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m]) + irate(node_zfs_arc_l2_misses{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m])) * 100",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "L2",
@@ -979,7 +979,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "irate(node_zfs_arc_l2_hits{job=\"node-exporter\",instance=~\"$instance\"}[5m])",
+          "expr": "irate(node_zfs_arc_l2_hits{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "hits",
@@ -992,7 +992,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "irate(node_zfs_arc_l2_misses{job=\"node-exporter\",instance=~\"$instance\"}[5m])",
+          "expr": "irate(node_zfs_arc_l2_misses{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "misses",
@@ -1098,7 +1098,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "node_zfs_arc_l2_asize{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_l2_asize{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1115,7 +1115,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "node_zfs_arc_l2_size{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_l2_size{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1131,7 +1131,7 @@
             "type": "prometheus",
             "uid": "victoriametrics"
           },
-          "expr": "node_zfs_arc_l2_hdr_size{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_l2_hdr_size{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "metadata",
@@ -1145,7 +1145,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "node_zfs_arc_l2_mfu_asize{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_l2_mfu_asize{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "mfu",
@@ -1158,7 +1158,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "node_zfs_arc_l2_mru_asize{job=\"node-exporter\",instance=~\"$instance\"}",
+          "expr": "node_zfs_arc_l2_mru_asize{job=\"node-exporter\",instance=~\"nas.cbannister.casa:9100\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "mru",
@@ -1273,7 +1273,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "rate(node_zfs_arc_l2_write_bytes{instance=\"$instance\"}[$__rate_interval])",
+          "expr": "rate(node_zfs_arc_l2_write_bytes{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "written",
           "range": true,
@@ -1285,7 +1285,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "rate(node_zfs_arc_l2_read_bytes{instance=\"$instance\"}[$__rate_interval])",
+          "expr": "rate(node_zfs_arc_l2_read_bytes{instance=\"nas.cbannister.casa:9100\"}[$__rate_interval])",
           "hide": false,
           "instant": false,
           "legendFormat": "read",
@@ -1384,7 +1384,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "clamp_min(sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\"}[$__rate_interval])) - rate(node_zfs_arc_l2_read_bytes{instance=~\"$instance\"}[$__rate_interval]), 0)",
+          "expr": "clamp_min(sum(rate(node_zfs_zpool_dataset_nread{instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval])) - rate(node_zfs_arc_l2_read_bytes{instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]), 0)",
           "instant": false,
           "legendFormat": "Non-L2ARC",
           "range": true,
@@ -1396,7 +1396,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "rate(node_zfs_arc_l2_read_bytes{instance=~\"$instance\"}[$__rate_interval])",
+          "expr": "rate(node_zfs_arc_l2_read_bytes{instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "L2ARC",
           "range": true,
@@ -1408,7 +1408,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_zfs_zpool_dataset_nread{instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_zfs_zpool_dataset_nread{instance=~\"nas.cbannister.casa:9100\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "Total",
           "range": true,
@@ -1507,7 +1507,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$instance\",device=~\"sd[c-n]\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"nas.cbannister.casa:9100\",device=~\"sd[c-n]\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "Main VDEV disks (sd[c-n])",
           "range": true,
@@ -1519,7 +1519,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$instance\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "L2ARC cache devices (nvme1n1,nvme2n1)",
           "range": true,
@@ -1531,7 +1531,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"$instance\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "Special metadata devices (nvme0n1,nvme3n1)",
           "range": true,
