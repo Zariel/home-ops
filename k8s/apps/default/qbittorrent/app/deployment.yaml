@@ -54,7 +54,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       initContainers:
         - name: qbittorrent-envoy-redirect
-          image: docker.io/library/alpine:3.20
+          image: docker.io/library/alpine:3.23
           command:
             - /bin/sh
             - -c
