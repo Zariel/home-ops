@@ -125,10 +125,9 @@ static_resources:
           auto_config:
             http_protocol_options: {}
             http2_protocol_options: {}
-            http3_protocol_options: {}
-            alternate_protocols_cache_options:
-              name: qbittorrent_envoy_alt_svc
-              max_entries: 1024
+      upstream_http_protocol_options:
+        auto_sni: true
+        auto_san_validation: true
       transport_socket:
         name: envoy.transport_sockets.tls
         typed_config:
