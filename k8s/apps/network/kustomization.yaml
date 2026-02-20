@@ -10,3 +10,4 @@ resources:
   - bind/ks.yaml
   - envoy-gateway/ks.yaml
   - certificates/ks.yaml
+  - echo/ks.yaml
