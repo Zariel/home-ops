@@ -30,7 +30,7 @@ spec:
           secret:
             secretName: qb-envoy-egress-tls
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: false
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 3005
