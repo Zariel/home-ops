@@ -14,9 +14,11 @@ spec:
     metadata:
       labels:
         app: qbittorrent
+      annotations:
+        reloader.stakater.com/auto: "true"
     spec:
       hostname: qbittorrent
-      terminationGracePeriodSeconds: 120
+      terminationGracePeriodSeconds: 300
       volumes:
         - name: arr-media
           nfs:
@@ -29,6 +31,12 @@ spec:
           configMap:
             name: qbittorrent-scripts
             defaultMode: 0775
+        - name: envoy-config
+          configMap:
+            name: qbittorrent-egress-envoy
+        - name: envoy-tls
+          secret:
+            secretName: qb-egress-envoy-tls
         - name: music
           nfs:
             server: nas.cbannister.casa
@@ -37,13 +45,40 @@ spec:
           persistentVolumeClaim:
             claimName: qbittorrent-incomplete
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: false
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 3005
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [3005]
         seccompProfile: { type: RuntimeDefault }
+      initContainers:
+        - name: egress-redirect
+          image: docker.io/library/alpine:3.20
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -eu
+              apk add --no-cache nftables >/dev/null
+              if nft list table ip qb_egress >/dev/null 2>&1; then
+                nft flush table ip qb_egress
+              else
+                nft add table ip qb_egress
+              fi
+              nft 'add chain ip qb_egress output { type nat hook output priority -100; policy accept; }' 2>/dev/null || true
+              nft 'add rule ip qb_egress output meta skuid 1337 return'
+              nft 'add rule ip qb_egress output ip daddr 127.0.0.1/32 return'
+              nft 'add rule ip qb_egress output tcp dport 443 redirect to 15006'
+              # IPv6 not configured here; add nft ip6 rules if IPv6 is enabled.
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+              add: ["NET_ADMIN"]
       containers:
         - name: qbittorent
           image: ghcr.io/home-operations/qbittorrent:5.1.4@sha256:56ecd30a7f5e1357daf5eea2a6935134d329b7b268a3a9b9c67041b65fb87fc6
@@ -72,6 +107,7 @@ spec:
             - secretRef:
                 name: qbittorrent-secret
           securityContext:
+            runAsNonRoot: true
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities: { drop: ["ALL"] }
@@ -118,3 +154,41 @@ spec:
               mountPath: /data/downloads/torrents/complete/music
             - name: incomplete
               mountPath: /data/downloads/torrents/incomplete
+        - name: envoy
+          image: envoyproxy/envoy:v1.37.0
+          args:
+            - -c
+            - /etc/envoy/envoy.yaml
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1337
+            runAsGroup: 1337
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: 9901
+              name: metrics
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: metrics
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
+            - name: envoy-tls
+              mountPath: /etc/envoy/tls
+              readOnly: true
