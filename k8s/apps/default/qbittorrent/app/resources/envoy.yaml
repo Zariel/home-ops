@@ -1,0 +1,108 @@
+static_resources:
+  listeners:
+    - name: qbittorrent_envoy_https_egress
+      address:
+        socket_address:
+          address: 127.0.0.1
+          port_value: 15006
+      filter_chains:
+        - transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              common_tls_context:
+                tls_certificates:
+                  - certificate_chain:
+                      filename: /etc/envoy/tls/tls.crt
+                    private_key:
+                      filename: /etc/envoy/tls/tls.key
+          filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: qbittorrent_envoy_https_egress
+                access_log:
+                  - name: envoy.access_loggers.stdout
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+                      log_format:
+                        text_format_source:
+                          inline_string: "[%START_TIME%] \"%REQ(:METHOD)% https://%REQ(:AUTHORITY)% %PROTOCOL%\" %RESPONSE_CODE% %BYTES_SENT% %DURATION% upstream=%UPSTREAM_HOST% upstream_proto=%UPSTREAM_PROTOCOL% cluster=%UPSTREAM_CLUSTER% flags=%RESPONSE_FLAGS% upstream_failure=%UPSTREAM_TRANSPORT_FAILURE_REASON%\n"
+                common_http_protocol_options:
+                  idle_timeout: 60s
+                stream_idle_timeout: 30s
+                route_config:
+                  name: qbittorrent_envoy_https_egress
+                  virtual_hosts:
+                    - name: any
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: "/"
+                          route:
+                            cluster: dynamic_forward_proxy_cluster
+                            timeout: 30s
+                http_filters:
+                  - name: envoy.filters.http.dynamic_forward_proxy
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.dynamic_forward_proxy.v3.FilterConfig
+                      dns_cache_config:
+                        name: qbittorrent_envoy_dns_cache
+                        dns_lookup_family: V4_ONLY
+                  - name: envoy.filters.http.compressor
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.compressor.v3.Compressor
+                      response_direction_config:
+                        common_config:
+                          min_content_length: 100
+                      request_direction_config:
+                        common_config:
+                          enabled:
+                            default_value: false
+                            runtime_key: request_compressor_enabled
+                      compressor_library:
+                        name: gzip
+                        typed_config:
+                          "@type": type.googleapis.com/envoy.extensions.compression.gzip.compressor.v3.Gzip
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+  clusters:
+    - name: dynamic_forward_proxy_cluster
+      connect_timeout: 5s
+      lb_policy: CLUSTER_PROVIDED
+      outlier_detection:
+        consecutive_5xx: 5
+        interval: 10s
+        base_ejection_time: 30s
+        max_ejection_percent: 50
+      cluster_type:
+        name: envoy.clusters.dynamic_forward_proxy
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.clusters.dynamic_forward_proxy.v3.ClusterConfig
+          dns_cache_config:
+            name: qbittorrent_envoy_dns_cache
+            dns_lookup_family: V4_ONLY
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          upstream_http_protocol_options:
+            auto_sni: true
+            auto_san_validation: true
+          auto_config:
+            http_protocol_options: {}
+            http2_protocol_options: {}
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          common_tls_context:
+            validation_context:
+              trusted_ca:
+                filename: /etc/ssl/certs/ca-certificates.crt
+admin:
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9901
