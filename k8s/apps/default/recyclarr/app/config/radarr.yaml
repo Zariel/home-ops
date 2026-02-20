@@ -1,5 +1,4 @@
 delete_old_custom_formats: true
-replace_existing_custom_formats: true
 
 media_naming:
   folder: plex-imdb
@@ -8,6 +7,9 @@ media_naming:
     standard: standard
 
 quality_profiles:
+  - name: SQP-2
+    trash_id: c3933358ba2356bafc41524f81471069
+
   - name: &remux REMUX-2160p
     score_set: default
     upgrade:
