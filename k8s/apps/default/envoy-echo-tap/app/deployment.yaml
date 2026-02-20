@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy-echo-tap
+  labels:
+    app: envoy-echo-tap
+spec:
+  selector:
+    matchLabels:
+      app: envoy-echo-tap
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: envoy-echo-tap
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: envoy-echo-tap
+        - name: tap-output
+          emptyDir: {}
+      containers:
+        - name: envoy
+          image: envoyproxy/envoy:v1.37.0
+          args:
+            - -c
+            - /etc/envoy/envoy.yaml
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1337
+            runAsGroup: 1337
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
+            - name: tap-output
+              mountPath: /tap
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 9901
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 9901
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5

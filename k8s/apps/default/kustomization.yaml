@@ -35,3 +35,4 @@ resources:
   - common/ks.yaml
   - immich/ks.yaml
   - otbr/ks.yaml
+  - envoy-echo-tap/ks.yaml
