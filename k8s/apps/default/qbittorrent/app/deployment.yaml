@@ -159,8 +159,6 @@ spec:
           args:
             - -c
             - /etc/envoy/envoy.yaml
-            - --log-level
-            - debug
           securityContext:
             runAsNonRoot: true
             runAsUser: 1337
