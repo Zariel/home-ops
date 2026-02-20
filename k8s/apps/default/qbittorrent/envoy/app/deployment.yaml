@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent-envoy
+  labels:
+    app: qbittorrent-envoy
+spec:
+  selector:
+    matchLabels:
+      app: qbittorrent-envoy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: qbittorrent-envoy
+      annotations:
+        reloader.stakater.com/auto: "true"
+    spec:
+      hostname: qbittorrent-envoy
+      terminationGracePeriodSeconds: 120
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: qbittorrent-envoy
+        - name: envoy-config
+          configMap:
+            name: qbittorrent-envoy-proxy
+        - name: envoy-tls
+          secret:
+            secretName: qb-envoy-egress-tls
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 3005
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [3005]
+        seccompProfile: { type: RuntimeDefault }
+      initContainers:
+        - name: qbittorrent-envoy-redirect
+          image: docker.io/library/alpine:3.20
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -eu
+              apk add --no-cache nftables >/dev/null
+              if nft list table ip qb_envoy_egress >/dev/null 2>&1; then
+                nft flush table ip qb_envoy_egress
+              else
+                nft add table ip qb_envoy_egress
+              fi
+              nft 'add chain ip qb_envoy_egress output { type nat hook output priority -100; policy accept; }' 2>/dev/null || true
+              nft 'add rule ip qb_envoy_egress output meta skuid 1337 return'
+              nft 'add rule ip qb_envoy_egress output ip daddr 127.0.0.1/32 return'
+              nft 'add rule ip qb_envoy_egress output tcp dport 443 redirect to 15006'
+              # IPv6 not configured here; add nft ip6 rules if IPv6 is enabled.
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+              add: ["NET_ADMIN"]
+      containers:
+        - name: qbittorrent
+          image: ghcr.io/home-operations/qbittorrent:5.1.4@sha256:56ecd30a7f5e1357daf5eea2a6935134d329b7b268a3a9b9c67041b65fb87fc6
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: QBT_WEBUI_PORT
+              value: "80"
+            - name: QBT_TORRENTING_PORT
+              value: "50413"
+            - name: QBT_BitTorrent_Session_DefaultSavePath
+              value: /config/downloads/complete
+            - name: QBT_BitTorrent_Session_TempPath
+              value: /config/downloads/incomplete
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - containerPort: 80
+              name: web
+            - containerPort: 50413
+              name: bt-tcp
+              protocol: TCP
+            - containerPort: 50413
+              name: bt-udp
+              protocol: UDP
+          readinessProbe:
+            httpGet: &probe
+              port: web
+              path: /api/v2/app/version
+          startupProbe:
+            httpGet: *probe
+            failureThreshold: 6
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: *probe
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+        - name: envoy
+          image: envoyproxy/envoy:v1.30.4
+          args:
+            - -c
+            - /etc/envoy/envoy.yaml
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1337
+            runAsGroup: 1337
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - containerPort: 9901
+              name: metrics
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
+            - name: envoy-tls
+              mountPath: /etc/envoy/tls
+              readOnly: true
