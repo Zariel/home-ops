@@ -32,8 +32,8 @@ static_resources:
                         text_format_source:
                           inline_string: "[%START_TIME%] \"%REQ(:METHOD)% https://%REQ(:AUTHORITY)% %PROTOCOL%\" %RESPONSE_CODE% %BYTES_SENT% %DURATION% upstream=%UPSTREAM_HOST% upstream_proto=%UPSTREAM_PROTOCOL% cluster=%UPSTREAM_CLUSTER% flags=%RESPONSE_FLAGS% upstream_failure=%UPSTREAM_TRANSPORT_FAILURE_REASON%\n"
                 common_http_protocol_options:
-                  idle_timeout: 5m
-                stream_idle_timeout: 2m
+                  idle_timeout: 300s
+                stream_idle_timeout: 120s
                 route_config:
                   name: qbittorrent_envoy_https_egress
                   virtual_hosts:
@@ -45,7 +45,7 @@ static_resources:
                             prefix: "/"
                           route:
                             cluster: dynamic_forward_proxy_cluster
-                            timeout: 2m
+                            timeout: 120s
                             retry_policy:
                               retry_on: connect-failure,reset,refused-stream
                               num_retries: 2
