@@ -116,7 +116,7 @@ spec:
             - name: config
               mountPath: /config
         - name: envoy
-          image: envoyproxy/envoy:v1.30.4
+          image: envoyproxy/envoy:v1.37.0
           args:
             - -c
             - /etc/envoy/envoy.yaml
