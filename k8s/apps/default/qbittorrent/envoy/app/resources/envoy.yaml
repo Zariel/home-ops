@@ -53,45 +53,44 @@ static_resources:
                   - name: envoy.filters.http.lua
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
-                      source_code:
-                        inline_string: |
-                          function envoy_on_request(handle)
-                            local path = handle:headers():get(":path")
-                            if path == nil then
-                              return
-                            end
-                            local qpos = string.find(path, "?", 1, true)
-                            if qpos == nil then
-                              handle:streamInfo():dynamicMetadata():set("qb_log", "path", path)
-                              return
-                            end
-                            local base = string.sub(path, 1, qpos - 1)
-                            local query = string.sub(path, qpos + 1)
-                            if query == "" then
-                              handle:streamInfo():dynamicMetadata():set("qb_log", "path", base)
-                              return
-                            end
-                            local parts = {}
-                            for pair in string.gmatch(query, "([^&]+)") do
-                              local eq = string.find(pair, "=", 1, true)
-                              if eq then
-                                local key = string.sub(pair, 1, eq - 1)
-                                if key == "" then
-                                  table.insert(parts, "REDACTED")
-                                else
-                                  table.insert(parts, key .. "=REDACTED")
-                                end
+                      inline_code: |
+                        function envoy_on_request(handle)
+                          local path = handle:headers():get(":path")
+                          if path == nil then
+                            return
+                          end
+                          local qpos = string.find(path, "?", 1, true)
+                          if qpos == nil then
+                            handle:streamInfo():dynamicMetadata():set("qb_log", "path", path)
+                            return
+                          end
+                          local base = string.sub(path, 1, qpos - 1)
+                          local query = string.sub(path, qpos + 1)
+                          if query == "" then
+                            handle:streamInfo():dynamicMetadata():set("qb_log", "path", base)
+                            return
+                          end
+                          local parts = {}
+                          for pair in string.gmatch(query, "([^&]+)") do
+                            local eq = string.find(pair, "=", 1, true)
+                            if eq then
+                              local key = string.sub(pair, 1, eq - 1)
+                              if key == "" then
+                                table.insert(parts, "REDACTED")
                               else
-                                if pair == "" then
-                                  table.insert(parts, "REDACTED")
-                                else
-                                  table.insert(parts, pair .. "=REDACTED")
-                                end
+                                table.insert(parts, key .. "=REDACTED")
+                              end
+                            else
+                              if pair == "" then
+                                table.insert(parts, "REDACTED")
+                              else
+                                table.insert(parts, pair .. "=REDACTED")
                               end
                             end
-                            local redacted = base .. "?" .. table.concat(parts, "&")
-                            handle:streamInfo():dynamicMetadata():set("qb_log", "path", redacted)
                           end
+                          local redacted = base .. "?" .. table.concat(parts, "&")
+                          handle:streamInfo():dynamicMetadata():set("qb_log", "path", redacted)
+                        end
                   - name: envoy.filters.http.compressor
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.compressor.v3.Compressor
