@@ -38,6 +38,12 @@ static_resources:
       type: STRICT_DNS
       connect_timeout: 5s
       lb_policy: ROUND_ROBIN
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          auto_config:
+            http2_protocol_options: {}
+            http_protocol_options: {}
       load_assignment:
         cluster_name: echo_upstream
         endpoints:
