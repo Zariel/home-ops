@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-envoy
+spec:
+  type: ClusterIP
+  selector:
+    app: qbittorrent-envoy
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-envoy-metrics
+  labels:
+    app.kubernetes.io/component: envoy-metrics
+spec:
+  type: ClusterIP
+  selector:
+    app: qbittorrent-envoy
+  ports:
+    - name: metrics
+      port: 9901
+      targetPort: 9901
+      protocol: TCP
