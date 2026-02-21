@@ -11,6 +11,12 @@ static_resources:
               typed_config:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: echo_tap
+                generate_request_id: false
+                use_remote_address: false
+                skip_xff_append: true
+                normalize_path: false
+                merge_slashes: false
+                path_with_escaped_slashes_action: KEEP_UNCHANGED
                 route_config:
                   name: echo_tap
                   virtual_hosts:
@@ -20,6 +26,14 @@ static_resources:
                       routes:
                         - match:
                             prefix: "/"
+                          request_headers_to_remove:
+                            - x-forwarded-for
+                            - x-forwarded-proto
+                            - x-request-id
+                            - x-envoy-expected-rq-timeout-ms
+                            - x-envoy-original-host
+                            - x-envoy-internal
+                            - x-envoy-attempt-count
                           route:
                             cluster: echo_upstream
                             host_rewrite_literal: echo.cbannister.xyz
@@ -33,6 +47,7 @@ static_resources:
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+                      suppress_envoy_headers: true
   clusters:
     - name: echo_upstream
       type: STRICT_DNS
