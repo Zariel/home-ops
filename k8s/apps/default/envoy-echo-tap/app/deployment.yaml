@@ -19,8 +19,6 @@ spec:
         - name: config
           configMap:
             name: envoy-echo-tap
-        - name: tap-output
-          emptyDir: {}
       containers:
         - name: envoy
           image: envoyproxy/envoy:v1.37.0
@@ -38,13 +36,13 @@ spec:
           ports:
             - containerPort: 8080
               name: http
+            - containerPort: 9901
+              name: admin
           volumeMounts:
             - name: config
               mountPath: /etc/envoy/envoy.yaml
               subPath: envoy.yaml
               readOnly: true
-            - name: tap-output
-              mountPath: /tap
           readinessProbe:
             httpGet:
               path: /ready

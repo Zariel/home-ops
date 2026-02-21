@@ -27,17 +27,8 @@ static_resources:
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.tap.v3.Tap
                       common_config:
-                        static_config:
-                          match_config:
-                            any_match: true
-                          output_config:
-                            streaming: false
-                            max_buffered_rx_bytes: 1048576
-                            max_buffered_tx_bytes: 1048576
-                            sinks:
-                              - format: JSON_BODY_AS_STRING
-                                streaming_admin:
-                                  {}
+                        admin_config:
+                          config_id: echo-tap
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
@@ -70,5 +61,5 @@ static_resources:
 admin:
   address:
     socket_address:
-      address: 127.0.0.1
+      address: 0.0.0.0
       port_value: 9901
