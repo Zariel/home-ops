@@ -7,16 +7,11 @@ commonLabels:
   app.kubernetes.io/instance: qbittorrent
 resources:
   - deployment.yaml
-  - certificates.yaml
-  - servicemonitor.yaml
   - service.yaml
   - httproute.yaml
   - externalsecret.yaml
   - pvc.yaml
 configMapGenerator:
-  - name: qbittorrent-egress-envoy
-    files:
-      - envoy.yaml=./resources/envoy.yaml
   - name: qbittorrent-loki-rules
     files:
       - qbittorrent.yaml=./resources/lokirule.yaml

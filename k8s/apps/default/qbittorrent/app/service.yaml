@@ -23,19 +23,3 @@ spec:
     - name: bt-udp
       port: 50413
       protocol: UDP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: qbittorrent-envoy-metrics
-  labels:
-    app.kubernetes.io/component: envoy-metrics
-spec:
-  type: ClusterIP
-  selector:
-    app: qbittorrent
-  ports:
-    - name: metrics
-      port: 9901
-      protocol: TCP
-      targetPort: 9901

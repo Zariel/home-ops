@@ -31,12 +31,6 @@ spec:
           configMap:
             name: qbittorrent-scripts
             defaultMode: 0775
-        - name: envoy-config
-          configMap:
-            name: qbittorrent-egress-envoy
-        - name: envoy-tls
-          secret:
-            secretName: qb-egress-envoy-tls
         - name: music
           nfs:
             server: nas.cbannister.casa
@@ -127,41 +121,3 @@ spec:
               mountPath: /data/downloads/torrents/complete/music
             - name: incomplete
               mountPath: /data/downloads/torrents/incomplete
-        - name: envoy
-          image: envoyproxy/envoy:v1.37.0
-          args:
-            - -c
-            - /etc/envoy/envoy.yaml
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1337
-            runAsGroup: 1337
-            allowPrivilegeEscalation: false
-            capabilities: { drop: ["ALL"] }
-            readOnlyRootFilesystem: true
-          ports:
-            - containerPort: 9901
-              name: metrics
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: metrics
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 6
-          livenessProbe:
-            httpGet:
-              path: /ready
-              port: metrics
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 5
-            failureThreshold: 5
-          volumeMounts:
-            - name: envoy-config
-              mountPath: /etc/envoy/envoy.yaml
-              subPath: envoy.yaml
-              readOnly: true
-            - name: envoy-tls
-              mountPath: /etc/envoy/tls
-              readOnly: true
