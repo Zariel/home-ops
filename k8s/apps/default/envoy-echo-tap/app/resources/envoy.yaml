@@ -22,6 +22,7 @@ static_resources:
                             prefix: "/"
                           route:
                             cluster: echo_upstream
+                            host_rewrite_literal: echo.cbannister.xyz
                 http_filters:
                   - name: envoy.filters.http.tap
                     typed_config:
