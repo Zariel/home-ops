@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 300
       initContainers:
         - name: nft-redirect-https
-          image: nicolaka/netshoot:v0.13
+          image: nicolaka/netshoot:v0.15
           command:
             - /bin/sh
             - -ec
