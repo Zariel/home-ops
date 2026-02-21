@@ -13,7 +13,13 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /_tap
+            value: /envoy/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: qbittorrent-envoy-metrics
           port: 9901
