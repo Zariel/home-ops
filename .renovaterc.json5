@@ -45,4 +45,13 @@
   registryAliases: {
     "mirror.gcr.io": "docker.io"
   },
+  packageRules: [
+    {
+      // Docker-based GitHub Actions from GHCR may not expose release timestamps,
+      // which can leave updates permanently pending when minimumReleaseAge is set.
+      matchManagers: ["github-actions"],
+      matchDatasources: ["docker"],
+      minimumReleaseAge: "0 days",
+    },
+  ],
 }
