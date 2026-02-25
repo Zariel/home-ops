@@ -259,7 +259,7 @@ custom_formats:
       - 5d2317d99af813b6529c7ebf01c83533 # VDL
       - 77a7b25585c18af08f60b1547bb9b4fb # CC
       - 43b3cf48cb385cd3eac608ee6bca7f09 # UHD Streaming Boost
-      - d2d299244a92b8a52d4921ce3897a256 # UHD Streaming Cut
+      # - d2d299244a92b8a52d4921ce3897a256 # UHD Streaming Cut
       - dc503e2425126fa1d0a9ad6168c83b3f # iPlayer
       - fa5a16b951004c23e980d2913694a137 # itvx
       - b66a699fba6f9df91becab798d7502e5 # nowtv
