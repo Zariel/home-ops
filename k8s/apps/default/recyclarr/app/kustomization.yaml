@@ -10,3 +10,5 @@ configMapGenerator:
     files:
       - sonarr.yaml=config/sonarr.yaml
       - radarr.yaml=config/radarr.yaml
+generatorOptions:
+  disableNameSuffixHash: true
