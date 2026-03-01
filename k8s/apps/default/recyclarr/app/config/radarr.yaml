@@ -98,6 +98,9 @@ custom_formats:
     trash_ids:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
+      - dcf3ec6938fa32445f590a4da84256cd # DTS-HD MA
+      - 3cafb66171b47f226146a0770576870f # TrueHD
+      - a570d4a0e56a2874b64e5bfa55202a1b # FLAC
 
   - assign_scores_to:
       - name: *remux
@@ -211,22 +214,6 @@ custom_formats:
       - cae4ca30163749b891686f95532519bd # AV1
       - 712d74cd88bceb883ee32f773656b1f5 # Sing-Along Versions
 
-  - assign_scores_to:
-      - name: *remux
-        score: 3500
-      - name: *bd1080
-        score: 3500
-      - name: WEBDL
-    trash_ids:
-      - dcf3ec6938fa32445f590a4da84256cd # DTS-HD MA
-      - 3cafb66171b47f226146a0770576870f # TrueHD
-  - assign_scores_to:
-      - name: *remux
-        score: 3000
-      - name: *bd1080
-        score: 3000
-    trash_ids:
-      - a570d4a0e56a2874b64e5bfa55202a1b # FLAC
   - assign_scores_to:
       - name: *remux
         score: 2500
