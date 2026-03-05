@@ -59,9 +59,9 @@ spec:
           resources:
             requests:
               cpu: "512m"
-              memory: 2Gi
+              memory: 4Gi
             limits:
-              memory: 2Gi
+              memory: 4Gi
           ports:
             - containerPort: 7878
               name: web
