@@ -12,6 +12,7 @@ import (
 	seedDays?:    number & >0
 	ratio?:       number & >0
 	minSeedDays?: number & >0
+	tags?: [...string] & list.MinItems(1)
 }
 
 #trackers: [...#tracker] & list.MinItems(1)
@@ -110,6 +111,20 @@ filters: default: tag: [
 		if (t.url & [...string]) != _|_ {
 			let urls = [for u in t.url {"\"\(u)\""}]
 			update: ["TrackerName in [\(strings.Join(urls, ", "))]"]
+		}
+	},
+
+	for t in #trackers
+	if (t.tags & [...string]) != _|_ {
+		for tag in t.tags {
+			name: "\(tag)"
+			if (t.url & string) != _|_ {
+				update: ["TrackerName == \"\(t.url)\""]
+			}
+			if (t.url & [...string]) != _|_ {
+				let urls = [for u in t.url {"\"\(u)\""}]
+				update: ["TrackerName in [\(strings.Join(urls, ", "))]"]
+			}
 		}
 	},
 
