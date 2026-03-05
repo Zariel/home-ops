@@ -28,6 +28,7 @@ quality_profiles:
         - "Language: Prefer Original"
         - "Language: German + Original"
         - "Home Groups"
+        - "Home Groups 2"
     upgrade:
       allowed: true
       until_quality: &remux-2160p Bluray-2160p Remux
