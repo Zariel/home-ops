@@ -26,6 +26,7 @@ quality_profiles:
         - "Home Groups"
         - "Sign Languages"
         - "Groups Boost"
+        - "Groups Boost 2"
         - "Groups Cut"
     quality_sort: top
     qualities:
