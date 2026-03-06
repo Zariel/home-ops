@@ -9,6 +9,8 @@ media_naming:
 quality_profiles:
   - name: SQP-2
     trash_id: c3933358ba2356bafc41524f81471069
+  - name: SQP-5
+    trash_id: a7bb1539fd147256b21b1098f3dc2016
 
   - name: &remux REMUX-2160p
     score_set: default
@@ -238,6 +240,7 @@ custom_formats:
         score: -100
       - name: WEBDL
       - name: SQP-2
+      - name: SQP-5
     trash_ids:
       - 923b6abef9b17f937fab56cfcf89e1f1 # DV (webdl)
   - assign_scores_to:
@@ -298,3 +301,4 @@ custom_formats:
       - f537cf427b64c38c8e36298f657e4828 # Scene
     assign_scores_to:
       - name: SQP-2
+      - name: SQP-5
