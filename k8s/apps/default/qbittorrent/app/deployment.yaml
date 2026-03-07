@@ -111,8 +111,7 @@ spec:
             - name: config
               mountPath: /config
             - name: arr-media
-              mountPath: /data/downloads/torrents
-              subPath: downloads/torrents
+              mountPath: /data
             - name: scripts
               mountPath: /scripts/post-process.sh
               # readOnly: true
