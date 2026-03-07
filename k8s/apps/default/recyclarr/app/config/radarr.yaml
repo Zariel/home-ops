@@ -100,6 +100,7 @@ custom_formats:
       - name: *bd1080
         score: 5000
       - name: WEBDL
+      - name: peak
     trash_ids:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
@@ -111,6 +112,7 @@ custom_formats:
       - name: *remux
       - name: *bd1080
       - name: WEBDL
+      - name: peak
     trash_ids:
       # Audio Advanced #1
       - 185f1dd7264c4562b9022d963ac37424 # DD+
@@ -149,13 +151,13 @@ custom_formats:
       - e7718d7a3ce595f289bfee26adc178f5 # Repack/Proper
       - ae43b294509409a6a13919dedd4764c4 # Repack2
       - 5caaaa1c08c1742aa4342d8c4cc463f2 # Repack3
-      # - 2899d84dc9372de3408e6d8cc18e9666 # x264
-      # - 9170d55c319f4fe40da8711ba9d8050d # x265
+      - 2899d84dc9372de3408e6d8cc18e9666 # x264
+      - 9170d55c319f4fe40da8711ba9d8050d # x265
 
       # Movie Versions
       - eca37840c13c6ef2dd0262b141a5482f # 4K Remaster
       - e0c07d59beb37348e975a930d5e50319 # Criterion Collection
-      # - 0f12c086e289cf966fa5948eac571f44 # Hybrid
+      - 0f12c086e289cf966fa5948eac571f44 # Hybrid
       - eecf3a857724171f968a66cb5719e152 # IMAX
       - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
       - 9d27d9d2181838f76dee150882bdc58c # Masters of Cinema
@@ -168,12 +170,12 @@ custom_formats:
       # Optional
       - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
       # - b17886cb4158d9fea189859409975758 # HDR10+ Boost
-      - 73613461ac2cea99d52c4cd6e177ab82 # HFR
+      # - 73613461ac2cea99d52c4cd6e177ab82 # HFR
       - c465ccc73923871b3eb1802042331306 # Line/Mic Dubbed
       - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
       - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
       - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
-      # - f537cf427b64c38c8e36298f657e4828 # Scene
+      - f537cf427b64c38c8e36298f657e4828 # Scene
       - ae4cfaa9283a4f2150ac3da08e388723 # VP9
       # - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
 
@@ -225,6 +227,7 @@ custom_formats:
       - name: *bd1080
         score: 2500
       - name: WEBDL
+      - name: peak
     trash_ids:
       - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
   - assign_scores_to:
@@ -233,6 +236,7 @@ custom_formats:
       - name: *bd1080
         score: 1755
       - name: WEBDL
+      - name: peak
     trash_ids:
       - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
   - assign_scores_to:
@@ -241,6 +245,7 @@ custom_formats:
       - name: *bd1080
         score: -100
       - name: WEBDL
+      - name: peak
       - name: SQP-2
       - name: SQP-3
       - name: SQP-5
@@ -253,6 +258,8 @@ custom_formats:
         score: -10
       - name: WEBDL
         score: -10
+      - name: peak
+
     trash_ids:
       - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
   - assign_scores_to:
@@ -261,6 +268,8 @@ custom_formats:
       - name: *bd1080
         score: 20
       - name: WEBDL
+        score: 20
+      - name: peak
         score: 20
     trash_ids:
       - 6a061313d22e51e0f25b7cd4dc065233 # MAX
@@ -272,11 +281,12 @@ custom_formats:
       - fb392fb0d61a010ae38e49ceaa24a1ef # 2160p
   - assign_scores_to:
       - name: WEBDL
+      - name: peak
     trash_ids:
       - 820b09bb9acbfde9c35c71e0e565dad8 # 1080p
   - assign_scores_to:
       - name: WEBDL
-        score: 2300
+      - name: peak
       - name: *remux
       - name: *bd1080
     trash_ids:
@@ -284,6 +294,7 @@ custom_formats:
   - assign_scores_to:
       - name: WEBDL
         score: 2200
+      - name: peak
       - name: *remux
       - name: *bd1080
     trash_ids:
@@ -291,6 +302,7 @@ custom_formats:
   - assign_scores_to:
       - name: WEBDL
         score: 2100
+      - name: peak
       - name: *remux
       - name: *bd1080
     trash_ids:
