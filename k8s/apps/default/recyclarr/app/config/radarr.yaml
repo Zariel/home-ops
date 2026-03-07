@@ -286,7 +286,9 @@ custom_formats:
       - 820b09bb9acbfde9c35c71e0e565dad8 # 1080p
   - assign_scores_to:
       - name: WEBDL
+        score: 2300
       - name: peak
+        score: 2300
       - name: *remux
       - name: *bd1080
     trash_ids:
@@ -295,6 +297,7 @@ custom_formats:
       - name: WEBDL
         score: 2200
       - name: peak
+        score: 2200
       - name: *remux
       - name: *bd1080
     trash_ids:
@@ -303,6 +306,7 @@ custom_formats:
       - name: WEBDL
         score: 2100
       - name: peak
+        score: 2100
       - name: *remux
       - name: *bd1080
     trash_ids:
