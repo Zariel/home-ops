@@ -55,12 +55,12 @@ spec:
                   mountPath: /data
                 - name: music
                   mountPath: /data/downloads/torrents/complete/music
-          containers:
             - name: clean
               args:
                 - clean
                 - qb
               <<: *container
+          containers:
             - name: orphan
               args:
                 - orphan

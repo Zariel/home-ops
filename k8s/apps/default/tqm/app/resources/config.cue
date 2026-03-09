@@ -22,6 +22,26 @@ import (
 	update!: [...string] & list.MinItems(1)
 }
 
+_#trackerMatchByName: {
+	for t in #trackers {
+		if (t.url & string) != _|_ {
+			"\(t.name)": "TrackerName == \"\(t.url)\""
+		}
+		if (t.url & [...string]) != _|_ {
+			let urls = [for u in t.url {"\"\(u)\""}]
+			"\(t.name)": "TrackerName in [\(strings.Join(urls, ", "))]"
+		}
+	}
+}
+
+_#trackerTagSet: {
+	for t in #trackers if (t.tags & [...string]) != _|_ {
+		for tag in t.tags {
+			"\(tag)": true
+		}
+	}
+}
+
 clients: qb: {
 	download_path: "/data/downloads/torrents/complete"
 	enabled:       true
@@ -105,44 +125,54 @@ filters: default: tag: [
 
 	for t in #trackers {
 		name: "site:\(t.name)"
-		if (t.url & string) != _|_ {
-			update: ["TrackerName == \"\(t.url)\""]
-		}
-		if (t.url & [...string]) != _|_ {
-			let urls = [for u in t.url {"\"\(u)\""}]
-			update: ["TrackerName in [\(strings.Join(urls, ", "))]"]
-		}
+		let match = _#trackerMatchByName[t.name]
+		update: [match]
 	},
 
 	for t in #trackers
 	if (t.tags & [...string]) != _|_ {
 		for tag in t.tags {
 			name: "\(tag)"
-			if (t.url & string) != _|_ {
-				update: ["TrackerName == \"\(t.url)\""]
-			}
-			if (t.url & [...string]) != _|_ {
-				let urls = [for u in t.url {"\"\(u)\""}]
-				update: ["TrackerName in [\(strings.Join(urls, ", "))]"]
-			}
+			mode: "add"
+			let match = _#trackerMatchByName[t.name]
+			update: [match]
 		}
+	},
+
+	for tag, _ in _#trackerTagSet {
+		name: tag
+		mode: "remove"
+		let keep = [
+			for t in #trackers if (t.tags & [...string]) != _|_ {
+				let match = _#trackerMatchByName[t.name]
+				for trackerTag in t.tags if trackerTag == tag {
+					"(\(match))"
+				}
+			},
+		]
+		update: ["\(strings.Join(keep, " || "))"]
 	},
 
 	for t in #trackers
 	if t.minSeedDays != _|_ {
 		name: "hnr"
-		_filter: [...string]
-		if (t.url & string) != _|_ {
-			_filter: ["TrackerName == \"\(t.url)\""]
-		}
-		if (t.url & [...string]) != _|_ {
-			let urls = [for u in t.url {"\"\(u)\""}]
-			_filter: ["TrackerName in [\(strings.Join(urls, ", "))]"]
-		}
+		mode: "add"
+		let match = _#trackerMatchByName[t.name]
 		update: list.Concat([
-			_filter,
+			[match],
 			["SeedingDays < \(t.minSeedDays)"],
 		])
+	},
+	{
+		name: "hnr"
+		mode: "remove"
+		let keep = [
+			for t in #trackers if t.minSeedDays != _|_ {
+				let match = _#trackerMatchByName[t.name]
+				"(\(match) && SeedingDays < \(t.minSeedDays))"
+			},
+		]
+		update: ["\(strings.Join(keep, " || "))"]
 	},
 ]
 
