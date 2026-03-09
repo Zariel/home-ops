@@ -27,6 +27,7 @@ devices: "bond0"
 # enableRuntimeDeviceDetection: true
 enableIPv4BIGTCP: false
 enableIPv4Masquerade: false
+enableTunnelBIGTCP: false
 endpointRoutes:
   enabled: true
 envoy:
