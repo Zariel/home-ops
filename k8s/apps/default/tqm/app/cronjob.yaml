@@ -26,7 +26,7 @@ spec:
             supplementalGroups: [3005]
             seccompProfile:
               type: RuntimeDefault
-          initContainers:
+          containers:
             - &container
               name: retag
               image: ghcr.io/home-operations/tqm:1.19.0@sha256:025ee0c0c8b75f4c7bffa90216eedb494b9884e092a47e9c49824fe63427808c
@@ -55,17 +55,6 @@ spec:
                   mountPath: /data
                 - name: music
                   mountPath: /data/downloads/torrents/complete/music
-            - name: clean
-              args:
-                - clean
-                - qb
-              <<: *container
-          containers:
-            - name: orphan
-              args:
-                - orphan
-                - qb
-              <<: *container
           volumes:
             - name: config-dir
               emptyDir: {}
