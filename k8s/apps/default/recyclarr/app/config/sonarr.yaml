@@ -320,3 +320,10 @@ custom_formats:
       - name: WEBDL-2160p
       - name: WEBDL-1080p
       - name: WEBDL
+  - trash_ids:
+      - 3a4127d8aa781b44120d907f2cd62627 # Hybrid
+    assign_scores_to:
+      - name: BLURAY-2160p
+        score: -200
+      - name: BLURAY-1080p
+        score: -200
