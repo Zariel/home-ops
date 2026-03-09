@@ -234,7 +234,6 @@ custom_formats:
       - 44e7c4de10ae50265753082e5dc76047 # Repack v3
 
       # Series Versions
-      - 3a4127d8aa781b44120d907f2cd62627 # Hybrid
       - b735f09d3c025cbb7d75a5d38325b73b # Remaster
 
       # Streaming Services
@@ -315,3 +314,9 @@ custom_formats:
         score: 1750
       - name: WEBDL
         score: 1750
+  - trash_ids:
+      - 3a4127d8aa781b44120d907f2cd62627 # Hybrid
+    assign_scores_to:
+      - name: WEBDL-2160p
+      - name: WEBDL-1080p
+      - name: WEBDL
