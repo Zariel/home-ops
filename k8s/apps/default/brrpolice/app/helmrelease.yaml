@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/zariel/brrpolice
-              tag: v0.4.2@sha256:b94280f8b3f01a27336886e870feade5d03c79849855664aec73043481d8d554
+              tag: v0.6.2@sha256:45aacede04e03091f05677c45087b80da3ac13dca44202d5a72ab0f670172a4a
             env:
               BRRPOLICE_QBITTORRENT__BASE_URL: http://qbittorrent.default.svc.cluster.local
               TZ: Europe/London
