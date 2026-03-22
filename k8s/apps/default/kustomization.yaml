@@ -22,7 +22,6 @@ resources:
   - seerr/ks.yaml
   - thelounge/ks.yaml
   - maintainerr/ks.yaml
-  - fertilizer/ks.yaml
   - audiobookshelf/ks.yaml
   - tqm/ks.yaml
   - qui/ks.yaml
