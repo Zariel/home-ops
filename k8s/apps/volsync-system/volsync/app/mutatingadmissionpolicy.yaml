@@ -92,15 +92,5 @@ spec:
                 name: "repository",
                 mountPath: "/repository"
               }
-            },
-            JSONPatch{
-              op: "add", path: "/spec/template/spec/volumes/-",
-              value: Object.spec.template.spec.volumes{
-                name: "repository",
-                nfs: Object.spec.template.spec.volumes.nfs{
-                  server: "nas.cbannister.casa",
-                  path: "/mnt/bighorse/volsync/restic"
-                }
-              }
             }
           ]
