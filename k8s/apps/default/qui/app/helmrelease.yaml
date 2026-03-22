@@ -41,6 +41,9 @@ spec:
               repository: ghcr.io/autobrr/qui
               tag: v1.15.0@sha256:da33f8c850f7d6f1bfaee26b9553b21411e872639d54193906fa2cec51af1d0f
             env:
+              QUI__AUTH_DISABLED: true
+              QUI__AUTH_DISABLED_ALLOWED_CIDRS: 0.0.0.0/0
+              QUI__I_ACKNOWLEDGE_THIS_IS_A_BAD_IDEA: true
               QUI__HOST: 0.0.0.0
               QUI__PORT: &port 80
               QUI__LOG_LEVEL: INFO
