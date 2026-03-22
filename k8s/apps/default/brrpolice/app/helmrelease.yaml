@@ -30,10 +30,11 @@ spec:
           app:
             image:
               repository: ghcr.io/zariel/brrpolice
-              tag: v0.12.1@sha256:dfad36b5de5b49c2180dbe45d04e52d7b3681d27987a8780d6306e8455d8b1d2
+              tag: v0.13.0@sha256:5be94b0835579314ab1d337c5fcd9dae9896db6da97edfd4fe89e1d41a88e32c
             env:
               BRRPOLICE_QBITTORRENT__BASE_URL: http://qbittorrent.default.svc.cluster.local
               BRRPOLICE_LOGGING__LEVEL: info
+              BRRPOLICE_HTTP__PORT: &port 80
               TZ: Europe/London
             probes:
               liveness:
@@ -42,7 +43,7 @@ spec:
                 spec:
                   httpGet:
                     path: /healthz
-                    port: &port 9090
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 5
@@ -62,7 +63,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 128Mi
+                memory: 64Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -70,9 +71,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
     persistence:
       data:
