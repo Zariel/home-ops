@@ -38,7 +38,7 @@ spec:
             defaultMode: 0775
       containers:
         - name: autobrr
-          image: ghcr.io/autobrr/autobrr:v1.74.0@sha256:6f37217bbc0496fff0c7ffb4264545036bf735775e484188b80b31f21daa06e2
+          image: ghcr.io/autobrr/autobrr:v1.75.0@sha256:c7edec5fc23326b87e0b71c4c6c011223f53aa17d17ad8d15df81d0c7e021d85
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
