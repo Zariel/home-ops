@@ -120,7 +120,7 @@ quality_profiles:
 custom_formats:
   - assign_scores_to:
       - name: *remux
-        score:
+        score: 5000
       - name: *bd1080
         score: 5000
       - name: WEBDL
