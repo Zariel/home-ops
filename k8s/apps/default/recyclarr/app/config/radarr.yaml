@@ -93,14 +93,39 @@ quality_profiles:
       - *720
       - *trash
 
+  - name: peak
+    upgrade:
+      allowed: true
+      until_quality: Good Stuff
+      until_score: 9999999
+    reset_unmatched_scores: *reset_unmatched_scores
+    quality_sort: top
+    qualities:
+      - name: Good Stuff
+        qualities:
+          - Remux-1080p
+          - WEBDL-1080p
+          - WEBRip-1080p
+          - WEBDL-2160p
+          - WEBRip-2160p
+          - Bluray-1080p
+          - Bluray-2160p
+      - name: not ideal
+        qualities:
+          - Bluray-720p
+          - WEBDL-720p
+          - WEBRip-720p
+      - *trash
+
 custom_formats:
   - assign_scores_to:
       - name: *remux
-        score: 5000
+        score:
       - name: *bd1080
         score: 5000
       - name: WEBDL
       - name: peak
+        score: 2500
     trash_ids:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
@@ -227,6 +252,7 @@ custom_formats:
         score: 2500
       - name: WEBDL
       - name: peak
+        score: 1750
     trash_ids:
       - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
   - assign_scores_to:
@@ -236,8 +262,14 @@ custom_formats:
         score: 1755
       - name: WEBDL
       - name: peak
+        score: 1750
     trash_ids:
       - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
+  - assign_scores_to:
+      - name: peak
+        score: 2500
+    trash_ids:
+      - e7c2fcae07cbada050a0af3357491d7b # PCM
   - assign_scores_to:
       - name: *remux
         score: -100
