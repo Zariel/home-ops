@@ -38,7 +38,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: wizarr
-          image: ghcr.io/wizarrrr/wizarr:v2026.2.1
+          image: ghcr.io/wizarrrr/wizarr:v2026.3.0
           imagePullPolicy: "IfNotPresent"
           env:
             - name: TZ
