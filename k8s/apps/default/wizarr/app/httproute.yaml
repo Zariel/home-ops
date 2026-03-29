@@ -16,7 +16,7 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: wizarr-http
+        - name: wizarr
           port: 80
       matches:
         - path:
