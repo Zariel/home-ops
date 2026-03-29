@@ -29,6 +29,7 @@ quality_profiles:
         - "Language: German + Original"
         - "Home Groups"
         - "Home Groups 2"
+        - "Sign Languages"
     upgrade:
       allowed: true
       until_quality: &remux-2160p Bluray-2160p Remux
