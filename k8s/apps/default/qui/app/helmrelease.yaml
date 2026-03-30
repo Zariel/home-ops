@@ -46,7 +46,7 @@ spec:
               QUI__I_ACKNOWLEDGE_THIS_IS_A_BAD_IDEA: true
               QUI__HOST: 0.0.0.0
               QUI__PORT: &port 80
-              QUI__LOG_LEVEL: INFO
+              QUI__LOG_LEVEL: DEBUG
               TZ: Europe/London
             envFrom:
               - secretRef:
