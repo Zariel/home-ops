@@ -1519,9 +1519,9 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme4n1\"}[$__rate_interval]))",
           "instant": false,
-          "legendFormat": "L2ARC cache devices (nvme1n1,nvme2n1)",
+          "legendFormat": "L2ARC cache devices (nvme1n1,nvme4n1)",
           "range": true,
           "refId": "B"
         },
@@ -1531,9 +1531,9 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=~\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme2n1\"}[$__rate_interval]))",
           "instant": false,
-          "legendFormat": "Special metadata devices (nvme0n1,nvme3n1)",
+          "legendFormat": "Special metadata devices (nvme0n1,nvme2n1)",
           "range": true,
           "refId": "C"
         }
@@ -1680,7 +1680,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_disk_read_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme2n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "Special Read",
           "range": true,
@@ -1692,7 +1692,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "-1 * sum(rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "expr": "-1 * sum(rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme2n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "Special Write",
           "range": true,
@@ -1704,7 +1704,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(node_disk_read_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme4n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "L2ARC Read",
           "range": true,
@@ -1716,7 +1716,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "-1 * sum(rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "expr": "-1 * sum(rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme4n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "L2ARC Write",
           "range": true,
@@ -1728,7 +1728,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "-1 * rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme4n1\"}[$__rate_interval])",
+          "expr": "-1 * rate(node_disk_written_bytes_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme3n1\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "SLOG Write",
           "range": true,
@@ -1851,7 +1851,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "-1 * sum(rate(node_disk_writes_completed_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme4n1\"}[$__rate_interval]))",
+          "expr": "-1 * sum(rate(node_disk_writes_completed_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme3n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "SLOG Write IOPS",
           "range": true,
@@ -1980,7 +1980,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "100 * avg(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme3n1\"}[$__rate_interval]))",
+          "expr": "100 * avg(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme0n1|nvme2n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "Special Avg Busy",
           "range": true,
@@ -1992,7 +1992,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "100 * avg(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme2n1\"}[$__rate_interval]))",
+          "expr": "100 * avg(rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=~\"nvme1n1|nvme4n1\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "L2ARC Avg Busy",
           "range": true,
@@ -2004,7 +2004,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "100 * rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme4n1\"}[$__rate_interval])",
+          "expr": "100 * rate(node_disk_io_time_seconds_total{instance=\"nas.cbannister.casa:9100\",device=\"nvme3n1\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "SLOG Busy",
           "range": true,
