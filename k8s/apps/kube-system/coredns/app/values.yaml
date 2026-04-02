@@ -5,3 +5,4 @@ service:
   name: kube-dns
   clusterIP: 172.21.0.10
 replicaCount: 3
+priorityClassName: system-cluster-critical

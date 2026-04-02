@@ -16,6 +16,7 @@ spec:
         app: radarr
     spec:
       hostname: radarr
+      priorityClassName: cluster-p1
       volumes:
         - name: arr-media
           nfs:

@@ -1,0 +1,18 @@
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cluster-p1
+value: 100000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: High-visibility workloads that should preempt default-priority apps.
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cluster-p2
+value: 90000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: Supporting workloads that should preempt default-priority apps but not cluster-p1.

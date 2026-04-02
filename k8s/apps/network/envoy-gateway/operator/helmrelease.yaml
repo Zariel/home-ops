@@ -37,6 +37,8 @@ spec:
   values:
     global:
       imageRegistry: mirror.gcr.io
+    deployment:
+      priorityClassName: cluster-p2
     resources:
       requests:
         memory: 128Mi

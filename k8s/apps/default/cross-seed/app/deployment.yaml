@@ -17,6 +17,7 @@ spec:
     metadata:
       labels: *labels
     spec:
+      priorityClassName: cluster-p1
       containers:
         - name: cross-seed
           image: ghcr.io/cross-seed/cross-seed:6.13.6@sha256:e2bf5b593e4e7d699e6242423ad7966190cd52ba8eefafdfdbb0cb5b0b609b96

@@ -5,6 +5,7 @@ namespace: kube-system
 components:
   - ../../components/common
 resources:
+  - priorityclasses
   - bird/ks.yaml
   - cilium/ks.yaml
   - metrics-server
