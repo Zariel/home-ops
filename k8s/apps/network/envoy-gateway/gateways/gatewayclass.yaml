@@ -26,6 +26,8 @@ spec:
     kubernetes:
       envoyDeployment:
         replicas: 2
+        pod:
+          priorityClassName: cluster-p2
         container:
           imageRepository: mirror.gcr.io/envoyproxy/envoy
           resources:

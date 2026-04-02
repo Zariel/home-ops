@@ -54,8 +54,10 @@ loadBalancer:
   dsrDispatch: geneve
   acceleration: best-effort
 localRedirectPolicy: true
+priorityClassName: system-node-critical
 operator:
   rollOutPods: true
+  priorityClassName: system-cluster-critical
 pmtuDiscovery:
   enabled: true
 resources:
