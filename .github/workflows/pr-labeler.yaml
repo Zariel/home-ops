@@ -1,0 +1,94 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: PR Labeler
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+      - labeled
+      - unlabeled
+      - ready_for_review
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  label-renovate-pr:
+    name: Label Renovate PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply Renovate labels
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+
+            const isRenovatePR =
+              pr?.user?.login === 'renovate[bot]' ||
+              pr?.head?.ref?.startsWith('renovate/');
+
+            if (!isRenovatePR) {
+              core.info('Skipping non-Renovate pull request.');
+              return;
+            }
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = pr.number;
+
+            const SOURCE_AUTOMERGE_LABEL = 'renovate/automerge-enabled';
+            const TARGET_AUTOMERGE_LABEL = 'renovate/auto-merge';
+            const TARGET_MANUAL_LABEL = 'renovate/manual';
+
+            async function ensureLabel(name, color, description) {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+
+                core.info(`Creating missing label: ${name}`);
+                await github.rest.issues.createLabel({
+                  owner,
+                  repo,
+                  name,
+                  color,
+                  description,
+                });
+              }
+            }
+
+            await ensureLabel(TARGET_AUTOMERGE_LABEL, '0e8a16', 'Renovate PR eligible for automatic merge');
+            await ensureLabel(TARGET_MANUAL_LABEL, 'd93f0b', 'Renovate PR requires manual review/merge');
+
+            const currentLabels = new Set((pr.labels || []).map((l) => l.name));
+            const shouldAutoMerge = currentLabels.has(SOURCE_AUTOMERGE_LABEL);
+            const desiredLabel = shouldAutoMerge ? TARGET_AUTOMERGE_LABEL : TARGET_MANUAL_LABEL;
+            const oppositeLabel = shouldAutoMerge ? TARGET_MANUAL_LABEL : TARGET_AUTOMERGE_LABEL;
+
+            if (!currentLabels.has(desiredLabel)) {
+              core.info(`Adding label: ${desiredLabel}`);
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number,
+                labels: [desiredLabel],
+              });
+            }
+
+            if (currentLabels.has(oppositeLabel)) {
+              core.info(`Removing label: ${oppositeLabel}`);
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number,
+                name: oppositeLabel,
+              });
+            }
+
+            const finalState = shouldAutoMerge ? 'auto-merge' : 'manual';
+            core.info(`Renovate PR labeling complete. Final state: ${finalState}`);
