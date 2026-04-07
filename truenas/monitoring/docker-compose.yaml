@@ -1,6 +1,6 @@
 services:
   node_exporter:
-    image: quay.io/prometheus/node-exporter:v1.11.0
+    image: quay.io/prometheus/node-exporter:v1.11.1
     ports:
       - 9100:9100
     command:
