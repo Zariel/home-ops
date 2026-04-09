@@ -11,7 +11,6 @@
       "automerge": true,
       "automergeType": "pr",
       "ignoreTests": false,
-      "addLabels": ["renovate/automerge-enabled"],
       "matchUpdateTypes": ["digest", "minor", "patch"],
       "matchPackagePatterns": [
         "ghcr.io/bjw-s",
@@ -27,7 +26,6 @@
       "matchDatasources": ["docker"],
       "automerge": true,
       "automergeType": "pr",
-      "addLabels": ["renovate/automerge-enabled"],
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackagePatterns": [
         "ghcr.io/prometheus-community/charts",
@@ -41,7 +39,6 @@
       "matchManagers": ["github-actions"],
       "automerge": true,
       "automergeType": "branch",
-      "addLabels": ["renovate/automerge-enabled"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "minimumReleaseAge": "3 days",
       "ignoreTests": true,
@@ -64,7 +61,6 @@
       autoMerge: true,
       autoMergeType: "branch",
       ignoreTests: true,
-      addLabels: ["renovate/automerge-enabled"],
     },
   ]
 }

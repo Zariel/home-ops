@@ -16,8 +16,6 @@
     ':dependencyDashboard',
     ':semanticCommits',
     ':timezone(Europe/London)',
-    'local>.renovate/autoMerge.json5',
-    'local>.renovate/labels.json5',
   ],
   dependencyDashboardTitle: 'Renovate Dashboard 🤖',
   suppressNotifications: [
