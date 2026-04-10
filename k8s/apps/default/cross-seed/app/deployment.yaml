@@ -33,28 +33,30 @@ spec:
               containerPort: 80
           startupProbe:
             failureThreshold: 300
+            initialDelaySeconds: 0
             periodSeconds: 10
             successThreshold: 1
             httpGet:
               path: /api/ping
               port: http
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           livenessProbe:
-            failureThreshold: 3
+            initialDelaySeconds: 300
+            failureThreshold: 6
             periodSeconds: 10
             successThreshold: 1
             httpGet:
               path: /api/ping
               port: http
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           readinessProbe:
-            failureThreshold: 3
+            failureThreshold: 6
             periodSeconds: 10
             successThreshold: 1
             httpGet:
               path: /api/ping
               port: http
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           resources:
             requests:
               cpu: 100m

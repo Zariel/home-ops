@@ -151,13 +151,6 @@ spec:
           - { name: "Victoria Metrics", orgId: 1 }
           - { name: VictoriaLogs, orgId: 1 }
         datasources:
-          - name: Loki
-            type: loki
-            uid: loki
-            access: proxy
-            url: http://loki.monitoring.svc.cluster.local:3100
-            jsonData:
-              maxLines: 1000
           - name: VictoriaLogs
             type: victoriametrics-logs-datasource
             uid: victorialogs
