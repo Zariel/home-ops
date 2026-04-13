@@ -20,6 +20,20 @@ spec:
         feature.node.kubernetes.io/cpu-model.vendor_id: Intel
         feature.node.kubernetes.io/cpu-model.family: "6"
         feature.node.kubernetes.io/cpu-model.id: "154"
+      initContainers:
+        - name: set-coalescing
+          image: alpine:3.22
+          command:
+            - sh
+            - -c
+            - |
+              apk add --no-cache ethtool
+              for dev in enp1s0f0np0 enp1s0f1np1; do
+                [ -e "/sys/class/net/${dev}" ] || continue
+                ethtool -C "${dev}" adaptive-rx on adaptive-tx on rx-usecs 16 tx-usecs 16
+              done
+          securityContext:
+            privileged: true
       containers:
         - name: irqbalance
           image: ghcr.io/home-operations/irqbalance:1.9.4@sha256:6cc768c3f074c221412d56b341a19c8432f9a6d76eda0b346285f9c5e2d3b2cc
