@@ -22,7 +22,7 @@ spec:
         feature.node.kubernetes.io/cpu-model.id: "154"
       initContainers:
         - name: set-coalescing
-          image: alpine:3.22
+          image: alpine:3.23
           command:
             - sh
             - -c
