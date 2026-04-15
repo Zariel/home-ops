@@ -8,7 +8,10 @@ spec:
   retentionPeriod: "12"
   extraArgs:
     dedup.minScrapeInterval: 30s
+    memory.allowedBytes: 3GiB
     maxLabelsPerTimeseries: "100"
+    search.maxConcurrentRequests: "4"
+    search.maxMemoryPerQuery: 512MiB
     search.minStalenessInterval: 5m
   storage:
     accessModes: ["ReadWriteOnce"]
