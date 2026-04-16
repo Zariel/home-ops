@@ -27,11 +27,23 @@ spec:
             - sh
             - -c
             - |
-              apk add --no-cache ethtool
+              apk add --no-cache ethtool iproute2
               for dev in enp1s0f0np0 enp1s0f1np1; do
                 [ -e "/sys/class/net/${dev}" ] || continue
                 ethtool -C "${dev}" adaptive-rx on adaptive-tx on rx-usecs 16 tx-usecs 16
               done
+              if [ -d /sys/class/net/bond0/queues ]; then
+                root_handle="$(tc qdisc show dev bond0 | awk '/^qdisc mq / { sub(":", "", $3); print $3; exit }')"
+                txq_count="$(find /sys/class/net/bond0/queues -maxdepth 1 -type d -name 'tx-*' | wc -l)"
+                if [ -n "${root_handle}" ] && [ "${txq_count}" -gt 0 ]; then
+                  i=1
+                  while [ "${i}" -le "${txq_count}" ]; do
+                    parent="$(printf '%s:%x' "${root_handle}" "${i}")"
+                    tc qdisc replace dev bond0 parent "${parent}" fq flow_limit 1000
+                    i=$((i + 1))
+                  done
+                fi
+              fi
           securityContext:
             privileged: true
       containers:
