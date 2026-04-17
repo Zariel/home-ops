@@ -33,10 +33,9 @@ spec:
               protocol: TCP
           resources:
             limits:
-              memory: 192Mi
+              memory: 512Mi
             requests:
               cpu: 200m
-              memory: 192Mi
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
