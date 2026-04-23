@@ -303,14 +303,14 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "sum(integrate(raritan_pdu_inlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}[30d])) / 3600000",
+          "expr": "sum(avg_over_time(raritan_pdu_inlet_active_power_watts{instance=~\"$instance\", pduId=~\"$pduId\"}[1h])) / 1000",
           "instant": true,
-          "legendFormat": "30d total",
+          "legendFormat": "1h avg as kWh",
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "30 Day Total",
+      "title": "Past Hour (kWh)",
       "type": "stat"
     },
     {
