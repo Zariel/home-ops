@@ -45,7 +45,7 @@ spec:
             privileged: true
       containers:
         - name: irq-affinity
-          image: ubuntu:24.04
+          image: ubuntu:26.04
           command:
             - sh
             - -c
