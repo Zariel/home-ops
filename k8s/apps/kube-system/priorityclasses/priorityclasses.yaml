@@ -2,6 +2,15 @@
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
+  name: cluster-p0
+value: 110000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: Top-priority user workloads that should preempt other non-system apps.
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
   name: cluster-p1
 value: 100000
 globalDefault: false

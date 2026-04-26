@@ -14,7 +14,7 @@ spec:
       labels:
         app: plex
     spec:
-      priorityClassName: cluster-p1
+      priorityClassName: cluster-p0
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: plex-gpu
