@@ -34,6 +34,7 @@ spec:
   values:
     replicas: 1
     kind: Deployment
+    deschedulingInterval: 10m
     resources:
       requests:
         memory: 160Mi
@@ -41,6 +42,9 @@ spec:
         memory: 160Mi
     deschedulerPolicyAPIVersion: descheduler/v1alpha2
     deschedulerPolicy:
+      maxNoOfPodsToEvictPerNode: 3
+      maxNoOfPodsToEvictPerNamespace: 2
+      maxNoOfPodsToEvictTotal: 8
       metricsProviders:
         - source: KubernetesMetrics
       profiles:
@@ -48,11 +52,14 @@ spec:
           pluginConfig:
             - name: DefaultEvictor
               args:
+                nodeFit: true
+                minPodAge: 10m
                 podProtections:
                   defaultDisabled:
                     - FailedBarePods
                     - PodsWithLocalStorage
-                    - SystemCriticalPods
+                  extraEnabled:
+                    - PodsWithResourceClaims
             - name: LowNodeUtilization
               args:
                 metricsUtilization:
@@ -62,9 +69,16 @@ spec:
                   memory: 20
                   pods: 20
                 targetThresholds:
-                  cpu: 50
-                  memory: 50
-                  pods: 50
+                  cpu: 70
+                  memory: 70
+                  pods: 70
+                evictionLimits:
+                  node: 3
+                evictableNamespaces:
+                  exclude:
+                    - kube-system
+                    - rook-ceph
+                    - database
             - name: RemoveFailedPods
               args:
                 reasons:
