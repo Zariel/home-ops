@@ -36,9 +36,9 @@ spec:
       reloader.stakater.com/auto: "true"
     resources:
       requests:
-        memory: 1Gi
+        memory: 256Mi
       limits:
-        memory: 1Gi
+        memory: 256Mi
     replicas: 1
     image:
       tag: 11.2.1
@@ -261,9 +261,9 @@ spec:
     sidecar:
       resources:
         requests:
-          memory: 512Mi
+          memory: 128Mi
         limits:
-          memory: 512Mi
+          memory: 128Mi
       dashboards:
         enabled: true
         searchNamespace: ALL
