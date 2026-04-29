@@ -46,6 +46,14 @@ spec:
       create: false
       mount: true
       claimName: forgejo
+    extraVolumes:
+      - name: catppuccin-theme
+        configMap:
+          name: forgejo-catppuccin-theme
+    extraContainerVolumeMounts:
+      - name: catppuccin-theme
+        mountPath: /data/gitea/public/assets/css
+        readOnly: true
     gitea:
       podAnnotations:
         reloader.stakater.com/auto: "true"
@@ -74,6 +82,9 @@ spec:
           REQUIRE_SIGNIN_VIEW: false
         actions:
           ENABLED: true
+        ui:
+          DEFAULT_THEME: catppuccin-mocha-lavender
+          THEMES: forgejo-auto,forgejo-light,forgejo-dark,auto,gitea,arc-green,catppuccin-mocha-lavender
         mailer:
           ENABLED: true
           PROTOCOL: smtp
