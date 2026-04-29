@@ -38,9 +38,9 @@ spec:
       rootless: true
     resources:
       requests:
-        memory: 192Mi
+        memory: 256Mi
       limits:
-        memory: 192Mi
+        memory: 512Mi
     persistence:
       enabled: true
       create: false
