@@ -8,6 +8,8 @@ resources:
   - httproute.yaml
   - tcproute.yaml
 
+# renovate: datasource=github-releases depName=catppuccin/gitea
+# catppuccin-gitea: v1.0.2
 configMapGenerator:
   - name: forgejo-catppuccin-theme
     files:

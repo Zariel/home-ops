@@ -1,14 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "allowedCommands": [
+    "^\\.renovate/scripts/update-catppuccin-gitea\\.sh$"
+  ],
   "customManagers": [
     {
       "customType": "regex",
       "description": ["Process custom dependencies"],
-      "fileMatch": [
-        "(^|/).taskfiles/.+\\.ya?ml$",
-        "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
-        "(^|/)k8s/.+\\.ya?ml(\\.j2)?$",
-        "(^|/)talos/.+\\.ya?ml$",
+      "managerFilePatterns": [
+        "/(^|/).taskfiles/.+\\.ya?ml$/",
+        "/(^|/)ansible/.+\\.ya?ml(\\.j2)?$/",
+        "/(^|/)k8s/.+\\.ya?ml(\\.j2)?$/",
+        "/(^|/)talos/.+\\.ya?ml$/",
       ],
       "matchStrings": [
         // # renovate: datasource=github-releases depName=k3s-io/k3s
@@ -23,14 +26,30 @@
     {
       "customType": "regex",
       "description": ["Process CloudnativePG Postgresql version"],
-      "fileMatch": [
-        "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
+      "managerFilePatterns": [
+        "/(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$/"
       ],
       "matchStrings": [
         "imageName: (?<depName>\\S+):(?<currentValue>.*\\-.*)"
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "redhat"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": ["Refresh vendored Forgejo Catppuccin theme CSS"],
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["catppuccin/gitea"],
+      "postUpgradeTasks": {
+        "commands": [
+          ".renovate/scripts/update-catppuccin-gitea.sh"
+        ],
+        "fileFilters": [
+          "k8s/apps/default/forgejo/app/themes/theme-catppuccin-mocha-lavender.css"
+        ],
+        "executionMode": "update"
+      }
     }
   ]
 }
