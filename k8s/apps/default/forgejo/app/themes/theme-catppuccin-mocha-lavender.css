@@ -871,3 +871,25 @@ strong.attention-warning {
 .monaco-editor .bracket-highlighting-5 {
   color: rgb(203.8, 185.2, 245.8) !important;
 }
+
+/* Local Forgejo fix: keep danger/red button text readable on red backgrounds. */
+.ui.ui.ui.button:is(.red, .danger, .negative):not(.basic, .inverted) {
+  background-color: var(--color-error-bg) !important;
+  color: var(--color-error-text) !important;
+  text-shadow: none !important;
+}
+
+.ui.ui.ui.button:is(.red, .danger, .negative):not(.basic, .inverted):hover {
+  background-color: var(--color-error-bg-hover) !important;
+  color: var(--color-error-text) !important;
+}
+
+.ui.ui.ui.button:is(.red, .danger, .negative):not(.basic, .inverted):active {
+  background-color: var(--color-error-bg-active) !important;
+  color: var(--color-error-text) !important;
+}
+
+.ui.ui.ui.button:is(.red, .danger, .negative):not(.basic, .inverted) .svg {
+  color: currentColor !important;
+  fill: currentColor !important;
+}
