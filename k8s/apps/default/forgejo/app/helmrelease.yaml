@@ -39,6 +39,7 @@ spec:
     resources:
       requests:
         memory: 256Mi
+        cpu: 200m
       limits:
         memory: 512Mi
     persistence:
