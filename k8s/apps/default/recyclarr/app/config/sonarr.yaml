@@ -261,6 +261,7 @@ custom_formats:
       - 5d2317d99af813b6529c7ebf01c83533 # VDL
       - 77a7b25585c18af08f60b1547bb9b4fb # CC
       - 43b3cf48cb385cd3eac608ee6bca7f09 # UHD Streaming Boost
+      - 218e93e5702f44a68ad9e3c6ba87d2f0 # HD Streaming Boost
       # - d2d299244a92b8a52d4921ce3897a256 # UHD Streaming Cut
       - dc503e2425126fa1d0a9ad6168c83b3f # iPlayer
       - fa5a16b951004c23e980d2913694a137 # itvx
@@ -329,3 +330,19 @@ custom_formats:
         score: -200
       - name: BLURAY-1080p
         score: -200
+  - trash_ids:
+      - 44ccbcbc74506f208973e1463b11705f
+      - c196536ea8122397c5854040d01f2aa7
+      - b40dc2e630723745aab9f1b94f4aab74
+      - 0aef382c4ed4c5eb5d40109dfd351b72
+    assign_scores_to:
+      - name: BLURAY-2160p
+        score: -10000
+      - name: BLURAY-1080p
+        score: -10000
+      - name: WEBDL-2160p
+        score: -10000
+      - name: WEBDL-1080p
+        score: -10000
+      - name: WEBDL
+        score: -10000
