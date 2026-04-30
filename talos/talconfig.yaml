@@ -27,6 +27,8 @@ patches:
           maxPods: 150
           serializeImagePulls: false
           allowedUnsafeSysctls:
+            - net.ipv4.tcp_l3mdev_accept
+            - net.ipv4.udp_l3mdev_accept
             - net.ipv6.conf.*
         nodeIP:
           validSubnets:

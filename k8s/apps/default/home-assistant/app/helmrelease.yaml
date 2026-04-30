@@ -57,6 +57,10 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         sysctls:
+          - name: net.ipv4.tcp_l3mdev_accept
+            value: "1"
+          - name: net.ipv4.udp_l3mdev_accept
+            value: "1"
           - name: net.ipv6.conf.net1.accept_ra
             value: "2"
           - name: net.ipv6.conf.net1.accept_ra_defrtr
