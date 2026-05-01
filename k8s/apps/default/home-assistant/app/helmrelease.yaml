@@ -48,6 +48,7 @@ spec:
             "name": "trusted-lan",
             "namespace": "kube-system",
             "interface": "trusted0",
+            "ips": ["10.1.2.160/24"],
             "mac": "02:b4:5f:2a:9d:62"
           }]
       securityContext:

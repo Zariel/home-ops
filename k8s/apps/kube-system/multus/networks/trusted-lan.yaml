@@ -15,12 +15,7 @@ spec:
           "master": "bond0.20",
           "mode": "bridge",
           "ipam": {
-            "type": "static",
-            "addresses": [
-              {
-                "address": "10.1.2.160/24"
-              }
-            ]
+            "type": "static"
           }
         }
       ]
