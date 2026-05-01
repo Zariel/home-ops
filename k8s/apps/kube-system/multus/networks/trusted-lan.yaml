@@ -18,19 +18,10 @@ spec:
             "type": "static",
             "addresses": [
               {
-                "address": "10.1.2.160/24",
-                "gateway": "10.1.2.1"
-              }
-            ],
-            "routes": [
-              {
-                "dst": "0.0.0.0/0"
+                "address": "10.1.2.160/24"
               }
             ]
           }
-        },
-        {
-          "type": "sbr"
         }
       ]
     }
