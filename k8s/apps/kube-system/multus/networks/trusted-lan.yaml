@@ -33,6 +33,7 @@ spec:
           "type": "vrf",
           "vrfname": "trusted-lan",
           "table": 20
-        }
+        },
+        { "type": "sbr"}
       ]
     }
