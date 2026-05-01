@@ -35,5 +35,4 @@ resources:
   - immich/ks.yaml
   - otbr/ks.yaml
   - ./brrpolice/ks.yaml
-  - ./actual/ks.yaml
   - ./karakeep/ks.yaml
