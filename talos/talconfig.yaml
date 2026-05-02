@@ -128,7 +128,7 @@ controlPlane:
               memory: 3Gi
             limits:
               cpu: 1000m
-              memory: 3Gi
+              memory: 4Gi
           extraArgs:
             feature-gates: MutatingAdmissionPolicy=true
             runtime-config: admissionregistration.k8s.io/v1beta1=true
@@ -140,17 +140,17 @@ controlPlane:
           resources:
             requests:
               cpu: 500m
-              memory: 512Mi
+              memory: 384Mi
             limits:
               cpu: 500m
-              memory: 512Mi
+              memory: 768Mi
           extraArgs:
             bind-address: 0.0.0.0
         scheduler:
           resources:
             requests:
               cpu: 200m
-              memory: 256Mi
+              memory: 128Mi
             limits:
               cpu: 200m
               memory: 256Mi

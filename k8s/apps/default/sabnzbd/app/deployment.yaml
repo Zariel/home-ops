@@ -65,7 +65,7 @@ spec:
                 name: sabnzbd-secret
           resources:
             requests:
-              memory: 3584Mi
+              memory: 512Mi
               cpu: 2000m
             limits:
               memory: 3584Mi

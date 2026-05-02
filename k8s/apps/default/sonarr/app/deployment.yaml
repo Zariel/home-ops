@@ -69,7 +69,7 @@ spec:
           resources:
             requests:
               cpu: "512m"
-              memory: 2Gi
+              memory: 1280Mi
             limits:
               memory: 2Gi
           ports:

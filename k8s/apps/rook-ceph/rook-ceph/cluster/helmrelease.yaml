@@ -57,19 +57,19 @@ spec:
             cpu: 500m
             memory: 768Mi
           limits:
-            memory: 768Mi
+            memory: 1Gi
         mon:
           requests:
             cpu: 500m
             memory: 768Mi
           limits:
-            memory: 768Mi
+            memory: 1Gi
         osd:
           requests:
             cpu: 1
-            memory: 8Gi
+            memory: 6Gi
           limits:
-            memory: 8Gi
+            memory: 10Gi
         mgr-sidecar:
           requests:
             cpu: 50m

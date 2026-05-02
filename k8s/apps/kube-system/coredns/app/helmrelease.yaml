@@ -40,7 +40,7 @@ spec:
       create: true
     resources:
       requests:
-        memory: 128Mi
+        memory: 96Mi
       limits:
         memory: 128Mi
     servers:
