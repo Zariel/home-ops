@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/autobrr/qui
-              tag: develop@sha256:b9dec86be49054746f6645e44758200cd8592b29522eca1b109780607f0ccd95
+              tag: develop@sha256:67af9cc23787a5438567db7ebf859fa8299cb693909647fa433c4f6d9a7b01b0
             env:
               QUI__AUTH_DISABLED: true
               QUI__AUTH_DISABLED_ALLOWED_CIDRS: 0.0.0.0/0
