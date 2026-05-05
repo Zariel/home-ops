@@ -16,10 +16,6 @@ spec:
     spec:
       hostIPC: true
       hostPID: true
-      nodeSelector:
-        feature.node.kubernetes.io/cpu-model.vendor_id: Intel
-        feature.node.kubernetes.io/cpu-model.family: "6"
-        feature.node.kubernetes.io/cpu-model.id: "154"
       initContainers:
         - name: set-coalescing
           image: alpine:3.23

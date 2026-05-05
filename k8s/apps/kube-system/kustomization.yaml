@@ -12,7 +12,6 @@ resources:
   - spegel/ks.yaml
   - coredns/ks.yaml
   - reloader/ks.yaml
-  - node-feature-discovery/ks.yaml
   - intel-resource-driver/ks.yaml
   - descheduler/ks.yaml
   - irqbalance/ks.yaml

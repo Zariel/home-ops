@@ -181,6 +181,8 @@ controlPlane:
           extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
       machine:
+        nodeLabels:
+          intel.feature.node.kubernetes.io/gpu: "true"
         install:
           grubUseUKICmdline:
             $$patch: delete

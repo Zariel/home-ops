@@ -17,8 +17,6 @@ spec:
       hostNetwork: true
       hostPID: true
       hostIPC: true
-      nodeSelector:
-        feature.node.kubernetes.io/cpu-model.vendor_id: Intel
       initContainers:
         - name: download-script
           image: curlimages/curl:latest
