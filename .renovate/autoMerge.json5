@@ -52,7 +52,8 @@
       ],
       "automerge": false,
       "matchPackageNames": [
-        "ghcr.io/home-operations/qbittorrent"
+        "ghcr.io/home-operations/qbittorrent",
+        "ghcr.io/home-operations/qbittorrent-libtorrentv1"
       ]
     },
     {
