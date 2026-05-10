@@ -7,6 +7,8 @@ media_naming:
     standard: standard
 
 quality_profiles:
+  - name: SQP-1
+    tash_id: 5128baeb2b081b72126bc8482b2a86a0
   - name: SQP-2
     trash_id: c3933358ba2356bafc41524f81471069
   - name: SQP-3
@@ -352,6 +354,7 @@ custom_formats:
       - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
       - f537cf427b64c38c8e36298f657e4828 # Scene
     assign_scores_to:
+      - name: SQP-1
       - name: SQP-2
       - name: SQP-3
       - name: SQP-5
