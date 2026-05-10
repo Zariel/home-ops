@@ -85,7 +85,7 @@ spec:
       enableServiceLinks: false
       restartPolicy: Always
       securityContext:
-        fsGroup: 568
+        fsGroup: 3005
         fsGroupChangePolicy: OnRootMismatch
         runAsGroup: 568
         runAsNonRoot: true
@@ -93,7 +93,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
         supplementalGroups:
-          - 10000
+          - 3005
       volumes:
         - name: config
           persistentVolumeClaim:

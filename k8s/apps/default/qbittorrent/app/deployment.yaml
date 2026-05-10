@@ -37,7 +37,7 @@ spec:
             server: nas.cbannister.casa
             path: /mnt/bighorse/music/downloads
       securityContext:
-        runAsNonRoot: false
+        runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 3005
