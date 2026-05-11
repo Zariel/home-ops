@@ -17,7 +17,7 @@ spec:
       namespace: rook-ceph
     - name: external-secrets
       namespace: external-secrets
-  path: ./k8s/apps/foregejo-system/forgejo/app
+  path: ./k8s/apps/forgejo-system/forgejo/app
   postBuild:
     substitute:
       APP: *app
