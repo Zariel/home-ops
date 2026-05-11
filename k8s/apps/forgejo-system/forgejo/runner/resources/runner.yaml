@@ -17,7 +17,7 @@ plugins:
     path: /plugins/forgejo-runner-k8s
     address: "unix:///plugin/forgejo-runner-k8s.sock"
     options:
-      namespace: forgejo
+      namespace: forgejo-system
       poll_timeout: 10m
 runner:
   capacity: 2
