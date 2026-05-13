@@ -8,7 +8,7 @@ media_naming:
 
 quality_profiles:
   - name: SQP-1
-    tash_id: 5128baeb2b081b72126bc8482b2a86a0
+    trash_id: 5128baeb2b081b72126bc8482b2a86a0
   - name: SQP-2
     trash_id: c3933358ba2356bafc41524f81471069
   - name: SQP-3
