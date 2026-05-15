@@ -24,6 +24,22 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: external-dns-cloudflare
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-dns-cloudflare
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      networking.cbannister.xyz/allow-vmagent-scrape: "true"
   values:
     fullnameOverride: *app
     resources:

@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: filebrowser
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: filebrowser
+      app.kubernetes.io/instance: filebrowser
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: network
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: envoy
+              app.kubernetes.io/component: proxy
+              gateway: internal
+      ports:
+        - protocol: TCP
+          port: http

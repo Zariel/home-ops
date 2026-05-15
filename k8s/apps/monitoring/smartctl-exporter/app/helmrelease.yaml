@@ -30,6 +30,22 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: smartctl-exporter-0
+            patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: smartctl-exporter-0
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      networking.cbannister.xyz/allow-vmagent-scrape: "true"
   values:
     fullnameOverride: *app
     resources:
