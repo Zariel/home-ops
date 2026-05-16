@@ -47,6 +47,10 @@ spec:
         sysctls:
           - name: net.ipv4.tcp_notsent_lowat
             value: "131072"
+          - name: net.ipv4.tcp_fastopen
+            value: "3"
+          - name: net.ipv4.tcp_slow_start_after_idle
+            value: "0"
       containers:
         - name: qbittorrent
           image: ghcr.io/home-operations/qbittorrent-libtorrentv1:5.2.0@sha256:84df7567235402431925d5d6ca763b744f612a3e02bfbe71cf64831bb59a08d3
