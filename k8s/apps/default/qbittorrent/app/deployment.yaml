@@ -44,6 +44,9 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [3005]
         seccompProfile: { type: RuntimeDefault }
+        sysctls:
+          - name: net.ipv4.tcp_notsent_lowat
+            value: "131072"
       containers:
         - name: qbittorrent
           image: ghcr.io/home-operations/qbittorrent-libtorrentv1:5.2.0@sha256:84df7567235402431925d5d6ca763b744f612a3e02bfbe71cf64831bb59a08d3

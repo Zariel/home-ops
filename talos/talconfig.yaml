@@ -27,8 +27,8 @@ patches:
           maxPods: 150
           serializeImagePulls: false
           allowedUnsafeSysctls:
-            - net.ipv4.ip_forward
-            - net.ipv6.conf.*
+            - net.ipv4.*
+            - net.ipv6.*
         nodeIP:
           validSubnets:
             - 10.254.1.0/31
