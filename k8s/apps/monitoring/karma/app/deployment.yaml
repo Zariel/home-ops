@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: karma
-          image: ghcr.io/prymitive/karma:v0.130
+          image: ghcr.io/prymitive/karma:v0.131
           resources:
             requests:
               cpu: "10m"
