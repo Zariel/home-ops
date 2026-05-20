@@ -30,7 +30,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: thelounge
-          image: ghcr.io/thelounge/thelounge:4.4.3@sha256:eb3929136e62afe6ce96578b2ab1e15d2135298886b78f81c1ce5cc148f6b0c4
+          image: ghcr.io/thelounge/thelounge:4.5.0@sha256:197048ec6e1a62a1abe7a55b466b24954ea22bd0998c8887b4a8bd1cce696530
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
