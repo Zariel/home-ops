@@ -39,7 +39,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       initContainers:
         - name: write-tls-pem
-          image: docker.io/library/busybox:1.37.0
+          image: docker.io/library/busybox:1.38.0
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
