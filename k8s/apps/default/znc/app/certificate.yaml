@@ -1,0 +1,22 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: znc
+spec:
+  secretName: znc-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+      - znc
+  issuerRef:
+    name: cluster-ca
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: znc.default.svc.cluster.local
+  dnsNames:
+    - znc
+    - znc.default
+    - znc.default.svc
+    - znc.default.svc.cluster.local
