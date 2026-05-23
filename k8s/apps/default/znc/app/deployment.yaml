@@ -29,6 +29,10 @@ spec:
             defaultMode: 0440
         - name: tls-pem
           emptyDir: {}
+        - name: custom-init
+          configMap:
+            name: znc-custom-init
+            defaultMode: 0775
       securityContext:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
@@ -83,6 +87,10 @@ spec:
             - name: tls-pem
               mountPath: /config/znc.pem
               subPath: znc.pem
+              readOnly: true
+            - name: custom-init
+              mountPath: /custom-cont-init.d/disable-protected-web-sessions.sh
+              subPath: disable-protected-web-sessions.sh
               readOnly: true
           startupProbe:
             tcpSocket:

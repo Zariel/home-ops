@@ -7,3 +7,9 @@ resources:
   - deployment.yaml
   - httproute.yaml
   - service.yaml
+configMapGenerator:
+  - name: znc-custom-init
+    files:
+      - disable-protected-web-sessions.sh=resources/disable-protected-web-sessions.sh
+generatorOptions:
+  disableNameSuffixHash: true
