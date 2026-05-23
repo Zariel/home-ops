@@ -1,0 +1,103 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app znc
+  labels:
+    app: *app
+spec:
+  selector:
+    matchLabels:
+      app: *app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: *app
+      annotations:
+        reloader.stakater.com/auto: "true"
+    spec:
+      hostname: *app
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: *app
+        - name: tls
+          secret:
+            secretName: znc-tls
+            defaultMode: 0400
+        - name: tls-pem
+          emptyDir: {}
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+      initContainers:
+        - name: write-tls-pem
+          image: docker.io/library/busybox:1.37.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - cat /tls/tls.crt /tls/tls.key > /tls-pem/znc.pem && chown 568:568 /tls-pem/znc.pem && chmod 0600 /tls-pem/znc.pem
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            - name: tls-pem
+              mountPath: /tls-pem
+      containers:
+        - name: *app
+          image: lscr.io/linuxserver/znc:latest@sha256:b0d54f5ce3f88e2f42af4a95784ebbea94ddb037bef59cba7cde05b196c4bbe6
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "568"
+            - name: PGID
+              value: "568"
+            - name: TZ
+              value: Europe/London
+          ports:
+            - containerPort: 6501
+              name: web
+            - containerPort: 6697
+              name: irc-tls
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: tls-pem
+              mountPath: /config/znc.pem
+              subPath: znc.pem
+              readOnly: true
+          startupProbe:
+            tcpSocket:
+              port: web
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            tcpSocket:
+              port: web
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            tcpSocket:
+              port: web
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3

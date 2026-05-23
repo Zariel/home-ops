@@ -16,6 +16,7 @@ resources:
   - smtp-relay/ks.yaml
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
+  - znc/ks.yaml
   - cross-seed/ks.yaml
   - filebrowser/ks.yaml
   - seerr/ks.yaml
