@@ -26,7 +26,7 @@ spec:
         - name: tls
           secret:
             secretName: znc-tls
-            defaultMode: 0400
+            defaultMode: 0440
         - name: tls-pem
           emptyDir: {}
       securityContext:
@@ -40,8 +40,11 @@ spec:
           command:
             - /bin/sh
             - -c
-            - cat /tls/tls.crt /tls/tls.key > /tls-pem/znc.pem && chown 568:568 /tls-pem/znc.pem && chmod 0600 /tls-pem/znc.pem
+            - cat /tls/tls.crt /tls/tls.key > /tls-pem/znc.pem && chmod 0600 /tls-pem/znc.pem
           securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
             allowPrivilegeEscalation: false
             capabilities: { drop: ["ALL"] }
           volumeMounts:
