@@ -14,12 +14,20 @@ spec:
     metadata:
       labels:
         app: thelounge
+      annotations:
+        reloader.stakater.com/auto: "true"
     spec:
       hostname: thelounge
       volumes:
         - name: config
           persistentVolumeClaim:
             claimName: thelounge
+        - name: cluster-ca-certificates
+          configMap:
+            name: cluster-ca-certificates.crt
+            items:
+              - key: ca-certificates.crt
+                path: ca-certificates.crt
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -39,6 +47,8 @@ spec:
               value: /config/thelounge
             - name: SQLITE_TMPDIR
               value: /config/thelounge/_tmp
+            - name: NODE_EXTRA_CA_CERTS
+              value: /etc/ssl/certs/cluster-ca-certificates.crt
           securityContext:
             allowPrivilegeEscalation: false
             capabilities: { drop: ["ALL"] }
@@ -67,3 +77,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: cluster-ca-certificates
+              mountPath: /etc/ssl/certs/cluster-ca-certificates.crt
+              subPath: ca-certificates.crt
+              readOnly: true
