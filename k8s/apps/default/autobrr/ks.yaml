@@ -16,6 +16,8 @@ spec:
       namespace: rook-ceph
     - name: onepassword-store
       namespace: external-secrets
+    - name: cluster-ca-bundle
+      namespace: cert-manager
   path: ./k8s/apps/default/autobrr/app
   prune: true
   postBuild:

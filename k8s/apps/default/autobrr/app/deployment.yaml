@@ -37,6 +37,12 @@ spec:
           configMap:
             name: autobrr-scripts
             defaultMode: 0775
+        - name: cluster-ca-certificates
+          configMap:
+            name: cluster-ca-certificates.crt
+            items:
+              - key: ca-certificates.crt
+                path: ca-certificates.crt
       containers:
         - name: autobrr
           image: ghcr.io/autobrr/autobrr:v1.79.0@sha256:5b8c29a86598907496af01ec75ef21f9c0e4e28ce9d6ae6496ef91c71543ec20
@@ -50,6 +56,8 @@ spec:
               value: "80"
             - name: AUTOBRR__HOST
               value: "0.0.0.0"
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/certs/ca-certificates.crt
           envFrom:
             - secretRef:
                 name: autobrr-secret
@@ -73,6 +81,10 @@ spec:
               mountPath: /config
             - name: scripts
               mountPath: /scripts
+            - name: cluster-ca-certificates
+              mountPath: /etc/ssl/certs/ca-certificates.crt
+              subPath: ca-certificates.crt
+              readOnly: true
           startupProbe:
             httpGet:
               path: /api/healthz/liveness
