@@ -59,12 +59,14 @@ spec:
               args:
                 - clean
                 - qb
+                - --dry-run
               <<: *container
           containers:
             - name: orphan
               args:
                 - orphan
                 - qb
+                - --dry-run
               <<: *container
           volumes:
             - name: config-dir
