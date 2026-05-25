@@ -115,3 +115,11 @@ spec:
         path: /mnt/bighorse/arr
         globalMounts:
           - path: /data
+            readOnly: true
+      music:
+        type: nfs
+        server: nas.cbannister.casa
+        path: /mnt/bighorse/music/downloads
+        globalMounts:
+          - path: /data/downloads/torrents/complete/music
+            readOnly: true
