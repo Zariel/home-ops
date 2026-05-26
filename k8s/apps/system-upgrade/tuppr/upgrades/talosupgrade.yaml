@@ -13,17 +13,61 @@ spec:
   healthChecks:
     - apiVersion: v1
       kind: Pod
+      name: kube-apiserver-k8s-0
       namespace: kube-system
-      labelSelector:
-        matchLabels:
-          app.kubernetes.io/component: control-plane
-          app.kubernetes.io/managed-by: Talos
-          tier: control-plane
-      description: Kubernetes control plane pods are healthy
-      expr: |-
+      description: Kubernetes API server is healthy on k8s-0
+      expr: &controlPlanePodHealthy |-
         status.phase == "Running" &&
         status.conditions.exists(c, c.type == "Ready" && c.status == "True") &&
         status.containerStatuses.all(c, c.ready == true)
+    - apiVersion: v1
+      kind: Pod
+      name: kube-apiserver-k8s-1
+      namespace: kube-system
+      description: Kubernetes API server is healthy on k8s-1
+      expr: *controlPlanePodHealthy
+    - apiVersion: v1
+      kind: Pod
+      name: kube-apiserver-k8s-2
+      namespace: kube-system
+      description: Kubernetes API server is healthy on k8s-2
+      expr: *controlPlanePodHealthy
+    - apiVersion: v1
+      kind: Pod
+      name: kube-controller-manager-k8s-0
+      namespace: kube-system
+      description: Kubernetes controller manager is healthy on k8s-0
+      expr: *controlPlanePodHealthy
+    - apiVersion: v1
+      kind: Pod
+      name: kube-controller-manager-k8s-1
+      namespace: kube-system
+      description: Kubernetes controller manager is healthy on k8s-1
+      expr: *controlPlanePodHealthy
+    - apiVersion: v1
+      kind: Pod
+      name: kube-controller-manager-k8s-2
+      namespace: kube-system
+      description: Kubernetes controller manager is healthy on k8s-2
+      expr: *controlPlanePodHealthy
+    - apiVersion: v1
+      kind: Pod
+      name: kube-scheduler-k8s-0
+      namespace: kube-system
+      description: Kubernetes scheduler is healthy on k8s-0
+      expr: *controlPlanePodHealthy
+    - apiVersion: v1
+      kind: Pod
+      name: kube-scheduler-k8s-1
+      namespace: kube-system
+      description: Kubernetes scheduler is healthy on k8s-1
+      expr: *controlPlanePodHealthy
+    - apiVersion: v1
+      kind: Pod
+      name: kube-scheduler-k8s-2
+      namespace: kube-system
+      description: Kubernetes scheduler is healthy on k8s-2
+      expr: *controlPlanePodHealthy
     - apiVersion: volsync.backube/v1alpha1
       kind: ReplicationSource
       expr: |-
