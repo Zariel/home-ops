@@ -20,8 +20,12 @@ spec:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
-        barmanObjectName: pg18vc-local-ceph
+        barmanObjectName: pg18vc-nas-rustfs
         serverName: pg18vc-v1
+  monitoring:
+    customQueriesConfigMap:
+      - name: cnpg-default-monitoring
+        key: queries
   postgresql:
     extensions:
       - name: postgis

@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pg18vc
+spec:
+  groups:
+    - name: pg18vc.rules
+      rules:
+        - alert: PostgresPodCrashLooping
+          annotations:
+            summary: >-
+              {{ $labels.namespace }}/{{ $labels.pod }} PostgreSQL container is
+              crash looping.
+          expr: |
+            kube_pod_container_status_waiting_reason{
+              namespace="database",
+              pod=~"pg18vc-[0-9]+",
+              reason="CrashLoopBackOff"
+            } == 1
+          for: 10m
+          labels:
+            severity: critical
+        - alert: PostgresPVCFilling
+          annotations:
+            summary: >-
+              {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }}
+              PostgreSQL PVC has less than 15% free space.
+          expr: |
+            kubelet_volume_stats_available_bytes{
+              namespace="database",
+              persistentvolumeclaim=~"pg18vc-[0-9]+"
+            }
+            /
+            kubelet_volume_stats_capacity_bytes{
+              namespace="database",
+              persistentvolumeclaim=~"pg18vc-[0-9]+"
+            } < 0.15
+          for: 15m
+          labels:
+            severity: warning
+        - alert: PostgresWALArchiveBacklog
+          annotations:
+            summary: >-
+              {{ $labels.namespace }}/{{ $labels.pod }} has WAL files waiting
+              to be archived.
+          expr: |
+            cnpg_collector_pg_wal_archive_status{
+              namespace="database",
+              pod=~"pg18vc-[0-9]+",
+              value="ready"
+            } > 10
+          for: 15m
+          labels:
+            severity: critical
