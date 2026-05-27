@@ -20,3 +20,25 @@ spec:
       compression: zstd
       maxParallel: 4
   retentionPolicy: 30d
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: pg18vc-nas-rustfs
+spec:
+  configuration:
+    data:
+      compression: bzip2
+    destinationPath: s3://pg18vc/
+    endpointURL: http://nas.cbannister.casa:30292
+    s3Credentials:
+      accessKeyId:
+        name: pg18vc-rustfs
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKey:
+        name: pg18vc-rustfs
+        key: AWS_SECRET_ACCESS_KEY
+    wal:
+      compression: zstd
+      maxParallel: 4
+  retentionPolicy: 30d
