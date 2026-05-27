@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  generate:
+    desc: Render Flatcar artifacts with real bootstrap material
+    env:
+      FLATCAR_CONFIG: '{{.config | default ""}}'
+    cmd: "{{.ROOT_DIR}}/flatcar/render.sh"
+
+  generate:check:
+    desc: Check Flatcar rendering with throwaway material and no persistent output
+    env:
+      FLATCAR_CONFIG: '{{.config | default ""}}'
+    cmd: "{{.ROOT_DIR}}/flatcar/render.sh --check"
+
+  matchbox:bundle:
+    desc: Build Flatcar matchbox bundle with Ignition, profiles, groups, and PXE assets
+    env:
+      FLATCAR_CONFIG: '{{.config | default ""}}'
+      FLATCAR_INSTALLERS: '{{.installers | default "all"}}'
+    cmd: bash {{.ROOT_DIR}}/flatcar/scripts/matchbox-bundle.sh
+
+  matchbox:push:
+    desc: Build and push Flatcar matchbox bundle to matchbox host
+    deps: ["matchbox:bundle"]
+    env:
+      HOST: '{{.host | default "vyos@gateway"}}'
+      MATCHBOX_DEST: '{{.dest | default "/config/containers/matchbox/"}}'
+    cmd: rsync -av --delete --delay-updates {{.ROOT_DIR}}/artifacts/flatcar/matchbox/ ${HOST}:${MATCHBOX_DEST}
+
+  pxe:list:
+    desc: List UEFI boot entries on a Flatcar node
+    cmd: >-
+      {{.ROOT_DIR}}/flatcar/scripts/pxe-once.sh
+      {{if .node}}--node {{.node}}{{end}}
+      {{if .host}}--host {{.host}}{{end}}
+      {{if .user}}--user {{.user}}{{end}}
+      --list
+
+  pxe-once:
+    desc: Set one-time UEFI PXE boot for a Flatcar node
+    summary: |
+      Sets UEFI BootNext to a PXE/IPv4 boot entry using efibootmgr on the
+      target node. This does not permanently change firmware boot order.
+
+      Args:
+        node: Node hostname from flatcar/config.pkl, for example k8s-0
+        host: SSH host/IP, used instead of node lookup
+        user: SSH user, defaults to core
+        entry: Explicit UEFI Boot#### value, for example 0007
+        mac: Match PXE entry by MAC address, defaults to node mac when node is set
+        reboot: Set to true to start the remote systemd unit and reboot after BootNext is set
+
+      Examples:
+        task flatcar:pxe:list node=k8s-0
+        task flatcar:pxe-once node=k8s-0
+        task flatcar:pxe-once node=k8s-0 reboot=true
+        task flatcar:pxe-once host=10.1.10.10 mac=58:47:ca:78:d2:44 reboot=true
+        task flatcar:pxe-once host=10.1.10.10 entry=0007 reboot=true
+    prompt: Set one-time PXE boot for this Flatcar node... continue?
+    cmd: >-
+      {{.ROOT_DIR}}/flatcar/scripts/pxe-once.sh
+      {{if .node}}--node {{.node}}{{end}}
+      {{if .host}}--host {{.host}}{{end}}
+      {{if .user}}--user {{.user}}{{end}}
+      {{if .entry}}--entry {{.entry}}{{end}}
+      {{if .mac}}--mac {{.mac}}{{end}}
+      {{if eq (default "false" .reboot) "true"}}--reboot{{end}}
+
+  lab:plan:
+    desc: Print Proxmox disposable lab VM actions
+    cmd: >-
+      {{.ROOT_DIR}}/flatcar/scripts/proxmox-lab.py
+      --config {{.config | default "flatcar/proxmox-lab.pkl"}}
+      {{if eq (default "false" .dryRun) "true"}}--dry-run{{end}}
+      plan
+
+  lab:up:
+    desc: Create and optionally start Proxmox disposable lab VMs
+    cmd: >-
+      {{.ROOT_DIR}}/flatcar/scripts/proxmox-lab.py
+      --config {{.config | default "flatcar/proxmox-lab.pkl"}}
+      {{if eq (default "false" .dryRun) "true"}}--dry-run{{end}}
+      up
+
+  lab:destroy:
+    desc: Destroy Proxmox disposable lab VMs from the lab config
+    prompt: Destroy Proxmox lab VMs listed in the config... continue?
+    cmd: >-
+      {{.ROOT_DIR}}/flatcar/scripts/proxmox-lab.py
+      --config {{.config | default "flatcar/proxmox-lab.pkl"}}
+      {{if eq (default "false" .dryRun) "true"}}--dry-run{{end}}
+      destroy
+
+  lab:recreate:
+    desc: Destroy and recreate Proxmox disposable lab VMs
+    prompt: Recreate Proxmox lab VMs listed in the config... continue?
+    cmd: >-
+      {{.ROOT_DIR}}/flatcar/scripts/proxmox-lab.py
+      --config {{.config | default "flatcar/proxmox-lab.pkl"}}
+      {{if eq (default "false" .dryRun) "true"}}--dry-run{{end}}
+      recreate

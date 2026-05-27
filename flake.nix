@@ -17,7 +17,12 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) [
+            "1password-cli"
+          ];
+        };
       in
       {
         devShells.default = pkgs.mkShell {
@@ -25,12 +30,17 @@
           buildInputs = with pkgs; [
             inputs.talhelper.packages.${system}.default
             talosctl
+            butane
+            minijinja
             yq-go
             jq
             curl
+            openssl
+            python3
             rsync
             gitMinimal
             openssh
+            _1password-cli
             go-task
             age
             gnupg

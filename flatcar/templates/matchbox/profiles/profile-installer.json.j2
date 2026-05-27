@@ -1,0 +1,17 @@
+{
+  "id": "{{ node.hostname }}-installer",
+  "name": "{{ node.hostname }}-installer",
+  "ignition_id": "installers/{{ node.hostname }}.ign",
+  "boot": {
+    "kernel": "/assets/flatcar/current/flatcar_production_pxe.vmlinuz",
+    "initrd": [
+      "/assets/flatcar/current/flatcar_production_pxe_image.cpio.gz"
+    ],
+    "args": [
+      "initrd=flatcar_production_pxe_image.cpio.gz",
+      "flatcar.first_boot=1",
+      "flatcar.autologin",
+      "ignition.config.url={{ matchbox_http_base }}/ignition?mac=${mac:hexhyp}&stage=installer"
+    ]
+  }
+}

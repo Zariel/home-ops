@@ -1,0 +1,127 @@
+import "config.schema.pkl" as schema
+
+local function section(sectionName, sectionSettings) = schema.section(sectionName, sectionSettings)
+
+local function networkdFile(fileName, fileSections) = schema.networkdFile(fileName, fileSections)
+
+local function labNode(nodeName, bootstrapNode, nodeMac, nodeIp) = new schema.Node {
+  hostname = nodeName
+  bootstrap = bootstrapNode
+  roles {
+    "proxmox-vm"
+  }
+  mac = nodeMac
+  install_disk = "/dev/sda"
+  management_ip = "\(nodeIp)/24"
+  bond_ip = "\(nodeIp)/24"
+  bond_gateway = "10.99.0.1"
+  rook_vlan_ip = "\(nodeIp)/24"
+  bird_router_id = nodeIp
+  extra_disks {
+    schema.extraDisk("/dev/sdb", "/var/mnt/local-hostpath", "xfs")
+  }
+}
+
+local proxmoxVmNetworkdFiles = new Listing {
+  networkdFile("20-bond0.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bond0"
+      Kind = "bond"
+      MTUBytes = 1500
+    })
+    section("Bond", new Dynamic {
+      Mode = "active-backup"
+      MIIMonitorSec = "100ms"
+    })
+  })
+
+  networkdFile("21-ens18.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "ens18"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "enslaved"
+    })
+    section("Network", new Dynamic {
+      Bond = "bond0"
+    })
+  })
+
+  networkdFile("22-bond0.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bond0"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "routable"
+    })
+    section("Network", new Dynamic {
+      Address = "{{ node.bond_ip }}"
+      Gateway = "{{ node.bond_gateway }}"
+      DNS = "172.53.53.53"
+    })
+  })
+
+  networkdFile("40-bird0.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bird0"
+      Kind = "dummy"
+    })
+  })
+
+  networkdFile("41-bird0.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bird0"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "no"
+    })
+    section("Network", new Dynamic {
+      Address = "{{ node.bird_router_id }}/32"
+    })
+  })
+}
+
+cluster = new schema.Cluster {
+  name = "hollywoo-lab"
+  control_plane_endpoint = "10.99.0.100:6443"
+  api_server_vip = "10.99.0.100"
+  pod_cidr = "172.20.0.0/16"
+  service_cidr = "172.21.0.0/16"
+  dns_domain = "cluster.local"
+}
+
+bakery = new Listing {
+  new schema.Bakery {
+    name = "kubernetes"
+    version = "v1.36.1"
+    sha = "a859e32f62377c9c0af2728f7ec27dafd6164b87ae266fffa47a8c947ff54732"
+  }
+  new schema.Bakery {
+    name = "containerd"
+    version = "2.3.1"
+    sha = "c4b8e6b68d0fb541c6fdf936d9b60966c98712f2c52280a70a4fddff08349cc0"
+  }
+}
+
+roles = new Listing {
+  new schema.Role {
+    name = "proxmox-vm"
+    wait_online {
+      networkd {
+        "bond0:routable"
+      }
+      kubelet {
+        "bond0:routable"
+      }
+    }
+    networkd {
+      files = proxmoxVmNetworkdFiles
+    }
+  }
+}
+
+nodes = new Listing {
+  labNode("flatcar-lab-0", true, "52:54:00:93:00:10", "10.99.0.10")
+  labNode("flatcar-lab-1", false, "52:54:00:93:00:11", "10.99.0.11")
+  labNode("flatcar-lab-2", false, "52:54:00:93:00:12", "10.99.0.12")
+}

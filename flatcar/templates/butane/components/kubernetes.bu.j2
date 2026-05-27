@@ -1,0 +1,123 @@
+variant: flatcar
+version: 1.1.0
+storage:
+  links:
+    - target: /opt/extensions/kubernetes/{{ bakery.kubernetes.sysext }}
+      path: /etc/extensions/kubernetes.raw
+      hard: false
+    - target: /usr/lib/systemd/system/kubelet.service
+      path: /etc/systemd/system/multi-user.target.wants/kubelet.service
+      overwrite: true
+      hard: false
+  files:
+    - path: /opt/extensions/kubernetes/{{ bakery.kubernetes.sysext }}
+      mode: 0644
+      contents:
+        source: https://extensions.flatcar.org/extensions/{{ bakery.kubernetes.sysext }}
+        verification:
+          hash: sha256-{{ bakery.kubernetes.sha }}
+    - path: /etc/sysupdate.kubernetes.d/kubernetes.conf
+      mode: 0644
+      contents:
+        source: https://extensions.flatcar.org/extensions/kubernetes/kubernetes-{{ bakery.kubernetes.minor }}.conf
+    - path: /etc/kubernetes/audit-policy.yaml
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: audit.k8s.io/v1
+          kind: Policy
+          rules:
+            - level: Metadata
+    - path: /etc/kubernetes/scheduler-config.yaml
+      mode: 0644
+      contents:
+        inline: |
+          apiVersion: kubescheduler.config.k8s.io/v1
+          kind: KubeSchedulerConfiguration
+          profiles:
+            - schedulerName: default-scheduler
+              plugins:
+                score:
+                  disabled:
+                    - name: ImageLocality
+              pluginConfig:
+                - name: PodTopologySpread
+                  args:
+                    defaultingType: List
+                    defaultConstraints:
+                      - maxSkew: 1
+                        topologyKey: kubernetes.io/hostname
+                        whenUnsatisfiable: ScheduleAnyway
+    - path: /etc/kubernetes/patches/kube-apiserver0+merge.yaml
+      mode: 0644
+      contents:
+        inline: |
+          spec:
+            containers:
+              - name: kube-apiserver
+                resources:
+                  requests:
+                    cpu: 1000m
+                    memory: 3Gi
+                  limits:
+                    cpu: 1000m
+                    memory: 4Gi
+    - path: /etc/kubernetes/patches/kube-controller-manager0+merge.yaml
+      mode: 0644
+      contents:
+        inline: |
+          spec:
+            containers:
+              - name: kube-controller-manager
+                resources:
+                  requests:
+                    cpu: 500m
+                    memory: 384Mi
+                  limits:
+                    cpu: 500m
+                    memory: 768Mi
+    - path: /etc/kubernetes/patches/kube-scheduler0+merge.yaml
+      mode: 0644
+      contents:
+        inline: |
+          spec:
+            containers:
+              - name: kube-scheduler
+                resources:
+                  requests:
+                    cpu: 200m
+                    memory: 128Mi
+                  limits:
+                    cpu: 200m
+                    memory: 256Mi
+systemd:
+  units:
+    - name: kubelet.service
+      enabled: true
+      dropins:
+        - name: 20-flatcar-kubeadm.conf
+          contents: |
+            [Service]
+            Environment="PATH=/opt/bin:/usr/sbin:/usr/bin"
+    - name: kubeadm.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Bootstrap Kubernetes with kubeadm
+        Requires=containerd.service
+        After=containerd.service network-online.target systemd-networkd.service systemd-sysext.service
+        Wants=network-online.target
+        ConditionPathExists=!/var/lib/flatcar-kubeadm/complete
+        StartLimitIntervalSec=0
+
+        [Service]
+        Type=oneshot
+        Environment="PATH=/opt/bin:/usr/sbin:/usr/bin"
+        ExecStartPre=/usr/lib/systemd/systemd-networkd-wait-online --interface=bond0:routable --timeout=30
+        TimeoutStartSec=30min
+        Restart=on-failure
+        RestartSec=30s
+        ExecStart=/opt/bin/kubeadm-bootstrap
+
+        [Install]
+        WantedBy=multi-user.target

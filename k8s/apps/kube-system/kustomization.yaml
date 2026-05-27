@@ -6,7 +6,6 @@ components:
   - ../../components/common
 resources:
   - priorityclasses
-  - bird/ks.yaml
   - cilium/ks.yaml
   - metrics-server
   - spegel/ks.yaml
@@ -17,4 +16,4 @@ resources:
   - irqbalance/ks.yaml
   - multus/ks.yaml
   - generic-device-plugin/ks.yaml
-  # - vrf-mgmt/ks.yaml
+  - kured/ks.yaml
