@@ -35,9 +35,6 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: snapshot-controller
-      namespace: volsync-system
   values:
     logLevel: DEBUG
     csi:
