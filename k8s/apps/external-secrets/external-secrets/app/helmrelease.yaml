@@ -36,6 +36,35 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: external-secrets
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      networking.cbannister.xyz/allow-vmagent-scrape: "true"
+          - target:
+              kind: Deployment
+              name: external-secrets-cert-controller
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets-cert-controller
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      networking.cbannister.xyz/allow-vmagent-scrape: "true"
   values:
     installCRDs: true
     image: &image

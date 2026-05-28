@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: *app
+        networking.cbannister.xyz/allow-vmagent-scrape: "true"
     spec:
       priorityClassName: cluster-p2
       volumes:

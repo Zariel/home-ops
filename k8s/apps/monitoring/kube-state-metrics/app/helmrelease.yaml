@@ -27,6 +27,22 @@ spec:
   dependsOn:
     - name: prometheus-operator-crds
       namespace: monitoring
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: kube-state-metrics
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: kube-state-metrics
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      networking.cbannister.xyz/allow-vmagent-scrape: "true"
   values:
     metricLabelsAllowlist:
       - pods=[*]

@@ -5,6 +5,7 @@ namespace: network
 components:
   - ../../components/common
 resources:
+  - network-policies/ks.yaml
   - external-dns/ks.yaml
   - cloudflared/ks.yaml
   - bind/ks.yaml

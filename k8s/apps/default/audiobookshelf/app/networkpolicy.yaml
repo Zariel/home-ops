@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: audiobookshelf
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: audiobookshelf
+      app.kubernetes.io/instance: audiobookshelf
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: network
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: envoy
+              app.kubernetes.io/component: proxy
+              gateway: external
+      ports:
+        - protocol: TCP
+          port: http

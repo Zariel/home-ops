@@ -33,6 +33,35 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: cert-manager
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: cert-manager
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      networking.cbannister.xyz/allow-vmagent-scrape: "true"
+          - target:
+              kind: Deployment
+              name: cert-manager-cainjector
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: cert-manager-cainjector
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      networking.cbannister.xyz/allow-vmagent-scrape: "true"
   values:
     replicaCount: 2
     crds:
