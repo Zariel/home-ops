@@ -31,43 +31,10 @@ jobs:
             k8s/**/*
             .github/workflows/flate.yaml
 
-  test:
+  flate:
     if: ${{ needs.filter.outputs.changed-files != '[]' }}
     needs: filter
-    name: Flate - Test
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        resource:
-          - hr
-          - ks
-      fail-fast: false
-    steps:
-      - name: Checkout Pull Request Branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-          path: pull
-
-      - name: Checkout Default Branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-          ref: ${{ github.event.repository.default_branch }}
-          path: default
-
-      - name: Setup flate
-        uses: home-operations/flate/action@02a264ddeba1f36350b243b7ee4ff1af8497bfba # 0.1.28
-
-      - name: Run flate test
-        env:
-          RESOURCE: ${{ matrix.resource }}
-        run: flate test "$RESOURCE" --path ./pull/k8s --path-orig ./default/k8s
-
-  diff:
-    if: ${{ needs.filter.outputs.changed-files != '[]' }}
-    needs: filter
-    name: Flate - Diff
+    name: Flate
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -75,66 +42,54 @@ jobs:
     strategy:
       matrix:
         resource:
-          - hr
-          - ks
+          - helmrelease
+          - kustomization
       fail-fast: false
     steps:
-      - name: Generate Token
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Flate
+        uses: home-operations/flate/action@02a264ddeba1f36350b243b7ee4ff1af8497bfba # 0.1.28
+        with:
+          cache: true
+
+      - name: Run Flate
+        id: flate
+        env:
+          FLATE_PATH: ./k8s/flux
+        run: |-
+          {
+            echo 'diff<<EOF'
+            flate diff ${{ matrix.resource }}
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - if: ${{ steps.flate.outputs.diff != '' }}
+        name: Generate Token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - name: Checkout Pull Request Branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          persist-credentials: false
-          path: pull
-
-      - name: Checkout Default Branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          persist-credentials: false
-          ref: ${{ github.event.repository.default_branch }}
-          path: default
-
-      - name: Setup flate
-        uses: home-operations/flate/action@02a264ddeba1f36350b243b7ee4ff1af8497bfba # 0.1.28
-
-      - name: Run flate diff
-        env:
-          RESOURCE: ${{ matrix.resource }}
-        run: flate diff "$RESOURCE" --path ./pull/k8s --path-orig ./default/k8s > diff.patch
-
-      - name: Generate Diff
-        id: diff
-        run: |-
-          {
-            echo 'diff<<EOF'
-            head -c 10000 diff.patch
-            echo
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
-
-      - if: ${{ steps.diff.outputs.diff != '' }}
+      - if: ${{ steps.flate.outputs.diff != '' }}
         name: Add Comment
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        uses: mshick/add-pr-comment@8e4927817251f1ff60c001f04568532b38e0b4a0 # v3.11.0
         with:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          header: ${{ github.event.pull_request.number }}/k8s/${{ matrix.resource }}
+          repo-token: ${{ steps.app-token.outputs.token }}
+          message-id: ${{ github.event.pull_request.number }}/k8s/${{ matrix.resource }}
           message: |-
             ```diff
-            ${{ steps.diff.outputs.diff }}
+            ${{ steps.flate.outputs.diff }}
             ```
 
   success:
-    if: ${{ always() && !cancelled() }}
-    needs:
-      - test
-      - diff
+    if: ${{ !cancelled() }}
+    needs: flate
     name: Flate - Success
     runs-on: ubuntu-latest
     steps:
