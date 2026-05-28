@@ -58,8 +58,6 @@ jobs:
 
       - name: Setup flate
         uses: home-operations/flate/action@02a264ddeba1f36350b243b7ee4ff1af8497bfba # 0.1.28
-        with:
-          version: 0.1.28
 
       - name: Run flate test
         env:
@@ -105,8 +103,6 @@ jobs:
 
       - name: Setup flate
         uses: home-operations/flate/action@02a264ddeba1f36350b243b7ee4ff1af8497bfba # 0.1.28
-        with:
-          version: 0.1.28
 
       - name: Run flate diff
         env:

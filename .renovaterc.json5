@@ -53,5 +53,13 @@
       matchDatasources: ["docker"],
       minimumReleaseAge: "0 days",
     },
+    {
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["home-operations/flate", "home-operations/flate/action"],
+      minimumReleaseAge: "0 days",
+      automerge: true,
+      automergeType: "pr",
+      ignoreTests: false,
+    },
   ],
 }
