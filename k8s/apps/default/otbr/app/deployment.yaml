@@ -23,6 +23,7 @@ spec:
             "mac": "0a:92:17:bd:44:6e"
           }]
     spec:
+      hostname: otbr
       containers:
         - name: otbr
           image: ghcr.io/ownbee/hass-otbr-docker:v0.3.0
