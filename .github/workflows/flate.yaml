@@ -85,7 +85,7 @@ jobs:
         id: flate
         env:
           FLATE_ALLOW_MISSING_SECRETS: "true"
-          FLATE_PATH: ./k8s/flux
+          FLATE_PATH: ./k8s/flux/config
         run: |-
           set -o pipefail
 
