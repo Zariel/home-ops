@@ -39,6 +39,9 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    env:
+      # renovate: datasource=github-tags depName=home-operations/flate versioning=semver
+      FLATE_VERSION: 0.1.28
     strategy:
       matrix:
         resource:
@@ -52,10 +55,31 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Setup Flate
-        uses: home-operations/flate/action@02a264ddeba1f36350b243b7ee4ff1af8497bfba # 0.1.28
+      - name: Checkout Flate
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          repository: home-operations/flate
+          ref: ${{ env.FLATE_VERSION }}
+          path: .tools/flate
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: .tools/flate/go.mod
           cache: true
+          cache-dependency-path: .tools/flate/go.sum
+
+      - name: Build Flate
+        working-directory: .tools/flate
+        run: |-
+          mkdir -p "${GITHUB_WORKSPACE}/.tools/bin"
+          go build -trimpath -o "${GITHUB_WORKSPACE}/.tools/bin/flate" ./cmd/flate
+
+      - name: Setup Flate
+        run: |-
+          echo "${GITHUB_WORKSPACE}/.tools/bin" >> "$GITHUB_PATH"
+          "${GITHUB_WORKSPACE}/.tools/bin/flate" --version
 
       - name: Run Flate
         id: flate
