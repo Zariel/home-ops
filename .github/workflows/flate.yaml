@@ -63,9 +63,24 @@ jobs:
           FLATE_ALLOW_MISSING_SECRETS: "true"
           FLATE_PATH: ./k8s/flux
         run: |-
+          set -o pipefail
+
+          flate diff ${{ matrix.resource }} | tee diff.patch
+
+          if [ "$(wc -c < diff.patch)" -gt 10000 ]; then
+            {
+              head -c 10000 diff.patch
+              echo
+              echo
+              echo "... diff truncated; see workflow logs for full output ..."
+            } > diff-comment.patch
+          else
+            cp diff.patch diff-comment.patch
+          fi
+
           {
             echo 'diff<<EOF'
-            flate diff ${{ matrix.resource }}
+            cat diff-comment.patch
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
