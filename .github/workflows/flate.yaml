@@ -60,6 +60,7 @@ jobs:
       - name: Run Flate
         id: flate
         env:
+          FLATE_ALLOW_MISSING_SECRETS: "true"
           FLATE_PATH: ./k8s/flux
         run: |-
           {
