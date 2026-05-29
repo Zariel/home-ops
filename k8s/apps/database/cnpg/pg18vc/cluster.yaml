@@ -21,7 +21,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: pg18vc-nas-rustfs
-        serverName: pg18vc-v1
+        serverName: pg18vc-v2
   monitoring:
     customQueriesConfigMap:
       - name: cnpg-default-monitoring
@@ -50,5 +50,13 @@ spec:
   affinity:
     podAntiAffinityType: required
     topologyKey: kubernetes.io/hostname
-  # bootstrap:
-  #   initdb: {}
+  bootstrap:
+    recovery:
+      source: pg18vc-v1
+  externalClusters:
+    - name: pg18vc-v1
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: pg18vc-nas-rustfs
+          serverName: pg18vc-v1
