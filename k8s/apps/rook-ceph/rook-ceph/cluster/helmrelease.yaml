@@ -183,8 +183,6 @@ spec:
             instances: 2
             priorityClassName: system-cluster-critical
             port: 80
-            resources:
-              limits: null
         storageClass:
           enabled: true
           name: ceph-bucket
