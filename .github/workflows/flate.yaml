@@ -41,7 +41,7 @@ jobs:
       pull-requests: write
     env:
       # renovate: datasource=github-tags depName=home-operations/flate versioning=semver
-      FLATE_VERSION: 0.1.28
+      FLATE_VERSION: 0.1.33
     strategy:
       matrix:
         resource:
