@@ -42,6 +42,17 @@
       '/(^|/)k8s/.+\\.ya?ml$/',
     ],
   },
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: [
+        '/^\\.github/workflows/flate\\.yaml$/',
+      ],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) versioning=(?<versioning>\\S+)\\s+FLATE_VERSION:\\s+(?<currentValue>\\S+)',
+      ],
+    },
+  ],
   registryAliases: {
     "mirror.gcr.io": "docker.io"
   },
@@ -54,7 +65,6 @@
       minimumReleaseAge: "0 days",
     },
     {
-      matchManagers: ["github-actions"],
       matchPackageNames: ["home-operations/flate", "home-operations/flate/action"],
       minimumReleaseAge: "0 days",
       automerge: true,
