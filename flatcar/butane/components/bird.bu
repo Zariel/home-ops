@@ -1,0 +1,135 @@
+variant: flatcar
+version: 1.1.0
+storage:
+  links:
+    - target: /opt/extensions/bird/bird-3.1.2-x86-64.raw
+      path: /etc/extensions/bird.raw
+      hard: false
+    - target: /usr/lib/systemd/system/bird.service
+      path: /etc/systemd/system/multi-user.target.wants/bird.service
+      overwrite: true
+      hard: false
+  files:
+    - path: /opt/extensions/bird/bird-3.1.2-x86-64.raw
+      mode: 0644
+      contents:
+        source: https://extensions.flatcar.org/extensions/bird-3.1.2-x86-64.raw
+    - path: /etc/sysupdate.bird.d/bird.conf
+      mode: 0644
+      contents:
+        source: https://extensions.flatcar.org/extensions/bird/bird.conf
+    - path: /etc/bird/bird.conf
+      mode: 0644
+      contents:
+        inline: |
+          router id from "bird0";
+
+          log syslog all;
+
+          protocol device {
+          }
+
+          protocol direct {
+              ipv4 {
+                  import all;
+              };
+          }
+
+          protocol static {
+              disabled;
+              ipv4;
+          }
+
+          protocol bgp cilium {
+              local port 61790 as 64513;
+              neighbor 127.0.0.1 as 64513 internal;
+              passive;
+              multihop;
+              graceful restart;
+
+              ipv4 {
+                  next hop self off;
+                  import all;
+                  export none;
+              };
+          }
+
+          protocol ospf beefchunk {
+              graceful restart;
+              ipv4 {
+                  export filter {
+                      if proto = "cilium" then accept;
+                      if net = 10.254.254.100/32 then accept;
+                      reject;
+                  };
+                  import none;
+              };
+              area 0 {
+                  interface "bond0" {
+                      type ptp;
+                      cost 10;
+                  };
+              };
+          }
+
+          protocol kernel {
+              ipv4 {
+                  import none;
+                  export none;
+              };
+          }
+    - path: /opt/bin/kube-api-anycast-check
+      mode: 0755
+      contents:
+        inline: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          vip="10.254.254.100/32"
+          dev="bird0"
+
+          if curl --silent --fail --insecure --max-time 2 https://127.0.0.1:6443/readyz >/dev/null; then
+            ip address replace "${vip}" dev "${dev}"
+          elif ip address show dev "${dev}" | grep -q "${vip}"; then
+            ip address delete "${vip}" dev "${dev}"
+          fi
+systemd:
+  units:
+    - name: bird.service
+      enabled: true
+      dropins:
+        - name: 20-config-path.conf
+          contents: |
+            [Unit]
+            Wants=network-online.target
+            After=systemd-networkd.service network-online.target systemd-sysext.service
+
+            [Service]
+            ExecStart=
+            ExecStart=/usr/bin/bird -f -c /etc/bird/bird.conf
+            Restart=on-failure
+            RestartSec=5s
+    - name: kube-api-anycast.service
+      contents: |
+        [Unit]
+        Description=Advertise Kubernetes API anycast address when local apiserver is ready
+        After=network-online.target bird.service
+        Wants=network-online.target bird.service
+
+        [Service]
+        Type=oneshot
+        ExecStart=/opt/bin/kube-api-anycast-check
+    - name: kube-api-anycast.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Poll local Kubernetes API readiness for anycast advertisement
+
+        [Timer]
+        OnBootSec=30s
+        OnUnitActiveSec=2s
+        AccuracySec=1s
+        Unit=kube-api-anycast.service
+
+        [Install]
+        WantedBy=timers.target

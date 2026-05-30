@@ -3,6 +3,41 @@
 version: "3"
 
 tasks:
+  flatcar:
+    desc: Bootstrap Flatcar kubeadm cluster foundation
+    summary: |
+      Bootstrap flow:
+        1. Fetch kubeadm admin.conf from the bootstrap node over SSH
+        2. Point kubeconfig at the host-advertised API endpoint
+        3. Wait for the kubeadm API to become ready
+        4. Install Cilium and Cilium network resources
+        5. Wait for all control-plane nodes to become Ready
+        6. Install CoreDNS
+
+      This intentionally does not bootstrap Flux or application workloads.
+
+      Args:
+        controller: Bootstrap node SSH address (required, usually k8s-0 management IP)
+        apiServer: Kubernetes API server URL (optional, defaults to https://10.254.254.100:6443)
+        expectedNodes: Expected control-plane node count (optional, defaults to 3)
+
+      Example:
+        task bootstrap:flatcar controller=10.1.10.10
+    prompt: Bootstrap Flatcar kubeadm foundation... continue?
+    cmds:
+      - task: flatcar-kubeconfig
+        vars:
+          controller: "{{.controller}}"
+          apiServer: '{{default "https://10.254.254.100:6443" .apiServer}}'
+      - task: wait-api
+      - task: networking
+      - task: wait-control-plane
+        vars:
+          expectedNodes: '{{default "3" .expectedNodes}}'
+      - task: dns
+    requires:
+      vars: ["controller"]
+
   talos:
     desc: Bootstrap Talos cluster
     summary: |
@@ -35,6 +70,40 @@ tasks:
     requires:
       vars: ["controller"]
 
+  flatcar-kubeconfig:
+    desc: Fetch kubeadm admin.conf from bootstrap Flatcar node
+    env:
+      API_SERVER: '{{default "https://10.254.254.100:6443" .apiServer}}'
+    cmds:
+      - |
+        set -euo pipefail
+        umask 077
+        echo "Waiting for kubeadm admin.conf on {{.controller}}..."
+        until ssh -o BatchMode=yes -o ConnectTimeout=5 core@{{.controller}} \
+          sudo test -s /etc/kubernetes/admin.conf; do
+          echo "admin.conf is not ready yet, retrying in 10s..."
+          sleep 10
+        done
+
+        ssh -o BatchMode=yes -o ConnectTimeout=5 core@{{.controller}} \
+          sudo cat /etc/kubernetes/admin.conf > {{.ROOT_DIR}}/kubeconfig.yaml
+
+        kubectl config set-cluster hollywoo \
+          --server="${API_SERVER}" \
+          --kubeconfig={{.ROOT_DIR}}/kubeconfig.yaml
+    requires:
+      vars: ["controller"]
+
+  wait-api:
+    desc: Wait for Kubernetes API readiness
+    cmd: |
+      set -euo pipefail
+      echo "Waiting for Kubernetes API readiness..."
+      until kubectl get --raw=/readyz >/dev/null; do
+        echo "API is not ready yet, retrying in 10s..."
+        sleep 10
+      done
+
   etcd:
     desc: Bootstrap etcd cluster
     cmd: |
@@ -66,7 +135,7 @@ tasks:
       vars: ["controller"]
 
   networking:
-    desc: Install CNI
+    desc: Install Cilium CNI and Cilium network resources
     cmds:
       - kustomize build --enable-helm --load-restrictor=LoadRestrictionsNone {{.KUBERNETES_DIR}}/bootstrap/cilium | kubectl apply --validate=false --server-side -f -
       - |
@@ -88,9 +157,25 @@ tasks:
           done
         done
       - kubectl apply --validate=false --server-side -k {{.KUBERNETES_DIR}}/bootstrap/cilium-networks
+      - kubectl rollout status daemonset/cilium -n kube-system --timeout=600s
+      - kubectl rollout status deployment/cilium-operator -n kube-system --timeout=600s
       - until kubectl wait --for=condition=Ready nodes --all --timeout=600s; do sleep 10; done
 
-      - until kubectl get service kube-vip -n kube-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}' | grep -q '10.45.0.100'; do sleep 5; done
+  wait-control-plane:
+    desc: Wait for expected Flatcar control-plane nodes
+    vars:
+      expectedNodes: '{{default "3" .expectedNodes}}'
+    cmd: |
+      set -euo pipefail
+      echo "Waiting for {{.expectedNodes}} control-plane nodes..."
+      until [ "$(kubectl get nodes \
+        -l node-role.kubernetes.io/control-plane \
+        --no-headers 2>/dev/null | wc -l | tr -d ' ')" = "{{.expectedNodes}}" ]; do
+        kubectl get nodes -o wide || true
+        echo "Control-plane nodes are still joining, retrying in 10s..."
+        sleep 10
+      done
+      kubectl wait --for=condition=Ready nodes --all --timeout=900s
 
   kubeconfig-vip:
     desc: Update kubeconfig to use LoadBalancer VIP

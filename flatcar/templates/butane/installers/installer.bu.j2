@@ -1,0 +1,238 @@
+variant: flatcar
+version: 1.1.0
+storage:
+  directories:
+    - path: /opt/bin
+      mode: 0755
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: {{ node.hostname }}
+    - path: /opt/bin/install-flatcar-node
+      mode: 0755
+      contents:
+        inline: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+          export HOME=/root
+
+          os_disk="{{ node.install_disk }}"
+          node_ignition_url="{{ matchbox_http_base }}/ignition?mac={{ node.mac }}&stage=node"
+          node_ignition="/run/flatcar-node.ign"
+
+          fail() {
+            echo "$*" >&2
+            exit 1
+          }
+
+          logical_block_size() {
+            local disk="$1"
+            local name
+
+            name="$(basename "${disk}")"
+            cat "/sys/block/${name}/queue/logical_block_size"
+          }
+
+          partition_node() {
+            local disk="$1"
+            local part="$2"
+
+            if [[ "${disk}" =~ [0-9]$ ]]; then
+              printf '%sp%s\n' "${disk}" "${part}"
+            else
+              printf '%s%s\n' "${disk}" "${part}"
+            fi
+          }
+
+          wait_for_partitions() {
+            local disk="$1"
+            shift
+
+            for _ in {1..30}; do
+              local missing="false"
+              local part
+              for part in "$@"; do
+                if [[ ! -b "$(partition_node "${disk}" "${part}")" ]]; then
+                  missing="true"
+                  break
+                fi
+              done
+
+              if [[ "${missing}" == "false" ]]; then
+                return
+              fi
+
+              partprobe "${disk}" || true
+              partx -u "${disk}" || true
+              udevadm settle
+              sleep 1
+            done
+
+            fail "Timed out waiting for partitions on ${disk}"
+          }
+
+          install_flatcar_4kn() (
+            local disk="$1"
+            local workdir
+            local source_image
+            local source_loop
+            local source_sector_size
+            local target_sector_size
+            local target_partition_prefix
+            local parts
+            local part
+            local oem_dev
+
+            command -v jq >/dev/null || fail "jq is required for 4Kn Flatcar installation"
+            command -v sfdisk >/dev/null || fail "sfdisk is required for 4Kn Flatcar installation"
+            command -v losetup >/dev/null || fail "losetup is required for 4Kn Flatcar installation"
+
+            workdir="$(mktemp -d /tmp/flatcar-4kn-install.XXXXXXXXXX)"
+            source_loop=""
+            trap 'if [[ -n "${source_loop}" ]]; then losetup -d "${source_loop}" || true; fi; rm -rf "${workdir}"' EXIT
+
+            (
+              cd "${workdir}"
+              flatcar-install -D -C stable
+              lbzip2 -cd flatcar_production_image.bin.bz2 > flatcar_production_image.bin
+            )
+            source_image="${workdir}/flatcar_production_image.bin"
+
+            source_loop="$(losetup --find --partscan --show --read-only "${source_image}")"
+            udevadm settle
+            sfdisk --json "${source_loop}" > "${workdir}/source.sfdisk.json"
+            source_sector_size="$(jq -r '.partitiontable.sectorsize' "${workdir}/source.sfdisk.json")"
+            target_sector_size="$(logical_block_size "${disk}")"
+            target_partition_prefix="${disk}"
+            if [[ "${disk}" =~ [0-9]$ ]]; then
+              target_partition_prefix="${disk}p"
+            fi
+            parts="$(
+              jq -r '.partitiontable.partitions[].node | capture("p(?<part>[0-9]+)$").part' \
+                "${workdir}/source.sfdisk.json"
+            )"
+
+            jq -r \
+              --arg target_partition_prefix "${target_partition_prefix}" \
+              --argjson source_sector_size "${source_sector_size}" \
+              --argjson target_sector_size "${target_sector_size}" \
+              '
+                .partitiontable as $table |
+                "label: gpt",
+                "label-id: \($table.id)",
+                "unit: sectors",
+                "",
+                (
+                  $table.partitions[] |
+                  (.node | capture("p(?<part>[0-9]+)$").part) as $part |
+                  ($source_sector_size * .start) as $start_bytes |
+                  ($source_sector_size * .size) as $size_bytes |
+                  if (($start_bytes % $target_sector_size) != 0 or ($size_bytes % $target_sector_size) != 0) then
+                    error("partition " + $part + " is not aligned to target sector size")
+                  else
+                    "\($target_partition_prefix)\($part) : start=\(($start_bytes / $target_sector_size) | floor), size=\(($size_bytes / $target_sector_size) | floor), type=\(.type), uuid=\(.uuid), name=\(.name | @json)" +
+                    (if .attrs then ", attrs=\(.attrs | @json)" else "" end)
+                  end
+                )
+              ' \
+              "${workdir}/source.sfdisk.json" > "${workdir}/target.sfdisk"
+
+            wipefs --all --force "${disk}" || true
+            sgdisk --zap-all "${disk}" || true
+            sfdisk --wipe always --wipe-partitions always "${disk}" < "${workdir}/target.sfdisk"
+            partprobe "${disk}" || true
+            partx -u "${disk}" || true
+            udevadm settle
+
+            wait_for_partitions "${disk}" ${parts}
+
+            for part in ${parts}; do
+              echo "Copying Flatcar partition ${part} to ${disk}"
+              dd \
+                if="$(partition_node "${source_loop}" "${part}")" \
+                of="$(partition_node "${disk}" "${part}")" \
+                bs=16M \
+                conv=fsync \
+                status=none
+            done
+
+            oem_dev="$(partition_node "${disk}" 6)"
+            mkdir -p "${workdir}/oemfs"
+            mount "${oem_dev}" "${workdir}/oemfs" || {
+              btrfstune -f -u "${oem_dev}"
+              mount "${oem_dev}" "${workdir}/oemfs"
+            }
+            cp "${node_ignition}" "${workdir}/oemfs/config.ign"
+            sync
+            umount "${workdir}/oemfs"
+          )
+
+          if [[ ! -e "${os_disk}" ]]; then
+            echo "OS disk not found: ${os_disk}" >&2
+            exit 1
+          fi
+
+          real_os_disk="$(readlink -f "${os_disk}")"
+          if [[ -z "${real_os_disk}" ]]; then
+            echo "Unable to resolve OS disk: ${os_disk}" >&2
+            exit 1
+          fi
+
+          curl \
+            --fail \
+            --location \
+            --silent \
+            --show-error \
+            --connect-timeout 5 \
+            --retry 20 \
+            --retry-delay 5 \
+            --retry-max-time 300 \
+            --retry-connrefused \
+            "${node_ignition_url}" \
+            --output "${node_ignition}"
+          test -s "${node_ignition}"
+
+{% for disk in node.extra_disks %}
+          if [[ ! -e "{{ disk.selector }}" ]]; then
+            echo "Extra disk not found for {{ disk.mount_path }}: {{ disk.selector }}" >&2
+            exit 1
+          fi
+          real_extra_disk="$(readlink -f "{{ disk.selector }}")"
+          if [[ -z "${real_extra_disk}" || "${real_extra_disk}" == "${real_os_disk}" ]]; then
+            echo "Refusing to install because extra disk resolves to the OS disk: {{ disk.selector }}" >&2
+            exit 1
+          fi
+{% endfor %}
+
+          case "$(logical_block_size "${real_os_disk}")" in
+            512)
+              flatcar-install -d "${real_os_disk}" -i "${node_ignition}" -C stable
+              ;;
+            4096)
+              install_flatcar_4kn "${real_os_disk}"
+              ;;
+            *)
+              fail "Unsupported OS disk logical sector size for ${real_os_disk}: $(logical_block_size "${real_os_disk}")"
+              ;;
+          esac
+          systemctl reboot
+systemd:
+  units:
+    - name: install-flatcar-node.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Install Flatcar to local OS disk
+        After=network-online.target
+        Wants=network-online.target
+        StartLimitIntervalSec=0
+
+        [Service]
+        Type=oneshot
+        ExecStart=/opt/bin/install-flatcar-node
+        Restart=on-failure
+        RestartSec=30s
+
+        [Install]
+        WantedBy=multi-user.target

@@ -1,0 +1,240 @@
+variant: flatcar
+version: 1.1.0
+storage:
+  directories:
+    - path: /opt/bin
+      mode: 0755
+  files:
+    - path: /etc/hosts
+      mode: 0644
+      append:
+        - inline: |
+            10.254.254.100 k8s.cbannister.casa
+    - path: /etc/sysctl.d/99-hollywoo.conf
+      mode: 0644
+      contents:
+        inline: |
+          fs.inotify.max_user_watches=1048576
+          fs.inotify.max_user_instances=8192
+          net.core.default_qdisc=fq
+          net.core.rmem_max=67108864
+          net.core.wmem_max=67108864
+          net.core.rmem_default=1048576
+          net.core.wmem_default=1048576
+          net.ipv4.tcp_congestion_control=bbr
+          net.ipv4.tcp_fastopen=3
+          net.ipv4.tcp_mtu_probing=1
+          net.ipv4.tcp_window_scaling=1
+          net.ipv4.tcp_slow_start_after_idle=0
+          net.ipv4.tcp_rmem=4096 87380 33554432
+          net.ipv4.tcp_wmem=4096 65536 33554432
+          net.ipv4.tcp_notsent_lowat=131072
+          sunrpc.tcp_slot_table_entries=256
+          sunrpc.tcp_max_slot_table_entries=256
+          vm.nr_hugepages=1024
+          net.ipv6.conf.all.accept_ra=0
+          net.ipv6.conf.bond0.accept_ra=0
+          net.core.netdev_max_backlog=4096
+          net.core.dev_weight=128
+          net.core.dev_weight_rx_bias=2
+    - path: /etc/nfsmount.conf
+      mode: 0644
+      contents:
+        inline: |
+          [ NFSMount_Global_Options ]
+          nfsvers=4.2
+          hard=True
+          nconnect=16
+          noatime=True
+          rsize=1048576
+          wsize=1048576
+          proto=tcp
+    - path: /etc/udev/rules.d/99-zbt2.rules
+      mode: 0644
+      contents:
+        inline: |
+          SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", ATTRS{idProduct}=="831a", MODE="0666", SYMLINK+="zbt2"
+    - path: /opt/bin/flatcar-pxe-once
+      mode: 0755
+      contents:
+        inline: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          entry=""
+          mac=""
+          pattern='(pxe|network|http).*ipv4|ipv4.*(pxe|network|http)'
+          reboot="false"
+          list_only="false"
+
+          normalize_mac() {
+            local value="${1,,}"
+            value="${value//:/}"
+            value="${value//-/}"
+
+            if [[ ! "${value}" =~ ^[0-9a-f]{12}$ ]]; then
+              echo "MAC address must contain 12 hex digits: $1" >&2
+              exit 2
+            fi
+
+            printf '%s\n' "${value}"
+          }
+
+          while [[ $# -gt 0 ]]; do
+            case "$1" in
+              --entry)
+                entry="${2:?missing value for --entry}"
+                shift 2
+                ;;
+              --mac)
+                mac="$(normalize_mac "${2:?missing value for --mac}")"
+                shift 2
+                ;;
+              --pattern)
+                pattern="${2:?missing value for --pattern}"
+                shift 2
+                ;;
+              --reboot)
+                reboot="true"
+                shift
+                ;;
+              --list)
+                list_only="true"
+                shift
+                ;;
+              *)
+                echo "Unknown argument: $1" >&2
+                exit 2
+                ;;
+            esac
+          done
+
+          if [[ ! -d /sys/firmware/efi/efivars ]]; then
+            echo "UEFI efivars are not available; one-time PXE boot requires UEFI" >&2
+            exit 1
+          fi
+
+          if ! command -v efibootmgr >/dev/null; then
+            echo "efibootmgr is not installed on this node" >&2
+            exit 127
+          fi
+
+          boot_entries="$(efibootmgr -v)"
+
+          if [[ "${list_only}" == "true" ]]; then
+            printf '%s\n' "${boot_entries}"
+            exit 0
+          fi
+
+          if [[ -z "${entry}" && -n "${mac}" ]]; then
+            entry="$(
+              awk -v mac="${mac}" -v pat="${pattern}" '
+                BEGIN {
+                  pat = tolower(pat)
+                  fallback = ""
+                  found = 0
+                }
+                /^Boot[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]/ {
+                  line = tolower($0)
+                  if (index(line, "mac(" mac ",") == 0) {
+                    next
+                  }
+
+                  boot = substr($1, 5, 4)
+                  gsub(/\*/, "", boot)
+
+                  if (index(line, "ipv4(") > 0 || line ~ pat) {
+                    print boot
+                    found = 1
+                    exit
+                  }
+
+                  if (fallback == "") {
+                    fallback = boot
+                  }
+                }
+                END {
+                  if (!found && fallback != "") {
+                    print fallback
+                  }
+                }
+              ' <<<"${boot_entries}"
+            )"
+
+            if [[ -z "${entry}" ]]; then
+              echo "Could not find a UEFI boot entry for MAC: ${mac}" >&2
+              printf '%s\n' "${boot_entries}" >&2
+              exit 1
+            fi
+          fi
+
+          if [[ -z "${entry}" ]]; then
+            entry="$(
+              awk -v pat="${pattern}" '
+                BEGIN { pat = tolower(pat) }
+                /^Boot[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]/ {
+                  line = tolower($0)
+                  if (line ~ pat) {
+                    boot = substr($1, 5, 4)
+                    gsub(/\*/, "", boot)
+                    print boot
+                    exit
+                  }
+                }
+              ' <<<"${boot_entries}"
+            )"
+          fi
+
+          if [[ ! "${entry}" =~ ^[0-9A-Fa-f]{4}$ ]]; then
+            if [[ -n "${mac}" ]]; then
+              echo "Could not find a valid UEFI boot entry for MAC: ${mac}" >&2
+            else
+              echo "Could not find a matching PXE boot entry using pattern: ${pattern}" >&2
+            fi
+            printf '%s\n' "${boot_entries}" >&2
+            exit 1
+          fi
+
+          entry="${entry^^}"
+          echo "Setting UEFI BootNext=${entry}"
+          efibootmgr -n "${entry}"
+
+          if [[ "${reboot}" == "true" ]]; then
+            echo "Rebooting for one-time PXE boot"
+            systemctl reboot
+          fi
+systemd:
+  units:
+    - name: flatcar-pxe-once.service
+      contents: |
+        [Unit]
+        Description=Set UEFI BootNext to PXE and reboot once
+        Documentation=file:/opt/bin/flatcar-pxe-once
+        ConditionPathExists=/sys/firmware/efi/efivars
+
+        [Service]
+        Type=oneshot
+        ExecStart=/opt/bin/flatcar-pxe-once
+        ExecStart=/usr/bin/systemctl --no-block reboot
+    - name: flatcar-pxe-once@.service
+      contents: |
+        [Unit]
+        Description=Set UEFI BootNext to Boot%i and reboot once
+        Documentation=file:/opt/bin/flatcar-pxe-once
+        ConditionPathExists=/sys/firmware/efi/efivars
+
+        [Service]
+        Type=oneshot
+        ExecStart=/opt/bin/flatcar-pxe-once --entry %i
+        ExecStart=/usr/bin/systemctl --no-block reboot
+    - name: flatcar-pxe-once-mac@.service
+      contents: |
+        [Unit]
+        Description=Set UEFI BootNext to PXE MAC %i and reboot once
+        Documentation=file:/opt/bin/flatcar-pxe-once
+        ConditionPathExists=/sys/firmware/efi/efivars
+
+        [Service]
+        Type=oneshot
+        ExecStart=/opt/bin/flatcar-pxe-once --mac %i
+        ExecStart=/usr/bin/systemctl --no-block reboot

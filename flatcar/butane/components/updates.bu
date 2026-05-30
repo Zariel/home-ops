@@ -1,0 +1,37 @@
+variant: flatcar
+version: 1.1.0
+storage:
+  files:
+    - path: /etc/sysupdate.d/noop.conf
+      mode: 0644
+      contents:
+        source: https://extensions.flatcar.org/extensions/noop.conf
+systemd:
+  units:
+    - name: locksmithd.service
+      mask: true
+    - name: systemd-sysupdate.timer
+      enabled: true
+    - name: systemd-sysupdate.service
+      dropins:
+        - name: containerd.conf
+          contents: |
+            [Service]
+            ExecStartPre=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/containerd.raw > /tmp/containerd"
+            ExecStartPre=/usr/lib/systemd/systemd-sysupdate -C containerd update
+            ExecStartPost=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/containerd.raw > /tmp/containerd-new"
+            ExecStartPost=/usr/bin/sh -c "if ! cmp --silent /tmp/containerd /tmp/containerd-new; then touch /run/reboot-required; fi"
+        - name: kubernetes.conf
+          contents: |
+            [Service]
+            ExecStartPre=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/kubernetes.raw > /tmp/kubernetes"
+            ExecStartPre=/usr/lib/systemd/systemd-sysupdate -C kubernetes update
+            ExecStartPost=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/kubernetes.raw > /tmp/kubernetes-new"
+            ExecStartPost=/usr/bin/sh -c "if ! cmp --silent /tmp/kubernetes /tmp/kubernetes-new; then touch /run/reboot-required; fi"
+        - name: bird.conf
+          contents: |
+            [Service]
+            ExecStartPre=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/bird.raw > /tmp/bird"
+            ExecStartPre=/usr/lib/systemd/systemd-sysupdate -C bird update
+            ExecStartPost=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/bird.raw > /tmp/bird-new"
+            ExecStartPost=/usr/bin/sh -c "if ! cmp --silent /tmp/bird /tmp/bird-new; then touch /run/reboot-required; fi"

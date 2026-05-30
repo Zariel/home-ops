@@ -1,0 +1,20 @@
+{
+  "id": "{{ node.hostname }}",
+  "name": "{{ node.hostname }}",
+  "profile": "{{ node.hostname }}-node",
+  "selector": {
+    "mac": "{{ node.mac }}",
+    "stage": "node"
+  },
+  "metadata": {
+    "hostname": "{{ node.hostname }}",
+    "matchbox_http_base": "{{ matchbox_http_base }}",
+    "install_disk": "{{ node.install_disk }}",
+    "extra_disks": {{ node.extra_disks_json }},
+    "management_ip": "{{ node.management_ip }}",
+    "bond_ip": "{{ node.bond_ip }}",
+    "bond_gateway": "{{ node.bond_gateway }}",
+    "rook_vlan_ip": "{{ node.rook_vlan_ip }}",
+    "bird_router_id": "{{ node.bird_router_id }}"
+  }
+}

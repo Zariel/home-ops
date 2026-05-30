@@ -1,0 +1,53 @@
+variant: flatcar
+version: 1.1.0
+storage:
+  directories:
+    - path: /etc/cdi
+      mode: 0755
+    - path: /run/cdi
+      mode: 0755
+    - path: /etc/containerd/certs.d
+      mode: 0755
+  links:
+    - target: /dev/null
+      path: /etc/extensions/docker-flatcar.raw
+      overwrite: true
+      hard: false
+    - target: /dev/null
+      path: /etc/extensions/containerd-flatcar.raw
+      overwrite: true
+      hard: false
+    - target: /opt/extensions/containerd/{{ bakery.containerd.sysext }}
+      path: /etc/extensions/containerd.raw
+      hard: false
+  files:
+    - path: /opt/extensions/containerd/{{ bakery.containerd.sysext }}
+      mode: 0644
+      contents:
+        source: https://extensions.flatcar.org/extensions/{{ bakery.containerd.sysext }}
+        verification:
+          hash: sha256-{{ bakery.containerd.sha }}
+    - path: /etc/sysupdate.containerd.d/containerd.conf
+      mode: 0644
+      contents:
+        source: https://extensions.flatcar.org/extensions/containerd/containerd.conf
+    - path: /etc/containerd/conf.d/20-customization.toml
+      mode: 0644
+      contents:
+        inline: |
+          [plugins."io.containerd.cri.v1.images"]
+            discard_unpacked_layers = false
+          [plugins."io.containerd.cri.v1.images".registry]
+            config_path = "/etc/containerd/certs.d"
+          [plugins."io.containerd.cri.v1.runtime"]
+            device_ownership_from_security_context = true
+            enable_cdi = true
+            cdi_spec_dirs = ["/etc/cdi", "/run/cdi"]
+systemd:
+  units:
+    - name: docker.service
+      mask: true
+    - name: docker.socket
+      mask: true
+    - name: containerd.service
+      enabled: true

@@ -1,0 +1,75 @@
+class Cluster {
+  name: String
+  control_plane_endpoint: String
+  api_server_vip: String
+  pod_cidr: String
+  service_cidr: String
+  dns_domain: String
+}
+
+class Bakery {
+  name: String
+  version: String
+  sha: String
+  arch: String = "x86-64"
+}
+
+class WaitOnline {
+  networkd: Listing<String> = new Listing {}
+  kubelet: Listing<String> = new Listing {}
+  kubelet_timeout: Int = 30
+}
+
+class NetworkdSection {
+  name: String
+  settings: Dynamic = new Dynamic {}
+}
+
+class NetworkdFile {
+  name: String
+  mode: String = "0644"
+  contents: String? = null
+  sections: Listing<NetworkdSection> = new Listing {}
+}
+
+class Role {
+  name: String
+  wait_online: WaitOnline = new WaitOnline {}
+  networkd: Dynamic = new Dynamic {}
+}
+
+class ExtraDisk {
+  selector: String
+  mount_path: String
+  filesystem: String
+}
+
+class Node {
+  hostname: String
+  bootstrap: Boolean
+  roles: Listing<String> = new Listing {}
+  mac: String
+  install_disk: String
+  management_ip: String
+  bond_ip: String
+  bond_gateway: String
+  rook_vlan_ip: String
+  bird_router_id: String
+  extra_disks: Listing<ExtraDisk> = new Listing {}
+}
+
+function section(sectionName, sectionSettings) = new NetworkdSection {
+  name = sectionName
+  settings = sectionSettings
+}
+
+function networkdFile(fileName, fileSections) = new NetworkdFile {
+  name = fileName
+  sections = fileSections
+}
+
+function extraDisk(diskSelector, diskMountPath, diskFilesystem) = new ExtraDisk {
+  selector = diskSelector
+  mount_path = diskMountPath
+  filesystem = diskFilesystem
+}

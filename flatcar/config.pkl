@@ -1,0 +1,325 @@
+import "config.schema.pkl" as schema
+
+local function section(sectionName, sectionSettings) = schema.section(sectionName, sectionSettings)
+
+local function networkdFile(fileName, fileSections) = schema.networkdFile(fileName, fileSections)
+
+local function ms01Node(
+  nodeHostname,
+  isBootstrap,
+  nodeMac,
+  osDisk,
+  managementIp,
+  bondIp,
+  bondGatewayIp,
+  rookVlanIp,
+  birdRouterIdIp,
+  extraDisk,
+) = new schema.Node {
+  hostname = nodeHostname
+  bootstrap = isBootstrap
+  roles {
+    "ms01"
+  }
+  mac = nodeMac
+  install_disk = osDisk
+  management_ip = managementIp
+  bond_ip = bondIp
+  bond_gateway = bondGatewayIp
+  rook_vlan_ip = rookVlanIp
+  bird_router_id = birdRouterIdIp
+  extra_disks {
+    schema.extraDisk(extraDisk, "/var/mnt/local-hostpath", "xfs")
+  }
+}
+
+local ms01NetworkdFiles = new Listing {
+  networkdFile("10-vrf-mgmt.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "vrf-mgmt"
+      Kind = "vrf"
+    })
+    section("VRF", new Dynamic {
+      Table = 100
+    })
+  })
+
+  networkdFile("11-vrf-mgmt.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "vrf-mgmt"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "no"
+    })
+  })
+
+  networkdFile("12-enp87s0.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "enp87s0"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "routable"
+    })
+    section("Network", new Dynamic {
+      VRF = "vrf-mgmt"
+      DHCP = "ipv4"
+      LinkLocalAddressing = "no"
+      IPv6AcceptRA = "no"
+    })
+    section("DHCPv4", new Dynamic {
+      UseDNS = "yes"
+      UseNTP = "yes"
+    })
+  })
+
+  networkdFile("15-enp90s0.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "enp90s0"
+    })
+    section("Link", new Dynamic {
+      Unmanaged = "yes"
+      RequiredForOnline = "no"
+    })
+  })
+
+  networkdFile("20-bond0.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bond0"
+      Kind = "bond"
+      MTUBytes = 9000
+    })
+    section("Bond", new Dynamic {
+      Mode = "active-backup"
+      MIIMonitorSec = "100ms"
+    })
+  })
+
+  networkdFile("21-enp1s0f0np0.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "enp1s0f0np0"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "enslaved"
+    })
+    section("Network", new Dynamic {
+      Bond = "bond0"
+    })
+  })
+
+  networkdFile("21-enp1s0f1np1.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "enp1s0f1np1"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "enslaved"
+    })
+    section("Network", new Dynamic {
+      Bond = "bond0"
+    })
+  })
+
+  networkdFile("22-bond0.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bond0"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "routable"
+    })
+    section("Network", new Dynamic {
+      Address = "{{ node.bond_ip }}"
+      Gateway = "{{ node.bond_gateway }}"
+      VLAN = List("bond0.20", "bond0.40", "bond0.300", "bond0.1100")
+    })
+  })
+
+  networkdFile("30-bond0.20.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bond0.20"
+      Kind = "vlan"
+      MTUBytes = 1500
+    })
+    section("VLAN", new Dynamic {
+      Id = 20
+    })
+  })
+
+  networkdFile("31-bond0.20.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bond0.20"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "carrier"
+    })
+    section("Network", new Dynamic {
+      LinkLocalAddressing = "no"
+    })
+  })
+
+  networkdFile("32-bond0.40.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bond0.40"
+      Kind = "vlan"
+      MTUBytes = 1500
+    })
+    section("VLAN", new Dynamic {
+      Id = 40
+    })
+  })
+
+  networkdFile("33-bond0.40.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bond0.40"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "carrier"
+    })
+    section("Network", new Dynamic {
+      LinkLocalAddressing = "no"
+    })
+  })
+
+  networkdFile("34-bond0.300.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bond0.300"
+      Kind = "vlan"
+      MTUBytes = 9000
+    })
+    section("VLAN", new Dynamic {
+      Id = 300
+    })
+  })
+
+  networkdFile("35-bond0.300.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bond0.300"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "carrier"
+    })
+    section("Network", new Dynamic {
+      Address = "{{ node.rook_vlan_ip }}"
+    })
+  })
+
+  networkdFile("36-bond0.1100.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bond0.1100"
+      Kind = "vlan"
+      MTUBytes = 1500
+    })
+    section("VLAN", new Dynamic {
+      Id = 1100
+    })
+  })
+
+  networkdFile("37-bond0.1100.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bond0.1100"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "carrier"
+    })
+    section("Network", new Dynamic {
+      LinkLocalAddressing = "no"
+    })
+  })
+
+  networkdFile("40-bird0.netdev", new Listing {
+    section("NetDev", new Dynamic {
+      Name = "bird0"
+      Kind = "dummy"
+    })
+  })
+
+  networkdFile("41-bird0.network", new Listing {
+    section("Match", new Dynamic {
+      Name = "bird0"
+    })
+    section("Link", new Dynamic {
+      RequiredForOnline = "no"
+    })
+    section("Network", new Dynamic {
+      Address = "{{ node.bird_router_id }}/32"
+    })
+  })
+}
+
+cluster = new schema.Cluster {
+  name = "hollywoo"
+  control_plane_endpoint = "k8s.cbannister.casa:6443"
+  api_server_vip = "10.254.254.100"
+  pod_cidr = "172.20.0.0/16"
+  service_cidr = "172.21.0.0/16"
+  dns_domain = "cluster.local"
+}
+
+bakery = new Listing {
+  new schema.Bakery {
+    name = "kubernetes"
+    version = "v1.36.1"
+    sha = "a859e32f62377c9c0af2728f7ec27dafd6164b87ae266fffa47a8c947ff54732"
+  }
+  new schema.Bakery {
+    name = "containerd"
+    version = "2.3.1"
+    sha = "c4b8e6b68d0fb541c6fdf936d9b60966c98712f2c52280a70a4fddff08349cc0"
+  }
+}
+
+roles = new Listing {
+  new schema.Role {
+    name = "ms01"
+    wait_online {
+      networkd {
+        "enp87s0:routable"
+      }
+      kubelet {
+        "bond0:routable"
+      }
+    }
+    networkd {
+      files = ms01NetworkdFiles
+    }
+  }
+}
+
+nodes = new Listing {
+  ms01Node(
+    "k8s-0",
+    true,
+    "58:47:ca:78:d2:44",
+    "/dev/disk/by-id/nvme-eui.343335304ea054640025384100000001",
+    "10.1.10.10/32",
+    "10.254.1.1/31",
+    "10.254.1.0",
+    "10.254.3.1/29",
+    "10.254.254.128",
+    "/dev/disk/by-id/nvme-eui.343335304eb029810025384100000001",
+  )
+
+  ms01Node(
+    "k8s-1",
+    false,
+    "58:47:ca:78:d7:fc",
+    "/dev/disk/by-id/nvme-eui.34333530541060910025384300000001",
+    "10.1.10.11/32",
+    "10.254.1.3/31",
+    "10.254.1.2",
+    "10.254.3.2/29",
+    "10.254.254.129",
+    "/dev/disk/by-id/nvme-eui.343335304ea058240025384100000001",
+  )
+
+  ms01Node(
+    "k8s-2",
+    false,
+    "58:47:ca:78:d8:44",
+    "/dev/disk/by-id/nvme-eui.343335304ea054700025384100000001",
+    "10.1.10.12/32",
+    "10.254.1.5/31",
+    "10.254.1.4",
+    "10.254.3.3/29",
+    "10.254.254.130",
+    "/dev/disk/by-id/nvme-eui.34333530528017830025384300000001",
+  )
+}

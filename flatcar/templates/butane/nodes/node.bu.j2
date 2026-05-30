@@ -1,0 +1,63 @@
+variant: flatcar
+version: 1.1.0
+storage:
+{% if node.extra_disks %}
+  disks:
+{% for disk in node.extra_disks %}
+    - device: {{ disk.selector }}
+      wipe_table: true
+{% endfor %}
+  filesystems:
+{% for disk in node.extra_disks %}
+    - device: {{ disk.selector }}
+      format: {{ disk.filesystem }}
+      path: {{ disk.mount_path }}
+      wipe_filesystem: true
+      with_mount_unit: true
+      mount_options:
+        - noatime
+        - nofail
+{% endfor %}
+{% endif %}
+  directories:
+    - path: /etc/systemd/system/kubelet.service.d
+      mode: 0755
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: {{ node.hostname }}
+    - path: /etc/systemd/system/kubelet.service.d/10-node-readiness.conf
+      mode: 0644
+      contents:
+        inline: |
+          [Unit]
+          StartLimitIntervalSec=0
+          After=systemd-networkd.service
+{% for disk in node.extra_disks %}
+          RequiresMountsFor={{ disk.mount_path }}
+{% endfor %}
+
+          [Service]
+{% if node.wait_online.kubelet %}
+          ExecStartPre=/usr/lib/systemd/systemd-networkd-wait-online{% for interface in node.wait_online.kubelet %} --interface={{ interface }}{% endfor %} --timeout={{ node.wait_online.kubelet_timeout }}
+{% endif %}
+{% for networkd_file in node.networkd_files %}
+    - path: /etc/systemd/network/{{ networkd_file.name }}
+      mode: {{ networkd_file.mode }}
+      contents:
+        inline: |
+{{ networkd_file.contents_indented }}
+{% endfor %}
+{% if node.wait_online.networkd %}
+systemd:
+  units:
+    - name: systemd-networkd-wait-online.service
+      enabled: true
+      dropins:
+        - name: 10-management-interface.conf
+          contents: |
+            [Service]
+            ExecStart=
+            ExecStart=/usr/lib/systemd/systemd-networkd-wait-online{% for interface in node.wait_online.networkd %} --interface={{ interface }}{% endfor %}
+{% endif %}
