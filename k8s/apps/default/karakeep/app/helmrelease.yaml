@@ -38,12 +38,12 @@ spec:
               CRAWLER_STORE_SCREENSHOT: true
               DATA_DIR: /data
               # DISABLE_SIGNUPS: true
-              MEILI_ADDR: http://karakeep-meilisearch.default.svc.cluster.local:7700
+              MEILI_ADDR: http://meilisearch.default.svc.cluster.local:7700
               MEILI_MASTER_KEY:
                 valueFrom:
                   secretKeyRef:
-                    name: karakeep-secret
-                    key: meilisearch_master_key
+                    name: meilisearch-secret
+                    key: master_key
               NEXTAUTH_SECRET:
                 valueFrom:
                   secretKeyRef:
@@ -98,34 +98,6 @@ spec:
               limits:
                 memory: 1Gi
 
-      meilisearch:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        pod:
-          labels:
-            app.kubernetes.io/component: meilisearch
-        containers:
-          app:
-            image:
-              repository: docker.io/getmeili/meilisearch
-              tag: v1.45.1@sha256:ac40212f9e5a7526d8007586e3e46fb0441d29dd36c7b02fa2341d2c9a1f6493
-            args:
-              - /bin/meilisearch
-              - --experimental-dumpless-upgrade
-            env:
-              MEILI_NO_ANALYTICS: true
-              MEILI_MASTER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: karakeep-secret
-                    key: meilisearch_master_key
-            resources:
-              requests:
-                cpu: 10m
-                memory: 512Mi
-              limits:
-                memory: 4Gi
-
     service:
       app:
         forceRename: karakeep
@@ -139,11 +111,6 @@ spec:
         ports:
           http:
             port: 9222
-      meilisearch:
-        controller: meilisearch
-        ports:
-          http:
-            port: 7700
 
     persistence:
       data:
@@ -153,10 +120,6 @@ spec:
             app:
               - path: /data
                 subPath: karakeep
-          meilisearch:
-            app:
-              - path: /meili_data
-                subPath: meilisearch
 
     route:
       app:
