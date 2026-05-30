@@ -95,17 +95,21 @@ spec:
           readinessProbe:
             httpGet: &probe
               port: web
-              path: /api/v2/app/version
+              path: /api/v2/app/webapiVersion
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
           startupProbe:
             httpGet: *probe
-            failureThreshold: 6
             periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 30
           livenessProbe:
             httpGet: *probe
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 5
-            failureThreshold: 5
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 20
           resources:
             requests:
               cpu: 2
