@@ -37,6 +37,7 @@
             kubectl
             kustomize
             fluxcd
+            actionlint
           ];
         };
       }
