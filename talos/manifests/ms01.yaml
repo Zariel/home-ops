@@ -62,11 +62,24 @@ vlanID: 1100
 mtu: 1500
 ---
 apiVersion: v1alpha1
-kind: LinkConfig
-name: enp87s0
-up: false
+kind: BondConfig
+name: bond1
+links:
+  - enp87s0
+  - enp90s0
+bondMode: active-backup
+miimon: 100
+mtu: 1500
 ---
 apiVersion: v1alpha1
-kind: LinkConfig
-name: enp90s0
-up: false
+kind: VRFConfig
+name: vrf-mgmt
+links:
+  - bond1
+table: "100"
+up: true
+---
+apiVersion: v1alpha1
+kind: DHCPv4Config
+name: bond1
+ignoreHostname: true
