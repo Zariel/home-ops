@@ -3,13 +3,13 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["kopia"],
-      "allowedVersions": "<999"
+      "allowedVersions": "<999",
+      "matchPackageNames": ["/kopia/"]
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["postgresql"],
-      "allowedVersions": "<=16"
+      "allowedVersions": "<=16",
+      "matchPackageNames": ["/postgresql/"]
     }
   ]
 }

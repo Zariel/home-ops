@@ -12,13 +12,13 @@
       "automergeType": "pr",
       "ignoreTests": false,
       "matchUpdateTypes": ["digest", "minor", "patch"],
-      "matchPackagePatterns": [
-        "ghcr.io/bjw-s",
-        "ghcr.io/onedr0p",
-        "ghcr.io/zariel",
-        "ghcr.io/home-operations",
-        "ghcr.io/cross-seed/cross-seed",
-        "docker.io/filebrowser/filebrowser"
+      "matchPackageNames": [
+        "/ghcr.io/bjw-s/",
+        "/ghcr.io/onedr0p/",
+        "/ghcr.io/zariel/",
+        "/ghcr.io/home-operations/",
+        "/ghcr.io/cross-seed/cross-seed/",
+        "/docker.io/filebrowser/filebrowser/"
       ]
     },
     {
@@ -27,10 +27,10 @@
       "automerge": true,
       "automergeType": "pr",
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackagePatterns": [
-        "ghcr.io/prometheus-community/charts",
-        "ghcr.io/grafana/helm-charts",
-        "ghcr.io/netbox-community/netbox-chart/netbox"
+      "matchPackageNames": [
+        "/ghcr.io/prometheus-community/charts/",
+        "/ghcr.io/grafana/helm-charts/",
+        "/ghcr.io/netbox-community/netbox-chart/netbox/"
       ],
       "ignoreTests": false,
     },
@@ -59,8 +59,8 @@
     {
       description: ["auto merge grafana dashboards"],
       matchDatasources: ["custom.grafana-dashboards"],
-      autoMerge: true,
-      autoMergeType: "branch",
+      automerge: true,
+      automergeType: "branch",
       ignoreTests: true,
     },
   ]

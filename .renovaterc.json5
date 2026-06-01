@@ -1,23 +1,15 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    'config:recommended',
-    'docker:enableMajor',
-    'helpers:pinGitHubActionDigests',
+    'github>home-operations/renovate-presets',
     'github>zariel/home-ops//.renovate/allowedVersions.json5',
     'github>zariel/home-ops//.renovate/autoMerge.json5',
-    'github>zariel/home-ops//.renovate/commitMessage.json5',
     'github>zariel/home-ops//.renovate/customManagers.json5',
     'github>zariel/home-ops//.renovate/grafanaDashboards.json5',
     'github>zariel/home-ops//.renovate/groups.json5',
-    'github>zariel/home-ops//.renovate/semanticCommits.json5',
-    ':automergeBranch',
-    ':disableRateLimiting',
-    ':dependencyDashboard',
     ':semanticCommits',
     ':timezone(Europe/London)',
   ],
-  dependencyDashboardTitle: 'Renovate Dashboard 🤖',
   suppressNotifications: [
     'prEditedNotification',
     'prIgnoreNotification',
@@ -27,35 +19,6 @@
     '**/resources/**',
     '**/ansible/**',
   ],
-  flux: {
-    managerFilePatterns: [
-      '/(^|/)k8s/.+\\.ya?ml(\\.j2)?$/',
-    ],
-  },
-  'helm-values': {
-    managerFilePatterns: [
-      '/(^|/)k8s/.+\\.ya?ml(\\.j2)?$/',
-    ],
-  },
-  kubernetes: {
-    managerFilePatterns: [
-      '/(^|/)k8s/.+\\.ya?ml$/',
-    ],
-  },
-  customManagers: [
-    {
-      customType: "regex",
-      managerFilePatterns: [
-        '/^\\.github/workflows/flate\\.yaml$/',
-      ],
-      matchStrings: [
-        '# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) versioning=(?<versioning>\\S+)\\s+FLATE_VERSION:\\s+(?<currentValue>\\S+)',
-      ],
-    },
-  ],
-  registryAliases: {
-    "mirror.gcr.io": "docker.io"
-  },
   packageRules: [
     {
       // Docker-based GitHub Actions from GHCR may not expose release timestamps,
