@@ -6,9 +6,9 @@
         "Actions Runner Controller Group"
       ],
       "groupName": "Actions Runner Controller",
-      "matchPackagePatterns": [
-        "gha-runner-scale-set-controller",
-        "gha-runner-scale-set"
+      "matchPackageNames": [
+        "/gha-runner-scale-set-controller/",
+        "/gha-runner-scale-set/"
       ],
       "matchDatasources": [
         "helm",
@@ -24,8 +24,8 @@
         "Flux Group"
       ],
       "groupName": "Flux",
-      "matchPackagePatterns": [
-        "fluxcd"
+      "matchPackageNames": [
+        "/fluxcd/"
       ],
       "matchDatasources": [
         "docker",
@@ -40,7 +40,7 @@
     {
       "description": ["Intel Device Plugins Group"],
       "groupName": "Intel-Device-Plugins",
-      "matchPackagePatterns": ["intel-device-plugins"],
+      "matchPackageNames": ["/intel-device-plugins/"],
       "matchDatasources": ["helm"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -60,8 +60,8 @@
         "System Upgrade Controller Group"
       ],
       "groupName": "System Upgrade Controller",
-      "matchPackagePatterns": [
-        "system-upgrade-controller"
+      "matchPackageNames": [
+        "/system-upgrade-controller/"
       ],
       "matchDatasources": [
         "docker",
@@ -75,7 +75,7 @@
     {
       "description": ["Talos Group"],
       "groupName": "Talos",
-      "matchPackagePatterns": ["siderolabs/talosctl", "siderolabs/installer"],
+      "matchPackageNames": ["/siderolabs/talosctl/", "/siderolabs/installer/"],
       "matchDatasources": ["docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -84,7 +84,7 @@
     {
       "description": ["Victoria Metrics Group"],
       "groupName": "Victoria Metrics",
-      "matchPackagePatterns": ["/victoriametrics/"],
+      "matchPackageNames": ["/victoriametrics/"],
       "matchDatasources": ["docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
