@@ -14,6 +14,15 @@ addresses:
   - address: 10.254.3.2/29
 ---
 apiVersion: v1alpha1
+kind: BondConfig
+name: bond1
+addresses:
+  - address: 10.1.1.11/24
+routes:
+  - gateway: 10.1.1.1
+    table: "100"
+---
+apiVersion: v1alpha1
 kind: DummyLinkConfig
 name: bird0
 addresses:

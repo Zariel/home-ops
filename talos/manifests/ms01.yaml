@@ -78,8 +78,3 @@ links:
   - bond1
 table: "100"
 up: true
----
-apiVersion: v1alpha1
-kind: DHCPv4Config
-name: bond1
-ignoreHostname: true
