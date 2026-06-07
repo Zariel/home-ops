@@ -64,6 +64,8 @@ metadata:
 spec:
   targetNamespace: *namespace
   dependsOn:
+    - name: rook-ceph
+      namespace: *namespace
     - name: rook-ceph-csi-drivers
       namespace: *namespace
     - name: volsync

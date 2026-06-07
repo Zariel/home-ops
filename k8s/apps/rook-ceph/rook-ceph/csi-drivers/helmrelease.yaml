@@ -32,31 +32,12 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  dependsOn:
-    - name: rook-ceph-operator
-      namespace: rook-ceph
   values:
-    operatorConfig:
-      namespace: rook-ceph
-      driverSpecDefaults:
-        imageSet:
-          name: rook-csi-operator-image-set-configmap
-        clusterName: rook-ceph
     drivers:
       rbd:
         name: rook-ceph.rbd.csi.ceph.com
         enabled: true
-        imageSet:
-          name: rook-csi-operator-image-set-configmap
-        clusterName: rook-ceph
-        nodePlugin:
-          priorityClassName: system-node-critical
-          updateStrategy:
-            type: RollingUpdate
-        controllerPlugin:
-          hostNetwork: true
-          replicas: 2
-          priorityClassName: system-cluster-critical
+        snapshotPolicy: volumeSnapshot
       cephfs:
         enabled: false
       nfs:
