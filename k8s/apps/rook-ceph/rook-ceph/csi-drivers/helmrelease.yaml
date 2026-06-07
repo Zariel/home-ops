@@ -42,21 +42,6 @@ spec:
         imageSet:
           name: rook-csi-operator-image-set-configmap
         clusterName: rook-ceph
-        generateOMapInfo: false
-        fsGroupPolicy: File
-        cephFsClientType: kernel
-        nodePlugin:
-          kubeletDirPath: /var/lib/kubelet
-          enableSeLinuxHostMount: false
-          imagePullPolicy: IfNotPresent
-          priorityClassName: system-node-critical
-        controllerPlugin:
-          hostNetwork: true
-          replicas: 2
-          deploymentStrategy:
-            type: Recreate
-          imagePullPolicy: IfNotPresent
-          priorityClassName: system-cluster-critical
     drivers:
       rbd:
         name: rook-ceph.rbd.csi.ceph.com
@@ -64,76 +49,14 @@ spec:
         imageSet:
           name: rook-csi-operator-image-set-configmap
         clusterName: rook-ceph
-        generateOMapInfo: false
-        fsGroupPolicy: File
-        cephFsClientType: kernel
         nodePlugin:
-          kubeletDirPath: /var/lib/kubelet
-          enableSeLinuxHostMount: false
-          imagePullPolicy: IfNotPresent
           priorityClassName: system-node-critical
           updateStrategy:
             type: RollingUpdate
-          resources:
-            registrar:
-              limits:
-                memory: 256Mi
-              requests:
-                cpu: 50m
-                memory: 128Mi
-            liveness: {}
-            addons: {}
-            logRotator: {}
-            plugin:
-              limits:
-                memory: 1Gi
-              requests:
-                cpu: 250m
-                memory: 512Mi
         controllerPlugin:
           hostNetwork: true
           replicas: 2
-          imagePullPolicy: IfNotPresent
           priorityClassName: system-cluster-critical
-          resources:
-            attacher:
-              limits:
-                memory: 256Mi
-              requests:
-                cpu: 100m
-                memory: 128Mi
-            snapshotter:
-              limits:
-                memory: 256Mi
-              requests:
-                cpu: 100m
-                memory: 128Mi
-            resizer:
-              limits:
-                memory: 256Mi
-              requests:
-                cpu: 100m
-                memory: 128Mi
-            provisioner:
-              limits:
-                memory: 256Mi
-              requests:
-                cpu: 100m
-                memory: 128Mi
-            omapGenerator:
-              limits:
-                memory: 1Gi
-              requests:
-                cpu: 250m
-                memory: 512Mi
-            liveness: {}
-            addons: {}
-            logRotator: {}
-            plugin:
-              limits:
-                memory: 1Gi
-              requests:
-                memory: 512Mi
       cephfs:
         enabled: false
       nfs:
