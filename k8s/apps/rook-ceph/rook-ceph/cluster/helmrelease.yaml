@@ -42,7 +42,7 @@ spec:
       enabled: true
     cephImage:
       repository: quay.io/ceph/ceph
-      tag: v19.2.3
+      tag: v19.2.4
       allowUnsupported: false
     cephClusterSpec:
       resources:
