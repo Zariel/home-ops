@@ -327,9 +327,9 @@ custom_formats:
       - 3a4127d8aa781b44120d907f2cd62627 # Hybrid
     assign_scores_to:
       - name: BLURAY-2160p
-        score: -200
+        score: -10000
       - name: BLURAY-1080p
-        score: -200
+        score: -10000
   - trash_ids:
       - 44ccbcbc74506f208973e1463b11705f
       - c196536ea8122397c5854040d01f2aa7
