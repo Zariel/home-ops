@@ -49,11 +49,20 @@ spec:
                     port: &mlport 3003
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 5
               readiness: *mlprobe
               startup:
-                enabled: false
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *mlport
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
             resources:
               requests:
                 cpu: 500m
@@ -87,6 +96,28 @@ spec:
               IMMICH_WORKERS_EXCLUDE: api
               NODE_EXTRA_CA_CERTS: /certs/ca-certificates.crt
               TZ: Europe/London
+            probes:
+              liveness: &microservicesProbe
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 8082
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *microservicesProbe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 8082
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
             resources:
               requests:
                 cpu: 100m
@@ -122,11 +153,20 @@ spec:
                     port: &serverport 2283
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 5
               readiness: *probes
               startup:
-                enabled: false
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server/ping
+                    port: *serverport
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
             resources:
               requests:
                 cpu: 100m
