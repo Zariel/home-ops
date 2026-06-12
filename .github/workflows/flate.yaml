@@ -53,7 +53,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Flate
-        uses: home-operations/flate/action@dead45661b4ba1bec3fd47c3ca5ce43c7cccdc6b # v0.4.2
+        uses: home-operations/flate/action@54bf38b3e9f0ffa27838559f05254c593af228a3 # v0.4.4
 
       - name: Run Flate
         id: flate
