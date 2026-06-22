@@ -45,12 +45,18 @@ spec:
         supplementalGroups: [3005]
         seccompProfile: { type: RuntimeDefault }
         sysctls:
-          - name: net.ipv4.tcp_notsent_lowat
-            value: "131072"
+          - name: net.ipv4.ip_local_port_range
+            value: "1024 65535"
           - name: net.ipv4.tcp_fastopen
             value: "3"
+          - name: net.ipv4.tcp_fin_timeout
+            value: "15"
+          - name: net.ipv4.tcp_notsent_lowat
+            value: "131072"
           - name: net.ipv4.tcp_slow_start_after_idle
             value: "0"
+          - name: net.ipv4.tcp_tw_reuse
+            value: "1"
       containers:
         - name: qbittorrent
           image: ghcr.io/buroa/qbittorrent-brr:5.2.1@sha256:6656e6515f493eea42fcf9b3aa6a5cd76b2722af5cbe0914136d1febcebca687
