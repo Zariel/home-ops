@@ -1,0 +1,73 @@
+[paths]
+database = "/config/state/sporos.db"
+torrent_cache_dir = "/config/cache/torrents"
+output_dir = "/config/output"
+media_dirs = ["/data/media/tv", "/data/media/films"]
+
+[server]
+bind = "0.0.0.0:2468"
+api_token_file = "/var/run/secrets/sporos/api-token"
+
+[runtime]
+worker_threads = 4
+max_blocking_threads = 64
+search_queue_limit = 100
+indexing_queue_limit = 50
+notification_queue_limit = 500
+search_worker_concurrency = 4
+
+[torrent_clients.qbit_main]
+kind = "qbittorrent"
+url = "http://qbittorrent.default.svc.cluster.local"
+default_save_path = "/data/torrents/complete"
+default_category = "cross-seed"
+default_tags = ["cross-seed", "sporos"]
+
+[indexers.prowlarr.main]
+url = "http://prowlarr.default.svc.cluster.local"
+api_key_file = "/var/run/secrets/sporos/prowlarr-api-key"
+refresh_on_startup = true
+required = false
+remove_policy = "deactivate"
+
+[indexers.arr.sonarr.main]
+url = "http://sonarr.default.svc.cluster.local"
+api_key_file = "/var/run/secrets/sporos/sonarr-api-key"
+
+[indexers.arr.radarr.main]
+url = "http://radarr.default.svc.cluster.local"
+api_key_file = "/var/run/secrets/sporos/radarr-api-key"
+
+[matching]
+mode = "partial"
+fuzzy_size_threshold = 0.02
+include_single_episodes = true
+include_non_video = false
+
+[injection]
+dry_run = true
+link_type = "hardlink"
+link_dirs = [
+  "/data/downloads/torrents/complete/cross-seed",
+  "/data/downloads/torrents/complete/music/cross-seed",
+]
+flat_linking = false
+
+[injection.recheck]
+skip_recheck = true
+ignore_non_relevant_files_to_resume = true
+below_threshold_action = "inject_paused"
+
+[scheduling]
+client_inventory_interval = "24h"
+indexer_caps_interval = "24h"
+saved_retry_interval = "30m"
+cleanup_interval = "24h"
+
+[announce]
+max_pending = 1000
+worker_concurrency = 2
+claim_batch_size = 10
+default_ttl_secs = 86400
+success_retention_secs = 604800
+failure_retention_secs = 1209600

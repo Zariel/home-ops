@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - externalsecret.yaml
+  - deployment.yaml
+  - service.yaml
+configMapGenerator:
+  - name: sporos-config
+    files:
+      - config.toml=./resources/config.toml
+  - name: sporos-loki-rules
+    files:
+      - sporos.yaml=./resources/lokirule.yaml
+    options:
+      labels:
+        loki_rule: "true"
+generatorOptions:
+  disableNameSuffixHash: true
