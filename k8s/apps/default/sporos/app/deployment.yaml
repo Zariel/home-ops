@@ -1,0 +1,114 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sporos
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels: &labels
+    app.kubernetes.io/component: sporos
+    app.kubernetes.io/instance: sporos
+    app.kubernetes.io/name: sporos
+spec:
+  selector:
+    matchLabels: *labels
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      priorityClassName: cluster-p1
+      containers:
+        - name: sporos
+          image: ghcr.io/zariel/sporos:v0.1.2
+          imagePullPolicy: IfNotPresent
+          args:
+            - serve
+            - --config
+            - /etc/sporos/config.toml
+          env:
+            - name: TZ
+              value: Europe/London
+          ports:
+            - name: http
+              containerPort: 2468
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 10
+            httpGet:
+              path: /livez
+              port: http
+            timeoutSeconds: 5
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            httpGet:
+              path: /livez
+              port: http
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            httpGet:
+              path: /readyz
+              port: http
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /data
+              name: data
+              readOnly: true
+            - name: music
+              mountPath: /data/downloads/torrents/complete/music
+              readOnly: true
+            - mountPath: /etc/sporos/config.toml
+              name: config-file
+              readOnly: true
+              subPath: config.toml
+            - mountPath: /var/run/secrets/sporos
+              name: secret-files
+              readOnly: true
+      enableServiceLinks: false
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 3005
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 568
+        runAsNonRoot: true
+        runAsUser: 568
+        seccompProfile:
+          type: RuntimeDefault
+        supplementalGroups:
+          - 3005
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: sporos
+        - name: data
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
+        - name: music
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/music/downloads
+        - name: config-file
+          configMap:
+            name: sporos-config
+        - name: secret-files
+          secret:
+            secretName: sporos-secret

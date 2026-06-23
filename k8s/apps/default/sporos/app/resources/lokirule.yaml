@@ -1,0 +1,18 @@
+---
+groups:
+  - name: sporos
+    rules:
+      - alert: SporosInjectionFailure
+        expr: |
+          sum by (app) (count_over_time({app="sporos"} |~ "(?i)(failed to inject|injection failed)"[1h])) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: Sporos injection workflow is failing.
+      - alert: SporosDatabaseError
+        expr: |
+          sum by (app) (count_over_time({app="sporos"} |~ "(?i)(database disk image is malformed|sqlite)"[1h])) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: Sporos is reporting SQLite database errors.

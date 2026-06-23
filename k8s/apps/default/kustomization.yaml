@@ -18,6 +18,7 @@ resources:
   - autobrr/ks.yaml
   - znc/ks.yaml
   - cross-seed/ks.yaml
+  - sporos/ks.yaml
   - filebrowser/ks.yaml
   - seerr/ks.yaml
   - thelounge/ks.yaml
