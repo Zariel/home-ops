@@ -21,7 +21,7 @@ spec:
       priorityClassName: cluster-p1
       containers:
         - name: sporos
-          image: ghcr.io/zariel/sporos:v0.1.3
+          image: ghcr.io/zariel/sporos:v0.1.4
           imagePullPolicy: IfNotPresent
           args:
             - serve
