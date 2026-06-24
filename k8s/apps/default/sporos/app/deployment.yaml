@@ -30,6 +30,9 @@ spec:
           env:
             - name: TZ
               value: Europe/London
+          envFrom:
+            - secretRef:
+                name: sporos-secret
           ports:
             - name: http
               containerPort: 2468
@@ -106,6 +109,3 @@ spec:
         - name: config-file
           configMap:
             name: sporos-config
-        - name: secret-files
-          secret:
-            secretName: sporos-secret

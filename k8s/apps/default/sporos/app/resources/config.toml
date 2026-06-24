@@ -6,7 +6,7 @@ media_dirs = ["/data/media/tv", "/data/media/films"]
 
 [server]
 bind = "0.0.0.0:2468"
-api_token_file = "/var/run/secrets/sporos/api-token"
+api_token_env = "SPOROS_API_TOKEN"
 
 [runtime]
 worker_threads = 4
@@ -25,18 +25,18 @@ default_tags = ["cross-seed", "sporos"]
 
 [indexers.prowlarr.main]
 url = "http://prowlarr.default.svc.cluster.local"
-api_key_file = "/var/run/secrets/sporos/prowlarr-api-key"
+api_key_env = "PROWLARR_API_KEY"
 refresh_on_startup = true
 required = false
 remove_policy = "deactivate"
 
 [indexers.arr.sonarr.main]
 url = "http://sonarr.default.svc.cluster.local"
-api_key_file = "/var/run/secrets/sporos/sonarr-api-key"
+api_key_env = "SONARR_API_KEY"
 
 [indexers.arr.radarr.main]
 url = "http://radarr.default.svc.cluster.local"
-api_key_file = "/var/run/secrets/sporos/radarr-api-key"
+api_key_env = "RADARR_API_KEY"
 
 [matching]
 mode = "partial"
