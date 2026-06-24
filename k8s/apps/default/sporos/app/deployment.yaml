@@ -21,7 +21,7 @@ spec:
       priorityClassName: cluster-p1
       containers:
         - name: sporos
-          image: ghcr.io/zariel/sporos:v0.1.4
+          image: ghcr.io/zariel/sporos:latest@sha256:b23f8477b44373504fef189407dd68c3d39fd43847e7b73d4e02fe5c5df5f253
           imagePullPolicy: IfNotPresent
           args:
             - serve
@@ -74,7 +74,6 @@ spec:
               name: config
             - mountPath: /data
               name: arr-media
-              readOnly: true
             - name: music-downloads
               mountPath: /media/music-downloads
               readOnly: true
