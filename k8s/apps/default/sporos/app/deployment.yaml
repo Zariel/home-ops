@@ -21,12 +21,12 @@ spec:
       priorityClassName: cluster-p1
       containers:
         - name: sporos
-          image: ghcr.io/zariel/sporos:v0.1.2
+          image: ghcr.io/zariel/sporos:v0.1.3
           imagePullPolicy: IfNotPresent
           args:
             - serve
             - --config
-            - /etc/sporos/config.toml
+            - /app/config.toml
           env:
             - name: TZ
               value: Europe/London
@@ -67,21 +67,18 @@ spec:
                 - ALL
             readOnlyRootFilesystem: true
           volumeMounts:
-            - mountPath: /config
+            - mountPath: /app/state
               name: config
             - mountPath: /data
-              name: data
+              name: arr-media
               readOnly: true
-            - name: music
-              mountPath: /data/downloads/torrents/complete/music
+            - name: music-downloads
+              mountPath: /media/music-downloads
               readOnly: true
-            - mountPath: /etc/sporos/config.toml
+            - mountPath: /app/config.toml
               name: config-file
               readOnly: true
               subPath: config.toml
-            - mountPath: /var/run/secrets/sporos
-              name: secret-files
-              readOnly: true
       enableServiceLinks: false
       restartPolicy: Always
       securityContext:
@@ -98,11 +95,11 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: sporos
-        - name: data
+        - name: arr-media
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/arr
-        - name: music
+        - name: music-downloads
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/music/downloads
