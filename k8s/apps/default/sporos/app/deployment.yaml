@@ -82,6 +82,8 @@ spec:
               name: config-file
               readOnly: true
               subPath: config.toml
+            - mountPath: /tmp
+              name: tmp
       enableServiceLinks: false
       restartPolicy: Always
       securityContext:
@@ -109,3 +111,5 @@ spec:
         - name: config-file
           configMap:
             name: sporos-config
+        - name: tmp
+          emptyDir: {}
