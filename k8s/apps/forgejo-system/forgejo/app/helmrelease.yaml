@@ -39,9 +39,10 @@ spec:
     resources:
       requests:
         memory: 256Mi
-        cpu: 200m
+        cpu: "2"
       limits:
         memory: 512Mi
+        cpu: "6"
     persistence:
       enabled: true
       create: false

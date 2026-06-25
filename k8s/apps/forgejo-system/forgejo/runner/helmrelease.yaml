@@ -81,13 +81,15 @@ spec:
         globalMounts:
           - path: /etc/forgejo-runner-secret
             readOnly: true
-      tmpfs:
-        type: emptyDir
+      data:
+        type: persistentVolumeClaim
+        existingClaim: forgejo-runner-data
         globalMounts:
           - path: /data
-            subPath: data
+      tmp:
+        type: emptyDir
+        globalMounts:
           - path: /tmp
-            subPath: tmp
     rbac:
       bindings:
         forgejo-runner:
