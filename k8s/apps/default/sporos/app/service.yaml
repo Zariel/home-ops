@@ -7,5 +7,6 @@ spec:
   selector:
     app.kubernetes.io/name: sporos
   ports:
-    - port: 2468
-      name: http
+    - name: http
+      port: 80
+      targetPort: http

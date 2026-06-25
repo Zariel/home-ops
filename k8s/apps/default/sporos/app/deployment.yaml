@@ -82,6 +82,26 @@ spec:
             - mountPath: /tmp
               name: tmp
       enableServiceLinks: false
+      initContainers:
+        - name: prepare-link-dirs
+          image: docker.io/library/busybox:1.38.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - mkdir -p /data/downloads/torrents/complete/cross-seed /data/downloads/torrents/complete/music/cross-seed
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 568
+            runAsNonRoot: true
+            runAsUser: 568
+          volumeMounts:
+            - mountPath: /data
+              name: arr-media
       restartPolicy: Always
       securityContext:
         fsGroup: 3005
