@@ -6,6 +6,7 @@ resources:
   - externalsecret.yaml
   - deployment.yaml
   - service.yaml
+  - servicemonitor.yaml
 configMapGenerator:
   - name: sporos-config
     files:
