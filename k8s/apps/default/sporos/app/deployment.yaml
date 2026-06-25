@@ -28,6 +28,8 @@ spec:
           env:
             - name: TZ
               value: Europe/London
+            - name: RUST_LOG
+              value: warn,sporos=info,sporos::runtime=debug
           envFrom:
             - secretRef:
                 name: sporos-secret
