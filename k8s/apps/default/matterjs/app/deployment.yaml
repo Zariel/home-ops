@@ -59,14 +59,14 @@ spec:
           startupProbe:
             httpGet:
               path: /health
-              port: "5580"
+              port: http
             periodSeconds: 10
             timeoutSeconds: 10
             failureThreshold: 60
           readinessProbe:
             httpGet:
               path: /health
-              port: "5580"
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 10
@@ -74,7 +74,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: "5580"
+              port: http
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3
