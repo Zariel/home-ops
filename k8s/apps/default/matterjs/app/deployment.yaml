@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: matter-server
+  name: matterjs
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/name: matter-server
+      app.kubernetes.io/name: matterjs
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: matter-server
+        app.kubernetes.io/name: matterjs
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{
@@ -34,14 +34,13 @@ spec:
           - name: net.ipv6.conf.net1.accept_ra_rt_info_max_plen
             value: "64"
       containers:
-        - name: matter-server
-          image: ghcr.io/matter-js/python-matter-server:8.1.2@sha256:6827e352011e2d8c2bde771e446fcf72acc49150ef66bad978816bac1762aad3
+        - name: matterjs
+          image: ghcr.io/matter-js/matterjs-server:1.1.7@sha256:e52dc38320b53a0611628a8c3ed416a0dbb47c98ff83c9ef815f4184373f27b5
           imagePullPolicy: IfNotPresent
           args:
             - --storage-path=/data
             - --primary-interface=net1
             - --log-level=debug
-            - --log-level-sdk=info
           env:
             - name: TZ
               value: "Europe/London"
@@ -58,57 +57,24 @@ spec:
           securityContext:
             privileged: true
           startupProbe:
-            exec:
-              command:
-                - python
-                - -c
-                - |
-                  import sys, urllib.request
-                  for url in ("http://127.0.0.1:5580/info", "http://10.1.3.122:5580/info"):
-                      try:
-                          with urllib.request.urlopen(url, timeout=5) as r:
-                              if r.status == 200:
-                                  sys.exit(0)
-                      except Exception:
-                          pass
-                  sys.exit(1)
+            httpGet:
+              path: /health
+              port: "5580"
             periodSeconds: 10
             timeoutSeconds: 10
             failureThreshold: 60
           readinessProbe:
-            exec:
-              command:
-                - python
-                - -c
-                - |
-                  import sys, urllib.request
-                  for url in ("http://127.0.0.1:5580/info", "http://10.1.3.122:5580/info"):
-                      try:
-                          with urllib.request.urlopen(url, timeout=5) as r:
-                              if r.status == 200:
-                                  sys.exit(0)
-                      except Exception:
-                          pass
-                  sys.exit(1)
+            httpGet:
+              path: /health
+              port: "5580"
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 10
             failureThreshold: 3
           livenessProbe:
-            exec:
-              command:
-                - python
-                - -c
-                - |
-                  import sys, urllib.request
-                  for url in ("http://127.0.0.1:5580/info", "http://10.1.3.122:5580/info"):
-                      try:
-                          with urllib.request.urlopen(url, timeout=5) as r:
-                              if r.status == 200:
-                                  sys.exit(0)
-                      except Exception:
-                          pass
-                  sys.exit(1)
+            httpGet:
+              path: /health
+              port: "5580"
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3
@@ -124,4 +90,4 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: matter-server
+            claimName: matterjs
