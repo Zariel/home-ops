@@ -35,7 +35,7 @@ spec:
             value: "64"
       containers:
         - name: matterjs
-          image: ghcr.io/matter-js/matterjs-server:1.1.7@sha256:e52dc38320b53a0611628a8c3ed416a0dbb47c98ff83c9ef815f4184373f27b5
+          image: ghcr.io/matter-js/matterjs-server:1.2.1@sha256:ad986d21fd62384519aa080af9bfd1ed96e4a48a21e6c94575b0ed5cb2541bae
           imagePullPolicy: IfNotPresent
           args:
             - --storage-path=/data
