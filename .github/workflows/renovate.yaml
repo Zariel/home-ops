@@ -31,8 +31,7 @@ concurrency:
 
 jobs:
   renovate:
-    # Renovate needs internal DNS and network access to resolve registry.cbannister.xyz.
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
