@@ -38,6 +38,15 @@
       "separateMinorPatch": true
     },
     {
+      "description": ["CoreDNS Group"],
+      "groupName": "CoreDNS",
+      "matchPackageNames": ["coredns", "ghcr.io/coredns/charts/coredns"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "description": ["Intel Device Plugins Group"],
       "groupName": "Intel-Device-Plugins",
       "matchPackageNames": ["/intel-device-plugins/"],
@@ -75,8 +84,8 @@
     {
       "description": ["Talos Group"],
       "groupName": "Talos",
-      "matchPackageNames": ["/siderolabs/talosctl/", "/siderolabs/installer/"],
-      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/siderolabs/installer", "siderolabs/talos"],
+      "matchDatasources": ["docker", "custom.talos-factory"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       }
