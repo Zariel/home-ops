@@ -1,6 +1,6 @@
 ---
 clusterName: hollywoo
-talosVersion: v1.13.4
+talosVersion: v1.13.7
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.36.2
 endpoint: https://k8s.cbannister.casa:6443
