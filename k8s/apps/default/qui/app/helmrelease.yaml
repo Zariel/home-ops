@@ -96,9 +96,9 @@ spec:
             args:
               - |
                 for path in /config/qui.db*; do
-                  [ -e "${path}" ] || continue
-                  chown 568:3005 "${path}"
-                  chmod 0600 "${path}"
+                  [ -e "$${path}" ] || continue
+                  chown 568:3005 "$${path}"
+                  chmod 0600 "$${path}"
                 done
             securityContext:
               allowPrivilegeEscalation: false
