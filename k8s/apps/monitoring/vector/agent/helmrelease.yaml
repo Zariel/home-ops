@@ -40,27 +40,6 @@ spec:
     securityContext:
       privileged: true
 
-    env:
-      - name: PROCFS_ROOT
-        value: /host/proc
-      - name: SYSFS_ROOT
-        value: /host/sys
-      - name: VECTOR_SELF_NODE_NAME
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: spec.nodeName
-      - name: VECTOR_SELF_POD_NAME
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: metadata.name
-      - name: VECTOR_SELF_POD_NAMESPACE
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: metadata.namespace
-
     tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
