@@ -85,6 +85,29 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+        initContainers:
+          fix-database-permissions:
+            image:
+              repository: docker.io/library/busybox
+              tag: 1.38.0
+            command:
+              - /bin/sh
+              - -c
+            args:
+              - |
+                if [ -f /config/qui.db ]; then
+                  chown 568:3005 /config/qui.db
+                  chmod 0600 /config/qui.db
+                fi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "FOWNER"]
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
