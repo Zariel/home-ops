@@ -50,6 +50,8 @@ spec:
     persistence:
       enabled: true
       existingClaim: netbox
+    updateStrategy:
+      type: Recreate
     initContainers:
       - name: init-db
         image: ghcr.io/home-operations/postgres-init:18.4.0@sha256:ebd9d30add17acdf935d73eb004758c7dfd9388aaa605fda70ad74378ab92aec
