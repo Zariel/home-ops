@@ -95,10 +95,11 @@ spec:
               - -c
             args:
               - |
-                if [ -f /config/qui.db ]; then
-                  chown 568:3005 /config/qui.db
-                  chmod 0600 /config/qui.db
-                fi
+                for path in /config/qui.db*; do
+                  [ -e "${path}" ] || continue
+                  chown 568:3005 "${path}"
+                  chmod 0600 "${path}"
+                done
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
