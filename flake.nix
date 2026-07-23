@@ -35,6 +35,7 @@
             age
             gnupg
             kubectl
+            stern
             kustomize
             fluxcd
             actionlint
