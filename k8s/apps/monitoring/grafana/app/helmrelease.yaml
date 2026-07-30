@@ -177,6 +177,12 @@ spec:
           revision: 6
           datasource:
             - { name: DS_PROMETHEUS, value: &datasource victoriametrics }
+        node-exporter-full:
+          # renovate: depName="Node Exporter Full"
+          gnetId: 1860
+          revision: 45
+          datasource:
+            - { name: DS_PROMETHEUS, value: victoriametrics }
         cert-manager:
           url: https://gitlab.com/uneeq-oss/cert-manager-mixin/-/raw/master/dashboards/cert-manager.json
           datasource: *datasource
