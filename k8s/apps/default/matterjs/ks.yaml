@@ -25,6 +25,16 @@ spec:
       VOLSYNC_PUID: "0"
       VOLSYNC_PGID: "0"
   prune: true
+  patches:
+    - patch: |-
+        - op: add
+          path: /spec/paused
+          value: false
+      target:
+        group: volsync.backube
+        version: v1alpha1
+        kind: ReplicationSource
+        name: matterjs
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
