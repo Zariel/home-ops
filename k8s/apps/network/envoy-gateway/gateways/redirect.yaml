@@ -39,7 +39,6 @@ spec:
     retryOn:
       triggers:
         - reset
-        - 5xx
         - connect-failure
   targetSelectors:
     - group: gateway.networking.k8s.io
@@ -47,7 +46,7 @@ spec:
   tcpKeepalive: {}
   timeout:
     http:
-      requestTimeout: 60s
+      requestTimeout: 0s
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/charts/gateway-helm/crds/generated/gateway.envoyproxy.io_clienttrafficpolicies.yaml
 apiVersion: gateway.envoyproxy.io/v1alpha1
@@ -59,6 +58,8 @@ spec:
     xForwardedFor:
       trustedCIDRs:
         - 172.20.0.0/16
+  connection:
+    bufferLimit: 4Mi
   http2:
     onInvalidMessage: TerminateStream
   http3: {}
@@ -66,6 +67,9 @@ spec:
     - group: gateway.networking.k8s.io
       kind: Gateway
   tcpKeepalive: {}
+  timeout:
+    http:
+      idleTimeout: 60s
   tls:
     minVersion: "1.2"
     alpnProtocols:
