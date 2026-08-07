@@ -65,14 +65,12 @@ spec:
             limits:
               memory: *memory
           startupProbe:
-            httpGet:
-              path: /ready
+            tcpSocket:
               port: 8080
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /ready
+            tcpSocket:
               port: 8080
             initialDelaySeconds: 0
             periodSeconds: 10
