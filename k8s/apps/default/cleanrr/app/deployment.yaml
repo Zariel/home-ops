@@ -24,6 +24,8 @@ spec:
           image: ghcr.io/zariel/cleanrr:v0.1.1@sha256:d2e3f59ae0189069a95367cb3e0a016936611396dc559d50009656b4085c078a
           imagePullPolicy: IfNotPresent
           env:
+            - name: CLEANRR_DRY_RUN
+              value: "true"
             - name: CLEANRR_SERVERS__RADARR__KIND
               value: radarr
             - name: CLEANRR_SERVERS__RADARR__URL
