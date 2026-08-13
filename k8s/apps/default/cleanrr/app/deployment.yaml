@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanrr
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels: &labels
+    app.kubernetes.io/instance: cleanrr
+    app.kubernetes.io/name: cleanrr
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *labels
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: cleanrr
+          image: ghcr.io/zariel/cleanrr:v0.1.0@sha256:3f2f53edc9b271775b48be5f2f32b77ef08ef77ba0b61a6818e0ee493a5413cd
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CLEANRR_DRY_RUN
+              value: "true"
+            - name: CLEANRR_SERVERS__RADARR__KIND
+              value: radarr
+            - name: CLEANRR_SERVERS__RADARR__URL
+              value: http://radarr.default.svc.cluster.local
+            - name: CLEANRR_SERVERS__SONARR__KIND
+              value: sonarr
+            - name: CLEANRR_SERVERS__SONARR__URL
+              value: http://sonarr.default.svc.cluster.local
+          envFrom:
+            - secretRef:
+                name: cleanrr-secret
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 10
+            httpGet:
+              path: /health/startup
+              port: http
+            timeoutSeconds: 5
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            httpGet:
+              path: /health/live
+              port: http
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            httpGet:
+              path: /health/ready
+              port: http
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+      enableServiceLinks: false
+      securityContext:
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
