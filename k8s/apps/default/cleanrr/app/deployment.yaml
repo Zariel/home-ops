@@ -21,17 +21,11 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: cleanrr
-          image: ghcr.io/zariel/cleanrr:v0.1.1@sha256:d2e3f59ae0189069a95367cb3e0a016936611396dc559d50009656b4085c078a
+          image: ghcr.io/zariel/cleanrr:v0.1.2@sha256:b00ad5192f934f0670b1c69bc27363b088b991181e032793000692688aa39463
           imagePullPolicy: IfNotPresent
           env:
-            - name: CLEANRR_DRY_RUN
-              value: "true"
-            - name: CLEANRR_SERVERS__RADARR__KIND
-              value: radarr
             - name: CLEANRR_SERVERS__RADARR__URL
               value: http://radarr.default.svc.cluster.local.
-            - name: CLEANRR_SERVERS__SONARR__KIND
-              value: sonarr
             - name: CLEANRR_SERVERS__SONARR__URL
               value: http://sonarr.default.svc.cluster.local.
           envFrom:
