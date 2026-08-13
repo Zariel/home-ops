@@ -182,6 +182,8 @@ controlPlane:
       machine:
         nodeLabels:
           intel.feature.node.kubernetes.io/gpu: "true"
+          topology.kubernetes.io/region: homelab
+          topology.kubernetes.io/zone: hollywoo
         install:
           grubUseUKICmdline:
             $$patch: delete
