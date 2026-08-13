@@ -29,11 +29,11 @@ spec:
             - name: CLEANRR_SERVERS__RADARR__KIND
               value: radarr
             - name: CLEANRR_SERVERS__RADARR__URL
-              value: http://radarr.default.svc.cluster.local
+              value: http://radarr
             - name: CLEANRR_SERVERS__SONARR__KIND
               value: sonarr
             - name: CLEANRR_SERVERS__SONARR__URL
-              value: http://sonarr.default.svc.cluster.local
+              value: http://sonarr
           envFrom:
             - secretRef:
                 name: cleanrr-secret
