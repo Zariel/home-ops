@@ -45,6 +45,28 @@ spec:
               - /certs/ca.crt
               - --tls-auth-clients
               - "no"
+            probes:
+              liveness: &valkeyProbe
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *valkeyProbe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
         pod:
           affinity:
             podAffinity:
