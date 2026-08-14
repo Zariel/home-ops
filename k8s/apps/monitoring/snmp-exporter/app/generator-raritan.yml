@@ -1,0 +1,30 @@
+modules:
+  raritan_px2:
+    walk:
+      - outletConfigurationTable
+      - outletSensorConfigurationTable
+      - outletSensorMeasurementsTable
+      - outletSwitchControlTable
+      - inletConfigurationTable
+      - inletSensorConfigurationTable
+      - inletSensorMeasurementsTable
+      - externalSensorConfigurationTable
+      - externalSensorMeasurementsTable
+    lookups:
+      - source_indexes: [pduId, outletId]
+        lookup: outletLabel
+      - source_indexes: [pduId, outletId]
+        lookup: outletName
+      - source_indexes: [pduId, inletId]
+        lookup: inletLabel
+      - source_indexes: [pduId, inletId]
+        lookup: inletName
+      - source_indexes: [pduId, sensorID]
+        lookup: externalSensorName
+    overrides:
+      measurementsOutletSensorValue:
+        type: gauge
+      measurementsInletSensorValue:
+        type: gauge
+      measurementsExternalSensorValue:
+        type: gauge

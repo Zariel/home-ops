@@ -1,0 +1,191 @@
+# Generator configuration for snmp_exporter 0.29.x
+# To regenerate snmp.yaml (once PDU2 MIB is present under ./mibs):
+#   docker run --rm -v $PWD/k8s/apps/monitoring/snmp-exporter/app:/work \
+#     ghcr.io/prometheus/snmp-generator:v0.29.0 \
+#     generate --input-path=/work/generator.yml --output-path=/work/resources/snmp.yaml --mibs-dir=/work/mibs
+modules:
+  brocade:
+    walk:
+      - snAgentTempValue
+      - snAgentTempWarningValue
+      - snAgentTempShutdownValue
+      - snChasActualTemperature
+      - snChasWarningTemperature
+      - snChasShutdownTemperature
+      # ICX per-port stats and queue counters (numeric OIDs to avoid vendor MIB dependency)
+      - 1.3.6.1.2.1.2.2                             # ifTable (errors/discards)
+      - 1.3.6.1.2.1.31.1.1.1                        # ifXTable (high-capacity counters)
+      - 1.3.6.1.4.1.1991.1.1.3.3.5.1                 # snSwIfStatsTable (port pkt rates)
+      - 1.3.6.1.4.1.1991.1.1.3.3.11                  # brcdIfEgressCounterInfoTable (egress queues)
+    metrics:
+      - name: brocade_temperature_celsius
+        oid: snAgentTempValue
+        type: gauge
+        help: Current per-sensor temperature; vendor reports in 0.5°C units, scaled to °C
+        indexes:
+          - labelname: slot
+            type: gauge
+          - labelname: sensor
+            type: gauge
+        scale: 0.5
+      - name: brocade_temperature_warning_threshold_celsius
+        oid: snAgentTempWarningValue
+        type: gauge
+        help: Per-sensor warning threshold (0.5°C units, scaled to °C)
+        indexes:
+          - labelname: slot
+            type: gauge
+          - labelname: sensor
+            type: gauge
+        scale: 0.5
+      - name: brocade_temperature_shutdown_threshold_celsius
+        oid: snAgentTempShutdownValue
+        type: gauge
+        help: Per-sensor shutdown threshold (0.5°C units, scaled to °C)
+        indexes:
+          - labelname: slot
+            type: gauge
+          - labelname: sensor
+            type: gauge
+        scale: 0.5
+      - name: brocade_chassis_temperature_celsius
+        oid: snChasActualTemperature
+        type: gauge
+        help: Chassis ambient temperature (0.5°C units, scaled to °C)
+        scale: 0.5
+      - name: brocade_chassis_temperature_warning_threshold_celsius
+        oid: snChasWarningTemperature
+        type: gauge
+        help: Chassis warning temperature threshold (0.5°C units, scaled to °C)
+        scale: 0.5
+      - name: brocade_chassis_temperature_shutdown_threshold_celsius
+        oid: snChasShutdownTemperature
+        type: gauge
+        help: Chassis shutdown temperature threshold (0.5°C units, scaled to °C)
+        scale: 0.5
+
+      # ICX 7250 per-port packet rate (5-minute average, packets/sec)
+      - name: brocade_port_in_pkts_per_sec
+        oid: 1.3.6.1.4.1.1991.1.1.3.3.5.1.50
+        type: gauge
+        help: Port input packets per second (5-minute average)
+        indexes:
+          - labelname: if_index
+            type: gauge
+      - name: brocade_port_out_pkts_per_sec
+        oid: 1.3.6.1.4.1.1991.1.1.3.3.5.1.51
+        type: gauge
+        help: Port output packets per second (5-minute average)
+        indexes:
+          - labelname: if_index
+            type: gauge
+
+      # Per-port errors from IF-MIB ifTable
+      - name: brocade_port_in_errors_total
+        oid: 1.3.6.1.2.1.2.2.1.14
+        type: counter
+        help: Input errors on the interface
+        indexes:
+          - labelname: if_index
+            type: gauge
+      - name: brocade_port_out_errors_total
+        oid: 1.3.6.1.2.1.2.2.1.20
+        type: counter
+        help: Output errors on the interface
+        indexes:
+          - labelname: if_index
+            type: gauge
+
+      # High-capacity packet counters (use rate() in PromQL for instantaneous pps)
+      - name: brocade_port_in_ucast_pkts_total
+        oid: 1.3.6.1.2.1.31.1.1.1.7
+        type: counter
+        help: Input unicast packets (high-capacity counter)
+        indexes:
+          - labelname: if_index
+            type: gauge
+      - name: brocade_port_in_multicast_pkts_total
+        oid: 1.3.6.1.2.1.31.1.1.1.8
+        type: counter
+        help: Input multicast packets (high-capacity counter)
+        indexes:
+          - labelname: if_index
+            type: gauge
+      - name: brocade_port_in_broadcast_pkts_total
+        oid: 1.3.6.1.2.1.31.1.1.1.9
+        type: counter
+        help: Input broadcast packets (high-capacity counter)
+        indexes:
+          - labelname: if_index
+            type: gauge
+      - name: brocade_port_out_ucast_pkts_total
+        oid: 1.3.6.1.2.1.31.1.1.1.11
+        type: counter
+        help: Output unicast packets (high-capacity counter)
+        indexes:
+          - labelname: if_index
+            type: gauge
+      - name: brocade_port_out_multicast_pkts_total
+        oid: 1.3.6.1.2.1.31.1.1.1.12
+        type: counter
+        help: Output multicast packets (high-capacity counter)
+        indexes:
+          - labelname: if_index
+            type: gauge
+      - name: brocade_port_out_broadcast_pkts_total
+        oid: 1.3.6.1.2.1.31.1.1.1.13
+        type: counter
+        help: Output broadcast packets (high-capacity counter)
+        indexes:
+          - labelname: if_index
+            type: gauge
+
+      # Egress queue counters (per port/queue)
+      - name: brocade_port_egress_queue_packets_total
+        oid: 1.3.6.1.4.1.1991.1.1.3.3.11.1.4
+        type: counter
+        help: Egress queue packets counter
+        indexes:
+          - labelname: if_index
+            type: gauge
+          - labelname: queue_id
+            type: gauge
+      - name: brocade_port_egress_queue_drops_total
+        oid: 1.3.6.1.4.1.1991.1.1.3.3.11.1.5
+        type: counter
+        help: Egress queue drop packets counter
+        indexes:
+          - labelname: if_index
+            type: gauge
+          - labelname: queue_id
+            type: gauge
+
+  raritan_px2:
+    walk:
+      - outletConfigurationTable
+      - outletSensorConfigurationTable
+      - outletSensorMeasurementsTable
+      - outletSwitchControlTable
+      - inletConfigurationTable
+      - inletSensorConfigurationTable
+      - inletSensorMeasurementsTable
+      - externalSensorConfigurationTable
+      - externalSensorMeasurementsTable
+    lookups:
+      - source_indexes: [pduId, outletId]
+        lookup: outletLabel
+      - source_indexes: [pduId, outletId]
+        lookup: outletName
+      - source_indexes: [pduId, inletId]
+        lookup: inletLabel
+      - source_indexes: [pduId, inletId]
+        lookup: inletName
+      - source_indexes: [pduId, sensorID]
+        lookup: externalSensorName
+    overrides:
+      measurementsOutletSensorValue:
+        type: gauge
+      measurementsInletSensorValue:
+        type: gauge
+      measurementsExternalSensorValue:
+        type: gauge
