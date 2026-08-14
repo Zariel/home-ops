@@ -2,6 +2,7 @@
 Thumbs.db
 .private/
 .venv/
+__pycache__/
 .terraform
 *.tfvars
 .decrypted~*
@@ -13,3 +14,7 @@ kubeconfig*
 config.xml
 .direnv/
 artifacts/
+flatcar/config.proxmox-lab.pkl
+flatcar/proxmox-lab.pkl
+.task/
+_scratch/
