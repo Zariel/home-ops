@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: netbox-device-type-import
+  namespace: default
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: importer
+          image: registry.cbannister.xyz/netbox-device-import:latest@sha256:a218da610e743bc0e9b74c9f72b3295d086ec01cf37f870b89773dc368e71241
+          env:
+            - name: NETBOX_URL
+              value: http://netbox.default.svc.cluster.local:80/
+          envFrom:
+            - secretRef:
+                name: netbox
