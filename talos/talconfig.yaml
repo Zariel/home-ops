@@ -20,7 +20,7 @@ patches:
     machine:
       time:
         servers:
-          - 10.1.0.1
+          - 10.254.254.1
       kubelet:
         extraConfig:
           maxPods: 150
