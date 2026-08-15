@@ -8,7 +8,7 @@ spec:
   interval: 10m
   url: oci://mirror.gcr.io/envoyproxy/gateway-crds-helm
   ref:
-    tag: 1.8.3
+    tag: 1.9.0
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
