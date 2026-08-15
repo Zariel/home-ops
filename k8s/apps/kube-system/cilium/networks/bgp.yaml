@@ -17,7 +17,7 @@ metadata:
 spec:
   nodeSelector:
     matchLabels:
-      kubernetes.io/os: linux
+      kubernetes.io/hostname: k8s-0
   bgpInstances:
     - name: bird
       localASN: 64513
@@ -32,13 +32,64 @@ spec:
       peers:
         - name: default-gateway
           peerASN: 65001
-          autoDiscovery:
-            mode: DefaultGateway
-            defaultGateway:
-              addressFamily: ipv4
+          peerAddress: "10.254.1.0"
           peerConfigRef:
             name: upstream
 
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgpclusterconfig_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-bgp-k8s-1
+spec:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/hostname: k8s-1
+  bgpInstances:
+    - name: bird
+      localASN: 64513
+      peers:
+        - name: local-bird
+          peerASN: 64513
+          peerAddress: "127.0.0.1"
+          peerConfigRef:
+            name: bird
+    - name: upstream
+      localASN: 65100
+      peers:
+        - name: default-gateway
+          peerASN: 65001
+          peerAddress: "10.254.1.2"
+          peerConfigRef:
+            name: upstream
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgpclusterconfig_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-bgp-k8s-2
+spec:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/hostname: k8s-2
+  bgpInstances:
+    - name: bird
+      localASN: 64513
+      peers:
+        - name: local-bird
+          peerASN: 64513
+          peerAddress: "127.0.0.1"
+          peerConfigRef:
+            name: bird
+    - name: upstream
+      localASN: 65100
+      peers:
+        - name: default-gateway
+          peerASN: 65001
+          peerAddress: "10.254.1.4"
+          peerConfigRef:
+            name: upstream
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2.json
 apiVersion: cilium.io/v2
