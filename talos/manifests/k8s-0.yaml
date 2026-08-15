@@ -23,12 +23,6 @@ routes:
     table: "100"
 ---
 apiVersion: v1alpha1
-kind: DummyLinkConfig
-name: bird0
-addresses:
-  - address: 10.254.254.128/32
----
-apiVersion: v1alpha1
 kind: UserVolumeConfig
 name: local-hostpath
 provisioning:

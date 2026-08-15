@@ -19,14 +19,6 @@ spec:
     matchLabels:
       kubernetes.io/hostname: k8s-0
   bgpInstances:
-    - name: bird
-      localASN: 64513
-      peers:
-        - name: local-bird
-          peerASN: 64513
-          peerAddress: "127.0.0.1"
-          peerConfigRef:
-            name: bird
     - name: upstream
       localASN: 65100
       peers:
@@ -47,14 +39,6 @@ spec:
     matchLabels:
       kubernetes.io/hostname: k8s-1
   bgpInstances:
-    - name: bird
-      localASN: 64513
-      peers:
-        - name: local-bird
-          peerASN: 64513
-          peerAddress: "127.0.0.1"
-          peerConfigRef:
-            name: bird
     - name: upstream
       localASN: 65100
       peers:
@@ -74,14 +58,6 @@ spec:
     matchLabels:
       kubernetes.io/hostname: k8s-2
   bgpInstances:
-    - name: bird
-      localASN: 64513
-      peers:
-        - name: local-bird
-          peerASN: 64513
-          peerAddress: "127.0.0.1"
-          peerConfigRef:
-            name: bird
     - name: upstream
       localASN: 65100
       peers:
@@ -90,28 +66,6 @@ spec:
           peerAddress: "10.254.1.4"
           peerConfigRef:
             name: upstream
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2.json
-apiVersion: cilium.io/v2
-kind: CiliumBGPPeerConfig
-metadata:
-  name: bird
-spec:
-  timers:
-    connectRetryTimeSeconds: 12
-    holdTimeSeconds: 9
-    keepAliveTimeSeconds: 3
-  gracefulRestart:
-    enabled: true
-    restartTimeSeconds: 15
-  transport:
-    peerPort: 61790
-  families:
-    - afi: ipv4
-      safi: unicast
-      advertisements:
-        matchLabels:
-          advertise: "bgp"
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2.json
 apiVersion: cilium.io/v2
