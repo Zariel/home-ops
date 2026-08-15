@@ -50,9 +50,10 @@ spec:
             use_tcp: true
         port: 53
         plugins:
-          - name: rewrite
+          - name: template
+            parameters: ANY AAAA
             configBlock: |-
-              stop type AAAA A
+              authority "{{ .Zone }} 60 IN SOA ns.dns.cluster.local. hostmaster.cluster.local. (1 60 60 60 60)"
           - name: errors
           - name: health
             configBlock: |-
@@ -73,6 +74,7 @@ spec:
             configBlock: |-
               prefetch 20
               serve_stale
+              servfail 0
           - name: loop
           - name: reload
           - name: loadbalance
