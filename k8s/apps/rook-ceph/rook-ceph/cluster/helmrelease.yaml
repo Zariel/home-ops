@@ -84,7 +84,8 @@ spec:
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       crashCollector:
-        disable: true
+        disable: false
+        daysToRetain: 14
       csi:
         readAffinity:
           enabled: true
