@@ -27,6 +27,10 @@ spec:
         patches:
           # v1.20.4 exposes monitoring.metricsDisabled but does not render it
           # into the CephCluster. Ensure Rook keeps the broken mgr module off.
+          # TODO: Once the deployed Ceph release contains the Tentacle backport
+          # https://github.com/ceph/ceph/pull/71041 (targeted for v20.2.4),
+          # remove this post-render patch and monitoring.metricsDisabled below,
+          # then restore monitoring.enabled and verify crash reports stay empty.
           - target:
               group: ceph.rook.io
               version: v1
