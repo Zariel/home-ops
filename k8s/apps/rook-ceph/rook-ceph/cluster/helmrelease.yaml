@@ -36,7 +36,7 @@ spec:
     keepHistory: false
   values:
     monitoring:
-      enabled: true
+      enabled: false
       createPrometheusRules: true
     toolbox:
       enabled: true
@@ -84,7 +84,7 @@ spec:
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       crashCollector:
-        disable: false
+        disable: true
       csi:
         readAffinity:
           enabled: true
