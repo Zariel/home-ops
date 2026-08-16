@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleanrr
+spec:
+  selector:
+    app.kubernetes.io/instance: cleanrr
+    app.kubernetes.io/name: cleanrr
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
