@@ -35,6 +35,8 @@
             age
             gnupg
             kubectl
+            kubectl-node-shell
+            kubectl-rook-ceph
             stern
             kustomize
             fluxcd
