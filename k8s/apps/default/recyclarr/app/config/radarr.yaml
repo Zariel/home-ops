@@ -1,5 +1,8 @@
 delete_old_custom_formats: true
 
+quality_definition:
+  type: movie
+
 media_naming:
   folder: plex-imdb
   movie:
@@ -21,18 +24,13 @@ quality_profiles:
     upgrade:
       allowed: true
       until_quality: Remux-2160p
-      until_score: 9999999
+      until_score: 10000
     reset_unmatched_scores: &reset_unmatched_scores
       enabled: true
       except:
-        - "Language: Not Original or English"
-        - "Language: Prefer Original"
-        - "Language: German + Original"
-        - "Home Groups"
         - "Sign Languages"
         - "Groups Boost"
         - "Groups Boost 2"
-        - "Groups Cut"
     quality_sort: top
     qualities:
       - name: Remux-2160p
@@ -67,7 +65,7 @@ quality_profiles:
     upgrade:
       allowed: true
       until_quality: Remux-1080p
-      until_score: 9999999
+      until_score: 10000
     reset_unmatched_scores: *reset_unmatched_scores
     quality_sort: top
     qualities:
@@ -81,7 +79,7 @@ quality_profiles:
     upgrade:
       allowed: true
       until_quality: WEB
-      until_score: 9999999
+      until_score: 10000
     reset_unmatched_scores: *reset_unmatched_scores
     quality_sort: top
     qualities:
@@ -98,7 +96,7 @@ quality_profiles:
     upgrade:
       allowed: true
       until_quality: Good Stuff
-      until_score: 9999999
+      until_score: 10000
     reset_unmatched_scores: *reset_unmatched_scores
     quality_sort: top
     qualities:
@@ -151,7 +149,6 @@ custom_formats:
       - 8e109e50e0a0b83a5098b056e13bf6db # DTS-HD HRA
       - 6ba9033150e7896bdc9ec4b44f2b230f # MP3
       - a061e2e700f81932daf888599f8a8273 # Opus
-      - e7c2fcae07cbada050a0af3357491d7b # PCM
 
       # HDR Formats
       - 493b6d1dbec3c3364c59d7607f7e3405 # HDR
@@ -192,14 +189,7 @@ custom_formats:
       - db9b4c4b53d312a3ca5f1378f6440fc9 # Vinegar Syndrome
 
       # Optional
-      - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
       # - 73613461ac2cea99d52c4cd6e177ab82 # HFR
-      - c465ccc73923871b3eb1802042331306 # Line/Mic Dubbed
-      - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
-      - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
-      - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
-      - f537cf427b64c38c8e36298f657e4828 # Scene
-      - ae4cfaa9283a4f2150ac3da08e388723 # VP9
       # - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
 
       # Streaming Services
@@ -231,7 +221,15 @@ custom_formats:
       # - bf7e73dd1d85b12cc527dc619761c840 # Pathe
       # - 8cd3ac70db7ac318cf9a0e01333940a4 # SiC
 
-      # Unwanted
+  # Keep unwanted formats below the minimum score even when positive scores stack.
+  - trash_ids:
+      - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
+      - c465ccc73923871b3eb1802042331306 # Line/Mic Dubbed
+      - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
+      - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
+      - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
+      - f537cf427b64c38c8e36298f657e4828 # Scene
+      - ae4cfaa9283a4f2150ac3da08e388723 # VP9
       - b8cd450cbfa689c0259a01d9e29ba3d6 # 3D
       - ed38b889b31be83fda192888e2286d83 # BR-DISK
       - 90a6f9a284dff5103f6346090e6280c8 # LQ
@@ -239,10 +237,18 @@ custom_formats:
       - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
       - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
       - 0a3f082873eb454bde444150b70253cc # Extras
-      - f537cf427b64c38c8e36298f657e4828 # Scene
       - e6886871085226c3da1830830146846c # Generated Dynamic HDR
       - cae4ca30163749b891686f95532519bd # AV1
       - 712d74cd88bceb883ee32f773656b1f5 # Sing-Along Versions
+    assign_scores_to:
+      - name: *remux
+        score: -50000
+      - name: *bd1080
+        score: -50000
+      - name: WEBDL
+        score: -50000
+      - name: peak
+        score: -50000
 
   - assign_scores_to:
       - name: *remux
@@ -265,6 +271,9 @@ custom_formats:
     trash_ids:
       - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
   - assign_scores_to:
+      - name: *remux
+      - name: *bd1080
+      - name: WEBDL
       - name: peak
         score: 2500
     trash_ids:
