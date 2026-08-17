@@ -61,7 +61,7 @@ spec:
       params:
         - name: beefchunk
           module: ["brocade"]
-          target: 10.254.255.1
+          target: beefchunk.cbannister.xyz
           auth: ["public_v2"]
         - name: pdu
           module: ["raritan_px2"]
