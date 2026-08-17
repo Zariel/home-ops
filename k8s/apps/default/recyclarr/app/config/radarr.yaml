@@ -28,7 +28,6 @@ quality_profiles:
         - "Language: Not Original or English"
         - "Language: Prefer Original"
         - "Language: German + Original"
-        - "DV HDR10+ Boost"
         - "Home Groups"
         - "Sign Languages"
         - "Groups Boost"
@@ -157,6 +156,7 @@ custom_formats:
       # HDR Formats
       - 493b6d1dbec3c3364c59d7607f7e3405 # HDR
       - b337d6812e06c200ec9a2d3cfa9d20a7 # DV Boost
+      - caa37d0df9c348912df1fb1d88f9273a # HDR10+ Boost
       # - f700d29429c023a5734505e77daeaea7 # DV (disk)
 
       # HQ Release Groups
@@ -193,7 +193,6 @@ custom_formats:
 
       # Optional
       - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
-      # - b17886cb4158d9fea189859409975758 # HDR10+ Boost
       # - 73613461ac2cea99d52c4cd6e177ab82 # HFR
       - c465ccc73923871b3eb1802042331306 # Line/Mic Dubbed
       - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
@@ -272,16 +271,21 @@ custom_formats:
       - e7c2fcae07cbada050a0af3357491d7b # PCM
   - assign_scores_to:
       - name: *remux
-        score: -100
+        score: -600
       - name: *bd1080
-        score: -100
+        score: -600
       - name: WEBDL
+        score: -600
       - name: peak
+        score: -600
       - name: SQP-2
+        score: -600
       - name: SQP-3
+        score: -600
       - name: SQP-5
+        score: -600
     trash_ids:
-      - 923b6abef9b17f937fab56cfcf89e1f1 # DV (webdl)
+      - 923b6abef9b17f937fab56cfcf89e1f1 # DV (w/o HDR fallback)
   - assign_scores_to:
       - name: *remux
         score: -10

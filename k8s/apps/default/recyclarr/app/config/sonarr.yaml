@@ -200,6 +200,7 @@ custom_formats:
       # HDR Formats
       - 505d871304820ba7106b693be6fe4a9e # HDR
       - 7c3a61a9c6cb04f52f1544be6d44a026 # DV Boost
+      - 0c4b99df9206d2cfac3c05ab897dd62a # HDR10+ Boost
       - ef4963043b0987f8485bc9106f16db38 # DV Disk
 
       # audio
@@ -292,18 +293,18 @@ custom_formats:
       - name: WEBDL-1080p
       - name: WEBDL
   - trash_ids:
-      - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
+      - 9b27ab6498ec0f31a3353992e19434ca # DV (w/o HDR fallback)
     assign_scores_to:
       - name: BLURAY-2160p
-        score: -150
+        score: -600
       - name: BLURAY-1080p
-        score: -150
+        score: -600
       - name: WEBDL-2160p
-        score: -150
+        score: -600
       - name: WEBDL-1080p
-        score: -150
+        score: -600
       - name: WEBDL
-        score: -150
+        score: -600
   - trash_ids:
       - 4232a509ce60c4e208d13825b7c06264 # DD+ ATMOS
     assign_scores_to:
