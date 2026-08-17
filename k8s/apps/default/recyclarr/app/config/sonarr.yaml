@@ -92,72 +92,6 @@ quality_profiles:
           - WEBRip-480p
           - DVD
 
-  - name: WEBDL-2160p
-    reset_unmatched_scores: *reset_unmatched_scores
-    upgrade:
-      allowed: true
-      until_quality: WEBDL-2160p
-      until_score: 10000
-    min_format_score: 0
-    qualities:
-      - name: WEBDL-2160p
-        qualities:
-          - WEBDL-2160p
-          - WEBRip-2160p
-      - name: Bluray-2160p
-      - name: *remux-1080p
-      - name: Bluray-1080p
-      - name: WEBDL-1080p
-        qualities:
-          - WEBDL-1080p
-          - WEBRip-1080p
-      - name: HDTV-1080p
-      - name: Bluray-720p
-      - name: WEBDL-720p
-        qualities:
-          - WEBDL-720p
-          - WEBRip-720p
-      - name: HDTV-720p
-      - name: Bluray-576p
-      - name: Bluray-480p
-      - name: 480p
-        qualities:
-          - WEBDL-480p
-          - WEBRip-480p
-          - DVD
-
-  - name: WEBDL-1080p
-    reset_unmatched_scores: *reset_unmatched_scores
-    upgrade:
-      allowed: true
-      until_quality: WEBDL-1080p
-      until_score: 10000
-    min_format_score: 0
-    quality_sort: top
-    qualities:
-      - name: WEBDL-1080p
-        qualities:
-          - WEBDL-1080p
-          - WEBRip-1080p
-      - name: Bluray-1080p
-        qualities:
-          - Bluray-1080p
-          - *remux-1080p
-      - name: HDTV-1080p
-      - name: Bluray-720p
-      - name: WEBDL-720p
-        qualities:
-          - WEBDL-720p
-          - WEBRip-720p
-      - name: HDTV-720p
-      - name: Bluray-576p
-      - name: Bluray-480p
-      - name: 480p
-        qualities:
-          - WEBDL-480p
-          - WEBRip-480p
-          - DVD
-
   - name: WEBDL
     reset_unmatched_scores: *reset_unmatched_scores
     upgrade:
@@ -275,8 +209,6 @@ custom_formats:
     assign_scores_to:
       - name: BLURAY-2160p
       - name: BLURAY-1080p
-      - name: WEBDL-2160p
-      - name: WEBDL-1080p
       - name: WEBDL
   # Keep unwanted formats below the minimum score even when positive scores stack.
   - trash_ids:
@@ -297,10 +229,6 @@ custom_formats:
         score: -50000
       - name: BLURAY-1080p
         score: -50000
-      - name: WEBDL-2160p
-        score: -50000
-      - name: WEBDL-1080p
-        score: -50000
       - name: WEBDL
         score: -50000
   - trash_ids:
@@ -309,10 +237,6 @@ custom_formats:
       - name: BLURAY-2160p
         score: -600
       - name: BLURAY-1080p
-        score: -600
-      - name: WEBDL-2160p
-        score: -600
-      - name: WEBDL-1080p
         score: -600
       - name: WEBDL
         score: -600
@@ -323,17 +247,11 @@ custom_formats:
         score: 1750
       - name: BLURAY-1080p
         score: 1750
-      - name: WEBDL-2160p
-        score: 1750
-      - name: WEBDL-1080p
-        score: 1750
       - name: WEBDL
         score: 1750
   - trash_ids:
       - 3a4127d8aa781b44120d907f2cd62627 # Hybrid
     assign_scores_to:
-      - name: WEBDL-2160p
-      - name: WEBDL-1080p
       - name: WEBDL
   - trash_ids:
       - 3a4127d8aa781b44120d907f2cd62627 # Hybrid

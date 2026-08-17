@@ -14,10 +14,6 @@ quality_profiles:
     trash_id: 5128baeb2b081b72126bc8482b2a86a0
   - name: SQP-2
     trash_id: c3933358ba2356bafc41524f81471069
-  - name: SQP-3
-    trash_id: 2cf36c1f0106ffac993be003ade51865
-  - name: SQP-5
-    trash_id: a7bb1539fd147256b21b1098f3dc2016
 
   - name: &remux REMUX-2160p
     score_set: default
@@ -35,11 +31,11 @@ quality_profiles:
     qualities:
       - name: Remux-2160p
       - name: Bluray-2160p
+      - name: Remux-1080p
       - name: WEB-2160p
         qualities:
           - WEBDL-2160p
           - WEBRip-2160p
-          - Remux-1080p
       - name: Bluray-1080p
       - &webdl-1080
         name: WEB-1080p
@@ -75,56 +71,12 @@ quality_profiles:
       - *720
       - *trash
 
-  - name: WEBDL
-    upgrade:
-      allowed: true
-      until_quality: WEB
-      until_score: 10000
-    reset_unmatched_scores: *reset_unmatched_scores
-    quality_sort: top
-    qualities:
-      - name: WEB
-        qualities:
-          - WEBDL-2160p
-          - WEBRip-2160p
-          - WEBDL-1080p
-          - WEBRip-1080p
-      - *720
-      - *trash
-
-  - name: peak
-    upgrade:
-      allowed: true
-      until_quality: Good Stuff
-      until_score: 10000
-    reset_unmatched_scores: *reset_unmatched_scores
-    quality_sort: top
-    qualities:
-      - name: Good Stuff
-        qualities:
-          - Remux-1080p
-          - WEBDL-1080p
-          - WEBRip-1080p
-          - WEBDL-2160p
-          - WEBRip-2160p
-          - Bluray-1080p
-          - Bluray-2160p
-      - name: not ideal
-        qualities:
-          - Bluray-720p
-          - WEBDL-720p
-          - WEBRip-720p
-      - *trash
-
 custom_formats:
   - assign_scores_to:
       - name: *remux
         score: 5000
       - name: *bd1080
         score: 5000
-      - name: WEBDL
-      - name: peak
-        score: 2500
     trash_ids:
       - 2f22d89048b01681dde8afe203bf2e95 # DTS X
       - 496f355514737f7d83bf7aa4d24f8169 # TrueHD ATMOS
@@ -135,8 +87,6 @@ custom_formats:
   - assign_scores_to:
       - name: *remux
       - name: *bd1080
-      - name: WEBDL
-      - name: peak
     trash_ids:
       # Audio Advanced #1
       - 185f1dd7264c4562b9022d963ac37424 # DD+
@@ -149,6 +99,7 @@ custom_formats:
       - 8e109e50e0a0b83a5098b056e13bf6db # DTS-HD HRA
       - 6ba9033150e7896bdc9ec4b44f2b230f # MP3
       - a061e2e700f81932daf888599f8a8273 # Opus
+      - e7c2fcae07cbada050a0af3357491d7b # PCM
 
       # HDR Formats
       - 493b6d1dbec3c3364c59d7607f7e3405 # HDR
@@ -245,19 +196,12 @@ custom_formats:
         score: -50000
       - name: *bd1080
         score: -50000
-      - name: WEBDL
-        score: -50000
-      - name: peak
-        score: -50000
 
   - assign_scores_to:
       - name: *remux
         score: 2500
       - name: *bd1080
         score: 2500
-      - name: WEBDL
-      - name: peak
-        score: 1750
     trash_ids:
       - 417804f7f2c4308c1f4c5d380d4c4475 # ATMOS (undefined)
   - assign_scores_to:
@@ -265,33 +209,14 @@ custom_formats:
         score: 1755
       - name: *bd1080
         score: 1755
-      - name: WEBDL
-      - name: peak
-        score: 1750
     trash_ids:
       - 1af239278386be2919e1bcee0bde047e # DD+ ATMOS
   - assign_scores_to:
       - name: *remux
-      - name: *bd1080
-      - name: WEBDL
-      - name: peak
-        score: 2500
-    trash_ids:
-      - e7c2fcae07cbada050a0af3357491d7b # PCM
-  - assign_scores_to:
-      - name: *remux
         score: -600
       - name: *bd1080
-        score: -600
-      - name: WEBDL
-        score: -600
-      - name: peak
         score: -600
       - name: SQP-2
-        score: -600
-      - name: SQP-3
-        score: -600
-      - name: SQP-5
         score: -600
     trash_ids:
       - 923b6abef9b17f937fab56cfcf89e1f1 # DV (w/o HDR fallback)
@@ -300,9 +225,6 @@ custom_formats:
         score: -10
       - name: *bd1080
         score: -10
-      - name: WEBDL
-        score: -10
-      - name: peak
 
     trash_ids:
       - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
@@ -311,48 +233,20 @@ custom_formats:
         score: 20
       - name: *bd1080
         score: 20
-      - name: WEBDL
-        score: 20
-      - name: peak
-        score: 20
     trash_ids:
       - 6a061313d22e51e0f25b7cd4dc065233 # MAX
       - 5763d1b0ce84aff3b21038eea8e9b8ad # HMAX
   - assign_scores_to:
-      - name: WEBDL
-        score: 151
-      - name: peak
-        score: 151
-    trash_ids:
-      - fb392fb0d61a010ae38e49ceaa24a1ef # 2160p
-  - assign_scores_to:
-      - name: WEBDL
-      - name: peak
-    trash_ids:
-      - 820b09bb9acbfde9c35c71e0e565dad8 # 1080p
-  - assign_scores_to:
-      - name: WEBDL
-        score: 2300
-      - name: peak
-        score: 2300
       - name: *remux
       - name: *bd1080
     trash_ids:
       - 4d74ac4c4db0b64bff6ce0cffef99bf0 # UHD Bluray Tier 01
   - assign_scores_to:
-      - name: WEBDL
-        score: 2200
-      - name: peak
-        score: 2200
       - name: *remux
       - name: *bd1080
     trash_ids:
       - a58f517a70193f8e578056642178419d # UHD Bluray Tier 02
   - assign_scores_to:
-      - name: WEBDL
-        score: 2100
-      - name: peak
-        score: 2100
       - name: *remux
       - name: *bd1080
     trash_ids:
@@ -367,12 +261,3 @@ custom_formats:
     assign_scores_to:
       - name: SQP-1
       - name: SQP-2
-      - name: SQP-3
-      - name: SQP-5
-  - trash_ids:
-      - 0f12c086e289cf966fa5948eac571f44 # Hybrid
-      - eecf3a857724171f968a66cb5719e152 # IMAX
-      - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
-    assign_scores_to:
-      - name: WEBDL
-      - name: peak
