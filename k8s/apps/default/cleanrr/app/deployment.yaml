@@ -21,7 +21,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: cleanrr
-          image: ghcr.io/zariel/cleanrr:v0.1.5@sha256:60dfbd9b4d25e4aa00a57a51676d7da0c45523a4e3655b1cb8ee6d8bc851a78c
+          image: ghcr.io/zariel/cleanrr:v0.1.6@sha256:ff5de090d4295a56cedd8c8167d0e5b070970d3ca304090d36001c922fc8a2d0
           imagePullPolicy: IfNotPresent
           env:
             - name: CLEANRR_SERVERS__RADARR__URL
