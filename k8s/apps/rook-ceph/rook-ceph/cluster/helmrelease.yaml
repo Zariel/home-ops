@@ -64,6 +64,9 @@ spec:
       tag: v20.2.4
       allowUnsupported: false
     cephClusterSpec:
+      # Temporarily allow Rook to reconcile the CephX rotation that resolves
+      # the authentication-only HEALTH_ERR. Remove after rotation completes.
+      skipUpgradeChecks: true
       resources:
         api:
           requests:
