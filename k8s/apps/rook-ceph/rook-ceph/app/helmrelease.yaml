@@ -22,36 +22,6 @@ metadata:
 spec:
   interval: 1h
   timeout: 15m
-  postRenderers:
-    - kustomize:
-        patches:
-          # Kubernetes 1.36 validates int32 schema bounds on every write.
-          # Rook v1.20.4 models these uint32 fields as int32, but keeps the
-          # uint32 maximum. Match the upstream int64 fix until it is released.
-          - target:
-              group: apiextensions.k8s.io
-              version: v1
-              kind: CustomResourceDefinition
-              name: cephclusters.ceph.rook.io
-            patch: |
-              - op: replace
-                path: /spec/versions/0/schema/openAPIV3Schema/properties/spec/properties/security/properties/cephx/properties/csi/properties/keyGeneration/format
-                value: int64
-              - op: replace
-                path: /spec/versions/0/schema/openAPIV3Schema/properties/spec/properties/security/properties/cephx/properties/daemon/properties/keyGeneration/format
-                value: int64
-              - op: replace
-                path: /spec/versions/0/schema/openAPIV3Schema/properties/spec/properties/security/properties/cephx/properties/rbdMirrorPeer/properties/keyGeneration/format
-                value: int64
-          - target:
-              group: apiextensions.k8s.io
-              version: v1
-              kind: CustomResourceDefinition
-              name: cephclients.ceph.rook.io
-            patch: |
-              - op: replace
-                path: /spec/versions/0/schema/openAPIV3Schema/properties/spec/properties/security/properties/cephx/properties/keyGeneration/format
-                value: int64
   chartRef:
     kind: OCIRepository
     name: rook-ceph
