@@ -1,0 +1,106 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: songr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: songr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: songr
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |-
+          [{
+            "name": "trusted-lan",
+            "namespace": "kube-system",
+            "ips": ["10.1.2.161/24"],
+            "mac": "02:b4:5f:2a:9d:63"
+          }]
+    spec:
+      hostname: songr
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: ghcr.io/roethlar/songr:v1.1.4@sha256:be5302630aa5b0ce4a140df41b9931f669eccb8f7118c52bb88634c25dea359b
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: CONFIG_DIR
+              value: /persist/config
+            - name: DATA_DIR
+              value: /persist/data
+            - name: IMAGE_CACHE_PATH
+              value: /cache/image-cache
+            - name: IMAGE_CACHE_MAX_BYTES
+              value: "1073741824"
+            - name: CATALOG_PATH
+              value: /cache/catalog
+            - name: CLIENT_ORIGIN
+              value: https://songr.cbannister.xyz
+            - name: TRUST_PROXY
+              value: "true"
+          ports:
+            - name: http
+              containerPort: 3333
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 25m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: persist
+              mountPath: /persist
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: persist
+          persistentVolumeClaim:
+            claimName: songr
+        - name: cache
+          emptyDir:
+            sizeLimit: 2Gi
+        - name: tmp
+          emptyDir: {}
