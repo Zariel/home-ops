@@ -105,7 +105,6 @@ spec:
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
-            keyType: aes256k
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       crashCollector:
