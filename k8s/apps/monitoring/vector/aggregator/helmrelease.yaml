@@ -97,6 +97,9 @@ spec:
       - name: talosservice
         containerPort: 6003
         protocol: UDP
+      - name: nixos
+        containerPort: 6004
+        protocol: TCP
 
     livenessProbe:
       failureThreshold: 3
@@ -146,6 +149,10 @@ spec:
           port: 6003
           targetPort: 6003
           protocol: UDP
+        - name: nixos
+          port: 6004
+          targetPort: 6004
+          protocol: TCP
 
     # Disable headless service to avoid duplicate exposure and DNS/LB annotations leaking to it
     serviceHeadless:

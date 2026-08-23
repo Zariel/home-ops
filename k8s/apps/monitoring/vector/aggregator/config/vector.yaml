@@ -17,6 +17,11 @@ sources:
     type: vector
     version: "2"
 
+  nixos_source:
+    address: 0.0.0.0:6004
+    type: vector
+    version: "2"
+
   vyos_syslog:
     type: syslog
     mode: tcp
@@ -235,6 +240,25 @@ transforms:
     source: |-
       .source_stream = "talos-service"
 
+  vlogs_nixos_normalize:
+    type: remap
+    inputs:
+      - nixos_source
+    source: |-
+      .source_stream = "nixos"
+      if !exists(.host) && exists(._HOSTNAME) {
+        .host = ._HOSTNAME
+      }
+      if !exists(.service) && exists(._SYSTEMD_UNIT) {
+        .service = ._SYSTEMD_UNIT
+      }
+      if !exists(.msg) && exists(.message) {
+        .msg = .message
+      }
+      if !exists(.timestamp) {
+        .timestamp = now()
+      }
+
   vlogs_common_normalize:
     type: remap
     inputs:
@@ -276,6 +300,30 @@ sinks:
       _msg_field: msg
       _time_field: timestamp
       _stream_fields: host,node,namespace,custom_app_name,container_name
+    batch:
+      max_bytes: 1048576
+      max_events: 1000
+      timeout_secs: 2
+
+  vlogs_nixos:
+    type: elasticsearch
+    inputs:
+      - vlogs_nixos_normalize
+    endpoints:
+      - http://vlsingle-vlogs.monitoring.svc.cluster.local:9428/insert/elasticsearch/
+    api_version: v8
+    compression: zstd
+    acknowledgements:
+      enabled: true
+    healthcheck:
+      enabled: false
+    mode: bulk
+    bulk:
+      index: vector-logs
+    query:
+      _msg_field: msg
+      _time_field: timestamp
+      _stream_fields: source_stream,host,service
     batch:
       max_bytes: 1048576
       max_events: 1000
