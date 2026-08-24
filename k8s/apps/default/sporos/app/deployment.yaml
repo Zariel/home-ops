@@ -19,23 +19,20 @@ spec:
       labels: *labels
     spec:
       priorityClassName: cluster-p1
+      terminationGracePeriodSeconds: 60
       containers:
         - name: sporos
-          image: ghcr.io/zariel/sporos:latest@sha256:ccd8f609698fcf306cf1df71f2324351370c3248f00b8ce588042bcc7f2c05ee
+          image: ghcr.io/zariel/sporos:0.0.2@sha256:524ff55ac731b831ad4c57244a7ac91333259d20783abbcf43df1590e5bbebe2
           imagePullPolicy: IfNotPresent
-          args:
-            - serve
           env:
             - name: TZ
               value: Europe/London
-            - name: RUST_LOG
-              value: warn,sporos=info,sporos::runtime=debug
           envFrom:
             - secretRef:
                 name: sporos-secret
           ports:
             - name: http
-              containerPort: 2468
+              containerPort: 8080
           startupProbe:
             failureThreshold: 30
             periodSeconds: 10
@@ -70,19 +67,14 @@ spec:
                 - ALL
             readOnlyRootFilesystem: true
           volumeMounts:
-            - mountPath: /app/state
-              name: state
             - mountPath: /data
+              name: state
+            - mountPath: /media
               name: arr-media
-            - name: music-downloads
-              mountPath: /media/music-downloads
-              readOnly: true
-            - mountPath: /app/config.toml
+            - mountPath: /config/sporos.toml
               name: config-file
               readOnly: true
               subPath: config.toml
-            - mountPath: /tmp
-              name: tmp
       enableServiceLinks: false
       initContainers:
         - name: prepare-link-dirs
@@ -91,7 +83,7 @@ spec:
           command:
             - /bin/sh
             - -c
-            - mkdir -p /data/downloads/torrents/complete/cross-seed /data/downloads/torrents/complete/music/cross-seed
+            - install -d -m 0770 /media/downloads/torrents/complete/sporos && chgrp 3005 /media/downloads/torrents/complete/sporos
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -102,15 +94,15 @@ spec:
             runAsNonRoot: true
             runAsUser: 568
           volumeMounts:
-            - mountPath: /data
+            - mountPath: /media
               name: arr-media
       restartPolicy: Always
       securityContext:
-        fsGroup: 3005
+        fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        runAsGroup: 568
+        runAsGroup: 65532
         runAsNonRoot: true
-        runAsUser: 568
+        runAsUser: 65532
         seccompProfile:
           type: RuntimeDefault
         supplementalGroups:
@@ -123,12 +115,6 @@ spec:
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/arr
-        - name: music-downloads
-          nfs:
-            server: nas.cbannister.casa
-            path: /mnt/bighorse/music/downloads
         - name: config-file
           configMap:
             name: sporos-config
-        - name: tmp
-          emptyDir: {}

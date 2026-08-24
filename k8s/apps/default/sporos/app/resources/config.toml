@@ -1,36 +1,43 @@
-[paths]
-media_dirs = ["/data/media/tv", "/data/media/films"]
-
-[server]
-bind = "0.0.0.0:2468"
-
-[torrent_clients.qbit_main]
-kind = "qbittorrent"
+[qbittorrent]
 url = "http://qbittorrent.default.svc.cluster.local"
-default_save_path = "/data/torrents/complete"
-default_category = "cross-seed"
-default_tags = ["cross-seed", "sporos"]
 
-[indexers.prowlarr.main]
+[prowlarr]
 url = "http://prowlarr.default.svc.cluster.local"
 
-[indexers.arr.sonarr.main]
+[arr.sonarr.main]
 url = "http://sonarr.default.svc.cluster.local"
 
-[indexers.arr.radarr.main]
+[arr.radarr.main]
 url = "http://radarr.default.svc.cluster.local"
 
+[data_scan.roots.tv]
+path = "/media/media/tv"
+max_depth = 8
+max_releases = 100000
+max_files_per_release = 100000
+
+[data_scan.roots.films]
+path = "/media/media/films"
+max_depth = 8
+max_releases = 100000
+max_files_per_release = 100000
+
+[paths]
+link_root = "/media/downloads/torrents/complete/sporos"
+
+[[paths.rewrite]]
+name = "arr-data"
+remote = "/data"
+local = "/media"
+services = ["qbittorrent", "sonarr", "radarr"]
+
+[sources]
+include_categories = ["sonarr", "radarr"]
+
 [matching]
-include_single_episodes = true
+mode = "partial"
+season_from_episodes = true
 
 [injection]
 dry_run = true
-link_type = "hardlink"
-link_dirs = [
-  "/data/downloads/torrents/complete/cross-seed",
-  "/data/downloads/torrents/complete/music/cross-seed",
-]
-
-[injection.recheck]
-skip_recheck = true
-ignore_non_relevant_files_to_resume = true
+category_template = "sporos"
