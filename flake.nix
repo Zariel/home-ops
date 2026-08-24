@@ -18,6 +18,13 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        kubectl-krew = pkgs.symlinkJoin {
+          name = "kubectl-krew";
+          paths = [ pkgs.krew ];
+          postBuild = ''
+            ln -s "$out/bin/krew" "$out/bin/kubectl-krew"
+          '';
+        };
       in
       {
         devShells.default = pkgs.mkShell {
@@ -34,6 +41,7 @@
             go-task
             age
             gnupg
+            kubectl-krew
             kubectl
             kubectl-node-shell
             kubectl-rook-ceph
@@ -42,6 +50,9 @@
             fluxcd
             actionlint
           ];
+          shellHook = ''
+            export PATH="$PATH:''${KREW_ROOT:-$HOME/.krew}/bin"
+          '';
         };
       }
     );
