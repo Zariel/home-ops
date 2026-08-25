@@ -3,6 +3,7 @@ url = "http://qbittorrent.default.svc.cluster.local"
 
 [prowlarr]
 url = "http://prowlarr.default.svc.cluster.local"
+include_tags = ["sporos"]
 
 [arr.sonarr.main]
 url = "http://sonarr.default.svc.cluster.local"
