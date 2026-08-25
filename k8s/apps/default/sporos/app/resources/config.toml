@@ -4,13 +4,6 @@ url = "http://qbittorrent.default.svc.cluster.local"
 [prowlarr]
 url = "http://prowlarr.default.svc.cluster.local"
 
-[limits]
-max_candidate_workflows = 1
-max_search_workflows = 1
-max_indexer_requests = 1
-max_filesystem_operations = 1
-outbox_batch_size = 4
-
 [arr.sonarr.main]
 url = "http://sonarr.default.svc.cluster.local"
 
