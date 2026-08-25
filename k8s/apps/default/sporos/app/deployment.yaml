@@ -69,6 +69,8 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: state
+            - mountPath: /tmp
+              name: tmp
             - mountPath: /media
               name: arr-media
             - mountPath: /config/sporos.toml
@@ -111,6 +113,9 @@ spec:
         - name: state
           persistentVolumeClaim:
             claimName: sporos
+        - name: tmp
+          emptyDir:
+            sizeLimit: 256Mi
         - name: arr-media
           nfs:
             server: nas.cbannister.casa
