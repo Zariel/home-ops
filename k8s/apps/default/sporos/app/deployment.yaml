@@ -22,7 +22,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: sporos
-          image: ghcr.io/zariel/sporos:0.0.2@sha256:524ff55ac731b831ad4c57244a7ac91333259d20783abbcf43df1590e5bbebe2
+          image: ghcr.io/zariel/sporos:0.0.3@sha256:e0ddb113b37ba739dce0cdc7294c3b72a8fe44b3aa37326595dd43f32084e298
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
