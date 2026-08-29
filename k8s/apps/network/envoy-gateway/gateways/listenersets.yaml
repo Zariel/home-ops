@@ -3,6 +3,32 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: ListenerSet
 metadata:
+  name: external-cbannister-xyz
+  annotations:
+    external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
+spec:
+  parentRef:
+    name: external
+    kind: Gateway
+    group: gateway.networking.k8s.io
+  listeners:
+    - name: https
+      hostname: "*.cbannister.xyz"
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: cbannister-xyz-tls
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/listenerset_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
   name: external-rociobolanos-com
   annotations:
     external-dns.alpha.kubernetes.io/target: external.rociobolanos.com
@@ -24,6 +50,32 @@ spec:
         certificateRefs:
           - kind: Secret
             name: rociobolanos-com-tls
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/listenerset_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: internal-cbannister-xyz
+  annotations:
+    external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
+spec:
+  parentRef:
+    name: internal
+    kind: Gateway
+    group: gateway.networking.k8s.io
+  listeners:
+    - name: https
+      hostname: "*.cbannister.xyz"
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: cbannister-xyz-tls
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/listenerset_v1.json
 apiVersion: gateway.networking.k8s.io/v1

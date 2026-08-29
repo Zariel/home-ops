@@ -4,12 +4,13 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: internal
-  annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname internal.cbannister.xyz
   labels:
     gateway: internal
 spec:
   gatewayClassName: envoy-gateway
+  allowedListeners:
+    namespaces:
+      from: Same
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: "internal.cbannister.xyz,internal.rociobolanos.com"
@@ -23,17 +24,6 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
-    - name: https
-      hostname: "*.cbannister.xyz"
-      protocol: HTTPS
-      port: 443
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        certificateRefs:
-          - kind: Secret
-            name: cbannister-xyz-tls
     - name: ssh
       protocol: TCP
       port: 22

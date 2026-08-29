@@ -81,8 +81,10 @@ spec:
           - "{{ .Release.Name }}.cbannister.xyz"
           - hass.cbannister.xyz
         parentRefs:
-          - name: internal
+          - name: internal-cbannister-xyz
             namespace: network
+            kind: ListenerSet
+            sectionName: https
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"

@@ -8,8 +8,9 @@ spec:
   hostnames:
     - "rook.cbannister.xyz"
   parentRefs:
-    - name: internal
+    - name: internal-cbannister-xyz
       namespace: network
+      kind: ListenerSet
       sectionName: https
   rules:
     - backendRefs:

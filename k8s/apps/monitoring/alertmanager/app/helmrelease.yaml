@@ -47,8 +47,9 @@ spec:
         hostnames:
           - "alertmanager.cbannister.xyz"
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: internal-cbannister-xyz
+            namespace: network
+            kind: ListenerSet
             sectionName: https
     podSecurityContext:
       fsGroup: 568
