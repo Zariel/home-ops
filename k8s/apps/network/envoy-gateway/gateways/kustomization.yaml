@@ -6,3 +6,4 @@ resources:
   - ./redirect.yaml
   - ./external.yaml
   - ./internal.yaml
+  - ./listenersets.yaml

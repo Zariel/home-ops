@@ -24,6 +24,7 @@ spec:
         namespaces:
           from: Same
     - name: https
+      hostname: "*.cbannister.xyz"
       protocol: HTTPS
       port: 443
       allowedRoutes:
@@ -33,5 +34,3 @@ spec:
         certificateRefs:
           - kind: Secret
             name: cbannister-xyz-tls
-          - kind: Secret
-            name: rociobolanos-com-tls

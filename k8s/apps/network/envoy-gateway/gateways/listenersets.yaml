@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/listenerset_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: external-rociobolanos-com
+  annotations:
+    external-dns.alpha.kubernetes.io/target: external.rociobolanos.com
+spec:
+  parentRef:
+    name: external
+    kind: Gateway
+    group: gateway.networking.k8s.io
+  listeners:
+    - name: https
+      hostname: "*.rociobolanos.com"
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rociobolanos-com-tls
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/listenerset_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: internal-rociobolanos-com
+  annotations:
+    external-dns.alpha.kubernetes.io/target: internal.rociobolanos.com
+spec:
+  parentRef:
+    name: internal
+    kind: Gateway
+    group: gateway.networking.k8s.io
+  listeners:
+    - name: https
+      hostname: "*.rociobolanos.com"
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rociobolanos-com-tls

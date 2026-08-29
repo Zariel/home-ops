@@ -59,6 +59,7 @@ spec:
             name: bind
             key: externaldns-secret
     extraArgs:
+      - --gateway-listener-sets
       - --rfc2136-zone=cbannister.xyz
       - --rfc2136-zone=rociobolanos.com
     policy: sync

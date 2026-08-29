@@ -8,8 +8,9 @@ spec:
   hostnames:
     - www.rociobolanos.com
   parentRefs:
-    - name: external
+    - name: external-rociobolanos-com
       namespace: network
+      kind: ListenerSet
       sectionName: https
   rules:
     - backendRefs:
