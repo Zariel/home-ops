@@ -26,6 +26,7 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
+    enableGatewayListenerSets: true
     resources:
       requests:
         memory: 192Mi
@@ -38,7 +39,6 @@ spec:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
       - --exclude-record-types=HTTPS
-      - --gateway-listener-sets
       - --gateway-name=external
       - --zone-id-filter=$(CF_ZONE_ID)
       - --zone-id-filter=$(CF_ROCIOBOLANOS_COM_ZONE_ID)
