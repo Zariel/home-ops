@@ -69,6 +69,8 @@ spec:
           - name: forward
             parameters: cbannister.xyz 10.45.0.55
           - name: forward
+            parameters: rociobolanos.com 10.45.0.55
+          - name: forward
             parameters: . 172.53.53.53
           - name: cache
             configBlock: |-

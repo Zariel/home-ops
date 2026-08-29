@@ -24,7 +24,8 @@ spec:
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
-  wait: true
+  # The first issuance creates the remote 1Password item consumed above.
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -53,4 +54,13 @@ spec:
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
+  healthChecks:
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      name: cbannister-xyz
+      namespace: *namespace
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      name: rociobolanos-com
+      namespace: *namespace
   wait: false

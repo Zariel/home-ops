@@ -12,7 +12,7 @@ spec:
   gatewayClassName: envoy-gateway
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: *hostname
+      external-dns.alpha.kubernetes.io/hostname: "external.cbannister.xyz,external.rociobolanos.com"
       io.cilium/lb-ipam-ips: 10.45.0.11
     labels:
       gateway: external
@@ -20,14 +20,12 @@ spec:
     - name: http
       protocol: HTTP
       port: 80
-      hostname: "*.cbannister.xyz"
       allowedRoutes:
         namespaces:
           from: Same
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "*.cbannister.xyz"
       allowedRoutes:
         namespaces:
           from: All
@@ -35,3 +33,5 @@ spec:
         certificateRefs:
           - kind: Secret
             name: cbannister-xyz-tls
+          - kind: Secret
+            name: rociobolanos-com-tls

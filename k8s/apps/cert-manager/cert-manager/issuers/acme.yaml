@@ -19,6 +19,7 @@ spec:
         selector:
           dnsZones:
             - cbannister.xyz
+            - rociobolanos.com
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -40,3 +41,4 @@ spec:
         selector:
           dnsZones:
             - cbannister.xyz
+            - rociobolanos.com

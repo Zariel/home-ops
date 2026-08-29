@@ -62,3 +62,5 @@ spec:
   dependsOn:
     - name: envoy-gateway-operator
       namespace: *namespace
+    - name: certificates-export
+      namespace: *namespace

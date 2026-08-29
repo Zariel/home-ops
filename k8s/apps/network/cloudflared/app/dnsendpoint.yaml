@@ -10,3 +10,6 @@ spec:
     - dnsName: external.cbannister.xyz
       recordType: CNAME
       targets: ["${CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com"]
+    - dnsName: external.rociobolanos.com
+      recordType: CNAME
+      targets: ["${CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com"]

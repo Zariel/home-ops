@@ -40,6 +40,7 @@ spec:
       - --exclude-record-types=HTTPS
       - --gateway-name=external
       - --zone-id-filter=$(CF_ZONE_ID)
+      - --zone-id-filter=$(CF_ROCIOBOLANOS_COM_ZONE_ID)
     env:
       - name: &name CF_API_TOKEN
         valueFrom:
@@ -51,12 +52,17 @@ spec:
           secretKeyRef:
             name: *secret
             key: *name
+      - name: &name CF_ROCIOBOLANOS_COM_ZONE_ID
+        valueFrom:
+          secretKeyRef:
+            name: *secret
+            key: *name
     triggerLoopOnEvent: true
     policy: sync
     sources: ["gateway-httproute", "crd"]
     txtOwnerId: default
     txtPrefix: k8s.
-    domainFilters: ["cbannister.xyz"]
+    domainFilters: ["cbannister.xyz", "rociobolanos.com"]
     serviceMonitor:
       enabled: true
     podAnnotations:

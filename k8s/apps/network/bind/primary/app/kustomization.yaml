@@ -16,3 +16,4 @@ configMapGenerator:
   - name: bind-zones
     files:
       - config/zones/db.cbannister.xyz
+      - config/zones/db.rociobolanos.com

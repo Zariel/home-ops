@@ -10,6 +10,7 @@ spec:
   path: ./k8s/apps/network/cloudflared/app
   dependsOn:
     - name: external-dns
+    - name: envoy-gateway-gateways
   prune: true
   sourceRef:
     kind: GitRepository

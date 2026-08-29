@@ -45,12 +45,20 @@ spec:
             - /bin/sh
             - -c
             - |
-              # Only copy zone file if it doesn't exist
+              # Only copy zone files if they don't exist
               if [ ! -f "/var/cache/bind/db.cbannister.xyz" ]; then
-                echo "Zone file not found, copying initial zone..."
+                echo "Initializing cbannister.xyz zone..."
                 cp /etc/bind/zones/db.cbannister.xyz /var/cache/bind/db.cbannister.xyz
               else
-                echo "Zone file already exists, skipping initialization"
+                echo "cbannister.xyz zone already initialized"
+              fi
+              if [ ! -f "/var/cache/bind/db.rociobolanos.com" ]; then
+                echo "Initializing rociobolanos.com zone..."
+                cp \
+                  /etc/bind/zones/db.rociobolanos.com \
+                  /var/cache/bind/db.rociobolanos.com
+              else
+                echo "rociobolanos.com zone already initialized"
               fi
           volumeMounts:
             - mountPath: /etc/bind/zones
@@ -86,8 +94,10 @@ spec:
                 - /bin/sh
                 - -c
                 - |
-                  # Check if named is responding to queries
+                  # Check if named is serving both zones
                   dig @127.0.0.1 +short SOA cbannister.xyz. >/dev/null 2>&1 || exit 1
+                  dig @127.0.0.1 +short SOA rociobolanos.com. \
+                    >/dev/null 2>&1 || exit 1
             initialDelaySeconds: 10
             periodSeconds: 10
           ports:

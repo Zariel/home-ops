@@ -76,8 +76,10 @@ spec:
                 - /bin/sh
                 - -c
                 - |
-                  # Check if named is responding to queries
+                  # Check if named is serving both zones
                   dig @127.0.0.1 +short SOA cbannister.xyz. >/dev/null 2>&1 || exit 1
+                  dig @127.0.0.1 +short SOA rociobolanos.com. \
+                    >/dev/null 2>&1 || exit 1
             initialDelaySeconds: 10
             periodSeconds: 10
           ports:
