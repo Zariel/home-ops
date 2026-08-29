@@ -6,9 +6,9 @@ metadata:
   name: rbmusic
 spec:
   hostnames:
-    - rocio-music.cbannister.xyz
+    - www.rociobolanos.com
   parentRefs:
-    - name: internal
+    - name: external
       namespace: network
       sectionName: https
   rules:
