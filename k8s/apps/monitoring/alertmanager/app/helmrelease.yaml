@@ -62,6 +62,8 @@ spec:
       runAsNonRoot: true
       runAsGroup: 568
     replicaCount: 2
+    podDisruptionBudget:
+      maxUnavailable: 1
     baseURL: "https://alertmanager.cbannister.xyz"
     persistence:
       storageClass: ceph-block
