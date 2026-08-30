@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ocirepository.yaml
   - helmrelease.yaml
+  - pdb.yaml
   - maxmind.sops.yaml
 configMapGenerator:
   - name: vector-aggregator-configmap
