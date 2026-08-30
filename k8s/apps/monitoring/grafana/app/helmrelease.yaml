@@ -42,6 +42,7 @@ spec:
     replicas: 1
     deploymentStrategy:
       type: Recreate
+      rollingUpdate: null
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
