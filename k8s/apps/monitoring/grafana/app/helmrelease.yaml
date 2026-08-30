@@ -41,8 +41,10 @@ spec:
         memory: 256Mi
     replicas: 1
     deploymentStrategy:
-      type: Recreate
-      rollingUpdate: null
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
