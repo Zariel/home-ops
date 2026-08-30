@@ -42,6 +42,8 @@ spec:
       enabled: true
       service:
         enabled: true
+        labels:
+          jobLabel: kube-scheduler
         selector:
           k8s-app: kube-scheduler
       vmScrape:
@@ -61,6 +63,8 @@ spec:
       enabled: true
       service:
         enabled: true
+        labels:
+          jobLabel: kube-controller-manager
         selector:
           k8s-app: kube-controller-manager
       vmScrape:
@@ -99,6 +103,21 @@ spec:
       enabled: true
       serviceMonitor:
         enabled: true
+      vmScrape:
+        spec:
+          relabelConfigs:
+            - sourceLabels: [__meta_kubernetes_node_name]
+              targetLabel: node
+            - sourceLabels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+              targetLabel: kubernetes_io_hostname
+            - sourceLabels: [__meta_kubernetes_node_label_topology_kubernetes_io_region]
+              targetLabel: topology_kubernetes_io_region
+            - sourceLabels: [__meta_kubernetes_node_label_topology_kubernetes_io_zone]
+              targetLabel: topology_kubernetes_io_zone
+            - sourceLabels: [__metrics_path__]
+              targetLabel: metrics_path
+            - targetLabel: job
+              replacement: kubelet
 
     # Disable all Victoria Metrics components to avoid conflicts with existing setup
     vmsingle:

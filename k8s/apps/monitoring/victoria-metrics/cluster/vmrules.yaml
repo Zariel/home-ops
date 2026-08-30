@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://crds.jank.ing/operator.victoriametrics.com/vmrule_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: victoria-logs-rules
+spec:
+  groups:
+    - name: victoria-logs.rules
+      rules:
+        - alert: VictoriaLogsMemoryHigh
+          expr: |
+            process_resident_memory_bytes{job="vlsingle-vlogs"}
+              / process_memory_limit_bytes{job="vlsingle-vlogs"} > 0.85
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: VictoriaLogs memory usage is above 85%
+            description: >-
+              VictoriaLogs on {{ $labels.pod }} is using {{ $value | humanizePercentage }}
+              of its memory limit.
+        - alert: VictoriaLogsMemoryCritical
+          expr: |
+            process_resident_memory_bytes{job="vlsingle-vlogs"}
+              / process_memory_limit_bytes{job="vlsingle-vlogs"} > 0.95
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: VictoriaLogs memory usage is above 95%
+            description: >-
+              VictoriaLogs on {{ $labels.pod }} is using {{ $value | humanizePercentage }}
+              of its memory limit.

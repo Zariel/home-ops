@@ -1,0 +1,22 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vmagent-victoria
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: victoria
+      app.kubernetes.io/name: vmagent
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vmalert-victoria
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: victoria
+      app.kubernetes.io/name: vmalert

@@ -6,4 +6,6 @@ resources:
   - vlsingle.yaml
   - vmagent.yaml
   - vmalert.yaml
+  - vmrules.yaml
+  - pdb.yaml
   - scrapeconfigs
