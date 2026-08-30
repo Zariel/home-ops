@@ -10,8 +10,8 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 10.5.15
-  url: oci://ghcr.io/grafana/helm-charts/grafana
+    tag: 11.0.0
+  url: oci://ghcr.io/grafana-community/helm-charts/grafana
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -40,14 +40,11 @@ spec:
       limits:
         memory: 256Mi
     replicas: 1
-    image:
-      tag: 11.2.1
-      sha: 999ac5b9b357e31be729d990e76dc3749285ca0ebd1ce1294a5b69cf6435d869
+    deploymentStrategy:
+      type: Recreate
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel,victoriametrics-logs-datasource
-      GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
       GF_SERVER_ROOT_URL: https://grafana.cbannister.xyz
     envFromSecrets:
       - name: grafana-secret
@@ -60,7 +57,7 @@ spec:
         enabled: true
         org_id: 1
         org_name: Main Org.
-        org_role: Editor
+        org_role: Viewer
       news:
         news_feed_enabled: false
     dashboardProviders:
@@ -71,72 +68,72 @@ spec:
             orgId: 1
             folder: ""
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/default
           - name: ceph
             orgId: 1
             folder: Ceph
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/ceph
           - name: dns
             orgId: 1
             folder: DNS
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/dns
           - name: flux
             orgId: 1
             folder: Flux
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/flux
           - name: kubernetes
             orgId: 1
             folder: Kubernetes
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/kubernetes
           - name: nginx
             orgId: 1
             folder: Nginx
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/nginx
           - name: prometheus
             orgId: 1
             folder: Prometheus
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/prometheus
           - name: unifi
             orgId: 1
             folder: Unifi
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/unifi
           - name: victoria-metrics
             orgId: 1
             folder: "Victoria Metrics"
             type: file
-            disableDeletion: false
-            editable: true
+            disableDeletion: true
+            editable: false
             options:
               path: /var/lib/grafana/dashboards/victoria-metrics
 
@@ -284,12 +281,6 @@ spec:
         searchNamespace: ALL
         labelValue: "1"
     plugins:
-      - grafana-clock-panel
-      - grafana-piechart-panel
-      - grafana-worldmap-panel
-      - natel-discrete-panel
-      - pr0ps-trackmap-panel
-      - vonage-status-panel
       - victoriametrics-logs-datasource
     serviceMonitor:
       enabled: true
@@ -303,6 +294,8 @@ spec:
             kind: ListenerSet
             sectionName: https
     persistence:
-      enabled: false
+      enabled: true
+      type: pvc
+      existingClaim: grafana
     testFramework:
       enabled: false

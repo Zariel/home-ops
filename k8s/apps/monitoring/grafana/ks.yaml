@@ -7,13 +7,25 @@ metadata:
   namespace: &namespace monitoring
 spec:
   targetNamespace: *namespace
+  components:
+    - ../../../../components/volsync
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: onepassword-store
       namespace: external-secrets
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
   path: ./k8s/apps/monitoring/grafana/app
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_PUID: "472"
+      VOLSYNC_PGID: "472"
   prune: true
   sourceRef:
     kind: GitRepository
