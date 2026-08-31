@@ -124,6 +124,34 @@ quality_profiles:
           - WEBDL-480p
           - WEBRip-480p
           - DVD
+
+  - name: OLD SHOWS
+    reset_unmatched_scores: *reset_unmatched_scores
+    upgrade:
+      allowed: true
+      until_quality: Any Quality
+      until_score: 10000
+    min_format_score: 0
+    qualities:
+      - name: Any Quality
+        qualities:
+          - WEBDL-2160p
+          - WEBRip-2160p
+          - Bluray-2160p
+          - WEBDL-1080p
+          - WEBRip-1080p
+          - Bluray-1080p
+          - HDTV-1080p
+          - Bluray-720p
+          - WEBDL-720p
+          - WEBRip-720p
+          - HDTV-720p
+          - Bluray-576p
+          - Bluray-480p
+          - WEBDL-480p
+          - WEBRip-480p
+          - DVD
+
 # Custom Formats
 # This section creates and/or updates Custom Formats in your Sonarr instance,
 # and applies them and their scores to Quality Profiles
@@ -210,6 +238,7 @@ custom_formats:
       - name: BLURAY-2160p
       - name: BLURAY-1080p
       - name: WEBDL
+      - name: OLD SHOWS
   # Keep unwanted formats below the minimum score even when positive scores stack.
   - trash_ids:
       - 15a05bc7c1a36e2b57fd628f8977e2fc # AV1
@@ -231,6 +260,8 @@ custom_formats:
         score: -50000
       - name: WEBDL
         score: -50000
+      - name: OLD SHOWS
+        score: -50000
   - trash_ids:
       - 9b27ab6498ec0f31a3353992e19434ca # DV (w/o HDR fallback)
     assign_scores_to:
@@ -239,6 +270,8 @@ custom_formats:
       - name: BLURAY-1080p
         score: -600
       - name: WEBDL
+        score: -600
+      - name: OLD SHOWS
         score: -600
   - trash_ids:
       - 4232a509ce60c4e208d13825b7c06264 # DD+ ATMOS
@@ -249,10 +282,13 @@ custom_formats:
         score: 1750
       - name: WEBDL
         score: 1750
+      - name: OLD SHOWS
+        score: 1750
   - trash_ids:
       - 3a4127d8aa781b44120d907f2cd62627 # Hybrid
     assign_scores_to:
       - name: WEBDL
+      - name: OLD SHOWS
   - trash_ids:
       - 3a4127d8aa781b44120d907f2cd62627 # Hybrid
     assign_scores_to:
