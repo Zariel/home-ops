@@ -57,6 +57,13 @@ spec:
       enabled: false
       metricsDisabled: true
       createPrometheusRules: true
+      prometheusRuleOverrides:
+        CephNodeNetworkBondDegraded:
+          disabled: true
+        PrometheusJobExporterMissing:
+          disabled: true
+        PrometheusJobMissing:
+          disabled: true
     toolbox:
       enabled: true
     cephImage:
