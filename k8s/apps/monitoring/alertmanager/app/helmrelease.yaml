@@ -30,6 +30,28 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    config:
+      route:
+        receiver: pushover
+        group_by:
+          - alertname
+          - namespace
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+      receivers:
+        - name: pushover
+          pushover_configs:
+            - send_resolved: true
+              priority: "0"
+              token_file: /etc/alertmanager/secrets/pushover/API_KEY
+              user_key_file: /etc/alertmanager/secrets/pushover/USER_KEY
+    extraSecretMounts:
+      - name: pushover
+        mountPath: /etc/alertmanager/secrets/pushover
+        secretName: alertmanager-pushover
+        readOnly: true
+        subPath: ""
     resources:
       requests:
         memory: 96Mi
