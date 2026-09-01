@@ -6,6 +6,8 @@ metadata:
 spec:
   useStrictSecurity: true
   replicaCount: 2
+  extraArgs:
+    external.url: http://vmalert-victoria.monitoring.svc.cluster.local:8080
   evaluationInterval: 1m
   selectAllByDefault: true
   datasource:
