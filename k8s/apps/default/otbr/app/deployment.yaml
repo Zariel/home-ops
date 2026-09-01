@@ -26,20 +26,18 @@ spec:
       hostname: otbr
       containers:
         - name: otbr
-          image: ghcr.io/ownbee/hass-otbr-docker:v0.3.0
+          image: openthread/border-router:v2026.07.0@sha256:611b28c77cdff41279cbb5b29d0a41fcdc5a1ecb402a2b19bde1b8f5f7c6c912
           env:
-            - name: DEVICE
-              value: /dev/ttyACM0
-            - name: BACKBONE_IF
+            - name: OT_RCP_DEVICE
+              value: "spinel+hdlc+uart:///dev/ttyACM0?uart-baudrate=460800&uart-flow-control"
+            - name: OT_INFRA_IF
               value: net1
-            - name: OTBR_REST_PORT
+            - name: OT_THREAD_IF
+              value: wpan0
+            - name: OT_REST_LISTEN_ADDR
+              value: "0.0.0.0"
+            - name: OT_REST_LISTEN_PORT
               value: "8081"
-            - name: BAUDRATE
-              value: "460800"
-            - name: FLOW_CONTROL
-              value: "1"
-            - name: NAT64
-              value: "0"
           securityContext:
             privileged: true
           ports:
