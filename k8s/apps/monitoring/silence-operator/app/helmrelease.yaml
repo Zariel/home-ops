@@ -31,7 +31,7 @@ spec:
     remediation:
       retries: 3
   values:
-    alertmanagerAddress: http://alertmanager.monitoring.svc.cluster.local:9093
+    alertmanagerAddress: http://alertmanager-ha.monitoring.svc.cluster.local:9093
     image:
       registry: quay.io
       tag: 0.18.0@sha256:24d561a207f910b52eab533ee9c2acfc5a6a75287561a73661768e76dea142b9

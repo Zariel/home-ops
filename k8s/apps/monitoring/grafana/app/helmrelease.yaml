@@ -160,7 +160,7 @@ spec:
             type: alertmanager
             uid: alertmanager
             access: proxy
-            url: http://alertmanager.monitoring.svc.cluster.local:9093
+            url: http://alertmanager-ha.monitoring.svc.cluster.local:9093
             jsonData:
               implementation: prometheus
           - name: VictoriaMetrics

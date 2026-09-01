@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: alertmanager
+spec:
+  groups:
+    - name: alertmanager.rules
+      rules:
+        - alert: AlertmanagerClusterDegraded
+          expr: |
+            min(alertmanager_cluster_members) < 2
+            or absent(alertmanager_cluster_members)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: Alertmanager gossip cluster is degraded
+            description: >-
+              Alertmanager has fewer than two connected members or its metrics are unavailable.

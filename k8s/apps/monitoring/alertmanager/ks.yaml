@@ -20,6 +20,7 @@ spec:
     - name: onepassword-store
       namespace: external-secrets
     - name: prometheus-operator-crds
+    - name: victoria-metrics-k8s-stack
     - name: rook-ceph-cluster
       namespace: rook-ceph
   wait: false

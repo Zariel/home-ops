@@ -16,6 +16,7 @@ spec:
     name: home-kubernetes
     namespace: flux-system
   dependsOn:
+    - name: alertmanager
     - name: victoria-metrics-k8s-stack
     - name: rook-ceph-cluster
       namespace: rook-ceph

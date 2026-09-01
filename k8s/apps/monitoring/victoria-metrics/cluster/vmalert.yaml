@@ -15,7 +15,13 @@ spec:
   remoteWrite:
     url: http://vmagent-victoria.monitoring.svc.cluster.local:8429
   notifiers:
-    - url: http://alertmanager.monitoring.svc.cluster.local:9093
+    - selector:
+        namespaceSelector:
+          matchNames:
+            - monitoring
+        labelSelector:
+          matchLabels:
+            monitoring.cbannister.xyz/alertmanager: primary
   resources:
     requests:
       cpu: 200m
