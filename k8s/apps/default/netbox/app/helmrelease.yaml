@@ -19,6 +19,8 @@ metadata:
   name: &app netbox
 spec:
   interval: 1h
+  dependsOn:
+    - name: netbox-valkey
   chartRef:
     kind: OCIRepository
     name: netbox
@@ -75,18 +77,13 @@ spec:
       existingSecretName: netbox-db
       existingSecretKey: DB_PASSWORD
     valkey:
-      enabled: true
-      architecture: standalone
-      primary:
-        resourcesPreset: none
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-            ephemeral-storage: 50Mi
-          limits:
-            memory: 192Mi
-            ephemeral-storage: 2Gi
+      enabled: false
+    tasksDatabase: &valkeyDatabase
+      host: netbox-valkey.default.svc.cluster.local
+      port: 6379
+      existingSecretName: netbox-valkey-auth
+      existingSecretKey: password
+    cachingDatabase: *valkeyDatabase
     housekeeping:
       enabled: false
     worker:
