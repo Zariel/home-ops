@@ -31,3 +31,7 @@ sinks:
       max_bytes: 1048576  # 1MB
       max_events: 1000
       timeout_secs: 2
+    buffer:
+      type: disk
+      max_size: 4294967296  # 4GiB
+      when_full: block
