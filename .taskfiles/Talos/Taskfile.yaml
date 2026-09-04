@@ -2,15 +2,17 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
-vars:
-  TALOS_SCRIPTS_DIR: "{{.ROOT_DIR}}/.taskfiles/Talos/scripts"
-
 tasks:
   generate:
-    desc: Run talhelper to generate manifests
+    desc: Run TOPF to render machine configurations
     dir: "{{.ROOT_DIR}}/talos"
     cmds:
-      - talhelper genconfig --out-dir={{.ROOT_DIR}}/talos/clusterconfig
+      - topf render --output={{.ROOT_DIR}}/talos/clusterconfig
+
+  apply:
+    desc: Run TOPF to apply machine configurations
+    dir: "{{.ROOT_DIR}}/talos"
+    cmd: topf apply {{.CLI_ARGS}}
 
   reset-cluster:
     desc: Reset Talos across the whole cluster
@@ -32,7 +34,7 @@ tasks:
       vars: ["controller"]
 
   matchbox:bundle:
-    desc: Build matchbox bundle (assets, profiles, groups) using talhelper outputs
+    desc: Build matchbox bundle (assets, profiles, groups) using TOPF outputs
     cmds:
       - bash {{.ROOT_DIR}}/.taskfiles/Talos/scripts/matchbox_bundle.sh
 
@@ -53,7 +55,6 @@ tasks:
       - rsync -av --delete {{.ROOT_DIR}}/artifacts/matchbox/ ${HOST}:/config/containers/matchbox/
 
   matchbox:clean:
-    desc: Remove generated matchbox artifacts and cached schematic id
+    desc: Remove generated matchbox artifacts
     cmds:
       - rm -rf {{.ROOT_DIR}}/artifacts/matchbox
-      - rm -f {{.ROOT_DIR}}/talos/.cache/schematic.id {{.ROOT_DIR}}/talos/.cache/schematic.key
