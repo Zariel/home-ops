@@ -33,6 +33,10 @@ spec:
               value: "0"
             - name: DOTNET_gcServer
               value: "1"
+            - name: PROWLARR__AUTH__METHOD
+              value: External
+            - name: PROWLARR__AUTH__REQUIRED
+              value: Enabled
           envFrom:
             - secretRef:
                 name: prowlarr-secret

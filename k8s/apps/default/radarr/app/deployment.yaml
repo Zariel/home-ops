@@ -47,7 +47,7 @@ spec:
             - name: RADARR__AUTH__METHOD
               value: External
             - name: RADARR__AUTH__REQUIRED
-              value: DisabledForLocalAddresses
+              value: Enabled
             - name: RADARR__LOG__DBENABLED
               value: "False"
             - name: RADARR__LOG__LEVEL
