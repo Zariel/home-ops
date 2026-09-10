@@ -34,7 +34,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: app
-          image: ghcr.io/roethlar/songr:v1.4.0@sha256:0c6b21ef03594bea27f13dae22316911ce8ec51ecffb465eea23b8d7357beb70
+          image: ghcr.io/roethlar/songr:v1.4.1@sha256:0eb980129c28a5a1d524ae6c5c41901f0ccdfdb566eb52ae3bf490a5685defcc
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
