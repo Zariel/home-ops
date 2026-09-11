@@ -27,7 +27,7 @@ spec:
         value: bind-primary-internal.network.svc.cluster.local
       - name: EXTERNAL_DNS_RFC2136_PORT
         value: "53"
-      - name: EXTERNAL_DNS_RFC2136_TSIG_AXFR
+      - name: EXTERNAL_DNS_RFC2136_AXFR
         value: "true"
       - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
         value: externaldns-key
