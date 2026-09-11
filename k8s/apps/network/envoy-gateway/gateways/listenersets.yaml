@@ -5,7 +5,7 @@ kind: ListenerSet
 metadata:
   name: external-cbannister-xyz
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.cbannister.xyz
+    external-dns.kubernetes.io/target: external.cbannister.xyz
 spec:
   parentRef:
     name: external
@@ -31,7 +31,7 @@ kind: ListenerSet
 metadata:
   name: external-rociobolanos-com
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.rociobolanos.com
+    external-dns.kubernetes.io/target: external.rociobolanos.com
 spec:
   parentRef:
     name: external
@@ -57,7 +57,7 @@ kind: ListenerSet
 metadata:
   name: internal-cbannister-xyz
   annotations:
-    external-dns.alpha.kubernetes.io/target: internal.cbannister.xyz
+    external-dns.kubernetes.io/target: internal.cbannister.xyz
 spec:
   parentRef:
     name: internal
@@ -83,7 +83,7 @@ kind: ListenerSet
 metadata:
   name: internal-rociobolanos-com
   annotations:
-    external-dns.alpha.kubernetes.io/target: internal.rociobolanos.com
+    external-dns.kubernetes.io/target: internal.rociobolanos.com
 spec:
   parentRef:
     name: internal

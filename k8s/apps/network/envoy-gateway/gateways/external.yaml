@@ -13,7 +13,7 @@ spec:
       from: Same
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: "external.cbannister.xyz,external.rociobolanos.com"
+      external-dns.kubernetes.io/hostname: "external.cbannister.xyz,external.rociobolanos.com"
       io.cilium/lb-ipam-ips: 10.45.0.11
     labels:
       gateway: external
