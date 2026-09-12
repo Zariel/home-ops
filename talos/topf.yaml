@@ -1,0 +1,47 @@
+---
+clusterName: hollywoo
+clusterEndpoint: https://k8s.cbannister.casa:6443
+talosVersion: v1.14.0
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.36.4
+secretsPath: talsecret.sops.yaml
+
+nodes:
+  - host: k8s-0
+    ip: 10.254.1.1
+    role: control-plane
+    schematicId: "@schematic.yaml"
+    data:
+      mac: 58:47:ca:78:d2:44
+      installDiskWWID: eui.343335304ea054640025384100000001
+      bond0Address: 10.254.1.1/31
+      bond0Gateway: 10.254.1.0
+      storageAddress: 10.254.3.1/29
+      managementAddress: 10.1.1.10/24
+      localHostpathWWID: eui.343335304eb029810025384100000001
+
+  - host: k8s-1
+    ip: 10.254.1.3
+    role: control-plane
+    schematicId: "@schematic.yaml"
+    data:
+      mac: 58:47:ca:78:d7:fc
+      installDiskWWID: eui.34333530541060910025384300000001
+      bond0Address: 10.254.1.3/31
+      bond0Gateway: 10.254.1.2
+      storageAddress: 10.254.3.2/29
+      managementAddress: 10.1.1.11/24
+      localHostpathWWID: eui.343335304ea058240025384100000001
+
+  - host: k8s-2
+    ip: 10.254.1.5
+    role: control-plane
+    schematicId: "@schematic.yaml"
+    data:
+      mac: 58:47:ca:78:d8:44
+      installDiskWWID: eui.343335304ea054700025384100000001
+      bond0Address: 10.254.1.5/31
+      bond0Gateway: 10.254.1.4
+      storageAddress: 10.254.3.3/29
+      managementAddress: 10.1.1.12/24
+      localHostpathWWID: eui.34333530528017830025384300000001

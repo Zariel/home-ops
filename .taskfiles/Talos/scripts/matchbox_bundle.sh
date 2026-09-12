@@ -14,51 +14,27 @@ need jq
 need curl
 need sha256sum
 need git
+need topf
 
 ROOT=$(git rev-parse --show-toplevel)
 OUT_DIR="$ROOT/artifacts/matchbox"
-CACHE_DIR="$ROOT/talos/.cache"
-NODES_FILE="$ROOT/talos/nodes.yaml"
-TALCONFIG="$ROOT/talos/talconfig.yaml"
+TOPF_CONFIG="$ROOT/talos/topf.yaml"
 
 PROFILE_PREFIX=${MATCHBOX_PROFILE_PREFIX:-talos}
 CONFIG_URL_BASE=${MATCHBOX_CONFIG_URL_BASE:-http://10.5.0.8/assets}
 
-mkdir -p "$OUT_DIR"/{assets,profiles,groups} "$CACHE_DIR"
+mkdir -p "$OUT_DIR"/{assets,profiles,groups}
 
-cluster_name=$(yq -r '.clusterName' "$TALCONFIG")
-talos_version=$(yq -r '.talosVersion' "$TALCONFIG")
+talos_version=$(yq -r '.talosVersion' "$TOPF_CONFIG")
 
-# Customization block is what defines the schematic; hash it + version to cache the ID.
-customization_json=$(yq -o=json '.controlPlane.schematic.customization' "$TALCONFIG")
-input_hash=$(printf "%s\n%s" "$talos_version" "$customization_json" | sha256sum | cut -d' ' -f1)
-
-cache_key_file="$CACHE_DIR/schematic.key"
-cache_id_file="$CACHE_DIR/schematic.id"
-
-resolve_schematic_id() {
-  if [[ -f "$cache_key_file" && -f "$cache_id_file" ]] && [[ "$(cat "$cache_key_file")" == "$input_hash" ]]; then
-    cat "$cache_id_file"
-    return
-  fi
-
-  echo "Fetching schematic id from Talos Factory..." >&2
-  schematic_id=$(curl -fsSL -X POST \
-    -H "Content-Type: application/json" \
-    -d "{\"customization\":$customization_json}" \
-    https://factory.talos.dev/schematics | jq -r '.id')
-
-  if [[ -z "$schematic_id" || "$schematic_id" == "null" ]]; then
-    echo "failed to obtain schematic id" >&2
-    exit 1
-  fi
-
-  printf "%s" "$input_hash" > "$cache_key_file"
-  printf "%s" "$schematic_id" > "$cache_id_file"
-  echo "$schematic_id"
-}
-
-SCHEMATIC_ID=$(resolve_schematic_id)
+# Matchbox exposes one stable boot-asset path, so every provisioned node must
+# resolve to the same Image Factory schematic.
+mapfile -t schematic_ids < <(topf --topfconfig "$TOPF_CONFIG" schematic-ids)
+if [[ ${#schematic_ids[@]} -ne 1 ]]; then
+  echo "expected exactly one schematic ID, got ${#schematic_ids[@]}" >&2
+  exit 1
+fi
+SCHEMATIC_ID=${schematic_ids[0]}
 SCHEMATIC_DIR="$OUT_DIR/assets/$SCHEMATIC_ID"
 mkdir -p "$SCHEMATIC_DIR"
 
@@ -84,13 +60,13 @@ echo "Writing sha256sums..."
 # Symlink to stable path for profiles.
 ln -sfn "$SCHEMATIC_ID" "$OUT_DIR/assets/current"
 
-# Copy Talos machine configs produced by talhelper.
-for row in $(yq -o=json '.nodes[]' "$NODES_FILE" | jq -c '.'); do
-  host=$(jq -r '.hostname' <<<"$row")
-  src="$ROOT/talos/clusterconfig/${cluster_name}-${host}.yaml"
+# Copy Talos machine configs produced by TOPF.
+for row in $(yq -o=json '.nodes[]' "$TOPF_CONFIG" | jq -c '.'); do
+  host=$(jq -r '.host' <<<"$row")
+  src="$ROOT/talos/clusterconfig/${host}.yaml"
   dest="$OUT_DIR/assets/${host}.yaml"
   if [[ ! -f "$src" ]]; then
-    echo "machine config missing for ${host}: run talhelper genconfig" >&2
+    echo "machine config missing for ${host}: run task talos:generate" >&2
     exit 1
   fi
   cp "$src" "$dest"
@@ -98,8 +74,8 @@ done
 
 # Render per-node profiles and groups.
 while IFS= read -r node; do
-  host=$(jq -r '.hostname' <<<"$node")
-  mac=$(jq -r '.mac' <<<"$node")
+  host=$(jq -r '.host' <<<"$node")
+  mac=$(jq -r '.data.mac' <<<"$node")
   profile="${PROFILE_PREFIX}-${host}"
 
   cat > "$OUT_DIR/profiles/${profile}.json" <<EOF
@@ -135,6 +111,6 @@ EOF
   }
 }
 EOF
-done <<<"$(yq -o=json '.nodes[]' "$NODES_FILE" | jq -c '.')"
+done <<<"$(yq -o=json '.nodes[]' "$TOPF_CONFIG" | jq -c '.')"
 
 echo "Bundle ready at ${OUT_DIR}"
