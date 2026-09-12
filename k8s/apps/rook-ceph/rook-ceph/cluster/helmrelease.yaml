@@ -58,6 +58,11 @@ spec:
       metricsDisabled: true
       createPrometheusRules: true
       prometheusRuleOverrides:
+        CephNodeDiskspaceWarning:
+          # External node-exporter targets also report filesystem metrics.
+          expr: >-
+            predict_linear(node_filesystem_free_bytes{device=~"/.*", kubernetes_node!=""}[2d], 3600 * 24 * 5)
+            * on(cluster, instance) group_left(nodename) node_uname_info < 0
         CephNodeNetworkBondDegraded:
           disabled: true
         PrometheusJobExporterMissing:
