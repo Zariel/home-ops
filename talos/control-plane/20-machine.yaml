@@ -1,0 +1,61 @@
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+nameservers:
+  - address: 172.53.53.53
+---
+apiVersion: v1alpha1
+kind: SysfsConfig
+params:
+  devices.system.cpu.intel_pstate.hwp_dynamic_boost: "1"
+  devices.system.cpu.intel_pstate.no_turbo: "0"
+  devices.system.cpu.intel_pstate.max_perf_pct: "100"
+  devices.system.cpu.intel_pstate.min_perf_pct: "9"
+  devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu12.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu13.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu14.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu15.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu16.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu17.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu18.cpufreq.energy_performance_preference: balance_power
+  devices.system.cpu.cpu19.cpufreq.energy_performance_preference: balance_power
+---
+apiVersion: v1alpha1
+kind: UdevRulesConfig
+rules:
+  - SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", ATTRS{idProduct}=="831a", MODE="0666", SYMLINK+="zbt2"
+---
+apiVersion: v1alpha1
+kind: CRICustomizationConfig
+name: storage
+content: |
+  [plugins."io.containerd.cri.v1.images"]
+    discard_unpacked_layers = false
+  [plugins."io.containerd.cri.v1.runtime"]
+    device_ownership_from_security_context = true
+---
+apiVersion: v1alpha1
+kind: EtcFileConfig
+name: nfsmount.conf
+mode: 0o644
+contents: |-
+  [ NFSMount_Global_Options ]
+  nfsvers=4.2
+  hard=True
+  nconnect=16
+  noatime=True
+  rsize=1048576
+  wsize=1048576
+  proto=tcp
