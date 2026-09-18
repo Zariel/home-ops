@@ -17,6 +17,11 @@ sources:
     type: vector
     version: "2"
 
+  katl_source:
+    address: 0.0.0.0:6005
+    type: vector
+    version: "2"
+
   nixos_source:
     address: 0.0.0.0:6004
     type: vector
@@ -26,24 +31,6 @@ sources:
     type: syslog
     mode: tcp
     address: 0.0.0.0:6001
-
-  talos_kernel_logs:
-    address: 0.0.0.0:6002
-    type: socket
-    mode: udp
-    max_length: 102400
-    decoding:
-      codec: json
-    host_key: __host
-
-  talos_service_logs:
-    address: 0.0.0.0:6003
-    type: socket
-    mode: udp
-    max_length: 102400
-    decoding:
-      codec: json
-    host_key: __host
 
 # Transformations
 transforms:
@@ -191,25 +178,14 @@ transforms:
           }
       )
 
-  talos_kernel_transform:
+  vlogs_katl_tag:
     type: remap
     inputs:
-      - talos_kernel_logs
+      - katl_source
     source: |-
-      r1 = replace!(.__host, "10.254.1.1", "k8s-0")
-      r2 = replace(r1, "10.254.1.3", "k8s-1")
-      r3 = replace(r2, "10.254.1.5", "k8s-2")
-      .node = r3
-
-  talos_service_transform:
-    type: remap
-    inputs:
-      - talos_service_logs
-    source: |-
-      r1 = replace!(.__host, "10.254.1.1", "k8s-0")
-      r2 = replace(r1, "10.254.1.3", "k8s-1")
-      r3 = replace(r2, "10.254.1.5", "k8s-2")
-      .node = r3
+      .source_stream = "katl"
+      .node = ._HOSTNAME
+      .service = ._SYSTEMD_UNIT
 
   vlogs_kubernetes_tag:
     type: remap
@@ -225,20 +201,6 @@ transforms:
       - vyos_firewall_geoip_remap
     source: |-
       .source_stream = "vyos"
-
-  vlogs_talos_kernel_tag:
-    type: remap
-    inputs:
-      - talos_kernel_transform
-    source: |-
-      .source_stream = "talos-kernel"
-
-  vlogs_talos_service_tag:
-    type: remap
-    inputs:
-      - talos_service_transform
-    source: |-
-      .source_stream = "talos-service"
 
   vlogs_nixos_normalize:
     type: remap
@@ -264,8 +226,7 @@ transforms:
     inputs:
       - vlogs_kubernetes_tag
       - vlogs_vyos_tag
-      - vlogs_talos_kernel_tag
-      - vlogs_talos_service_tag
+      - vlogs_katl_tag
     source: |-
       if !exists(.node) && exists(.node_name) {
         .node = .node_name

@@ -1,0 +1,245 @@
+apiVersion: config.katl.dev/v1alpha1
+kind: ClusterConfig
+metadata:
+  name: hollywoo
+spec:
+  controlPlaneEndpoint:
+    host: k8s.cbannister.casa
+    port: 6443
+  kubernetes:
+    version: v1.36.4
+    kubeadm:
+      configFile: kubeadm.yaml
+      patchesDir: kubeadm-patches
+  defaults:
+    access:
+      ssh:
+        authorizedKeys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDoKtllnbPNdFQrL0LLsYx6c0mFKdmbmr4bBOIqBqO1c chris@gaming
+    kernel:
+      commandLine:
+        - init_on_alloc=0
+        - init_on_free=0
+        - intel_iommu=on
+        - iommu=pt
+        - mitigations=off
+        - apparmor=0
+        - security=none
+    kubernetes:
+      labels:
+        intel.feature.node.kubernetes.io/gpu: "true"
+        topology.kubernetes.io/region: homelab
+        topology.kubernetes.io/zone: hollywoo
+      taints: []
+    hostConfiguration:
+      fileSets:
+        network:
+          directory: files/systemd/network
+          destination: /etc/systemd/network
+        host:
+          files:
+            - path: /etc/sysctl.d/80-hollywoo.conf
+              source: files/sysctl.d/80-hollywoo.conf
+            - path: /etc/modules-load.d/80-hollywoo.conf
+              source: files/modules-load.d/80-hollywoo.conf
+            - path: /etc/udev/rules.d/80-zbt2.rules
+              source: files/udev/rules.d/80-zbt2.rules
+            - path: /etc/containerd/conf.d/80-hollywoo.toml
+              source: files/containerd/conf.d/80-hollywoo.toml
+            - path: /etc/nfsmount.conf
+              source: files/nfsmount.conf
+            - path: /etc/hollywoo/audit-policy.yaml
+              source: files/hollywoo/audit-policy.yaml
+            - path: /etc/hollywoo/scheduler.yaml
+              source: files/hollywoo/scheduler.yaml
+            - path: /etc/systemd/timesyncd.conf.d/50-hollywoo.conf
+              source: files/systemd/timesyncd.conf.d/50-hollywoo.conf
+            - path: /etc/systemd/system/multi-user.target.d/50-timesyncd.conf
+              source: files/systemd/system/multi-user.target.d/50-timesyncd.conf
+            - path: /etc/systemd/journald.conf.d/50-persistent.conf
+              source: files/systemd/journald.conf.d/50-persistent.conf
+            - path: /etc/hosts
+              source: files/hosts
+        cilium:
+          files:
+            - path: /etc/sysctl.d/90-cilium.conf
+              source: files/sysctl.d/90-cilium.conf
+      sysfs:
+        - path: /sys/devices/system/cpu/intel_pstate/hwp_dynamic_boost
+          value: "1"
+        - path: /sys/devices/system/cpu/intel_pstate/no_turbo
+          value: "0"
+        - path: /sys/devices/system/cpu/intel_pstate/max_perf_pct
+          value: "100"
+        - path: /sys/devices/system/cpu/intel_pstate/min_perf_pct
+          value: "9"
+        - path: /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu2/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu3/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu4/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu5/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu6/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu7/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu8/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu9/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu10/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu11/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu12/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu13/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu14/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu15/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu16/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu17/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu18/cpufreq/energy_performance_preference
+          value: balance_power
+        - path: /sys/devices/system/cpu/cpu19/cpufreq/energy_performance_preference
+          value: balance_power
+  nodes:
+    - name: k8s-0
+      controlPlane: true
+      management:
+        address: 10.254.1.1
+      kubernetes:
+        address: 10.254.1.1
+        kubelet:
+          configFile: kubelet.yaml
+      install:
+        systemDisk:
+          byID: /dev/disk/by-id/nvme-eui.343335304ea054640025384100000001
+      storage:
+        volumes:
+          - name: local-hostpath
+            selector:
+              disk:
+                byID: /dev/disk/by-id/nvme-eui.343335304eb029810025384100000001
+                minSizeMiB: 1024
+            filesystem: xfs
+            wipe: true
+      hostConfiguration:
+        fileSets:
+          addresses:
+            files:
+              - path: /etc/systemd/network/20-bond0.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.254.1.1/31
+
+                  [Route]
+                  Gateway=10.254.1.0
+              - path: /etc/systemd/network/20-bond1.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.1.1.10/24
+
+                  [Route]
+                  Gateway=10.1.1.1
+                  Table=100
+              - path: /etc/systemd/network/30-bond0.300.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.254.3.1/29
+    - name: k8s-1
+      controlPlane: true
+      management:
+        address: 10.254.1.3
+      kubernetes:
+        address: 10.254.1.3
+        kubelet:
+          configFile: kubelet.yaml
+      install:
+        systemDisk:
+          byID: /dev/disk/by-id/nvme-eui.34333530541060910025384300000001
+      storage:
+        volumes:
+          - name: local-hostpath
+            selector:
+              disk:
+                byID: /dev/disk/by-id/nvme-eui.343335304ea058240025384100000001
+                minSizeMiB: 1024
+            filesystem: xfs
+            wipe: true
+      hostConfiguration:
+        fileSets:
+          addresses:
+            files:
+              - path: /etc/systemd/network/20-bond0.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.254.1.3/31
+
+                  [Route]
+                  Gateway=10.254.1.2
+              - path: /etc/systemd/network/20-bond1.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.1.1.11/24
+
+                  [Route]
+                  Gateway=10.1.1.1
+                  Table=100
+              - path: /etc/systemd/network/30-bond0.300.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.254.3.2/29
+    - name: k8s-2
+      controlPlane: true
+      management:
+        address: 10.254.1.5
+      kubernetes:
+        address: 10.254.1.5
+        kubelet:
+          configFile: kubelet.yaml
+      install:
+        systemDisk:
+          byID: /dev/disk/by-id/nvme-eui.343335304ea054700025384100000001
+      storage:
+        volumes:
+          - name: local-hostpath
+            selector:
+              disk:
+                byID: /dev/disk/by-id/nvme-eui.34333530528017830025384300000001
+                minSizeMiB: 1024
+            filesystem: xfs
+            wipe: true
+      hostConfiguration:
+        fileSets:
+          addresses:
+            files:
+              - path: /etc/systemd/network/20-bond0.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.254.1.5/31
+
+                  [Route]
+                  Gateway=10.254.1.4
+              - path: /etc/systemd/network/20-bond1.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.1.1.12/24
+
+                  [Route]
+                  Gateway=10.1.1.1
+                  Table=100
+              - path: /etc/systemd/network/30-bond0.300.network.d/50-address.conf
+                content: |
+                  [Network]
+                  Address=10.254.3.3/29

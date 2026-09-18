@@ -16,3 +16,9 @@ config.xml
 artifacts/
 .task/
 _scratch/
+
+# Katl generated bundles, cluster authorities, and downloaded CLI.
+*.katlcfg
+*.katlkey
+.katl/
+katl/.local/

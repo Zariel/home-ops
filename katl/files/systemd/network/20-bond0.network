@@ -1,0 +1,13 @@
+[Match]
+Name=bond0
+
+[Network]
+DNS=172.53.53.53
+NTP=10.254.254.1
+Domains=~.
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+VLAN=bond0.20
+VLAN=bond0.40
+VLAN=bond0.300
+VLAN=bond0.1100

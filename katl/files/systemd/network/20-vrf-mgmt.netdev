@@ -1,0 +1,6 @@
+[NetDev]
+Name=vrf-mgmt
+Kind=vrf
+
+[VRF]
+Table=100

@@ -1,0 +1,7 @@
+[NetDev]
+Name=bond0.300
+Kind=vlan
+MTUBytes=9000
+
+[VLAN]
+Id=300
