@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.envoyproxy.io/backendtrafficpolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: plex
+  namespace: default
+spec:
+  # Preserve the gateway's compression, retries and disabled request timeout.
+  mergeType: StrategicMerge
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: plex
+  tcpKeepalive:
+    idleTime: 60s
+    interval: 10s
+    probes: 3
+  timeout:
+    http:
+      # Paired with X-Plex-Http-Pipeline: infinite on the HTTPRoute.
+      connectionIdleTimeout: 300s
+      # Allow quiet event streams to survive beyond Envoy's default five minutes.
+      streamIdleTimeout: 1h

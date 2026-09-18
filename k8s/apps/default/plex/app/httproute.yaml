@@ -19,9 +19,17 @@ spec:
       filters:
         - type: RequestHeaderModifier
           requestHeaderModifier:
+            set: &pipeline
+              # Let Envoy manage pooled connections instead of Plex closing them after 20s idle.
+              - name: X-Plex-Http-Pipeline
+                value: infinite
             remove: ["Range"]
       matches:
         - path:
             type: PathPrefix
             value: /library/streams
     - backendRefs: *backend
+      filters:
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set: *pipeline
