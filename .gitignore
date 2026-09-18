@@ -16,3 +16,13 @@ config.xml
 artifacts/
 .task/
 _scratch/
+
+# Local artifacts retained from the Talos installation.
+/talos/.cache/
+/talos/clusterconfig/
+
+# Katl generated bundles, cluster authorities, and downloaded CLI.
+*.katlcfg
+*.katlkey
+.katl/
+katl/.local/

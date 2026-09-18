@@ -1,0 +1,10 @@
+[Match]
+Name=enp1s0f0np0 enp1s0f1np1
+
+[Link]
+MTUBytes=9000
+RequiredForOnline=no
+
+[Network]
+Bond=bond0
+LinkLocalAddressing=no

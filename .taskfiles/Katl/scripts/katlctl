@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)
+version=$(cat "$root/katl/version")
+cli="$root/artifacts/katl/$version/katlctl-$version-linux-amd64"
+if [[ ! -x "$cli" ]]; then
+  echo 'Run task katl:download first.' >&2
+  exit 1
+fi
+exec "$cli" "$@"

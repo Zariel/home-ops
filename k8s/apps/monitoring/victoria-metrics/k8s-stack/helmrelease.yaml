@@ -45,7 +45,7 @@ spec:
         labels:
           jobLabel: kube-scheduler
         selector:
-          k8s-app: kube-scheduler
+          component: kube-scheduler
       vmScrape:
         spec:
           jobLabel: jobLabel
@@ -66,7 +66,7 @@ spec:
         labels:
           jobLabel: kube-controller-manager
         selector:
-          k8s-app: kube-controller-manager
+          component: kube-controller-manager
       vmScrape:
         spec:
           jobLabel: jobLabel

@@ -1,0 +1,56 @@
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: ClusterConfiguration
+clusterName: hollywoo
+networking:
+  dnsDomain: cluster.local
+  podSubnet: 172.20.0.0/16
+  serviceSubnet: 172.21.0.0/16
+dns:
+  disabled: true
+proxy:
+  disabled: true
+apiServer:
+  certSANs:
+    - k8s.cbannister.casa
+    - 127.0.0.1
+    - 10.45.0.100
+  extraArgs:
+    - name: feature-gates
+      value: MutatingAdmissionPolicy=true
+    - name: runtime-config
+      value: admissionregistration.k8s.io/v1beta1=true
+    - name: anonymous-auth
+      value: "true"
+    - name: disable-admission-plugins
+      value: PodSecurity
+    - name: audit-policy-file
+      value: /etc/hollywoo/audit-policy.yaml
+    - name: audit-log-path
+      value: '-'
+  extraVolumes:
+    - name: audit-policy
+      hostPath: /etc/hollywoo/audit-policy.yaml
+      mountPath: /etc/hollywoo/audit-policy.yaml
+      readOnly: true
+      pathType: File
+controllerManager:
+  extraArgs:
+    - name: bind-address
+      value: 0.0.0.0
+scheduler:
+  extraArgs:
+    - name: bind-address
+      value: 0.0.0.0
+    - name: config
+      value: /etc/hollywoo/scheduler.yaml
+  extraVolumes:
+    - name: scheduler-config
+      hostPath: /etc/hollywoo/scheduler.yaml
+      mountPath: /etc/hollywoo/scheduler.yaml
+      readOnly: true
+      pathType: File
+etcd:
+  local:
+    extraArgs:
+      - name: listen-metrics-urls
+        value: http://0.0.0.0:2381

@@ -1,0 +1,8 @@
+[NetDev]
+Name=bond1
+Kind=bond
+MTUBytes=1500
+
+[Bond]
+Mode=active-backup
+MIIMonitorSec=100ms

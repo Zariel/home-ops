@@ -1,0 +1,9 @@
+[Match]
+Path=pci-0000:01:00.0
+
+[Link]
+Name=enp1s0f0np0
+RxBufferSize=8192
+TxBufferSize=8192
+CombinedChannels=20
+GenericReceiveOffloadUDPForwarding=no
