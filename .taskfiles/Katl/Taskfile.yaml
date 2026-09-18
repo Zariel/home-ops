@@ -1,0 +1,62 @@
+---
+version: "3"
+vars:
+  KATLCTL: '{{.ROOT_DIR}}/.taskfiles/Katl/scripts/katlctl'
+  CONFIG: '{{.ROOT_DIR}}/katl/cluster.yaml'
+tasks:
+  download:
+    desc: Download and checksum the pinned Katl release and CLI
+    cmd: bash '{{.ROOT_DIR}}/.taskfiles/Katl/scripts/download.sh'
+  validate:
+    desc: Validate all three node configurations
+    cmd: '{{.KATLCTL}} config validate {{.CONFIG}}'
+  resolve:
+    desc: Show the effective configuration for one node
+    requires:
+      vars: [node]
+    cmd: '{{.KATLCTL}} config resolve {{.CONFIG}} --node {{.node}}'
+  status:
+    desc: Read installed node state
+    cmd: '{{.KATLCTL}} cluster status --config {{.CONFIG}}'
+  management:identity:
+    desc: Create management secrets for a new cluster before installation
+    cmd: '{{.KATLCTL}} management identity create --config {{.CONFIG}}'
+  identity:
+    desc: Create the Kubernetes CA backup before bootstrap
+    cmds:
+      - mkdir -p '{{.ROOT_DIR}}/katl/.local'
+      - '{{.KATLCTL}} kubernetes identity create --cluster-name hollywoo --output {{.ROOT_DIR}}/katl/.local/hollywoo-kubernetes.katlkey'
+    status:
+      - test -f '{{.ROOT_DIR}}/katl/.local/hollywoo-kubernetes.katlkey'
+  matchbox:bundle:
+    desc: Compile the three-node Katl PXE bundle locally
+    deps: [download]
+    cmd: bash '{{.ROOT_DIR}}/.taskfiles/Katl/scripts/matchbox_bundle.sh'
+  matchbox:push:
+    desc: Publish the reviewed PXE tree to an explicit Matchbox destination
+    prompt: Publish the Katl auto-install profiles for the three MS-01s?
+    requires:
+      vars: [destination]
+    preconditions:
+      - test -f '{{.ROOT_DIR}}/artifacts/matchbox-katl/groups/k8s-0.json'
+    cmd: rsync -av --delete '{{.ROOT_DIR}}/artifacts/matchbox-katl/' '{{.destination}}'
+  install:
+    desc: Install one waiting node (destructive system disk operation)
+    prompt: Install Katl on {{.node}} using the reviewed disk selectors?
+    requires:
+      vars: [node]
+    cmd: '{{.KATLCTL}} install apply --config {{.CONFIG}} --node {{.node}} {{.CLI_ARGS}}'
+  apply:
+    desc: Apply retained Katl host configuration
+    cmd: '{{.KATLCTL}} cluster apply --config {{.CONFIG}}'
+  upgrade:
+    desc: Upgrade one node to the pinned Katl release
+    requires:
+      vars: [node]
+    vars:
+      VERSION:
+        sh: cat '{{.ROOT_DIR}}/katl/version'
+    cmd: '{{.KATLCTL}} node upgrade {{.VERSION}} {{.node}} --config {{.CONFIG}} {{.CLI_ARGS}}'
+  kubernetes:upgrade:
+    desc: Upgrade Kubernetes to the version in cluster.yaml
+    cmd: '{{.KATLCTL}} kubernetes upgrade --config {{.CONFIG}} {{.CLI_ARGS}}'

@@ -9,7 +9,7 @@ spec:
   type: LoadBalancer
   externalTrafficPolicy: Local
   selector:
-    k8s-app: kube-apiserver
+    component: kube-apiserver
     tier: control-plane
   ports:
     - name: https

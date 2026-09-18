@@ -1,0 +1,9 @@
+[Match]
+Name=vrf-mgmt
+
+[Link]
+RequiredForOnline=no
+
+[Network]
+LinkLocalAddressing=no
+ConfigureWithoutCarrier=yes

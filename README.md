@@ -5,7 +5,7 @@ Personal home-ops repo for my homelab. This repository tracks my Kubernetes and 
 ## Overview
 
 - GitOps config lives under `k8s/` (Flux bootstrap, cluster/global config, apps, and reusable components)
-- Talos cluster configuration is in `talos/`
+- Katl cluster configuration and the migration/runbook are in [`katl/`](katl/README.md)
 - `truenas/` contains TrueNAS-related assets
 - Task automation is defined in `Taskfile.yaml` and `.taskfiles/`
 

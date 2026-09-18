@@ -6,8 +6,8 @@ namespace: kube-system
 # Install Cilium via Helm chart using production values
 helmCharts:
   - name: cilium
-    repo: oci://ghcr.io/home-operations/charts-mirror
-    version: 1.18.6
+    repo: oci://quay.io/cilium/charts
+    version: 1.20.2
     releaseName: cilium
     namespace: kube-system
     valuesFile: ../../apps/kube-system/cilium/app/values.yaml

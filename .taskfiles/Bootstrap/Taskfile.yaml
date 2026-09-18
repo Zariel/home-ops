@@ -1,70 +1,27 @@
 ---
-# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
-
+set: [errexit, nounset, pipefail]
 tasks:
-  talos:
-    desc: Bootstrap Talos cluster
-    summary: |
-      Bootstrap flow:
-        1. Bootstrap etcd
-        2. Fetch kubeconfig (from controller node)
-        3. Install networking (Cilium)
-        4. Update kubeconfig (switch to LoadBalancer VIP)
-        5. Install CoreDNS
-        6. Install CRDs
-        7. Bootstrap Flux
-        8. Seed Cloudflared credentials from 1Password
-
-      Args:
-        controller: Controller node IP (required)
-
-      Example:
-        task bootstrap:talos controller=10.254.1.1
-    prompt: Bootstrap Talos cluster... continue?
+  katl:
+    desc: Bootstrap the installed Katl cluster, then networking, DNS and Flux
+    prompt: Bootstrap the installed Katl nodes and this checkout's GitOps configuration?
+    dir: '{{.ROOT_DIR}}'
     cmds:
-      - task: etcd
-        vars: { controller: "{{.controller}}" }
-      - task: kubeconfig
-        vars: { controller: "{{.controller}}" }
+      - task: :katl:validate
+      - task: :katl:identity
+      - .taskfiles/Katl/scripts/katlctl context save --config katl/cluster.yaml
+      - .taskfiles/Katl/scripts/katlctl cluster bootstrap --config katl/cluster.yaml --identity katl/.local/hollywoo-kubernetes.katlkey --init-node k8s-0 --kubeconfig-out kubeconfig.yaml --overwrite-kubeconfig
+      - task: cluster
+
+  cluster:
+    desc: Bootstrap a provisioned cluster
+    dir: '{{.ROOT_DIR}}'
+    cmds:
       - task: networking
       - task: kubeconfig-vip
-        vars: { controller: "{{.controller}}" }
       - task: dns
       - task: crds
       - task: flux
-    requires:
-      vars: ["controller"]
-
-  etcd:
-    desc: Bootstrap etcd cluster
-    cmd: |
-      set -euo pipefail
-      echo "Bootstrapping etcd..."
-      until talosctl --nodes {{.controller}} bootstrap; do
-        if talosctl --nodes {{.controller}} etcd member list >/dev/null 2>&1; then
-          echo "Etcd already bootstrapped, skipping"
-          exit 0
-        fi
-
-        echo "Retrying etcd bootstrap in 10s..."
-        sleep 10
-      done
-    requires:
-      vars: ["controller"]
-
-  kubeconfig:
-    desc: Fetch kubeconfig from controller node
-    cmds:
-      - |
-        talosctl kubeconfig --nodes {{.controller}} \
-            --force {{.ROOT_DIR}}/kubeconfig.yaml
-      - |
-        kubectl config set-cluster hollywoo \
-          --server=https://{{.controller}}:6443 \
-          --kubeconfig={{.ROOT_DIR}}/kubeconfig.yaml
-    requires:
-      vars: ["controller"]
 
   networking:
     desc: Install CNI
@@ -89,14 +46,26 @@ tasks:
           done
         done
       - kubectl apply --validate=false --server-side -k {{.KUBERNETES_DIR}}/bootstrap/cilium-networks
-      - until kubectl wait --for=condition=Ready nodes --all --timeout=600s; do sleep 10; done
+      - kubectl wait --for=condition=Ready nodes --all --timeout=600s
 
-      - until kubectl get service kube-vip -n kube-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}' | grep -q '10.45.0.100'; do sleep 5; done
+      - kubectl wait --namespace kube-system --for=jsonpath='{.status.loadBalancer.ingress[0].ip}'=10.45.0.100 service/kube-vip --timeout=300s
 
   kubeconfig-vip:
-    desc: Update kubeconfig to use LoadBalancer VIP
+    desc: Switch the bootstrap kubeconfig to the Cilium-advertised API endpoint
     cmds:
-      - talosctl kubeconfig -n {{.controller}} --force {{.ROOT_DIR}}/kubeconfig.yaml
+      - |
+        # VIP allocation precedes route convergence; preserve the current endpoint until reachable.
+        attempt=1
+        until kubectl --server=https://k8s.cbannister.casa:6443 --request-timeout=5s get --raw=/readyz; do
+          if [ "$attempt" -ge 30 ]; then
+            echo "API VIP is not ready after 30 attempts; check Cilium BGP peering and routing to 10.45.0.100" >&2
+            exit 1
+          fi
+          echo "API VIP not ready (attempt ${attempt}/30), retrying in 5s..."
+          attempt=$((attempt+1))
+          sleep 5
+        done
+      - kubectl config set-cluster hollywoo --server=https://k8s.cbannister.casa:6443
 
   dns:
     desc: Install CoreDNS

@@ -6,6 +6,24 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": ["Katl release shared by CLI and PXE artifacts"],
+      "managerFilePatterns": ["/^katl/version$/"],
+      "matchStrings": ["(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-z]+\\.[0-9]+)?)"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "katl-dev/katl",
+      "extractVersionTemplate": "^v(?<version>.*)$"
+    },
+    {
+      "customType": "regex",
+      "description": ["Upstream Kubernetes version published for Katl"],
+      "managerFilePatterns": ["/^katl/cluster\\.yaml$/"],
+      "matchStrings": ["kubernetes:\\n    version: (?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)"],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "ghcr.io/katl-dev/kubernetes",
+      "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+    },
+    {
+      "customType": "regex",
       "description": ["Process annotated URL dependencies"],
       "managerFilePatterns": [
         "/(^|/)k8s/.+\\.ya?ml(\\.j2)?$/",

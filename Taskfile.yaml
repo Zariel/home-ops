@@ -18,9 +18,9 @@ includes:
   bootstrap: .taskfiles/Bootstrap/Taskfile.yaml
   # external-secrets: .taskfiles/ExternalSecrets/Taskfile.yaml
   # flux: .taskfiles/Flux/Taskfile.yaml
-  # kubernetes: .taskfiles/Kubernetes/Taskfile.yaml
+  kubernetes: .taskfiles/Kubernetes/TaskFile.yaml
   rook: .taskfiles/Rook/Taskfile.yaml
-  talos: .taskfiles/Talos/Taskfile.yaml
+  katl: .taskfiles/Katl/Taskfile.yaml
   # volsync: .taskfiles/VolSync/Taskfile.yaml
 
 tasks:
