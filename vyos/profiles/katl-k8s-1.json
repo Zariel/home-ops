@@ -1,0 +1,21 @@
+{
+  "id": "katl-k8s-1",
+  "name": "Install KatlOS k8s-1",
+  "boot": {
+    "kernel": "/assets/katl/2026.9.0-beta.4/katl-installer.vmlinuz",
+    "initrd": [
+      "/assets/katl/2026.9.0-beta.4/katl-installer.initrd"
+    ],
+    "args": [
+      "initrd=katl-installer.initrd",
+      "rd.neednet=1",
+      "ip=dhcp",
+      "console=tty0",
+      "katl.bundle.url=http://10.5.0.8/assets/katl/2026.9.0-beta.4/cluster.katlcfg",
+      "katl.bundle.sha256=58ff99bfdeda1abadf6ab4c5f8330d72bc25acc1badb512dcc9bc0fbd2d3aaba",
+      "katl.node=k8s-1",
+      "katl.install.mode=auto",
+      "katl.halt-if-installed=1"
+    ]
+  }
+}

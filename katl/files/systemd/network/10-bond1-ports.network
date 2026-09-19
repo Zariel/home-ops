@@ -1,0 +1,10 @@
+[Match]
+Name=enp87s0 enp90s0
+
+[Link]
+MTUBytes=1500
+RequiredForOnline=no
+
+[Network]
+Bond=bond1
+LinkLocalAddressing=no

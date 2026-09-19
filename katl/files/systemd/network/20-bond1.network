@@ -1,0 +1,10 @@
+[Match]
+Name=bond1
+
+[Link]
+RequiredForOnline=no
+
+[Network]
+VRF=vrf-mgmt
+LinkLocalAddressing=no
+IPv6AcceptRA=no

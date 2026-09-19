@@ -33,7 +33,7 @@ tasks:
         cluster: Cluster to run command against (required)
         playbook: Playbook to run (required)
     deps:
-      - ":talos:generate"
+      - ":katl:matchbox:bundle"
     cmds:
       - task: run
         vars:

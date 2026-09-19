@@ -9,7 +9,7 @@ spec:
   interval: 10m
   url: ssh://git@github.com/zariel/home-ops.git
   ref:
-    branch: main
+    branch: katl-migration
   secretRef:
     name: github-deploy-key
   ignore: |

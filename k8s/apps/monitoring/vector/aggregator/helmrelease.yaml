@@ -92,12 +92,9 @@ spec:
       - name: vyos
         containerPort: 6001
         protocol: TCP
-      - name: taloskernel
-        containerPort: 6002
-        protocol: UDP
-      - name: talosservice
-        containerPort: 6003
-        protocol: UDP
+      - name: katl
+        containerPort: 6005
+        protocol: TCP
       - name: nixos
         containerPort: 6004
         protocol: TCP
@@ -142,14 +139,10 @@ spec:
           port: 6001
           targetPort: 6001
           protocol: TCP
-        - name: taloskernel
-          port: 6002
-          targetPort: 6002
-          protocol: UDP
-        - name: talosservice
-          port: 6003
-          targetPort: 6003
-          protocol: UDP
+        - name: katl
+          port: 6005
+          targetPort: 6005
+          protocol: TCP
         - name: nixos
           port: 6004
           targetPort: 6004

@@ -8,16 +8,16 @@
 
 ## Repository Structure
 - Kubernetes GitOps configuration lives in `k8s/`: `bootstrap/` for initial bootstrap, `flux/` for cluster-level Flux resources, `apps/` for workloads, and `components/` for reusable Kustomize components.
-- Talos configuration lives in `talos/`. Ansible playbooks and inventory live under `ansible/main/`.
+- Katl configuration lives in `katl/`. Ansible playbooks and inventory live under `ansible/main/`.
 - Task automation starts at `Taskfile.yaml`, with task groups under `.taskfiles/`.
-- `age.key`, `kubeconfig.yaml`, and `talos/clusterconfig/talosconfig` are ignored local credentials/configuration. Never commit them.
+- `age.key`, `kubeconfig.yaml`, and `*.katlkey`, `*.katlcfg`, and `katl/.local/` are ignored local credentials/configuration. Never commit them.
 
 ## Common Commands
 - List tasks: `task`
 - Set up Ansible: `task ansible:venv`
 - Run a playbook: `task ansible:run playbook=<name> -- --extra-vars "cluster=<id>"`
 - Configure Matchbox: `task ansible:matchbox -- --extra-vars "cluster=<id>"`
-- Generate Talos configuration: `task talos:generate`
+- Validate Katl configuration: `task katl:validate`
 
 Prefer task wrappers so repository paths, `KUBECONFIG`, and `SOPS_AGE_KEY_FILE` are set consistently.
 
@@ -45,5 +45,5 @@ Prefer task wrappers so repository paths, `KUBECONFIG`, and `SOPS_AGE_KEY_FILE` 
 - Agents may run `flux reconcile` and observe the rollout without separate operator approval.
 - Grafana is available at `https://grafana.cbannister.xyz` and exposes metrics and VictoriaLogs data.
 - `kubectl node-shell -x -n kube-system <node>` creates a privileged pod with host access; use it only with explicit operator direction.
-- Agents may edit or generate Talos configuration, but must not apply machine configuration, upgrade, reset, or bootstrap Talos nodes. Ask the operator to perform or coordinate those actions.
+- Agents may edit and validate Katl configuration, but must not install, apply, upgrade, wipe, reboot, or bootstrap nodes without explicit operator direction.
 - `task rook:reset` destroys Ceph data and disk contents. Never run it unless the operator explicitly requests it and the exact nodes and disk have been verified.

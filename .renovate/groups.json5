@@ -82,15 +82,6 @@
       "separateMinorPatch": true
     },
     {
-      "description": ["Talos Group"],
-      "groupName": "Talos",
-      "matchPackageNames": ["ghcr.io/siderolabs/installer", "siderolabs/talos"],
-      "matchDatasources": ["docker", "custom.talos-factory"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
       "description": ["Victoria Metrics Group"],
       "groupName": "Victoria Metrics",
       "matchPackageNames": ["/victoriametrics/"],

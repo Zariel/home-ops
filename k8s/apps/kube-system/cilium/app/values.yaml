@@ -95,3 +95,7 @@ socketLB:
   enabled: true
   hostNamespaceOnly: true
 tunnelProtocol: geneve
+
+# Katl owns /etc/sysctl.d in its immutable host generation.
+sysctlfix:
+  enabled: false

@@ -1,0 +1,16 @@
+{
+  "apiVersion": "katl.dev/v1alpha1",
+  "kind": "KatlOSImageArtifact",
+  "imageRole": "install",
+  "format": "squashfs",
+  "version": "2026.9.0-beta.4",
+  "buildID": "c8d140dda13b86318829509bd166bf41a7a021c6",
+  "architecture": "x86_64",
+  "runtimeInterface": "katl-runtime-1",
+  "path": "katlos-install-2026.9.0-beta.4-x86_64.squashfs",
+  "sizeBytes": 477011968,
+  "sha256": "d8479ea570d221b1319731275c61eaf58463f148257ad1885bd7e2185cc8f173",
+  "checksumPath": "katlos-install-2026.9.0-beta.4-x86_64.squashfs.sha256",
+  "embeddedIndexPath": "katlos/image.json",
+  "createdAt": "2026-09-19T15:42:47Z"
+}
