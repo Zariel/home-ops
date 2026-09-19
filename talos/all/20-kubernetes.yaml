@@ -1,0 +1,42 @@
+---
+apiVersion: v1alpha1
+kind: KubeletConfig
+config:
+  maxPods: 150
+  serializeImagePulls: false
+  allowedUnsafeSysctls:
+    - net.ipv4.*
+    - net.ipv6.*
+defaultRuntimeSeccompProfileEnabled: true
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - 10.254.1.0/31
+    - 10.254.1.2/31
+    - 10.254.1.4/31
+---
+apiVersion: v1alpha1
+kind: KubePrismConfig
+port: 7445
+---
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+dnsDomain: cluster.local
+podSubnets:
+  - 172.20.0.0/16
+serviceSubnets:
+  - 172.21.0.0/16
+---
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+$patch: delete
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+---
+apiVersion: v1alpha1
+kind: KubeCoreDNSConfig
+enabled: false
