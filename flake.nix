@@ -40,11 +40,13 @@
             openssh
             go-task
             age
+            sops
             gnupg
             kubectl-krew
             kubectl
             kubectl-node-shell
             kubectl-rook-ceph
+            kubernetes-helm
             stern
             kustomize
             fluxcd
