@@ -51,6 +51,7 @@
             kustomize
             fluxcd
             actionlint
+            prometheus.cli
           ];
           shellHook = ''
             export PATH="$PATH:''${KREW_ROOT:-$HOME/.krew}/bin"

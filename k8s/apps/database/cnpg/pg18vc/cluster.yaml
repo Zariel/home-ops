@@ -4,8 +4,6 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: pg18vc
-  annotations:
-    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 3
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
@@ -21,7 +19,8 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: pg18vc-nas-rustfs
-        serverName: pg18vc-v3
+        # Each new restore needs an unused archive prefix; retain it for normal upgrades.
+        serverName: pg18vc-v4-20260920
   monitoring:
     customQueriesConfigMap:
       - name: cnpg-default-monitoring

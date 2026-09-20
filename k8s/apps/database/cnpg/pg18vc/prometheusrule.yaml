@@ -8,11 +8,55 @@ spec:
   groups:
     - name: pg18vc.rules
       rules:
+        - alert: PostgresReplicationMissing
+          annotations:
+            summary: pg18vc has fewer than two connected replicas or no primary replication metrics.
+          expr: |
+            max(
+              cnpg_pg_replication_streaming_replicas{namespace="database", pod=~"pg18vc-[0-9]+"}
+              and on(namespace, pod)
+              (cnpg_pg_replication_in_recovery{namespace="database", pod=~"pg18vc-[0-9]+"} == 0)
+            ) < 2
+            or absent(
+              cnpg_pg_replication_streaming_replicas{namespace="database", pod=~"pg18vc-[0-9]+"}
+              and on(namespace, pod)
+              (cnpg_pg_replication_in_recovery{namespace="database", pod=~"pg18vc-[0-9]+"} == 0)
+            )
+          for: 5m
+          labels:
+            severity: critical
+            namespace: database
+        - alert: PostgresReplicationWALRetained
+          annotations:
+            summary: >-
+              {{ $labels.namespace }}/{{ $labels.pod }} replication slot {{ $labels.slot_name }} retains more than 256 MiB of WAL.
+          expr: |
+            cnpg_pg_replication_slots_pg_wal_lsn_diff{
+              namespace="database",
+              pod=~"pg18vc-[0-9]+",
+              slot_type="physical"
+            } > 256 * 1024 * 1024
+          for: 10m
+          labels:
+            severity: warning
+        - alert: PostgresBackupStale
+          annotations:
+            summary: pg18vc has no successful Barman backup in the last 36 hours or its backup metrics are missing.
+          expr: |
+            time() - max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{
+              namespace="database", pod=~"pg18vc-[0-9]+"
+            }) > 36 * 60 * 60
+            or absent(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{
+              namespace="database", pod=~"pg18vc-[0-9]+"
+            })
+          for: 15m
+          labels:
+            severity: critical
+            namespace: database
         - alert: PostgresPodCrashLooping
           annotations:
             summary: >-
-              {{ $labels.namespace }}/{{ $labels.pod }} PostgreSQL container is
-              crash looping.
+              {{ $labels.namespace }}/{{ $labels.pod }} PostgreSQL container is crash looping.
           expr: |
             kube_pod_container_status_waiting_reason{
               namespace="database",
@@ -25,8 +69,7 @@ spec:
         - alert: PostgresPVCFilling
           annotations:
             summary: >-
-              {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }}
-              PostgreSQL PVC has less than 15% free space.
+              {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} PostgreSQL PVC has less than 15% free space.
           expr: |
             kubelet_volume_stats_available_bytes{
               namespace="database",
@@ -43,8 +86,7 @@ spec:
         - alert: PostgresWALArchiveBacklog
           annotations:
             summary: >-
-              {{ $labels.namespace }}/{{ $labels.pod }} has WAL files waiting
-              to be archived.
+              {{ $labels.namespace }}/{{ $labels.pod }} has WAL files waiting to be archived.
           expr: |
             cnpg_collector_pg_wal_archive_status{
               namespace="database",
