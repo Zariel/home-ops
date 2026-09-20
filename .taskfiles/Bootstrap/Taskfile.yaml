@@ -14,6 +14,7 @@ tasks:
         5. Install CoreDNS
         6. Install CRDs
         7. Bootstrap Flux
+        8. Seed Cloudflared credentials from 1Password
 
       Args:
         controller: Controller node IP (required)
@@ -118,6 +119,19 @@ tasks:
       - sops --decrypt github-deploy-key.sops.yaml | kubectl apply --server-side -f -
 
       - kubectl apply --server-side -k {{.KUBERNETES_DIR}}/flux/config
+      - task: cloudflared
+
+  cloudflared:
+    desc: Seed Cloudflared credentials from 1Password
+    cmds:
+      - kubectl wait --for=create clustersecretstore/onepassword --timeout=600s
+      - kubectl wait --for=condition=Ready clustersecretstore/onepassword --timeout=600s
+      - kubectl wait --for=create namespace/network --timeout=600s
+      # Seed the ExternalSecret before Flux can render the DNS records that consume it.
+      - kubectl apply --server-side -n network -f {{.KUBERNETES_DIR}}/apps/network/cloudflared/app/externalsecret.yaml
+      - kubectl wait --for=condition=Ready externalsecret/cloudflared -n network --timeout=300s
+      - kubectl wait --for=create kustomization/cloudflared -n network --timeout=600s
+      - flux reconcile kustomization cloudflared -n network
 
   validate-bgp:
     desc: Validate BGP peering
