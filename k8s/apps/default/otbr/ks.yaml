@@ -15,6 +15,7 @@ spec:
     - name: multus-networks
       namespace: kube-system
   interval: 1h
+  retryInterval: 1m
   path: ./k8s/apps/default/otbr/app
   postBuild:
     substitute:
