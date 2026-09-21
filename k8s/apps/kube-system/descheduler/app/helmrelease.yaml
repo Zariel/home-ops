@@ -45,8 +45,6 @@ spec:
       maxNoOfPodsToEvictPerNode: 3
       maxNoOfPodsToEvictPerNamespace: 2
       maxNoOfPodsToEvictTotal: 8
-      metricsProviders:
-        - source: KubernetesMetrics
       profiles:
         - name: Default
           pluginConfig:
@@ -62,16 +60,15 @@ spec:
                     - PodsWithResourceClaims
             - name: LowNodeUtilization
               args:
-                metricsUtilization:
-                  source: KubernetesMetrics
+                useDeviationThresholds: true
                 thresholds:
-                  cpu: 20
-                  memory: 20
-                  pods: 20
+                  cpu: 10
+                  memory: 10
+                  pods: 10
                 targetThresholds:
-                  cpu: 70
-                  memory: 70
-                  pods: 70
+                  cpu: 10
+                  memory: 10
+                  pods: 10
                 evictionLimits:
                   node: 3
                 evictableNamespaces:
