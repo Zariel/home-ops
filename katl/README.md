@@ -161,7 +161,8 @@ time synchronization, and journal collection still require bare-metal checks.
 ```sh
 task katl:upgrade node=k8s-0 -- --plan
 task katl:upgrade node=k8s-0
-# Repeat control-plane upgrades one node at a time after health checks.
+# Upgrade every configured node sequentially to an explicit release.
+task katl:cluster:upgrade version=2026.9.0-beta.14
 task katl:kubernetes:upgrade -- --plan
 task katl:kubernetes:upgrade
 ```
@@ -170,6 +171,18 @@ Renovate proposes updates to `katl/version` and the Kubernetes version in
 `cluster.yaml`; these source updates do not themselves mutate nodes. Review
 minor-version upgrade constraints and apply through Katl. No automatic
 in-cluster OS upgrader replaces Tuppr in this change.
+
+`katl:cluster:upgrade` uses the pinned CLI from `katl/version` and upgrades to
+the explicitly supplied release. It plans all nodes before starting, then
+checks every CephCluster and CNPG Cluster before each node and after recovery.
+The checks require Ceph `HEALTH_OK`, all OSDs up and in, clean placement groups,
+CNPG Ready with all instances healthy, working archiving and a successful backup
+within 48 hours where configured, and streaming replicas within one WAL segment
+of the primary. If the next node hosts a CNPG primary, the task uses
+`kubectl cnpg promote` to switch it to a replica on another node before draining.
+The development shell includes that plugin. A failed upgrade leaves its node
+cordoned and stops the run; inspect and recover it before retrying. The workflow
+requires the Rook toolbox deployment in each Ceph cluster namespace.
 
 Talos discovery/API access, OOMConfig, extension names, and Talos-specific
 kernel logging/audit arguments have no direct Katl translation. Katl provides

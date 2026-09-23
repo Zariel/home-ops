@@ -44,6 +44,7 @@
             gnupg
             kubectl-krew
             kubectl
+            kubectl-cnpg
             kubectl-node-shell
             kubectl-rook-ceph
             kubernetes-helm

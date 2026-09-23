@@ -56,7 +56,12 @@ tasks:
     vars:
       VERSION:
         sh: cat '{{.ROOT_DIR}}/katl/version'
-    cmd: '{{.KATLCTL}} node upgrade {{.VERSION}} {{.node}} --config {{.CONFIG}} {{.CLI_ARGS}}'
+    cmd: '{{.KATLCTL}} node upgrade {{.node}} --version {{.VERSION}} --config {{.CONFIG}} {{.CLI_ARGS}}'
+  cluster:upgrade:
+    desc: Upgrade each node to a specified Katl release with Ceph and CNPG recovery gates
+    requires:
+      vars: [version]
+    cmd: bash '{{.ROOT_DIR}}/.taskfiles/Katl/scripts/upgrade-cluster.sh' '{{.version}}'
   kubernetes:upgrade:
     desc: Upgrade Kubernetes to the version in cluster.yaml
     cmd: '{{.KATLCTL}} kubernetes upgrade --config {{.CONFIG}} {{.CLI_ARGS}}'
