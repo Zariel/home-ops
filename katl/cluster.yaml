@@ -8,7 +8,7 @@ spec:
         host: k8s.cbannister.casa
         port: 6443
     kubernetes:
-        version: v1.37.0
+        version: v1.37.1
         kubeadm:
             configFile: kubeadm.yaml
             patchesDir: kubeadm-patches
