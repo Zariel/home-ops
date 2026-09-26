@@ -2,7 +2,7 @@
 set -euo pipefail
 
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)
-katlctl="$root/.taskfiles/Katl/scripts/katlctl"
+katlctl=katlctl
 config="$root/katl/cluster.yaml"
 version=${1:-}
 

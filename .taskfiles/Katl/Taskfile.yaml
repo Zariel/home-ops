@@ -1,11 +1,11 @@
 ---
 version: "3"
 vars:
-  KATLCTL: '{{.ROOT_DIR}}/.taskfiles/Katl/scripts/katlctl'
+  KATLCTL: katlctl
   CONFIG: '{{.ROOT_DIR}}/katl/cluster.yaml'
 tasks:
   download:
-    desc: Download and checksum the pinned Katl release and CLI
+    desc: Download and checksum the pinned Katl installer assets
     cmd: bash '{{.ROOT_DIR}}/.taskfiles/Katl/scripts/download.sh'
   validate:
     desc: Validate all three node configurations

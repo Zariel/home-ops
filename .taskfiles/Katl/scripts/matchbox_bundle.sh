@@ -8,7 +8,7 @@ relative="katl/$version"
 assets="$out/assets/$relative"
 base="${MATCHBOX_URL:-http://10.5.0.8}"
 base=${base%/}
-cli="$root/.taskfiles/Katl/scripts/katlctl"
+cli=katlctl
 mkdir -p "$assets" "$out/profiles" "$out/groups"
 for file in katl-installer.vmlinuz katl-installer.initrd "katlos-install-$version-x86_64.squashfs" "katlos-install-$version-x86_64.squashfs.json"; do
   cp "$root/artifacts/katl/$version/$file" "$assets/$file"

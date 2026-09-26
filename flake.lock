@@ -18,6 +18,27 @@
         "type": "github"
       }
     },
+    "katl": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790450030,
+        "narHash": "sha256-4DAQk9W9TM+a6NjJp6mT6lpBmcnWoH68S1Hz1OVgeOc=",
+        "owner": "katl-dev",
+        "repo": "katl",
+        "rev": "a93bca63e1502b1cdacbcedd0fac2dd7d2d35291",
+        "type": "github"
+      },
+      "original": {
+        "owner": "katl-dev",
+        "ref": "v2026.9.0-beta.18",
+        "repo": "katl",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1787498568,
@@ -37,6 +58,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
+        "katl": "katl",
         "nixpkgs": "nixpkgs"
       }
     },

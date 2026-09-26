@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    katl.url = "github:katl-dev/katl/v2026.9.0-beta.18";
+    katl.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -11,6 +13,7 @@
       self,
       nixpkgs,
       flake-utils,
+      katl,
       ...
     }@inputs:
     flake-utils.lib.eachDefaultSystem (
@@ -29,6 +32,7 @@
         devShells.default = pkgs.mkShell {
           name = "home-ops-dev";
           buildInputs = with pkgs; [
+            katl.packages.${system}.katlctl
             gh
             kubernetes-helm
             sops
