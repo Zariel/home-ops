@@ -1,15 +1,15 @@
 # Hollywoo on Katl
 
-This replaces the Talos source configuration for the three MS-01s with KatlOS
-2026.9.0-beta.11 and Kubernetes v1.36.4. `cluster.yaml` is the retained node
-configuration; `version` pins both the CLI and OS/PXE assets. The tasks use that
-release's CLI, not a workstation-global version. No cluster changes are made by
-checking out this bookmark or validating/bundling its configuration.
+This configures the three MS-01s with KatlOS 2026.9.0-beta.18 and Kubernetes
+v1.37.1. `cluster.yaml` is the retained node configuration; `version` pins the
+OS/PXE assets. The development shell provides the Katl CLI from the pinned
+flake input. Checking out this bookmark or validating/bundling its configuration
+does not change the cluster.
 
-Beta.11 supports the directory-backed network file sets and requires durable
-management secrets. `spec.managementIdentity` references the ignored
-`.local/management-secrets.yaml`; create it explicitly for a new cluster before
-compiling a bundle, and retain it across reinstalls.
+The configuration uses directory-backed network file sets and durable
+management secrets. `spec.managementIdentity` references the SOPS-encrypted
+`management-secrets.sops.yaml`. Keep the age decryption key available and back
+it up separately for reinstalls.
 
 ## Retained configuration
 
@@ -75,23 +75,23 @@ compilation; do not try to mount an existing partition as a whole disk.
 
 ```sh
 nix develop
-# Download matching CLI and loose PXE artifacts, and verify checksums.
+# Restore the ignored age.key from backup before using this cluster's secrets.
+# Download loose PXE artifacts and verify checksums.
 task katl:download
 task katl:validate
 task katl:resolve node=k8s-0
 task katl:resolve node=k8s-1
 task katl:resolve node=k8s-2
-# Once, for a new cluster only; refuses to overwrite existing secrets.
-task katl:management:identity
+# For a new cluster only, create the Kubernetes identity.
 task katl:identity
-# Back up both katl/.local/management-secrets.yaml and
-# katl/.local/hollywoo-kubernetes.katlkey off-cluster.
-# Neither belongs in Git or public PXE storage.
+# Back up age.key and katl/.local/hollywoo-kubernetes.katlkey off-cluster.
+# Neither belongs in Git or public PXE storage; keep the age key separate
+# from the tracked encrypted management secrets.
 ```
 
-`katl/.local`, `*.katlkey`, `*.katlcfg`, and `artifacts/` are ignored. Generated
-bundles contain private node management keys. The management secrets and
-Kubernetes identity serve different purposes; a compiled bundle is not a
+`age.key`, `katl/.local`, `*.katlkey`, `*.katlcfg`, and `artifacts/` are ignored.
+Generated bundles contain private node management keys. The management secrets
+and Kubernetes identity serve different purposes; a compiled bundle is not a
 management authority backup. Existing Talos CA material is not automatically
 converted.
 
@@ -99,10 +99,10 @@ For nodes already installed with an older Katl release, preserve their existing
 authority instead of running `katl:management:identity`. Export it using the
 original configuration without `spec.managementIdentity`:
 `katlctl management identity export --config ORIGINAL_CONFIG --output "$PWD/katl/.local/management-secrets.yaml"`.
-Use the beta.11 CLI for this command. It updates the original configuration's
-reference as well. Restore an existing project secrets backup directly to the
-referenced path with mode 0600. Missing credentials must not be replaced with a
-new authority for installed nodes.
+Use the CLI matching the original installed release. The command also updates
+the original configuration's reference. Restore an existing project secrets
+backup directly to the referenced path with mode 0600. Do not replace missing
+credentials with a new authority for installed nodes.
 
 ## PXE/install
 
@@ -146,7 +146,7 @@ kubectl -n rook-ceph get cephcluster
 
 The bootstrap task enrolls nodes, uses the backed-up Kubernetes identity,
 bootstraps kubeadm, installs Cilium/BGP, then CoreDNS, CRDs, and Flux. It writes
-`kubeconfig.yaml`. Beta.11 authenticates trusted reinstalls using the retained
+`kubeconfig.yaml`. Katl authenticates trusted reinstalls using the retained
 management authority and node name, then refreshes the disposable workstation
 context automatically. Preserve the same management secrets for replacement
 nodes; an unrelated authority cannot authenticate the installed nodes.
@@ -162,7 +162,7 @@ time synchronization, and journal collection still require bare-metal checks.
 task katl:upgrade node=k8s-0 -- --plan
 task katl:upgrade node=k8s-0
 # Upgrade every configured node sequentially to an explicit release.
-task katl:cluster:upgrade version=2026.9.0-beta.14
+task katl:cluster:upgrade version=2026.9.0-beta.18
 task katl:kubernetes:upgrade -- --plan
 task katl:kubernetes:upgrade
 ```
@@ -172,7 +172,7 @@ Renovate proposes updates to `katl/version` and the Kubernetes version in
 minor-version upgrade constraints and apply through Katl. No automatic
 in-cluster OS upgrader replaces Tuppr in this change.
 
-`katl:cluster:upgrade` uses the pinned CLI from `katl/version` and upgrades to
+`katl:cluster:upgrade` uses the CLI from the Katl flake input and upgrades to
 the explicitly supplied release. It plans all nodes before starting, then
 checks every CephCluster and CNPG Cluster before each node and after recovery.
 The checks require Ceph `HEALTH_OK`, all OSDs up and in, clean placement groups,
@@ -192,7 +192,7 @@ setting is intentionally omitted. API audit output goes to the API container's
 stdout and through normal pod-log collection. Host security follows Katl's
 runtime defaults apart from the explicitly retained kernel arguments.
 
-References: [Katl configuration](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.11/docs/installing.md),
-[management secrets](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.11/docs/operations/access.md),
+References: [Katl configuration](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/installing.md),
+[management secrets](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/operations/access.md),
 [kubeadm native configuration](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta4/),
 and [Vector journald input](https://vector.dev/docs/reference/configuration/sources/journald/).
