@@ -7,7 +7,7 @@ config="$root/katl/cluster.yaml"
 version=${1:-}
 
 if [[ ! $version =~ ^[0-9]{4}\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
-  echo 'Pass a Katl release version, for example: task katl:cluster:upgrade version=2026.9.0-beta.14' >&2
+  echo 'Pass a Katl release version, for example: task katl:cluster:upgrade version=2026.9.0-beta.18' >&2
   exit 1
 fi
 
