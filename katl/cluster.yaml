@@ -3,7 +3,7 @@ kind: ClusterConfig
 metadata:
     name: hollywoo
 spec:
-    managementIdentity: .local/management-secrets.yaml
+    managementIdentity: management-secrets.sops.yaml
     controlPlaneEndpoint:
         host: k8s.cbannister.casa
         port: 6443
@@ -250,3 +250,4 @@ spec:
                           content: |
                             [Network]
                             Address=10.254.3.3/29
+    managementAuthentication: mtls
