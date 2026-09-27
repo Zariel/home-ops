@@ -120,7 +120,7 @@ spec:
           csi:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
-            keepPriorKeyCountMax: 1
+            keepPriorKeyCountMax: 0
             keyType: aes256k
       # Keep the existing warnings muted until old CSI mounts have been replaced
       # and the monitors are restricted to AES256K.
