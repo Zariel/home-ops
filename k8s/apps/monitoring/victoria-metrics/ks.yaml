@@ -33,15 +33,6 @@ spec:
       VOLSYNC_CACHE_CAPACITY: 10Gi
       VOLSYNC_PUID: "65534"
       VOLSYNC_PGID: "65534"
-  patches:
-    # The migrated claim is bound without a restore source; only new claims can set it.
-    - target:
-        kind: PersistentVolumeClaim
-      patch: |-
-        - op: add
-          path: /metadata/annotations
-          value:
-            kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
   wait: false
   interval: 30m
   retryInterval: 1m
