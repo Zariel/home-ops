@@ -4,6 +4,7 @@ kind: VMSingle
 metadata:
   name: victoria
 spec:
+  replicaCount: 0
   useStrictSecurity: true
   retentionPeriod: "12"
   extraArgs:
