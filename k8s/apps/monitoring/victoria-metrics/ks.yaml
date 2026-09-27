@@ -34,23 +34,14 @@ spec:
       VOLSYNC_PUID: "65534"
       VOLSYNC_PGID: "65534"
   patches:
-    # Create an empty target; its restore source is immutable after binding.
+    # The migrated claim is bound without a restore source; only new claims can set it.
     - target:
         kind: PersistentVolumeClaim
       patch: |-
-        - op: remove
-          path: /spec/dataSourceRef
         - op: add
           path: /metadata/annotations
           value:
             kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
-    # Do not back up an empty or partially copied volume during migration.
-    - target:
-        kind: ReplicationSource
-      patch: |-
-        - op: add
-          path: /spec/paused
-          value: true
   wait: false
   interval: 30m
   retryInterval: 1m

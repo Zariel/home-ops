@@ -4,7 +4,6 @@ kind: VMSingle
 metadata:
   name: victoria
 spec:
-  replicaCount: 0
   useStrictSecurity: true
   retentionPeriod: "12"
   extraArgs:
@@ -15,12 +14,10 @@ spec:
     search.maxConcurrentRequests: "2"
     search.maxMemoryPerQuery: 256MiB
     search.minStalenessInterval: 5m
-  storage:
-    accessModes: ["ReadWriteOnce"]
-    resources:
-      requests:
-        storage: 150Gi
-    storageClassName: ceph-block
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: vmsingle
   resources:
     requests:
       cpu: 1
