@@ -38,6 +38,8 @@ spec:
         name: rook-ceph.rbd.csi.ceph.com
         enabled: true
         snapshotPolicy: volumeSnapshot
+        imageSet:
+          name: rook-csi-operator-image-set-configmap
       cephfs:
         enabled: false
       nfs:
