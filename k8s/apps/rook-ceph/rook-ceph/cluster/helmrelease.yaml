@@ -114,6 +114,8 @@ spec:
           device_failure_prediction_mode: local # requires mgr module
       security:
         cephx:
+          allowedCiphers:
+            - aes256k
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
@@ -122,18 +124,16 @@ spec:
             keyGeneration: 2
             keepPriorKeyCountMax: 0
             keyType: aes256k
-      # Keep the existing warnings muted until old CSI mounts have been replaced
-      # and the monitors are restricted to AES256K.
       healthCheck:
         muteHealthWarning:
           AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE:
-            policy: mute
+            policy: unmute
           AUTH_INSECURE_CLIENT_KEY_TYPE:
-            policy: mute
+            policy: unmute
           AUTH_INSECURE_KEYS_ALLOWED:
-            policy: mute
+            policy: unmute
           AUTH_INSECURE_KEYS_CREATABLE:
-            policy: mute
+            policy: unmute
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       crashCollector:
