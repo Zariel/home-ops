@@ -117,8 +117,13 @@ spec:
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
-      # CSI must remain on AES until every node supports AES256K kernel mounts
-      # (Linux 7.0+). Unmute these after CSI migration and cipher restriction.
+          csi:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keepPriorKeyCountMax: 1
+            keyType: aes256k
+      # Keep the existing warnings muted until old CSI mounts have been replaced
+      # and the monitors are restricted to AES256K.
       healthCheck:
         muteHealthWarning:
           AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE:
