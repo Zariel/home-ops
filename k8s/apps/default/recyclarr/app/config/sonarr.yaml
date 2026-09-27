@@ -8,7 +8,7 @@ quality_definition:
 delete_old_custom_formats: true
 
 media_naming:
-  series: plex-tmdb
+  series: plex-imdb
   season: default
   episodes:
     rename: true
