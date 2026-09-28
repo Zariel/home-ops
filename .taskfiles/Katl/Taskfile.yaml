@@ -47,8 +47,8 @@ tasks:
       vars: [node]
     cmd: '{{.KATLCTL}} install apply --config {{.CONFIG}} --node {{.node}} {{.CLI_ARGS}}'
   apply:
-    desc: Apply retained Katl host configuration
-    cmd: '{{.KATLCTL}} cluster apply --config {{.CONFIG}}'
+    desc: Apply retained Katl cluster configuration
+    cmd: '{{.KATLCTL}} cluster apply --config {{.CONFIG}} {{.CLI_ARGS}}'
   upgrade:
     desc: Upgrade one node to the pinned Katl release
     requires:

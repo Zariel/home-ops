@@ -35,16 +35,24 @@ spec:
                 topology.kubernetes.io/region: homelab
                 topology.kubernetes.io/zone: hollywoo
             taints: []
+        storage:
+            volumes:
+                - name: local-hostpath
+                  selector:
+                    disk:
+                        minSizeMiB: 1024
+                  filesystem: xfs
         hostConfiguration:
+            enabledUnits:
+                - systemd-timesyncd.service
+            maskedUnits:
+                - bluetooth.service
             fileSets:
                 network:
                     directory: files/systemd/network
                     destination: /etc/systemd/network
                 host:
                     files:
-                        # An empty unit file masks Bluetooth, including D-Bus activation.
-                        - path: /etc/systemd/system/bluetooth.service
-                          content: ""
                         - path: /etc/sysctl.d/80-hollywoo.conf
                           source: files/sysctl.d/80-hollywoo.conf
                         - path: /etc/modules-load.d/80-hollywoo.conf
@@ -61,8 +69,6 @@ spec:
                           source: files/hollywoo/scheduler.yaml
                         - path: /etc/systemd/timesyncd.conf.d/50-hollywoo.conf
                           source: files/systemd/timesyncd.conf.d/50-hollywoo.conf
-                        - path: /etc/systemd/system/multi-user.target.d/50-timesyncd.conf
-                          source: files/systemd/system/multi-user.target.d/50-timesyncd.conf
                         - path: /etc/systemd/journald.conf.d/50-persistent.conf
                           source: files/systemd/journald.conf.d/50-persistent.conf
                         - path: /etc/hosts
@@ -138,8 +144,6 @@ spec:
                   selector:
                     disk:
                         byID: /dev/disk/by-id/nvme-eui.343335304eb029810025384100000001
-                        minSizeMiB: 1024
-                  filesystem: xfs
                   wipe: true
           hostConfiguration:
             fileSets:
@@ -181,8 +185,6 @@ spec:
                   selector:
                     disk:
                         byID: /dev/disk/by-id/nvme-eui.343335304ea058240025384100000001
-                        minSizeMiB: 1024
-                  filesystem: xfs
                   wipe: true
           hostConfiguration:
             fileSets:
@@ -224,8 +226,6 @@ spec:
                   selector:
                     disk:
                         byID: /dev/disk/by-id/nvme-eui.34333530528017830025384300000001
-                        minSizeMiB: 1024
-                  filesystem: xfs
                   wipe: true
           hostConfiguration:
             fileSets:

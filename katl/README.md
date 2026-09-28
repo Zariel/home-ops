@@ -3,8 +3,8 @@
 This configures the three MS-01s with KatlOS 2026.9.0-beta.18 and Kubernetes
 v1.37.1. `cluster.yaml` is the retained node configuration; `version` pins the
 OS/PXE assets. The development shell provides the Katl CLI from the pinned
-flake input. Checking out this bookmark or validating/bundling its configuration
-does not change the cluster.
+flake input. Validating, resolving, or bundling the configuration does not
+change the cluster.
 
 The configuration uses directory-backed network file sets and durable
 management secrets. `spec.managementIdentity` references the SOPS-encrypted
@@ -32,9 +32,11 @@ those slots and the generated names from the installer before committing to a
 bare-metal install.
 
 Static `/etc/hosts` entries preserve resolution of the three node names.
-DNS remains `172.53.53.53`; systemd-timesyncd is started through a native target
-drop-in and uses `10.254.254.1`. CPU sysfs settings, network sysctls, hugepages,
-udev permissions for ZBT2, NFS options, containerd options, kubelet settings,
+DNS remains `172.53.53.53`; Katl's native unit management enables
+systemd-timesyncd, which uses `10.254.254.1`. It also masks
+`bluetooth.service`, while the kernel command line prevents the Bluetooth
+drivers from loading. CPU sysfs settings, network sysctls, hugepages, udev
+permissions for ZBT2, NFS options, containerd options, kubelet settings,
 control-plane resources, scheduler policy, and API audit policy are retained.
 SSH authorizes the current `chris@gaming` public key; review it before install.
 
@@ -48,21 +50,23 @@ advertise that address. Initial bootstrap uses a direct node endpoint until
 Cilium/BGP is established, then the task switches the operator kubeconfig to
 the stable DNS endpoint.
 
-System and kernel logs move from Talos UDP receivers to persistent journald and
-the Vector agent's separate Katl stream on TCP 6005. The agent uses the Debian
+System and kernel logs use persistent journald and the Vector agent's separate
+Katl stream on TCP 6005. The agent uses the Debian
 Vector image because the distroless image lacks journalctl. Pod logging stays
-on the existing TCP 6000 stream. Tuppr and its Talos/Kubernetes upgrade resources
-are removed; OS and Kubernetes upgrades use the Katl tasks below.
+on the existing TCP 6000 stream. OS and Kubernetes upgrades use the Katl tasks
+below.
 
 ## Disks and backup boundary
 
 The three system disk selectors and three local-hostpath selectors are derived
-from the existing NVMe EUI identities. Local-hostpath remains XFS mounted at
-`/var/mnt/local-hostpath`, matching OpenEBS. Each selected local-hostpath disk
-has `wipe: true`, for the planned fresh install and restore. Existing signatures
-require a separate explicit wipe acknowledgement from Katl; the PXE bundle does
-not bypass that check. Rook's three dedicated Ceph device selectors are unchanged
-and are not Katl-managed volumes.
+from the existing NVMe EUI identities. The shared defaults hold the
+local-hostpath XFS and minimum-size policy; each node supplies only its disk
+identity and destructive `wipe: true` choice. The volume remains mounted at
+`/var/mnt/local-hostpath`, matching OpenEBS. Katl reuses an unchanged bound
+volume instead of formatting it again. A non-blank replacement still requires
+an explicit wipe acknowledgement; the PXE bundle does not bypass that check.
+Rook's three dedicated Ceph device selectors are unchanged and are not
+Katl-managed volumes.
 
 Before wiping, verify the VolSync backups and restore credentials are available
 independently of this cluster. Preserve the previous Talos configuration,
@@ -129,20 +133,23 @@ If a data-disk signature blocks auto-install, inspect the inventory and use
 only after confirming that exact disk may be erased. Repeat for the appropriate
 node. Use `--endpoint ADDRESS` for an installer's temporary DHCP address.
 
-## Bootstrap and restore
+## Operations and recovery
 
-Ensure this change is present on the branch Flux follows (`main`) before running
-Flux bootstrap. Until then, `main` still describes Talos and would restore Tuppr
-and the old VIP selector. This bookmark is not deployed automatically.
+The live cluster is already bootstrapped. Plan retained configuration changes
+before applying them; use `--mode live` to reject anything that would need a
+reboot:
 
 ```sh
 task katl:status
-task bootstrap:katl
+task katl:apply -- --plan --mode live
 kubectl get nodes -o wide
 kubectl -n kube-system get endpointslice -l kubernetes.io/service-name=kube-vip
 kubectl get --raw=/readyz
 kubectl -n rook-ceph get cephcluster
 ```
+
+Run `task bootstrap:katl` only when deliberately creating or rebuilding the
+cluster from the preserved Kubernetes identity; it is not a routine reconcile.
 
 The bootstrap task enrolls nodes, uses the backed-up Kubernetes identity,
 bootstraps kubeadm, installs Cilium/BGP, then CoreDNS, CRDs, and Flux. It writes
@@ -152,11 +159,11 @@ context automatically. Preserve the same management secrets for replacement
 nodes; an unrelated authority cannot authenticate the installed nodes.
 
 Verify routing/BGP, DNS, API VIP access, Rook provisioning, a restored VolSync
-volume, and real workload reads/writes before declaring the migration complete.
+volume, and real workload reads/writes after recovery or a substantial rollout.
 Hardware link settings, CPU sysfs availability, management VRF reachability,
 time synchronization, and journal collection still require bare-metal checks.
 
-## Upgrades and differences
+## Upgrades
 
 ```sh
 task katl:upgrade node=k8s-0 -- --plan
@@ -169,8 +176,8 @@ task katl:kubernetes:upgrade
 
 Renovate proposes updates to `katl/version` and the Kubernetes version in
 `cluster.yaml`; these source updates do not themselves mutate nodes. Review
-minor-version upgrade constraints and apply through Katl. No automatic
-in-cluster OS upgrader replaces Tuppr in this change.
+minor-version upgrade constraints and apply through Katl. OS upgrades remain
+operator-driven; there is no automatic in-cluster OS upgrader.
 
 `katl:cluster:upgrade` uses the CLI from the Katl flake input and upgrades to
 the explicitly supplied release. It plans all nodes before starting, then
@@ -184,15 +191,13 @@ The development shell includes that plugin. A failed upgrade leaves its node
 cordoned and stops the run; inspect and recover it before retrying. The workflow
 requires the Rook toolbox deployment in each Ceph cluster namespace.
 
-Talos discovery/API access, OOMConfig, extension names, and Talos-specific
-kernel logging/audit arguments have no direct Katl translation. Katl provides
-native management, in-tree GPU/MEI drivers and firmware, and Intel microcode.
-Kubeadm requires its static-pod manifest directory, so Talos's disable-manifests
-setting is intentionally omitted. API audit output goes to the API container's
-stdout and through normal pod-log collection. Host security follows Katl's
-runtime defaults apart from the explicitly retained kernel arguments.
+Katl provides native management, in-tree GPU/MEI drivers and firmware, and Intel
+microcode. API audit output goes to the API container's stdout and through
+normal pod-log collection. Host security follows Katl's runtime defaults apart
+from the explicitly retained kernel arguments.
 
 References: [Katl configuration](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/installing.md),
+[host configuration](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/operations/configure-nodes.md),
 [management secrets](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/operations/access.md),
 [kubeadm native configuration](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta4/),
 and [Vector journald input](https://vector.dev/docs/reference/configuration/sources/journald/).
