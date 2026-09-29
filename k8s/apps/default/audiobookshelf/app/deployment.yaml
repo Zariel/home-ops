@@ -27,7 +27,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: app
-          image: ghcr.io/advplyr/audiobookshelf:2.36.1@sha256:3528a93b6442ffe54bd46771bbbab7c97084e1101071586d9dc2254f30bb4358
+          image: ghcr.io/advplyr/audiobookshelf:2.37.0@sha256:6432d1dc58951b0280b29144ffc69834a8ae02786a2126f6b7c9bd453801c78b
           ports:
             - name: http
               containerPort: 80
