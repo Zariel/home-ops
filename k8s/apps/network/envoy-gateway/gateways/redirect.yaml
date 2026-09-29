@@ -38,7 +38,7 @@ spec:
     numRetries: 3
     retryOn:
       triggers:
-        - reset
+        - reset-before-request
         - connect-failure
   targetSelectors:
     - group: gateway.networking.k8s.io
