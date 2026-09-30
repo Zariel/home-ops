@@ -1,10 +1,10 @@
 # Hollywoo on Katl
 
-This configures the three MS-01s with KatlOS 2026.9.0-beta.18 and Kubernetes
-v1.37.1. `cluster.yaml` is the retained node configuration; `version` pins the
-OS/PXE assets. The development shell provides the Katl CLI from the pinned
-flake input. Validating, resolving, or bundling the configuration does not
-change the cluster.
+This configures the three MS-01s with KatlOS and Kubernetes v1.37.1.
+`cluster.yaml` is the retained node configuration; `version` pins the OS/PXE
+assets. The development shell provides the Katl CLI from the locked flake
+input. Validating, resolving, or bundling the configuration does not change
+the cluster.
 
 The configuration uses directory-backed network file sets and durable
 management secrets. `spec.managementIdentity` references the SOPS-encrypted
@@ -17,11 +17,14 @@ All three nodes are control planes and accept workloads. Node names, `/31`
 Kubernetes addresses, Pod CIDR `172.20.0.0/16`, Service CIDR `172.21.0.0/16`,
 CoreDNS `172.21.0.10`, and API name `k8s.cbannister.casa:6443` are retained.
 
-The shared `network` file set includes `files/systemd/network` recursively.
-Relative paths become paths under `/etc/systemd/network`, so adding a shared
-native file or drop-in does not need another mapping in `cluster.yaml`. Each
-node's `addresses` set keeps its three small address and route drop-ins inline
+The shared `host` file set includes `files` recursively. Relative paths become
+paths under `/etc`, so adding a shared native file or drop-in does not need
+another mapping in `cluster.yaml`. Keep only configuration inputs in this
+directory. Each node's `addresses` set keeps its three small address and route drop-ins inline
 using `files[].content`, alongside the rest of that node's configuration.
+
+All nodes inherit `kubelet.yaml` from `spec.defaults.kubernetes.kubelet`.
+Use `nodes[].kubernetes.kubelet` only for a node-specific override.
 
 Native networkd files implement the ConnectX-4 active-backup `bond0` (MTU 9000),
 VLANs 20/40/300/1100, the secondary active-backup `bond1`, and management VRF
@@ -41,8 +44,8 @@ control-plane resources, scheduler policy, and API audit policy are retained.
 SSH authorizes the current `chris@gaming` public key; review it before install.
 
 The native kubeadm configuration disables kube-proxy and CoreDNS installation;
-GitOps retains Cilium and CoreDNS ownership. The named `cilium` file set supplies `/etc/sysctl.d/90-cilium.conf`;
-reverse-path filtering is explicit cluster policy. Cilium still uses Katl's local API
+GitOps retains Cilium and CoreDNS ownership. The shared `host` file set supplies
+`/etc/sysctl.d/90-cilium.conf`; reverse-path filtering is explicit cluster policy. Cilium still uses Katl's local API
 proxy at `127.0.0.1:7445`. Its sysctl-file writer is disabled for Katl's immutable
 `/etc`. The API VIP Service now selects kubeadm's `component: kube-apiserver`
 label. Cilium continues to advertise `10.45.0.100`; Katl does not also own or
@@ -169,7 +172,7 @@ time synchronization, and journal collection still require bare-metal checks.
 task katl:upgrade node=k8s-0 -- --plan
 task katl:upgrade node=k8s-0
 # Upgrade every configured node sequentially to an explicit release.
-task katl:cluster:upgrade version=2026.9.0-beta.18
+task katl:cluster:upgrade version="$(cat katl/version)"
 task katl:kubernetes:upgrade -- --plan
 task katl:kubernetes:upgrade
 ```
@@ -196,8 +199,8 @@ microcode. API audit output goes to the API container's stdout and through
 normal pod-log collection. Host security follows Katl's runtime defaults apart
 from the explicitly retained kernel arguments.
 
-References: [Katl configuration](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/installing.md),
-[host configuration](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/operations/configure-nodes.md),
-[management secrets](https://github.com/katl-dev/katl/blob/v2026.9.0-beta.18/docs/operations/access.md),
+References: [Katl configuration](https://github.com/katl-dev/katl/blob/main/docs/installing.md),
+[host configuration](https://github.com/katl-dev/katl/blob/main/docs/operations/configure-nodes.md),
+[management secrets](https://github.com/katl-dev/katl/blob/main/docs/operations/access.md),
 [kubeadm native configuration](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta4/),
 and [Vector journald input](https://vector.dev/docs/reference/configuration/sources/journald/).

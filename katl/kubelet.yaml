@@ -9,3 +9,5 @@ seccompDefault: true
 clusterDNS:
   - 172.21.0.10
 clusterDomain: cluster.local
+systemReserved:
+  memory: 1Gi
