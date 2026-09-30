@@ -654,13 +654,13 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\"}",
+          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\", sensorType=\"8\"}[15m]) * 3600, 0)",
           "legendFormat": "Outlet {{outletName}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Outlet Active Power",
+      "title": "Outlet Power (15m Average)",
       "type": "timeseries"
     },
     {
@@ -774,7 +774,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\"}",
+          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\", sensorType=\"8\"}[15m]) * 3600, 0)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -795,7 +795,7 @@
           "refId": "B"
         }
       ],
-      "title": "Outlet Snapshot",
+      "title": "Outlet Snapshot (15m Average)",
       "transformations": [
         {
           "id": "merge",
@@ -888,7 +888,7 @@
           "type": "prometheus",
           "uid": "victoriametrics"
         },
-        "definition": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\"}, outletName)",
+        "definition": "label_values(raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", sensorType=\"8\"}, outletName)",
         "description": "Outlet name from Raritan MIB",
         "hide": 0,
         "includeAll": true,
@@ -896,7 +896,7 @@
         "multi": true,
         "options": [],
         "query": {
-          "query": "label_values(raritan_pdu_outlet_active_power_watts_named{instance=~\"$instance\", pduId=~\"$pduId\"}, outletName)",
+          "query": "label_values(raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", sensorType=\"8\"}, outletName)",
           "refId": "Prometheus-outlet"
         },
         "refresh": 2,

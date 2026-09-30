@@ -230,12 +230,12 @@
       },
       "targets": [
         {
-          "expr": "raritan_pdu_outlet_active_power_watts_named{outletName=~\"$kubernetes_node\"}",
+          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0)",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }
       ],
-      "title": "PDU outlet power (selected node)",
+      "title": "PDU outlet power (15m average)",
       "type": "timeseries"
     },
     {
@@ -271,12 +271,12 @@
       },
       "targets": [
         {
-          "expr": "max_over_time(raritan_pdu_outlet_active_power_watts_named{outletName=~\"$kubernetes_node\"}[1h])",
+          "expr": "max_over_time((clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0))[1h:])",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }
       ],
-      "title": "PDU power max (1h)",
+      "title": "PDU 15m-average max (1h)",
       "type": "gauge"
     },
     {
@@ -312,12 +312,12 @@
       },
       "targets": [
         {
-          "expr": "max_over_time(raritan_pdu_outlet_active_power_watts_named{outletName=~\"$kubernetes_node\"}[24h])",
+          "expr": "max_over_time((clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0))[24h:])",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }
       ],
-      "title": "PDU power max (24h)",
+      "title": "PDU 15m-average max (24h)",
       "type": "gauge"
     },
     {
@@ -435,12 +435,12 @@
       },
       "targets": [
         {
-          "expr": "avg_over_time(raritan_pdu_outlet_active_power_watts_named{outletName=~\"$kubernetes_node\"}[$window]) - avg_over_time(raritan_pdu_outlet_active_power_watts_named{outletName=~\"$kubernetes_node\"}[$window] offset 1d)",
+          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0) - clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m] offset 1d) * 3600, 0)",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }
       ],
-      "title": "Power Δ vs 24h ago",
+      "title": "Power Δ vs 24h ago (15m average)",
       "type": "gauge"
     }
   ],
