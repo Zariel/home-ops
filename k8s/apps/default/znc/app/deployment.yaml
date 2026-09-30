@@ -61,7 +61,7 @@ spec:
               mountPath: /tls-pem
       containers:
         - name: *app
-          image: lscr.io/linuxserver/znc:latest@sha256:b144ed358744eebe779fcca8e4a646ddd8389116cd185849cb2af183d0acb7cb
+          image: ghcr.io/linuxserver/znc:1.10.3@sha256:b144ed358744eebe779fcca8e4a646ddd8389116cd185849cb2af183d0acb7cb
           imagePullPolicy: IfNotPresent
           env:
             - name: PUID
