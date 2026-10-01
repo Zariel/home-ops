@@ -9,7 +9,6 @@ resources:
   - xenitab.yaml
   - openebs.yaml
   - postfinance.yaml
-  - external-dns.yaml
   - csi-driver-smb.yaml
   - node-feature-discovery.yaml
   - piraeus.yaml
