@@ -3,16 +3,16 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: rbmusic
+  name: rbtherapy
 spec:
   hostnames:
-    - music.rociobolanos.com
+    - www.rociobolanos.com
   parentRefs:
-    - name: internal-rociobolanos-com
+    - name: external-rociobolanos-com
       namespace: network
       kind: ListenerSet
       sectionName: https
   rules:
     - backendRefs:
-        - name: rbmusic
+        - name: rbtherapy
           port: 80
