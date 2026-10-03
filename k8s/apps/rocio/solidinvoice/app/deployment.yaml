@@ -17,6 +17,7 @@ spec:
         app.kubernetes.io/name: solidinvoice
     spec:
       automountServiceAccountToken: false
+      enableServiceLinks: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
