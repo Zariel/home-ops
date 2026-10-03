@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./gatewayclass.yaml
   - ./redirect.yaml
+  - ./rociobolanos-apex.yaml
   - ./external.yaml
   - ./internal.yaml
   - ./listenersets.yaml
