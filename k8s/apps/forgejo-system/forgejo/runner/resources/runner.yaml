@@ -7,14 +7,10 @@ container:
   workdir_parent: shared/workdir
 host:
   workdir_parent: /data/act
-kubernetes:
-  namespace: forgejo-system
-  poll_timeout: 10m
 log:
   level: info
 plugins:
   k8s:
-    path: /plugins/forgejo-runner-k8s
     address: "unix:///plugin/forgejo-runner-k8s.sock"
     options:
       namespace: forgejo-system
@@ -22,8 +18,8 @@ plugins:
 runner:
   capacity: 2
   labels:
-    - ubuntu-latest:k8s:/config/podspec-default.yaml
-    - ubuntu-24.04:k8s:/config/podspec-default.yaml
-    - default:k8s:/config/podspec-default.yaml
-    - docker:k8s:/config/podspec-dind.yaml
+    - ubuntu-latest:k8s:///config/podspec-default.yaml
+    - ubuntu-24.04:k8s:///config/podspec-default.yaml
+    - default:k8s:///config/podspec-default.yaml
+    - docker:k8s:///config/podspec-dind.yaml
   timeout: 3h

@@ -36,6 +36,7 @@ spec:
       type: Recreate
     image:
       rootless: true
+      tag: 16.0.5
     resources:
       requests:
         memory: 256Mi
