@@ -39,6 +39,7 @@ metadata:
   name: &app forgejo-runner
   namespace: &namespace forgejo-system
 spec:
+  suspend: false
   targetNamespace: *namespace
   commonMetadata:
     labels:

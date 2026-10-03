@@ -13,6 +13,7 @@ spec:
     controllers:
       forgejo-runner:
         type: deployment
+        replicas: 1
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
