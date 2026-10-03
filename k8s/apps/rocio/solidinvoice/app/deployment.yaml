@@ -29,6 +29,10 @@ spec:
         - name: app
           image: solidinvoice/solidinvoice:3.0.1@sha256:ae7c0e155cb5e515b49c83a4d2c003dc07d30b48952b6fd87b27e66e1d56b162
           env:
+            - name: HOME
+              value: /tmp
+            - name: GOMEMLIMIT
+              value: 1536MiB
             - name: TZ
               value: Europe/London
             - name: SOLIDINVOICE_CONFIG_DIR
@@ -71,7 +75,7 @@ spec:
               cpu: 200m
               memory: 256Mi
             limits:
-              memory: 1Gi
+              memory: 3Gi
           volumeMounts:
             - name: data
               mountPath: /etc/solidinvoice
