@@ -104,15 +104,23 @@ spec:
           type: Role
           rules:
             - apiGroups:
+                - batch
+              resources:
+                - jobs
+              verbs:
+                - create
+                - get
+                - list
+                - watch
+                - delete
+            - apiGroups:
                 - ""
               resources:
                 - pods
               verbs:
                 - list
                 - watch
-                - create
                 - get
-                - delete
             - apiGroups:
                 - ""
               resources:
