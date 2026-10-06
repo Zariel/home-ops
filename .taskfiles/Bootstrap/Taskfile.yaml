@@ -10,7 +10,7 @@ tasks:
       - task: :katl:validate
       - task: :katl:identity
       - .taskfiles/Katl/scripts/katlctl context save --config katl/cluster.yaml
-      - .taskfiles/Katl/scripts/katlctl cluster bootstrap --config katl/cluster.yaml --identity katl/.local/hollywoo-kubernetes.katlkey --init-node k8s-0 --kubeconfig-out kubeconfig.yaml --overwrite-kubeconfig
+      - .taskfiles/Katl/scripts/katlctl cluster bootstrap --config katl/cluster.yaml --identity katl/.local/hollywoo-kubernetes.katlkey --init-node k8s-0 --kubeconfig-out kubeconfig --overwrite-kubeconfig
       - task: cluster
 
   cluster:

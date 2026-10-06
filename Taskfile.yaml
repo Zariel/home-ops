@@ -10,7 +10,7 @@ vars:
   KUBERNETES_DIR: "{{.ROOT_DIR}}/k8s"
 
 env:
-  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig.yaml"
+  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
   SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
 
 includes:

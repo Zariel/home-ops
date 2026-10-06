@@ -156,7 +156,7 @@ cluster from the preserved Kubernetes identity; it is not a routine reconcile.
 
 The bootstrap task enrolls nodes, uses the backed-up Kubernetes identity,
 bootstraps kubeadm, installs Cilium/BGP, then CoreDNS, CRDs, and Flux. It writes
-`kubeconfig.yaml`. Katl authenticates trusted reinstalls using the retained
+`kubeconfig`. Katl authenticates trusted reinstalls using the retained
 management authority and node name, then refreshes the disposable workstation
 context automatically. Preserve the same management secrets for replacement
 nodes; an unrelated authority cannot authenticate the installed nodes.

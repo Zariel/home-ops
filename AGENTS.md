@@ -10,7 +10,7 @@
 - Kubernetes GitOps configuration lives in `k8s/`: `bootstrap/` for initial bootstrap, `flux/` for cluster-level Flux resources, `apps/` for workloads, and `components/` for reusable Kustomize components.
 - Katl configuration lives in `katl/`. Ansible playbooks and inventory live under `ansible/main/`.
 - Task automation starts at `Taskfile.yaml`, with task groups under `.taskfiles/`.
-- `age.key`, `kubeconfig.yaml`, and `*.katlkey`, `*.katlcfg`, and `katl/.local/` are ignored local credentials/configuration. Never commit them.
+- `age.key`, `kubeconfig`, and `*.katlkey`, `*.katlcfg`, and `katl/.local/` are ignored local credentials/configuration. Never commit them.
 
 ## Common Commands
 - List tasks: `task`
