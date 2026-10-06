@@ -27,6 +27,16 @@ spec:
     # Create default monitoring rules
     defaultRules:
       create: true
+      rules:
+        TargetDown:
+          spec:
+            # On-demand node exporters are intentionally unavailable while powered off.
+            expr: >-
+              100 * (
+                count(up{availability!="on-demand"} == 0) by (cluster, job, namespace, service)
+                /
+                count(up{availability!="on-demand"}) by (cluster, job, namespace, service)
+              ) > 10
 
     # Enable Grafana dashboards
     defaultDashboards:
