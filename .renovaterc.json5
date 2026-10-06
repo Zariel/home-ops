@@ -2,6 +2,7 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'github>home-operations/renovate-presets',
+    'github>home-operations/renovate-presets//apps/cnpg.json5',
     'github>zariel/home-ops//.renovate/allowedVersions.json5',
     'github>zariel/home-ops//.renovate/autoMerge.json5',
     'github>zariel/home-ops//.renovate/customManagers.json5',
@@ -20,6 +21,13 @@
     '**/ansible/**',
   ],
   packageRules: [
+    {
+      description: 'Limit NetBox updates to the weekly Monday maintenance window',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/netbox-community/netbox-chart/netbox'],
+      schedule: ['* 5 * * 1'],
+      updateNotScheduled: false,
+    },
     {
       // Docker-based GitHub Actions from GHCR may not expose release timestamps,
       // which can leave updates permanently pending when minimumReleaseAge is set.

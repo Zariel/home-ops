@@ -6,7 +6,6 @@ metadata:
   name: pg18vc
 spec:
   instances: 3
-  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
   imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-trixie
   storage:
     size: 100Gi
@@ -29,13 +28,11 @@ spec:
     extensions:
       - name: postgis
         image:
-          # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgis-extension
           reference: ghcr.io/cloudnative-pg/postgis-extension:3.6.4-18-trixie
         ld_library_path:
           - system
       - name: vchord
         image:
-          # renovate: datasource=docker depName=ghcr.io/tensorchord/vchord-scratch
           reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.0.0
         dynamic_library_path:
           - /usr/lib/postgresql/18/lib/

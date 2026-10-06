@@ -2,6 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
+      "description": ["1Password Connect API and sync images are released together"],
+      "groupName": "1Password Connect",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "docker.io/1password/connect-api",
+        "docker.io/1password/connect-sync"
+      ],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "description": [
         "Actions Runner Controller Group"
       ],
@@ -80,6 +92,18 @@
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
+    },
+    {
+      "description": ["Vector chart and runtime image follow the same release line"],
+      "groupName": "Vector",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "ghcr.io/vectordotdev/helm-charts/vector",
+        "ghcr.io/vectordotdev/vector"
+      ],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
     },
     {
       "description": ["Victoria Metrics Group"],
