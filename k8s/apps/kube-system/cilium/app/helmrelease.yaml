@@ -27,6 +27,8 @@ spec:
     remediation:
       retries: -1
   upgrade:
+    # Bootstrap also owns these resources; client-side upgrades can remove its obsolete fields.
+    serverSideApply: disabled
     cleanupOnFail: true
     remediation:
       retries: 3
