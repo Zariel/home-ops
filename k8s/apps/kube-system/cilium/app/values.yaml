@@ -1,6 +1,4 @@
 # yaml-language-server: $schema=null
-autoDirectNodeRoutes: false
-# directRoutingSkipUnreachable: true
 bandwidthManager:
   enabled: true
   bbr: true
@@ -8,14 +6,12 @@ bgpControlPlane:
   enabled: true
 bpf:
   datapathMode: netkit
-  # masquerade: true
   preallocateMaps: true
-  hostRouting: true
   hostLegacyRouting: false
   vlanBypass: [20, 40, 300]
 bpfClockProbe: true
 cgroup:
-  automount:
+  autoMount:
     enabled: false
   hostRoot: /sys/fs/cgroup
 cluster:
@@ -24,21 +20,11 @@ cluster:
 cni:
   exclusive: false
 devices: "bond0"
-# enableRuntimeDeviceDetection: true
-enableIPv4BIGTCP: false
 enableIPv4Masquerade: false
-enableTunnelBIGTCP: false
 endpointRoutes:
   enabled: true
 envoy:
   enabled: false
-  rollOutPods: false
-gatewayAPI:
-  enabled: false
-ingressController:
-  enabled: false
-  secretsNamespace:
-    enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 0.0.0.0/0
@@ -46,18 +32,13 @@ k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
-l2announcements:
-  enabled: false
 loadBalancer:
   algorithm: maglev
   mode: dsr
   dsrDispatch: geneve
   acceleration: best-effort
-localRedirectPolicy: true
-priorityClassName: system-node-critical
 operator:
   rollOutPods: true
-  priorityClassName: system-cluster-critical
 pmtuDiscovery:
   enabled: true
 resources:
@@ -91,9 +72,6 @@ securityContext:
       - SYS_RESOURCE
       - PERFMON
       - BPF
-socketLB:
-  enabled: true
-  hostNamespaceOnly: true
 tunnelProtocol: geneve
 
 # Katl owns /etc/sysctl.d in its immutable host generation.
