@@ -55,6 +55,26 @@ class ScannerTests(unittest.TestCase):
         self.assertEqual(len(list(self.spool.glob('Brother-*/page-*.tiff'))), 1)
         self.assertEqual(list(self.consume.iterdir()), [])
 
+    @unittest.skipUnless(Path('/dev/shm').is_dir(), 'requires Linux shared-memory mount')
+    def test_publishes_across_different_mounts(self):
+        with tempfile.TemporaryDirectory(dir='/dev/shm') as consume:
+            self.consume = Path(consume)
+            self.spool.mkdir()
+            self.assertNotEqual(self.spool.stat().st_dev, self.consume.stat().st_dev)
+            self.assertTrue(self.run_scan(2, 7))
+            documents = list(self.consume.glob('*.pdf'))
+            self.assertEqual(len(documents), 1)
+            with pikepdf.open(documents[0]) as pdf:
+                self.assertEqual(len(pdf.pages), 2)
+            self.assertEqual(list(self.consume.glob('*.tmp')), [])
+
+    def test_failed_publication_preserves_original_and_cleans_staging(self):
+        with patch.object(scanner.os, 'replace', side_effect=OSError('rename failed')):
+            self.assertFalse(self.run_scan(1, 7))
+        self.assertEqual(len(list(self.spool.glob('Brother-*/document.pdf'))), 1)
+        self.assertEqual(len(list(self.spool.glob('Brother-*/page-*.tiff'))), 1)
+        self.assertEqual(list(self.consume.iterdir()), [])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,6 +14,28 @@ import tempfile
 import img2pdf
 
 
+def publish(pdf: Path, destination: Path) -> None:
+    # Kubernetes subPath mounts cannot be renamed across, even on one PVC.
+    # Paperless ignores the unsupported .tmp suffix while the copy is written.
+    with tempfile.NamedTemporaryFile(
+        prefix='.paperless-scanner-', suffix='.tmp', dir=destination.parent, delete=False,
+    ) as output:
+        staged = Path(output.name)
+        try:
+            with pdf.open('rb') as source:
+                shutil.copyfileobj(source, output)
+            output.flush()
+            os.fsync(output.fileno())
+        except Exception:
+            staged.unlink(missing_ok=True)
+            raise
+    try:
+        # Publish within the consume mount so the rename is atomic.
+        os.replace(staged, destination)
+    finally:
+        staged.unlink(missing_ok=True)
+
+
 def scan(spool: Path, consume: Path, device: str) -> bool:
     spool.mkdir(parents=True, exist_ok=True)
     consume.mkdir(parents=True, exist_ok=True)
@@ -59,8 +81,7 @@ def scan(spool: Path, consume: Path, device: str) -> bool:
                 output.flush()
                 os.fsync(output.fileno())
             destination = consume / f'{job.name}.pdf'
-            # Both paths are on the document PVC; Paperless sees only the final PDF.
-            os.replace(pdf, destination)
+            publish(pdf, destination)
             logging.info('Submitted %d pages to Paperless: %s', len(pages), destination.name)
             shutil.rmtree(job)
             return True
