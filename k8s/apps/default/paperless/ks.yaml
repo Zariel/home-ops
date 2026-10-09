@@ -19,6 +19,8 @@ spec:
       namespace: external-secrets
     - name: volsync
       namespace: volsync-system
+    - name: multus-networks
+      namespace: kube-system
   path: ./k8s/apps/default/paperless/app
   prune: true
   sourceRef:
