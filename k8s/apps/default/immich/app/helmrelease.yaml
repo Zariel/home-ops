@@ -35,8 +35,8 @@ spec:
               repository: ghcr.io/immich-app/immich-machine-learning
               tag: v3.3.1-openvino
             env:
-              MACHINE_LEARNING_PRELOAD__CLIP__TEXTUAL: ViT-SO400M-16-SigLIP2-384__webli
-              MACHINE_LEARNING_PRELOAD__CLIP__VISUAL: ViT-SO400M-16-SigLIP2-384__webli
+              MACHINE_LEARNING_PRELOAD__CLIP__TEXTUAL: ViT-B-32__openai
+              MACHINE_LEARNING_PRELOAD__CLIP__VISUAL: ViT-B-32__openai
               MACHINE_LEARNING_PRELOAD__FACIAL_RECOGNITION__RECOGNITION: buffalo_l
               MACHINE_LEARNING_PRELOAD__FACIAL_RECOGNITION__DETECTION: buffalo_l
             probes:
@@ -121,7 +121,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 250Mi
+                memory: 1Gi
               claims:
                 - name: gpu
             securityContext: *csc
@@ -170,7 +170,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 250Mi
+                memory: 512Mi
             securityContext: *csc
         initContainers:
           initdb:
