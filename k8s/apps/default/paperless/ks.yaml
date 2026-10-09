@@ -1,0 +1,50 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app paperless
+  namespace: default
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: pg18vc
+      namespace: database
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: volsync
+      namespace: volsync-system
+  path: ./k8s/apps/default/paperless/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  interval: 1h
+  retryInterval: 2m
+  timeout: 10m
+  targetNamespace: default
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 20Gi
+  patches:
+    # Bootstrap an empty volume; enable the component's restore path for recovery.
+    - target:
+        kind: PersistentVolumeClaim
+      patch: |-
+        - op: remove
+          path: /spec/dataSourceRef
+    - target:
+        kind: ReplicationDestination
+      patch: |-
+        apiVersion: volsync.backube/v1alpha1
+        kind: ReplicationDestination
+        metadata:
+          name: unused
+        $patch: delete

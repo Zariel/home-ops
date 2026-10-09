@@ -1,0 +1,208 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless
+  namespace: default
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: paperless
+  driftDetection:
+    mode: enabled
+  values:
+    controllers:
+      paperless:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 18.6.0@sha256:b6d3af974df781c673d37e49bdddfa14a6f5be28b18d2cb7713f0449bea4057b
+            envFrom:
+              - secretRef:
+                  name: paperless-db
+              - secretRef:
+                  name: paperless-initdb
+        containers:
+          app:
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 3.3.0@sha256:6b94799bc769a063b3340cc5847402e626d4d91d29a295a8e747f8e9bead4207
+            env:
+              TZ: Europe/London
+              USERMAP_UID: 568
+              USERMAP_GID: 568
+              PAPERLESS_URL: https://paperless.cbannister.xyz
+              PAPERLESS_TIME_ZONE: Europe/London
+              PAPERLESS_DBENGINE: postgresql
+              PAPERLESS_DBHOST: pg18vc-rw.database.svc.cluster.local
+              PAPERLESS_DBNAME: paperless
+              PAPERLESS_DBUSER: paperless
+              PAPERLESS_ADMIN_USER: cbannister
+              PAPERLESS_ADMIN_MAIL: c.bannister@gmail.com
+              PAPERLESS_OCR_LANGUAGE: eng
+              PAPERLESS_TASK_WORKERS: 1
+              PAPERLESS_THREADS_PER_WORKER: 2
+              PAPERLESS_REDIS:
+                valueFrom:
+                  secretKeyRef:
+                    name: paperless-valkey
+                    key: PAPERLESS_REDIS
+            envFrom:
+              - secretRef:
+                  name: paperless
+              - secretRef:
+                  name: paperless-db
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: 8000
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: 8000
+                  periodSeconds: 5
+                  timeoutSeconds: 5
+                  failureThreshold: 120
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+      valkey:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 999
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 999
+            runAsNonRoot: true
+            runAsUser: 999
+        containers:
+          app:
+            image:
+              repository: ghcr.io/valkey-io/valkey
+              tag: 9.1.2@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
+            args:
+              - /config/valkey.conf
+            env:
+              VALKEYCLI_AUTH:
+                valueFrom:
+                  secretKeyRef:
+                    name: paperless-valkey
+                    key: password
+            probes:
+              liveness: &valkeyProbe
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [valkey-cli, ping]
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *valkeyProbe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [valkey-cli, ping]
+                  periodSeconds: 5
+                  timeoutSeconds: 5
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+    service:
+      app:
+        controller: paperless
+        ports:
+          http:
+            port: 8000
+      valkey:
+        controller: valkey
+        ports:
+          valkey:
+            port: 6379
+    persistence:
+      documents:
+        existingClaim: paperless
+        advancedMounts:
+          paperless:
+            app:
+              - path: /usr/src/paperless/data
+                subPath: data
+              - path: /usr/src/paperless/media
+                subPath: media
+              - path: /usr/src/paperless/consume
+                subPath: consume
+              - path: /usr/src/paperless/export
+                subPath: export
+      valkey-config:
+        type: secret
+        name: paperless-valkey
+        advancedMounts:
+          valkey:
+            app:
+              - path: /config
+                readOnly: true
+      valkey-data:
+        forceRename: paperless-valkey
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        storageClass: ceph-block
+        size: 1Gi
+        advancedMounts:
+          valkey:
+            app:
+              - path: /data
+      valkey-tmp:
+        type: emptyDir
+        advancedMounts:
+          valkey:
+            app:
+              - path: /tmp
+    route:
+      app:
+        hostnames:
+          - paperless.cbannister.xyz
+        parentRefs:
+          - name: internal-cbannister-xyz
+            namespace: network
+            kind: ListenerSet
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http

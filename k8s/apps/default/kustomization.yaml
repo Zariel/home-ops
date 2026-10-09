@@ -39,3 +39,4 @@ resources:
   - ./brrpolice/ks.yaml
   - ./meilisearch/ks.yaml
   - ./karakeep/ks.yaml
+  - ./paperless/ks.yaml
