@@ -23,6 +23,11 @@ class ScannerTests(unittest.TestCase):
 
     def run_scan(self, count, status):
         def scanimage(command, **kwargs):
+            self.assertEqual(command[command.index('--device-name') + 1], 'brother5:net1;dev0')
+            self.assertEqual(command[command.index('--source') + 1], 'Automatic Document Feeder(center aligned)')
+            self.assertEqual(command[command.index('--mode') + 1], 'True Gray')
+            self.assertEqual(command[command.index('--resolution') + 1], '300')
+            self.assertNotIn('env', kwargs)
             pattern = next(arg.removeprefix('--batch=') for arg in command if arg.startswith('--batch='))
             for page in range(1, count + 1):
                 Image.new('L', (100, 100), 'white').save(pattern % page, dpi=(300, 300))
@@ -30,7 +35,7 @@ class ScannerTests(unittest.TestCase):
             return subprocess.CompletedProcess(command, status)
 
         with patch.object(scanner.subprocess, 'run', side_effect=scanimage):
-            return scanner.scan(self.spool, self.consume, '10.1.2.70')
+            return scanner.scan(self.spool, self.consume, 'brother5:net1;dev0')
 
     def test_complete_stack_becomes_one_pdf(self):
         self.assertTrue(self.run_scan(2, 7))

@@ -2,7 +2,7 @@ FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-      ca-certificates curl sane-utils sane-airscan python3 python3-img2pdf \
+      ca-certificates curl sane-utils python3 python3-img2pdf \
       libusb-0.1-4 libusb-1.0-0 \
     && curl --fail --location --output /tmp/brscan5.deb \
       https://download.brother.com/welcome/dlf104033/brscan5-1.7.0-0.amd64.deb \

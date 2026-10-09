@@ -8,12 +8,13 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 
 import img2pdf
 
 
-def scan(spool: Path, consume: Path, scanner_ip: str) -> bool:
+def scan(spool: Path, consume: Path, device: str) -> bool:
     spool.mkdir(parents=True, exist_ok=True)
     consume.mkdir(parents=True, exist_ok=True)
     with (spool / 'scan.lock').open('a') as lock:
@@ -30,16 +31,18 @@ def scan(spool: Path, consume: Path, scanner_ip: str) -> bool:
             result = subprocess.run(
                 [
                     'scanimage',
-                    '--device-name', 'airscan:e0:Brother',
-                    '--source', 'ADF',
-                    '--mode', 'Gray',
+                    # Use the Brother device passed by brscan-skey. AirScan
+                    # starts an independent session while the printer is
+                    # waiting for its proprietary scan-to-PC connection.
+                    '--device-name', device,
+                    '--source', 'Automatic Document Feeder(center aligned)',
+                    '--mode', 'True Gray',
                     '--resolution', '300',
                     '--format=tiff',
                     f'--batch={job}/page-%04d.tiff',
                 ],
                 timeout=900,
                 check=False,
-                env={**os.environ, 'SANE_AIRSCAN_DEVICE': f'escl:Brother:http://{scanner_ip}/eSCL'},
             )
             pages = sorted(job.glob('page-*.tiff'))
             # SANE status 7 means the feeder is empty after the last page.
@@ -68,4 +71,6 @@ def scan(spool: Path, consume: Path, scanner_ip: str) -> bool:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-    raise SystemExit(0 if scan(Path('/scan-spool'), Path('/consume'), os.environ['SCANNER_IP']) else 1)
+    if len(sys.argv) < 2 or not sys.argv[1].startswith('brother5:'):
+        raise SystemExit('Expected the Brother SANE device from brscan-skey')
+    raise SystemExit(0 if scan(Path('/scan-spool'), Path('/consume'), sys.argv[1]) else 1)

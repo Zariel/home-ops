@@ -101,7 +101,7 @@ spec:
           scanner:
             image:
               repository: registry.cbannister.xyz/paperless-scanner
-              tag: 2@sha256:94cca7b0bdf2cd3b40d9ee874ed6a65e1b9b17a4e86893332f7e5fd5b2da3226
+              tag: 3@sha256:bb971658b2604ed7d2f9a9849bc44b970e5009c6959e523676a235b1abd7ad18
             env:
               SCANNER_IP: 10.1.2.70
               CALLBACK_IP: 10.1.2.162
