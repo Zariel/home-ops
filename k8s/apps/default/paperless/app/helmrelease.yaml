@@ -92,7 +92,7 @@ spec:
           scanner:
             image:
               repository: registry.cbannister.xyz/paperless-scanner
-              tag: 1@sha256:40f6f6ba04827928f682fabc6d94d67e6e77bc47d1a36edc3da533da23b98cc0
+              tag: 2@sha256:94cca7b0bdf2cd3b40d9ee874ed6a65e1b9b17a4e86893332f7e5fd5b2da3226
             env:
               SCANNER_IP: 10.1.2.70
               CALLBACK_IP: 10.45.0.25
@@ -122,6 +122,9 @@ spec:
               limits:
                 memory: 512Mi
             securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+              runAsNonRoot: true
               allowPrivilegeEscalation: false
               capabilities:
                 drop: [ALL]

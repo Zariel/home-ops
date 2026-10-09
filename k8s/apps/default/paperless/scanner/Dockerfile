@@ -16,7 +16,13 @@ RUN apt-get update \
 
 COPY entrypoint.sh /usr/local/bin/scanner-entrypoint
 COPY scan.py /usr/local/bin/scan-to-paperless
-RUN chmod 755 /usr/local/bin/scanner-entrypoint /usr/local/bin/scan-to-paperless
+RUN chmod 755 /usr/local/bin/scanner-entrypoint /usr/local/bin/scan-to-paperless \
+    && groupadd --gid 568 paperless \
+    && useradd --uid 568 --gid 568 --create-home paperless \
+    && chown paperless:paperless \
+      /opt/brother/scanner/brscan-skey/brscan-skey.config \
+      /etc/opt/brother/scanner/brscan5/brsanenetdevice.cfg
 
+USER 568:568
 EXPOSE 54925/udp
 ENTRYPOINT ["/usr/local/bin/scanner-entrypoint"]
