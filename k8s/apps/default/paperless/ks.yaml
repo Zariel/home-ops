@@ -33,18 +33,3 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 20Gi
-  patches:
-    # Bootstrap an empty volume; enable the component's restore path for recovery.
-    - target:
-        kind: PersistentVolumeClaim
-      patch: |-
-        - op: remove
-          path: /spec/dataSourceRef
-    - target:
-        kind: ReplicationDestination
-      patch: |-
-        apiVersion: volsync.backube/v1alpha1
-        kind: ReplicationDestination
-        metadata:
-          name: unused
-        $patch: delete
