@@ -47,7 +47,8 @@ spec:
               OPENAI_API_KEY: ollama
               OPENAI_TIMEOUT_SEC: 120
               INFERENCE_TEXT_MODEL: qwen3:4b-instruct
-              INFERENCE_CONTEXT_LENGTH: 8192
+              INFERENCE_IMAGE_MODEL: qwen3-vl:4b-instruct
+              INFERENCE_CONTEXT_LENGTH: 4096
               INFERENCE_JOB_TIMEOUT_SEC: 120
               EMBEDDING_ENABLE_AUTO_INDEXING: true
               EMBEDDING_TEXT_MODEL: embeddinggemma:300m
