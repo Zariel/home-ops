@@ -1,4 +1,5 @@
 ---
+automountServiceAccountToken: false
 initContainers:
   - name: dind
     image: docker:29-dind

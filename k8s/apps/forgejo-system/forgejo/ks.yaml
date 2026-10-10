@@ -45,6 +45,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: forgejo-runner-jobs
+      namespace: forgejo-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: external-secrets
@@ -59,6 +61,25 @@ spec:
     name: home-kubernetes
     namespace: flux-system
   wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: forgejo-runner-jobs
+  namespace: forgejo-system
+spec:
+  targetNamespace: forgejo-runners
+  path: ./k8s/apps/forgejo-system/forgejo/runner/jobs
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: true
   interval: 30m
   retryInterval: 1m
   timeout: 5m

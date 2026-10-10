@@ -2,6 +2,8 @@
 cache:
   enabled: true
   dir: /data/cache
+  port: 8082
+  proxy_port: 8081
 container:
   docker_host: "-"
   workdir_parent: shared/workdir
@@ -13,7 +15,7 @@ plugins:
   k8s:
     address: "unix:///plugin/forgejo-runner-k8s.sock"
     options:
-      namespace: forgejo-system
+      namespace: forgejo-runners
       poll_timeout: 10m
 runner:
   capacity: 2

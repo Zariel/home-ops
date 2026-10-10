@@ -14,6 +14,8 @@ spec:
       forgejo-runner:
         type: deployment
         replicas: 1
+        serviceAccount:
+          identifier: forgejo-runner
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
@@ -68,6 +70,8 @@ spec:
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       automountServiceAccountToken: true
+    serviceAccount:
+      forgejo-runner: {}
     persistence:
       config:
         type: configMap
@@ -91,48 +95,3 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
-    rbac:
-      bindings:
-        forgejo-runner:
-          type: RoleBinding
-          roleRef:
-            identifier: forgejo-runner
-          subjects:
-            - identifier: forgejo-runner
-      roles:
-        forgejo-runner:
-          type: Role
-          rules:
-            - apiGroups:
-                - batch
-              resources:
-                - jobs
-              verbs:
-                - create
-                - get
-                - list
-                - watch
-                - delete
-            - apiGroups:
-                - ""
-              resources:
-                - pods
-              verbs:
-                - list
-                - watch
-                - get
-            - apiGroups:
-                - ""
-              resources:
-                - pods/exec
-              verbs:
-                - create
-                - get
-            - apiGroups:
-                - ""
-              resources:
-                - pods/log
-              verbs:
-                - list
-                - watch
-                - get

@@ -1,4 +1,5 @@
 ---
+automountServiceAccountToken: false
 containers:
   - env:
       - name: DEBIAN_FRONTEND
