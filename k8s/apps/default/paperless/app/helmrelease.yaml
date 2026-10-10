@@ -45,27 +45,48 @@ spec:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
               tag: 3.3.0@sha256:6b94799bc769a063b3340cc5847402e626d4d91d29a295a8e747f8e9bead4207
-            # The pinned image has no option to skip English localization.
+            # The pinned image needs local guards for localization and neighbour relevance.
             command: ["/bin/sh", "-ec"]
             args:
               - |
                 python3 - <<'PY'
+                import math
+                import os
                 from pathlib import Path
+
+                min_similarity = float(os.environ["PAPERLESS_AI_SUGGESTION_MIN_SIMILARITY"])
+                if not math.isfinite(min_similarity) or not 0 <= min_similarity <= 1:
+                    raise SystemExit("Suggestion minimum similarity must be between 0 and 1")
 
                 path = Path("/usr/src/paperless/src/paperless_ai/ai_classifier.py")
                 source = path.read_text()
-                original = "        if output_language:\n"
-                replacement = (
-                    "        if output_language and "
-                    "output_language.lower().replace('_', '-').split('-')[0] != 'en':\n"
-                )
-                if replacement not in source:
-                    if source.count(original) != 1:
-                        raise SystemExit("Cannot locate Paperless localization guard; review image compatibility")
-                    source = source.replace(original, replacement, 1)
-                    compile(source, str(path), "exec")
-                    path.write_text(source)
-                print("English AI localization disabled")
+                patches = [
+                    (
+                        "English localization",
+                        "        if output_language:\n",
+                        "        if output_language and "
+                        "output_language.lower().replace('_', '-').split('-')[0] != 'en':\n",
+                    ),
+                    (
+                        "suggestion relevance",
+                        "            similar_documents = _node_document_weights(nodes)\n",
+                        "            # Reject weak chunks before aggregating scores for candidates and context.\n"
+                        "            nodes = [\n"
+                        "                node\n"
+                        "                for node in nodes\n"
+                        f"                if node.score is not None and node.score >= {min_similarity!r}\n"
+                        "            ]\n"
+                        "            similar_documents = _node_document_weights(nodes)\n",
+                    ),
+                ]
+                for name, original, replacement in patches:
+                    if replacement not in source:
+                        if source.count(original) != 1:
+                            raise SystemExit(f"Cannot locate Paperless {name} guard; review image compatibility")
+                        source = source.replace(original, replacement, 1)
+                compile(source, str(path), "exec")
+                path.write_text(source)
+                print(f"English AI localization disabled; suggestion minimum similarity: {min_similarity}")
                 PY
                 exec /init
             env:
@@ -100,6 +121,8 @@ spec:
               PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "ollama"
               PAPERLESS_AI_LLM_EMBEDDING_MODEL: "embeddinggemma:300m"
               PAPERLESS_AI_LLM_EMBEDDING_ENDPOINT: "http://ash.cbannister.casa:11434"
+              # Local guard; invalidate AI suggestion caches when changing the cutoff.
+              PAPERLESS_AI_SUGGESTION_MIN_SIMILARITY: "0.65"
             envFrom:
               - secretRef:
                   name: paperless
