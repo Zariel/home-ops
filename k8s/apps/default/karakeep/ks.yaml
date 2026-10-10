@@ -22,6 +22,7 @@ spec:
     substitute:
       APP: karakeep
   prune: true
+  suspend: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
