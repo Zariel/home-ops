@@ -97,6 +97,9 @@ spec:
               PAPERLESS_AI_LLM_MODEL: "qwen3:4b-instruct"
               PAPERLESS_AI_LLM_CONTEXT_SIZE: "8192"
               PAPERLESS_AI_LLM_REQUEST_TIMEOUT: "180"
+              PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "ollama"
+              PAPERLESS_AI_LLM_EMBEDDING_MODEL: "embeddinggemma:300m"
+              PAPERLESS_AI_LLM_EMBEDDING_ENDPOINT: "http://ash.cbannister.casa:11434"
             envFrom:
               - secretRef:
                   name: paperless
