@@ -45,7 +45,7 @@ spec:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
               tag: 3.3.0@sha256:6b94799bc769a063b3340cc5847402e626d4d91d29a295a8e747f8e9bead4207
-            # The pinned image needs local guards for localization and neighbour relevance.
+            # Customize the pinned image's AI extraction and retrieval.
             command: ["/bin/sh", "-ec"]
             args:
               - |
@@ -58,17 +58,24 @@ spec:
                 if not math.isfinite(min_similarity) or not 0 <= min_similarity <= 1:
                     raise SystemExit("Suggestion minimum similarity must be between 0 and 1")
 
+                def replace_once(source, original, replacement, name):
+                    if replacement in source:
+                        return source
+                    if source.count(original) != 1:
+                        raise SystemExit(f"Cannot locate Paperless {name}; review image compatibility")
+                    return source.replace(original, replacement, 1)
+
                 path = Path("/usr/src/paperless/src/paperless_ai/ai_classifier.py")
                 source = path.read_text()
                 patches = [
                     (
-                        "English localization",
+                        "English localization guard",
                         "        if output_language:\n",
                         "        if output_language and "
                         "output_language.lower().replace('_', '-').split('-')[0] != 'en':\n",
                     ),
                     (
-                        "suggestion relevance",
+                        "suggestion relevance guard",
                         "            similar_documents = _node_document_weights(nodes)\n",
                         "            # Reject weak chunks before aggregating scores for candidates and context.\n"
                         "            nodes = [\n"
@@ -80,13 +87,43 @@ spec:
                     ),
                 ]
                 for name, original, replacement in patches:
-                    if replacement not in source:
-                        if source.count(original) != 1:
-                            raise SystemExit(f"Cannot locate Paperless {name} guard; review image compatibility")
-                        source = source.replace(original, replacement, 1)
-                compile(source, str(path), "exec")
-                path.write_text(source)
-                print(f"English AI localization disabled; suggestion minimum similarity: {min_similarity}")
+                    source = replace_once(source, original, replacement, name)
+                updates = [(path, source)]
+
+                path = Path("/usr/src/paperless/src/paperless_ai/base_model.py")
+                source = path.read_text()
+                for field in ("tags", "correspondents", "document_types", "storage_paths", "dates"):
+                    original = f"    {field}: list[str] = Field(\n        default_factory=list,\n        max_length="
+                    replacement = f"    {field}: list[str] = Field(\n        max_length="
+                    source = replace_once(source, original, replacement, f"{field} response field")
+                updates.append((path, source))
+
+                path = Path("/usr/src/paperless/src/paperless_ai/prompts/classification.j2")
+                source = path.read_text()
+                original = "Analyze the following document and fill in these fields:\n"
+                rules = (
+                    "Return one JSON object with all six requested fields. "
+                    "Use arrays for tags, correspondents, document_types, storage_paths, and dates. "
+                    "Extract only information supported by the document text. "
+                    "For correspondents, identify one sender or issuing organisation from the letterhead, "
+                    "signature, or explicit statement in the document. "
+                    "If no sender or recipient is stated, return correspondents: []. "
+                    "Do not invent one or use placeholders such as Unknown sender. "
+                    "Return dates: [] if no calendar date is written in the document; never invent or infer a date. "
+                    "Give at most one best document type. "
+                    "Use [] for any other list field where the document provides no suitable value. "
+                    "Do not copy example names from instructions.\n\n"
+                )
+                source = replace_once(source, original, rules + original, "classification prompt")
+                updates.append((path, source))
+
+                # Validate every source before writing or starting Paperless.
+                for path, source in updates:
+                    if path.suffix == ".py":
+                        compile(source, str(path), "exec")
+                for path, source in updates:
+                    path.write_text(source)
+                print(f"AI extraction requires all core fields; English localization disabled; minimum similarity: {min_similarity}")
                 PY
                 exec /init
             env:
