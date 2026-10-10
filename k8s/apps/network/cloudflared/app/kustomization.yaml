@@ -9,6 +9,7 @@ labels:
 resources:
   - dnsendpoint.yaml
   - deployment.yaml
+  - networkpolicy.yaml
   - service.yaml
   - servicemonitor.yaml
   - ./externalsecret.yaml
