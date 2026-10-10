@@ -45,6 +45,29 @@ spec:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
               tag: 3.3.0@sha256:6b94799bc769a063b3340cc5847402e626d4d91d29a295a8e747f8e9bead4207
+            # The pinned image has no option to skip English localization.
+            command: ["/bin/sh", "-ec"]
+            args:
+              - |
+                python3 - <<'PY'
+                from pathlib import Path
+
+                path = Path("/usr/src/paperless/src/paperless_ai/ai_classifier.py")
+                source = path.read_text()
+                original = "        if output_language:\n"
+                replacement = (
+                    "        if output_language and "
+                    "output_language.lower().replace('_', '-').split('-')[0] != 'en':\n"
+                )
+                if replacement not in source:
+                    if source.count(original) != 1:
+                        raise SystemExit("Cannot locate Paperless localization guard; review image compatibility")
+                    source = source.replace(original, replacement, 1)
+                    compile(source, str(path), "exec")
+                    path.write_text(source)
+                print("English AI localization disabled")
+                PY
+                exec /init
             env:
               TZ: Europe/London
               USERMAP_UID: 568
@@ -74,7 +97,6 @@ spec:
               PAPERLESS_AI_LLM_MODEL: "qwen3:4b-instruct"
               PAPERLESS_AI_LLM_CONTEXT_SIZE: "8192"
               PAPERLESS_AI_LLM_REQUEST_TIMEOUT: "180"
-              PAPERLESS_AI_LLM_OUTPUT_LANGUAGE: "en"
             envFrom:
               - secretRef:
                   name: paperless
