@@ -32,6 +32,13 @@ sources:
     mode: tcp
     address: 0.0.0.0:6001
 
+  pve_netconsole:
+    type: socket
+    mode: udp
+    address: 0.0.0.0:6666
+    decoding:
+      codec: bytes
+
 # Transformations
 transforms:
   kubernetes_remap:
@@ -221,12 +228,24 @@ transforms:
         .timestamp = now()
       }
 
+  vlogs_pve_netconsole_tag:
+    type: remap
+    inputs:
+      - pve_netconsole
+    source: |-
+      .source_stream = "proxmox-netconsole"
+      .host = "pve"
+      .service = "kernel"
+      .timestamp = now()
+      .msg = .message
+
   vlogs_common_normalize:
     type: remap
     inputs:
       - vlogs_kubernetes_tag
       - vlogs_vyos_tag
       - vlogs_katl_tag
+      - vlogs_pve_netconsole_tag
     source: |-
       if !exists(.node) && exists(.node_name) {
         .node = .node_name

@@ -98,6 +98,9 @@ spec:
       - name: nixos
         containerPort: 6004
         protocol: TCP
+      - name: netconsole
+        containerPort: 6666
+        protocol: UDP
 
     livenessProbe:
       failureThreshold: 3
@@ -147,6 +150,10 @@ spec:
           port: 6004
           targetPort: 6004
           protocol: TCP
+        - name: netconsole
+          port: 6666
+          targetPort: 6666
+          protocol: UDP
 
     # Disable headless service to avoid duplicate exposure and DNS/LB annotations leaking to it
     serviceHeadless:
