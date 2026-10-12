@@ -17,4 +17,3 @@ resources:
   - kube-state-metrics/ks.yaml
   - node-exporter/ks.yaml
   - snmp-exporter/ks.yaml
-  - cleanup-drm-exporter-scrape.yaml
