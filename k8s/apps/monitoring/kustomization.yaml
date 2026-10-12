@@ -16,4 +16,15 @@ resources:
   - alertmanager/ks.yaml
   - kube-state-metrics/ks.yaml
   - node-exporter/ks.yaml
+  - drm-exporter/ks.yaml
   - snmp-exporter/ks.yaml
+patches:
+  - target:
+      kind: Namespace
+    patch: |-
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: not-used
+        labels:
+          resource.kubernetes.io/admin-access: "true"
