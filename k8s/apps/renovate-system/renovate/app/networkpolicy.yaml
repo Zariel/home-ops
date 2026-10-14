@@ -62,6 +62,17 @@ spec:
   endpointSelector:
     matchLabels:
       app: renovate-operator
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "8081"
+              protocol: TCP
   egress:
     - toEntities:
         - kube-apiserver

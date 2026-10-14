@@ -16,6 +16,15 @@ spec:
       mode: template
     rbac:
       ownNamespaceOnly: true
+    route:
+      enabled: true
+      hostnames:
+        - renovate.cbannister.xyz
+      parentRefs:
+        - name: internal-cbannister-xyz
+          namespace: network
+          kind: ListenerSet
+          sectionName: https
     policy:
       enabled: true
       allowedHosts:
