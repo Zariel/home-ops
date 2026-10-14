@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: renovate-operator
+  namespace: renovate-system
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: renovate-operator
+  values:
+    fullnameOverride: renovate-operator
+    crd:
+      mode: template
+    rbac:
+      ownNamespaceOnly: true
+    policy:
+      enabled: true
+      allowedHosts:
+        - api.github.com
+        - github.com
+        - git.cbannister.xyz
+      allowedServiceAccounts:
+        - renovate-runner
+    config:
+      globalParallelismLimit: 2
+      defaultJobActiveDeadlineSeconds: 1800
+      jobTTLSecondsAfterFinished: 86400
+      logStorage:
+        mode: memory
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
