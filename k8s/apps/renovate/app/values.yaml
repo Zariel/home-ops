@@ -1,0 +1,43 @@
+cronjob:
+  schedule: "49 * * * *"
+  timeZone: Europe/London
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+  # Jobs must finish before their GitHub App installation token expires.
+  activeDeadlineSeconds: 1800
+  jobBackoffLimit: 1
+image:
+  useFull: true
+serviceAccount:
+  name: renovate
+renovate:
+  persistence:
+    cache:
+      enabled: true
+      storageClass: ceph-block
+      storageSize: 2Gi
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+env:
+  LOG_LEVEL: debug
+  LOG_FORMAT: json
+  RENOVATE_INTERNAL_CHECKS_FILTER: strict
+  RENOVATE_REPOSITORY_CACHE: enabled
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 4Gi

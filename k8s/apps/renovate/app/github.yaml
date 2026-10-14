@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: renovate-github
+  namespace: renovate
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: renovate
+  valuesFrom:
+    - kind: ConfigMap
+      name: renovate-values
+  values:
+    fullnameOverride: renovate-github
+    renovate:
+      config: |
+        {
+          "platform": "github",
+          "platformCommit": true,
+          "repositories": ["Zariel/home-ops"],
+          "hostRules": [
+            {"matchHost": "https://git.cbannister.xyz/", "allowInternal": true},
+            {"matchHost": "https://registry.cbannister.xyz/", "allowInternal": true}
+          ]
+        }
+    envList:
+      - name: RENOVATE_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: renovate-github-token
+            key: token
