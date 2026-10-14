@@ -28,3 +28,16 @@ spec:
           protocol: TCP
         - port: 443
           protocol: TCP
+    # Internal HTTP(S) uses Envoy's pod ports after service translation.
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: network
+          podSelector:
+            matchLabels:
+              gateway.envoyproxy.io/owning-gateway-name: internal
+      ports:
+        - port: 10080
+          protocol: TCP
+        - port: 10443
+          protocol: TCP
