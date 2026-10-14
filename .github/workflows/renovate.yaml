@@ -16,7 +16,7 @@ on:
         default: false
         required: false
   schedule:
-    - cron: "0 * * * *" # Every hour
+    - cron: "49 * * * *" # Every hour at :49
   push:
     branches:
       - main
