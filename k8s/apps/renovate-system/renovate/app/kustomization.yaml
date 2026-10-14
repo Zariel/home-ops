@@ -16,6 +16,5 @@ configMapGenerator:
       - LOG_LEVEL=debug
       - LOG_FORMAT=json
       - RENOVATE_INTERNAL_CHECKS_FILTER=strict
-      - RENOVATE_DRY_RUN=full
 generatorOptions:
   disableNameSuffixHash: true
