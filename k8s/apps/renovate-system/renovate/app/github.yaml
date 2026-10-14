@@ -1,0 +1,19 @@
+---
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: renovate-github
+  namespace: renovate-system
+spec:
+  templateRef:
+    name: renovate
+  schedule: "CRON_TZ=Europe/London 19,49 * * * *"
+  provider:
+    name: github
+  discoveryFilters:
+    - Zariel/home-ops
+  secretRef: renovate-github-token
+  renovateConfig:
+    fileName: config.json
+    inline: |
+      {"platformCommit": "enabled"}

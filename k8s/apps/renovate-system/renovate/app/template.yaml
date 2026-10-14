@@ -1,0 +1,34 @@
+---
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJobTemplate
+metadata:
+  name: renovate
+  namespace: renovate-system
+spec:
+  image: ghcr.io/renovatebot/renovate:44.158.3-full
+  parallelism: 1
+  serviceAccount:
+    name: renovate-runner
+    automountServiceAccountToken: false
+  metadata:
+    labels:
+      app.kubernetes.io/name: renovate
+  extraEnvFrom:
+    - configMapRef:
+        name: renovate-env
+    - secretRef:
+        name: renovate-registry-auth
+  securityContext:
+    pod:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    container:
+      runAsUser: 1000
+      runAsGroup: 1000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 4Gi

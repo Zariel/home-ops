@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: renovate-system
+resources:
+  - externalsecret.yaml
+  - serviceaccount.yaml
+  - networkpolicy.yaml
+  - template.yaml
+  - github.yaml
+  - forgejo.yaml
+configMapGenerator:
+  - name: renovate-env
+    literals:
+      - LOG_LEVEL=debug
+      - LOG_FORMAT=json
+      - RENOVATE_INTERNAL_CHECKS_FILTER=strict
+      - RENOVATE_DRY_RUN=full
+generatorOptions:
+  disableNameSuffixHash: true

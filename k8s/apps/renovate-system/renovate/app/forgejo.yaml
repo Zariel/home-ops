@@ -1,0 +1,24 @@
+---
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: renovate-forgejo
+  namespace: renovate-system
+spec:
+  templateRef:
+    name: renovate
+  schedule: "CRON_TZ=Europe/London 49 * * * *"
+  provider:
+    name: forgejo
+    endpoint: https://git.cbannister.xyz/api/v1/
+  secretRef: renovate-forgejo-token
+  extraEnv:
+    - name: RENOVATE_GITHUB_COM_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: renovate-github-token
+          key: GITHUB_COM_TOKEN
+  renovateConfig:
+    fileName: config.json
+    inline: |
+      {"onboardingConfig": {"extends": ["config:recommended"]}}
