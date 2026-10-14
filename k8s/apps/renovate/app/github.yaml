@@ -19,7 +19,7 @@ spec:
       config: |
         {
           "platform": "github",
-          "platformCommit": true,
+          "platformCommit": "enabled",
           "repositories": ["Zariel/home-ops"],
           "hostRules": [
             {"matchHost": "https://git.cbannister.xyz/", "allowInternal": true},

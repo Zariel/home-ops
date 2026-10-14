@@ -35,6 +35,9 @@ env:
   LOG_FORMAT: json
   RENOVATE_INTERNAL_CHECKS_FILTER: strict
   RENOVATE_REPOSITORY_CACHE: enabled
+envFrom:
+  - secretRef:
+      name: renovate-registry-auth
 resources:
   requests:
     cpu: 100m
