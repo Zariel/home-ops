@@ -33,6 +33,8 @@
       matchDatasources: ['docker'],
       matchPackageNames: ['ghcr.io/netbox-community/netbox-chart/netbox'],
       schedule: ['* 5 * * 1'],
+      automergeSchedule: ['* 5 * * 1'],
+      platformAutomerge: false,
       updateNotScheduled: false,
     },
     {
