@@ -23,5 +23,8 @@ spec:
     inline: |
       {
         "onboardingConfig": {"extends": ["config:recommended"]},
-        "allowedCommands": ["^\\.renovate/scripts/update-catppuccin-gitea\\.sh$"]
+        "allowedCommands": [
+          "^\\.renovate/scripts/update-catppuccin-gitea\\.sh$",
+          "^nix --extra-experimental-features 'nix-command flakes' flake update katl$"
+        ]
       }

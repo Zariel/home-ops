@@ -12,6 +12,15 @@
     },
     {
       "customType": "regex",
+      "description": ["Katl CLI release pinned in the development flake"],
+      "managerFilePatterns": ["/^flake\\.nix$/"],
+      "matchStrings": ["katl\\.url = \"github:katl-dev/katl/v(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-z]+\\.[0-9]+)?)\""],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "katl-dev/katl",
+      "extractVersionTemplate": "^v(?<version>.*)$"
+    },
+    {
+      "customType": "regex",
       "description": ["Upstream Kubernetes version published for Katl"],
       "managerFilePatterns": ["/^katl/cluster\\.yaml$/"],
       "matchStrings": ["kubernetes:\\n    version: (?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)"],
@@ -34,6 +43,23 @@
     }
   ],
   "packageRules": [
+    {
+      "description": "Track Katl release tags with the custom manager instead of commit updates",
+      "matchManagers": ["nix"],
+      "matchPackageNames": ["https://github.com/katl-dev/katl"],
+      "enabled": false
+    },
+    {
+      "description": "Refresh the Katl lock entry after updating release pins",
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["katl-dev/katl"],
+      "postUpgradeTasks": {
+        "commands": ["nix --extra-experimental-features 'nix-command flakes' flake update katl"],
+        "installTools": {"nix": {}},
+        "fileFilters": ["flake.lock"],
+        "executionMode": "branch"
+      }
+    },
     {
       "description": ["Refresh vendored Forgejo Catppuccin theme CSS"],
       "matchDatasources": ["github-releases"],

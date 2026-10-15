@@ -177,10 +177,11 @@ task katl:kubernetes:upgrade -- --plan
 task katl:kubernetes:upgrade
 ```
 
-Renovate proposes updates to `katl/version` and the Kubernetes version in
-`cluster.yaml`; these source updates do not themselves mutate nodes. Review
-minor-version upgrade constraints and apply through Katl. OS upgrades remain
-operator-driven; there is no automatic in-cluster OS upgrader.
+Renovate groups updates to `katl/version` and the Katl input in `flake.nix`,
+refreshing the Katl entry in `flake.lock` in the same PR. It also tracks the
+Kubernetes version in `cluster.yaml`; these source updates do not themselves
+mutate nodes. Review minor-version upgrade constraints and apply through Katl.
+OS upgrades remain operator-driven; there is no automatic in-cluster OS upgrader.
 
 `katl:cluster:upgrade` uses the CLI from the Katl flake input and upgrades to
 the explicitly supplied release. It plans all nodes before starting, then

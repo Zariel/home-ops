@@ -21,6 +21,9 @@
     '**/resources/**',
     '**/ansible/**',
   ],
+  nix: {
+    enabled: true,
+  },
   packageRules: [
     {
       description: 'Keep VectorChord images compatible with the PostgreSQL major version',

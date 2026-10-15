@@ -2,6 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
+      "description": ["Keep the Katl OS artifacts and development CLI on the same release"],
+      "groupName": "Katl",
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["katl-dev/katl"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "description": ["1Password Connect API and sync images are released together"],
       "groupName": "1Password Connect",
       "matchDatasources": ["docker"],

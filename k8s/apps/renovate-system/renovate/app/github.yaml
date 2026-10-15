@@ -19,5 +19,8 @@ spec:
       {
         "platformCommit": "enabled",
         "platformAutomerge": false,
-        "allowedCommands": ["^\\.renovate/scripts/update-catppuccin-gitea\\.sh$"]
+        "allowedCommands": [
+          "^\\.renovate/scripts/update-catppuccin-gitea\\.sh$",
+          "^nix --extra-experimental-features 'nix-command flakes' flake update katl$"
+        ]
       }
