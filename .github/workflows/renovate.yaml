@@ -1,0 +1,30 @@
+---
+name: Renovate Config
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .renovaterc.json5
+      - .renovate/**
+      - .github/workflows/renovate.yaml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Renovate config
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/renovatebot/renovate:44.164.2-full
+      options: --user 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Validate repository config and presets
+        run: renovate-config-validator --strict --no-global .renovaterc.json5 .renovate/*.json5
