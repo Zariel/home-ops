@@ -50,6 +50,18 @@
       "separateMinorPatch": true
     },
     {
+      "description": ["Cilium bootstrap and Flux charts follow the same release line"],
+      "groupName": "Cilium",
+      "matchDatasources": ["helm", "docker"],
+      "matchPackageNames": [
+        "cilium",
+        "quay.io/cilium/charts/cilium"
+      ],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "description": ["CoreDNS Group"],
       "groupName": "CoreDNS",
       "matchPackageNames": ["coredns", "ghcr.io/coredns/charts/coredns"],
