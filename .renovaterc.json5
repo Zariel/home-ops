@@ -46,6 +46,7 @@
     },
     {
       matchPackageNames: ["home-operations/flate", "home-operations/flate/action"],
+      matchUpdateTypes: ["minor", "patch", "digest"],
       minimumReleaseAge: "0 days",
       automerge: true,
       automergeType: "pr",
