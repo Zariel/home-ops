@@ -13,9 +13,10 @@
       "matchPackageNames": ["/kopia/"]
     },
     {
+      "description": "Keep CNPG on PostgreSQL 18 while allowing maintenance releases",
       "matchDatasources": ["docker"],
-      "allowedVersions": "<=16",
-      "matchPackageNames": ["/postgresql/"]
+      "allowedVersions": "<19",
+      "matchPackageNames": ["ghcr.io/cloudnative-pg/postgresql"]
     }
   ]
 }
