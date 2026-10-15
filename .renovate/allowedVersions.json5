@@ -2,6 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
+      "description": "Only allow stable Ceph releases (x.2.z)",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["quay.io/ceph/ceph"],
+      "allowedVersions": "/^v?\\d+\\.2\\.\\d+$/"
+    },
+    {
       "matchDatasources": ["docker"],
       "allowedVersions": "<999",
       "matchPackageNames": ["/kopia/"]
