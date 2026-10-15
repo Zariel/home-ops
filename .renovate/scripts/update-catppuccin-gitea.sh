@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-app_dir="k8s/apps/default/forgejo/app"
+app_dir="k8s/apps/forgejo-system/forgejo/app"
 kustomization="${app_dir}/kustomization.yaml"
 theme_file="${app_dir}/themes/theme-catppuccin-mocha-lavender.css"
 theme_name="$(basename "${theme_file}")"

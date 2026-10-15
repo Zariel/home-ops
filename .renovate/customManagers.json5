@@ -1,8 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "allowedCommands": [
-    "^\\.renovate/scripts/update-catppuccin-gitea\\.sh$"
-  ],
   "customManagers": [
     {
       "customType": "regex",
@@ -46,7 +43,7 @@
           ".renovate/scripts/update-catppuccin-gitea.sh"
         ],
         "fileFilters": [
-          "k8s/apps/default/forgejo/app/themes/theme-catppuccin-mocha-lavender.css"
+          "k8s/apps/forgejo-system/forgejo/app/themes/theme-catppuccin-mocha-lavender.css"
         ],
         "executionMode": "update"
       }

@@ -21,4 +21,7 @@ spec:
   renovateConfig:
     fileName: config.json
     inline: |
-      {"onboardingConfig": {"extends": ["config:recommended"]}}
+      {
+        "onboardingConfig": {"extends": ["config:recommended"]},
+        "allowedCommands": ["^\\.renovate/scripts/update-catppuccin-gitea\\.sh$"]
+      }

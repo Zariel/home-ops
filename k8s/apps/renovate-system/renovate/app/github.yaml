@@ -16,4 +16,7 @@ spec:
   renovateConfig:
     fileName: config.json
     inline: |
-      {"platformCommit": "enabled"}
+      {
+        "platformCommit": "enabled",
+        "allowedCommands": ["^\\.renovate/scripts/update-catppuccin-gitea\\.sh$"]
+      }
