@@ -22,6 +22,13 @@
   ],
   packageRules: [
     {
+      description: 'Keep VectorChord images compatible with the PostgreSQL major version',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/tensorchord/vchord-scratch'],
+      matchCurrentValue: '/^pg\\d+-v/',
+      versioning: 'regex:^(?<compatibility>pg\\d+)-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$',
+    },
+    {
       description: 'Limit NetBox updates to the weekly Monday maintenance window',
       matchDatasources: ['docker'],
       matchPackageNames: ['ghcr.io/netbox-community/netbox-chart/netbox'],
