@@ -28,7 +28,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: app
-          image: solidinvoice/solidinvoice:3.1.0@sha256:a25dd400a2ea041aeccc8d56986b2dc3a38cd886f1377b77b87e9c7d66f53572
+          image: solidinvoice/solidinvoice:3.1.1@sha256:b5e0560e67ef52b01097eec3e3c376bfab5b19dccbffaebe1945ac30d7e42e20
           env:
             - name: HOME
               value: /tmp
