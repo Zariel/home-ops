@@ -52,5 +52,11 @@
       automergeType: "pr",
       ignoreTests: false,
     },
+    {
+      description: 'Require review for potentially breaking 0.x minor updates',
+      matchUpdateTypes: ['minor'],
+      matchCurrentVersion: '/^v?0\\./',
+      automerge: false,
+    },
   ],
 }
