@@ -8,6 +8,7 @@
     'github>zariel/home-ops//.renovate/customManagers.json5',
     'github>zariel/home-ops//.renovate/grafanaDashboards.json5',
     'github>zariel/home-ops//.renovate/groups.json5',
+    'github>zariel/home-ops//.renovate/labels.json5',
     ':semanticCommits',
     ':timezone(Europe/London)',
   ],
