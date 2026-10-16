@@ -1,0 +1,108 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless-gpt
+  namespace: default
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: paperless-gpt
+  driftDetection:
+    mode: enabled
+  values:
+    controllers:
+      paperless-gpt:
+        # Settings and the SQLite history share a single RWO volume.
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+        containers:
+          app:
+            image:
+              repository: ghcr.io/icereed/paperless-gpt
+              tag: v0.31.0@sha256:d668941a829552cc0eddbc7c22506b3480dfbf61bd0d6eae881ad9fcfe2de70c
+            env:
+              TZ: Europe/London
+              PAPERLESS_BASE_URL: http://paperless-app.default.svc.cluster.local:8000
+              PAPERLESS_PUBLIC_URL: https://paperless.cbannister.xyz
+              LLM_PROVIDER: ollama
+              LLM_MODEL: qwen3:4b-instruct
+              LLM_LANGUAGE: English
+              OLLAMA_HOST: http://ash.cbannister.casa:11434
+              OLLAMA_CONTEXT_LENGTH: "8192"
+              OLLAMA_TIMEOUT_SECONDS: "180"
+              TOKEN_LIMIT: "6000"
+              OCR_PROVIDER: llm
+              VISION_LLM_PROVIDER: ollama
+              VISION_LLM_MODEL: qwen3-vl:4b-instruct
+              # Background processing is opt-in through these tags.
+              MANUAL_TAG: paperless-gpt
+              AUTO_TAG: paperless-gpt-auto
+              AUTO_OCR_TAG: paperless-gpt-ocr-auto
+            envFrom:
+              - secretRef:
+                  name: paperless-gpt
+            probes:
+              liveness: &probe
+                enabled: true
+                type: HTTP
+                path: /api/version
+              readiness: *probe
+              startup:
+                enabled: true
+                type: HTTP
+                path: /api/version
+                spec:
+                  periodSeconds: 5
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+    service:
+      app:
+        controller: paperless-gpt
+        ports:
+          http:
+            port: 8080
+    persistence:
+      data:
+        existingClaim: paperless-gpt
+        globalMounts:
+          - path: /app/config
+            subPath: config
+          - path: /app/prompts
+            subPath: prompts
+          - path: /app/db
+            subPath: db
+      tmp:
+        type: emptyDir
+    route:
+      app:
+        hostnames:
+          - paperless-gpt.cbannister.xyz
+        parentRefs:
+          - name: internal-cbannister-xyz
+            namespace: network
+            kind: ListenerSet
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http

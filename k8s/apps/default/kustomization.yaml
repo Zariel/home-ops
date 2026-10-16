@@ -40,3 +40,4 @@ resources:
   - ./meilisearch/ks.yaml
   - ./karakeep/ks.yaml
   - ./paperless/ks.yaml
+  - ./paperless-gpt/ks.yaml
