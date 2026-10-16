@@ -13,7 +13,6 @@ resources:
   - reloader/ks.yaml
   - intel-resource-driver/ks.yaml
   - descheduler/ks.yaml
-  - irqbalance/ks.yaml
   - multus/ks.yaml
   - generic-device-plugin/ks.yaml
   # - vrf-mgmt/ks.yaml

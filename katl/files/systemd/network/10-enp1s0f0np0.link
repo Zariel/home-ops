@@ -7,3 +7,7 @@ RxBufferSize=8192
 TxBufferSize=8192
 CombinedChannels=20
 GenericReceiveOffloadUDPForwarding=no
+UseAdaptiveRxCoalesce=yes
+UseAdaptiveTxCoalesce=yes
+RxCoalesceSec=16us
+TxCoalesceSec=16us
