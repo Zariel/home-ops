@@ -34,6 +34,16 @@ match the PCI slots implied by the existing predictable interface names; verify
 those slots and the generated names from the installer before committing to a
 bare-metal install.
 
+Katl also owns Mellanox interrupt coalescing through the two `.link` files.
+The enabled `mellanox-queue-tuning.service` depends on both physical NIC devices
+and waits for networkd to configure them, without requiring carrier or IP
+connectivity. It then tunes their existing FQ queues before kubelet starts:
+`flow_limit 1000`, `buckets 32768`, and `horizon 2s`. The latter two match
+Cilium's bandwidth manager so it retains the queues and their flow limits.
+The service discovers queue parents instead of assuming fixed handles or queue
+counts. `bond0` keeps its `noqueue` discipline. Changes to `.link` files take
+effect on the next boot.
+
 Static `/etc/hosts` entries preserve resolution of the three node names.
 DNS remains `172.53.53.53`; Katl's native unit management enables
 systemd-timesyncd, which uses `10.254.254.1`. It also masks

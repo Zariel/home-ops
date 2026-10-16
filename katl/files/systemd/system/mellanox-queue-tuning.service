@@ -1,0 +1,29 @@
+[Unit]
+Description=Tune Mellanox transmit queues
+Requires=sys-subsystem-net-devices-enp1s0f0np0.device sys-subsystem-net-devices-enp1s0f1np1.device
+After=sys-subsystem-net-devices-enp1s0f0np0.device sys-subsystem-net-devices-enp1s0f1np1.device systemd-networkd.service
+Before=kubelet.service
+
+[Service]
+Type=oneshot
+# Wait for configuration, including the backup port without carrier, not connectivity.
+ExecStartPre=/usr/lib/systemd/systemd-networkd-wait-online --interface=enp1s0f0np0:off --interface=enp1s0f1np1:off --timeout=60
+# Match Cilium's FQ horizon and buckets so it retains these queues at startup.
+# Change the existing leaves to preserve the MQ root, pacing and queue counters.
+ExecStart=/usr/bin/bash -euc '\
+  for dev in enp1s0f0np0 enp1s0f1np1; do \
+    qdiscs="$$(tc qdisc show dev "$${dev}")"; \
+    count=0; \
+    while read -r object kind _handle label parent _rest; do \
+      if [[ "$${object}" == qdisc && "$${kind}" == fq && "$${label}" == parent ]]; then \
+        tc qdisc change dev "$${dev}" parent "$${parent}" fq flow_limit 1000 buckets 32768 horizon 2s; \
+        count=$$((count + 1)); \
+      fi; \
+    done <<< "$${qdiscs}"; \
+    if (( count == 0 )); then echo "No FQ queues found on $${dev}" >&2; exit 1; fi; \
+    echo "$${dev}: tuned $${count} FQ queues"; \
+  done'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

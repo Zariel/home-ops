@@ -47,6 +47,7 @@ spec:
     hostConfiguration:
       enabledUnits:
         - systemd-timesyncd.service
+        - mellanox-queue-tuning.service
       maskedUnits:
         - bluetooth.service
       fileSets:
