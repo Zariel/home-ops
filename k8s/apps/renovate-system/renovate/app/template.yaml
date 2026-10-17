@@ -19,13 +19,14 @@ spec:
     - secretRef:
         name: renovate-registry-auth
   securityContext:
+    # Match the image user so Nix can resolve and use its home directory.
     pod:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
+      runAsUser: 12021
+      runAsGroup: 12021
+      fsGroup: 12021
     container:
-      runAsUser: 1000
-      runAsGroup: 1000
+      runAsUser: 12021
+      runAsGroup: 12021
   resources:
     requests:
       cpu: 100m
