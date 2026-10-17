@@ -125,17 +125,29 @@ switch_primary() {
 }
 
 # Validate every upgrade while all nodes and workloads are still available.
+upgrade_nodes=()
 for node in "${nodes[@]}"; do
+  node_state=$(kubectl get "node/$node" -o json)
+  installed_os=$(jq -er '.status.nodeInfo.osImage' <<<"$node_state")
+  if [[ $installed_os == "KatlOS $version" ]]; then
+    echo "Skipping $node: already running KatlOS $version"
+    continue
+  fi
+
   kubectl wait "node/$node" --for=condition=Ready --timeout=30s
-  if ! kubectl get "node/$node" -o json | jq -e '.spec.unschedulable != true' >/dev/null; then
+  if ! jq -e '.spec.unschedulable != true' <<<"$node_state" >/dev/null; then
     echo "$node is cordoned; inspect and recover it before upgrading the cluster." >&2
     exit 1
   fi
   "$katlctl" node upgrade "$node" --version "$version" --config "$config" --plan
+  upgrade_nodes+=("$node")
 done
+if ((${#upgrade_nodes[@]} == 0)); then
+  exit 0
+fi
 wait_healthy
 
-for node in "${nodes[@]}"; do
+for node in "${upgrade_nodes[@]}"; do
   echo "Upgrading $node to $version"
   wait_healthy
   switch_primary "$node"

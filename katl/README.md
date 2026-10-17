@@ -184,7 +184,9 @@ mutate nodes. Review minor-version upgrade constraints and apply through Katl.
 OS upgrades remain operator-driven; there is no automatic in-cluster OS upgrader.
 
 `katl:cluster:upgrade` uses the CLI from the Katl flake input and upgrades to
-the explicitly supplied release. It plans all nodes before starting, then
+the explicitly supplied release. Nodes whose reported OS image already matches
+the target release are skipped before planning, primary switchovers, or drains.
+It plans all remaining nodes before starting, then
 checks every CephCluster and CNPG Cluster before each node and after recovery.
 The checks require Ceph `HEALTH_OK`, all OSDs up and in, clean placement groups,
 CNPG Ready with all instances healthy, working archiving and a successful backup
