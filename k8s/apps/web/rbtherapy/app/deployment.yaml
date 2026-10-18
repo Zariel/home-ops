@@ -25,7 +25,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rbtherapy
-          image: git.cbannister.xyz/rocio/therapy:main@sha256:90e6767f243065f38c585299d972f7d2e1f10fd45307e98eaa747a5930119db6
+          image: git.cbannister.xyz/rocio/therapy:main@sha256:e49b41738a866b504e2e5769a2886d73485a5f1f9ae03735afec87fccb079d90
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
