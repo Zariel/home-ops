@@ -62,5 +62,12 @@
       matchCurrentVersion: '/^v?0\\./',
       automerge: false,
     },
+    {
+      description: 'Auto-merge all updates from git.cbannister.xyz',
+      matchPackageNames: ['git.cbannister.xyz/**'],
+      automerge: true,
+      automergeType: 'pr',
+      ignoreTests: false,
+    },
   ],
 }
