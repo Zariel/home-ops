@@ -25,7 +25,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rbmusic
-          image: git.cbannister.xyz/rocio/music@sha256:80c6888bee6d1e20ff9c35d69b9a8bec67db742c15fecaa979de97b8c1a6b75d
+          image: git.cbannister.xyz/rocio/music@sha256:6dfcbbe6bc61e28abaa48b237b97ac7b77c683a4c50fa1009003d3b174be1a42
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
