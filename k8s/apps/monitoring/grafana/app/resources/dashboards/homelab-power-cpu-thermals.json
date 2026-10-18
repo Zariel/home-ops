@@ -230,7 +230,7 @@
       },
       "targets": [
         {
-          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0)",
+          "expr": "clamp_min(deriv((max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}))[15m:30s]) * 3600, 0)",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }
@@ -271,7 +271,7 @@
       },
       "targets": [
         {
-          "expr": "max_over_time((clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0))[1h:])",
+          "expr": "max_over_time((clamp_min(deriv((max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}))[15m:30s]) * 3600, 0))[1h:])",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }
@@ -312,7 +312,7 @@
       },
       "targets": [
         {
-          "expr": "max_over_time((clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0))[24h:])",
+          "expr": "max_over_time((clamp_min(deriv((max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}))[15m:30s]) * 3600, 0))[24h:])",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }
@@ -435,7 +435,7 @@
       },
       "targets": [
         {
-          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m]) * 3600, 0) - clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}[15m] offset 1d) * 3600, 0)",
+          "expr": "clamp_min(deriv((max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}))[15m:30s]) * 3600, 0) - clamp_min(deriv((max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_measurementsOutletSensorValue{outletName=~\"$kubernetes_node\", sensorType=\"8\"}))[15m:30s] offset 1d) * 3600, 0)",
           "legendFormat": "{{outletName}}",
           "refId": "A"
         }

@@ -654,7 +654,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\", sensorType=\"8\"}[15m]) * 3600, 0)",
+          "expr": "clamp_min(deriv((max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\", sensorType=\"8\"}))[15m:30s]) * 3600, 0)",
           "legendFormat": "Outlet {{outletName}}",
           "range": true,
           "refId": "A"
@@ -774,7 +774,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "clamp_min(deriv(raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\", sensorType=\"8\"}[15m]) * 3600, 0)",
+          "expr": "clamp_min(deriv((max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_measurementsOutletSensorValue{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\", sensorType=\"8\"}))[15m:30s]) * 3600, 0)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -787,7 +787,7 @@
             "uid": "victoriametrics"
           },
           "editorMode": "code",
-          "expr": "raritan_pdu_outlet_on_named{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\"}",
+          "expr": "max by (instance, pduId, outletId, outletName, outletLabel) (raritan_pdu_outlet_on_named{instance=~\"$instance\", pduId=~\"$pduId\", outletName=~\"$outlet\"})",
           "format": "table",
           "instant": true,
           "legendFormat": "",
