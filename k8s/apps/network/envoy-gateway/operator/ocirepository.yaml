@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://schemas.budimanjojo.com/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: envoy-gateway-operator
+spec:
+  interval: 30m
+  timeout: 60s
+  url: oci://mirror.gcr.io/envoyproxy/gateway-helm
+  ref:
+    tag: 1.9.2
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+
