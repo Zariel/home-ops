@@ -98,6 +98,9 @@ spec:
           ADAPTER: memory
         session:
           PROVIDER: memory
+        repository:
+          DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls,repo.actions
+          DISABLED_REPO_UNITS: repo.ext_wiki,repo.ext_issues
     service:
       http:
         type: ClusterIP
