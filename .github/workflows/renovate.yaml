@@ -18,7 +18,7 @@ jobs:
     name: Validate Renovate config
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/renovatebot/renovate:44.168.4-full
+      image: ghcr.io/renovatebot/renovate:44.170.0-full
       options: --user 0
     steps:
       - name: Checkout
