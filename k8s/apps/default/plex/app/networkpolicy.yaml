@@ -1,0 +1,94 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: plex
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      app: plex
+  ingress:
+    - fromCIDR:
+        - 10.0.0.0/8
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+    # Cloudflared reaches Plex through the external Envoy gateway.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - sonarr
+                - tautulli
+                - seerr
+                - maintainerr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: radarr
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+    # Kubelet health checks originate on the node hosting Plex.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          # The DNS proxy learns the addresses used by the FQDN rules below.
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Account services, notifications, metadata, artwork, and codecs.
+    - toFQDNs:
+        - matchName: plex.tv
+        - matchName: servers.plex.tv
+        - matchName: scrobbles.plex.tv
+        - matchName: notifications.plex.tv
+        - matchName: pubsub.plex.tv
+        - matchPattern: "pubsub*.pop.*.plex.bz"
+        - matchName: metadata-static.plex.tv
+        - matchName: metadata.provider.plex.tv
+        - matchName: images.plex.tv
+        - matchName: downloads.plex.tv
+        - matchName: me.plexapp.com
+        - matchName: resources-cdn.plexapp.com
+        - matchName: image.tmdb.org
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # The bundled agent framework still fetches resources over HTTP.
+    - toFQDNs:
+        - matchName: resources-cdn.plexapp.com
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
