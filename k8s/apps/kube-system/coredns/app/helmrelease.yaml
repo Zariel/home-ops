@@ -64,8 +64,6 @@ spec:
             configBlock: |-
               pods verified
               fallthrough in-addr.arpa ip6.arpa
-          - name: autopath
-            parameters: "@kubernetes"
           - name: forward
             parameters: cbannister.xyz 10.45.0.55
           - name: forward
