@@ -5,7 +5,7 @@ metadata:
   name: renovate
   namespace: renovate-system
 spec:
-  image: ghcr.io/renovatebot/renovate:44.167.5-full
+  image: ghcr.io/renovatebot/renovate:44.167.6-full
   parallelism: 1
   serviceAccount:
     name: renovate-runner
