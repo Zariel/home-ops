@@ -14,6 +14,7 @@ spec:
       labels:
         app: plex
     spec:
+      automountServiceAccountToken: false
       priorityClassName: cluster-p0
       resourceClaims:
         - name: gpu
@@ -25,12 +26,16 @@ spec:
         fsGroup: 3005
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [3005]
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: transcode
           emptyDir: {}
         - name: logs
           emptyDir: {}
         - name: tmp
+          emptyDir: {}
+        - name: read-only-empty
           emptyDir: {}
         - name: config
           persistentVolumeClaim:
@@ -68,7 +73,16 @@ spec:
             - name: transcode
               mountPath: /transcode
             - name: config
-              mountPath: /config
+              mountPath: /config/Library/Application Support/Plex Media Server
+              subPath: Library/Application Support/Plex Media Server
+            # Custom plug-ins are unused; server updates come from the container image.
+            # Neither path has a writable alias to the underlying config volume.
+            - name: read-only-empty
+              mountPath: /config/Library/Application Support/Plex Media Server/Plug-ins
+              readOnly: true
+            - name: read-only-empty
+              mountPath: /config/Library/Application Support/Plex Media Server/Updates
+              readOnly: true
             - name: logs
               mountPath: /config/Library/Application Support/Plex Media Server/Logs
             - name: cache
@@ -76,9 +90,11 @@ spec:
             - name: arr-media
               mountPath: /data/media
               subPath: media/
+              readOnly: true
             - name: arr-media
               mountPath: /data/media/sports/tennis
               subPath: downloads/torrents/complete/sports/tennis
+              readOnly: true
             - name: tmp
               mountPath: /tmp
           securityContext:
