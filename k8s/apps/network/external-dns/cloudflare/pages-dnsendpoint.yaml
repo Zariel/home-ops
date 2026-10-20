@@ -1,0 +1,16 @@
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: rbtherapy-pages
+  namespace: network
+  labels:
+    # Publish the same target in Cloudflare and internal BIND.
+    external-dns.home/visibility: shared
+spec:
+  endpoints:
+    - dnsName: www.rociobolanos.com
+      recordType: CNAME
+      recordTTL: 300
+      targets:
+        - rbtherapy.pages.dev

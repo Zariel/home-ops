@@ -45,7 +45,8 @@ spec:
       - --rfc2136-zone=rociobolanos.com
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
-      - --label-filter=external-dns.home/visibility=internal
+      - --label-filter=external-dns.home/visibility in (internal,shared)
+      - --managed-record-types=CNAME
       - --managed-record-types=HTTPS
       - --managed-record-types=TXT
     txtOwnerId: internal-crd
