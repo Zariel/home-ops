@@ -26,6 +26,14 @@
   },
   packageRules: [
     {
+      description: 'Limit Renovate self-updates to one per day',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/renovatebot/renovate'],
+      schedule: ['* 5 * * *'],
+      prHourlyLimit: 1,
+      updateNotScheduled: false,
+    },
+    {
       description: 'Keep VectorChord images compatible with the PostgreSQL major version',
       matchDatasources: ['docker'],
       matchPackageNames: ['ghcr.io/tensorchord/vchord-scratch'],
