@@ -26,9 +26,9 @@ spec:
     kind: OCIRepository
     name: actions-runner
   values:
-    githubConfigUrl: https://github.com/Zariel/home-ops
+    githubConfigUrl: https://github.com/katl-dev/katl
     githubConfigSecret: actions-runner-github-app
-    runnerScaleSetName: home-ops
+    runnerScaleSetName: katl-vmtest
     minRunners: 0
     maxRunners: 3
     controllerServiceAccount:
@@ -57,37 +57,50 @@ spec:
                 memory: 256Mi
     template:
       spec:
-        # Plain process jobs need no Kubernetes API access or container daemon.
         automountServiceAccountToken: false
         enableServiceLinks: false
+        hostNetwork: false
+        hostPID: false
+        hostIPC: false
+        nodeSelector:
+          kubernetes.io/arch: amd64
+          kubernetes.io/os: linux
         securityContext:
-          runAsNonRoot: true
-          runAsUser: 1001
-          runAsGroup: 123
-          fsGroup: 123
-          seccompProfile:
-            type: RuntimeDefault
+          runAsUser: 0
+          runAsGroup: 0
         containers:
           - name: runner
-            image: ghcr.io/actions/actions-runner:2.338.0
-            command: ["/home/runner/run.sh"]
+            image: ghcr.io/zariel/katl-vmtest-runner:2.338.0-1
+            command: ["/usr/local/bin/katl-vmtest-runner"]
+            args: ["/home/runner/run.sh"]
             securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop: [ALL]
+              # Libvirt networking, disk inspection, and nested builders need
+              # privileges; all daemons and storage belong to this job's pod.
+              privileged: true
             resources:
               requests:
-                cpu: 100m
-                memory: 512Mi
-                ephemeral-storage: 1Gi
+                cpu: "4"
+                memory: 16Gi
+                ephemeral-storage: 60Gi
               limits:
-                cpu: "2"
-                memory: 4Gi
-                ephemeral-storage: 10Gi
+                cpu: "12"
+                memory: 32Gi
+                ephemeral-storage: 160Gi
+                kernel.org/vmtest: "1"
             volumeMounts:
               - name: work
                 mountPath: /home/runner/_work
+              - name: docker
+                mountPath: /var/lib/docker
+              - name: libvirt
+                mountPath: /var/lib/libvirt
         volumes:
           - name: work
             emptyDir:
-              sizeLimit: 8Gi
+              sizeLimit: 80Gi
+          - name: docker
+            emptyDir:
+              sizeLimit: 40Gi
+          - name: libvirt
+            emptyDir:
+              sizeLimit: 40Gi

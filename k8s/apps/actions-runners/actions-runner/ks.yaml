@@ -12,6 +12,8 @@ spec:
       namespace: actions-runner-system
     - name: external-secrets
       namespace: external-secrets
+    - name: generic-device-plugin
+      namespace: kube-system
   path: ./k8s/apps/actions-runners/actions-runner/app
   prune: true
   sourceRef:
