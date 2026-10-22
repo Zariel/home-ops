@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    katl.url = "github:katl-dev/katl/v2026.10.2";
+    katl.url = "github:katl-dev/katl/v2026.10.3";
     katl.inputs.nixpkgs.follows = "nixpkgs";
   };
 
