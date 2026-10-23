@@ -221,6 +221,9 @@ def inspect(account, network, snapshot, existing, show_messages):
     selections = []
     used = set()
     for index, (command, expanded) in enumerate(snapshot, 1):
+        # Perform's web form splits CRLF on LF, retaining the command's trailing CR.
+        # Keep the original snapshot for deletion checks while trimming imported text.
+        command = command.rstrip()
         match = re.fullmatch(r"PRIVMSG ([^ ,:!@\s]+) :(.+)", command, re.IGNORECASE)
         if not match or expanded or match[1][0] in "#&+!:$@":
             print(f"  Perform #{index}: skipped (not a static private message).")

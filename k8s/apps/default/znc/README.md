@@ -131,6 +131,8 @@ Perform modules. Leading spaces in messages are preserved. Configure messages wi
 intentional trailing spaces manually: Perform's table output cannot preserve
 trailing spaces unambiguously. Deploy the literal-message version of `knock`
 before using the tool to migrate messages with leading spaces.
+The importer trims trailing whitespace, including CR left by Perform's handling
+of CRLF web form lines. Embedded CR and LF, and any NUL characters, are rejected.
 
 Do not edit Perform from another client during migration. The tool rechecks its
 snapshot before applying or deleting entries, but ZNC's index-based `Del` command

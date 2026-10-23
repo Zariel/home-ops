@@ -283,6 +283,33 @@ LoadModule = modpython
             self.assertLess(time.monotonic(), deadline, self.server.messages)
             time.sleep(0.05)
 
+    def test_crlf_perform_entry(self):
+        # Reproduce a saved web-form entry: Perform splits on LF and persists CR.
+        self.stop()
+        registry = self.root / "users/alpha/networks/first/moddata/perform/.registry"
+        saved = registry.read_bytes()
+        self.assertIn(b"%0a;", saved)
+        registry.write_bytes(saved.replace(b"%0a;", b"%0d;%0a;", 1))
+        self.start()
+        with self.connect("alpha", "first") as client:
+            self.assertTrue(migrate.perform(client)[0][0].endswith("\r"))
+
+        result, output = self.run_tool(
+            ["#one,#two", "", "y", "y"], users=("alpha",),
+            before_answer=lambda prompt: self.wait_joined(prompt, [("alpha", "first")]))
+        self.assertEqual(result, 0, output)
+        with self.connect("alpha", "first") as client:
+            self.assertEqual([raw for raw, _ in migrate.perform(client)], ["MODE %nick% +i"])
+
+        self.stop()
+        self.server.messages.clear()
+        self.start()
+        expected = ("alpha_first", "Bot", "#one,#two fake-key|α")
+        deadline = time.monotonic() + 40
+        while expected not in self.server.messages:
+            self.assertLess(time.monotonic(), deadline, self.server.messages)
+            time.sleep(0.05)
+
     def test_multiple_entries(self):
         with self.connect("alpha", "first") as client:
             client.expect("perform", "Add PRIVMSG ThirdBot :#five third-key", "Added!")
@@ -320,6 +347,26 @@ LoadModule = modpython
         self.assertEqual(result, 1, output)
         self.assertIn("SSLCertVerificationError", output)
         self.assert_original()
+
+
+class MessageTest(unittest.TestCase):
+    def test_trailing_whitespace(self):
+        body = "  knock #chan\tuser key \\r"
+        snapshot = [("PRIVMSG Bot :" + body + " \t\r\n", "")]
+        with patch("builtins.input", return_value="#chan"), contextlib.redirect_stdout(io.StringIO()):
+            plan = migrate.inspect(migrate.Account("user", "password"), "network", snapshot, {}, False)
+        self.assertIsNotNone(plan)
+        self.assertEqual(plan.selections[0].message, body)
+        self.assertEqual(plan.snapshot, snapshot)
+
+    def test_embedded_delimiters(self):
+        for body in ("knock\rkey", "knock\nkey", "knock\0key", "knock key\0"):
+            with self.subTest(body=body), patch("builtins.input") as prompt, \
+                    contextlib.redirect_stdout(io.StringIO()):
+                plan = migrate.inspect(migrate.Account("user", "password"), "network",
+                                       [("PRIVMSG Bot :" + body, "")], {}, False)
+                self.assertIsNone(plan)
+                prompt.assert_not_called()
 
 
 class PasswordTest(unittest.TestCase):
