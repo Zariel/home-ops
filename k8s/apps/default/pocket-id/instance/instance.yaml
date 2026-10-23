@@ -3,6 +3,8 @@ kind: PocketIDInstance
 metadata:
   name: pocket-id
   namespace: default
+  labels:
+    pocketid.internal/instance: pocket-id
 spec:
   # Flux owns the workload and storage; the operator manages API resources only.
   external:

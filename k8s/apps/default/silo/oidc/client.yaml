@@ -1,0 +1,30 @@
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: silo
+  namespace: default
+spec:
+  name: Silo
+  clientID: silo
+  instanceSelector:
+    matchLabels:
+      pocketid.internal/instance: pocket-id
+  clientSecretRef:
+    name: silo-oidc-secret
+    key: client_secret
+  pkceEnabled: true
+  # Silo includes its persisted OIDC plugin installation ID in callback paths.
+  callbackUrls:
+    - https://silo.cbannister.xyz/api/v1/auth/oauth/5/callback
+    - https://silo.cbannister.xyz/api/v2/auth/oauth/5/callback
+  logoutCallbackUrls:
+    - https://silo.cbannister.xyz/login
+  launchUrl: https://silo.cbannister.xyz
+  allowedUserGroups:
+    - groupName: media
+    - groupName: admin
+  refreshTokenDurationMinutes: 43200
+  secret:
+    name: silo-oidc
+  logo:
+    autoGenerate: false
