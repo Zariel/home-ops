@@ -43,6 +43,10 @@ spec:
           image: ghcr.io/linuxserver/znc:1.10.3@sha256:ff2c194144b53a2d981ca21eba5158ade449b43c7a23d0f3a6b9de7734cdb2d8
           imagePullPolicy: IfNotPresent
           env:
+            - name: DOCKER_MODS
+              value: linuxserver/mods:universal-package-install
+            - name: INSTALL_PACKAGES
+              value: python3
             - name: PUID
               value: "568"
             - name: PGID
@@ -74,6 +78,10 @@ spec:
             - name: modules
               mountPath: /config/modules/knock.py
               subPath: knock.py
+              readOnly: true
+            - name: custom-init
+              mountPath: /custom-cont-init.d/enable-modpython.sh
+              subPath: enable-modpython.sh
               readOnly: true
           startupProbe:
             tcpSocket:
