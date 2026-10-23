@@ -11,6 +11,9 @@ limit while the channel is missing and enabled.
 
 ## Configure a network
 
+For several users or networks, use the [terminal migration tool](#migrate-from-perform-in-a-terminal)
+to reuse existing Perform messages without copying authentication keys.
+
 The Deployment mounts `app/resources/knock.py` at `/config/modules/knock.py` from
 the `znc-modules` ConfigMap. Flux must deploy this change before the module can be
 loaded. The image includes `modpython` but omits its Python runtime dependency.
@@ -44,6 +47,12 @@ From an IRC client connected to the intended ZNC network:
    nickname is sent unchanged. In the first example, the wire command is
    `PRIVMSG user :channel1,channel2,channel3 YOUR_AUTH_KEY`.
 
+   `Set` consumes exactly one space or tab after the bot nickname. Everything
+   following that separator is the literal message: leading and trailing spaces,
+   colons, and placeholder-like text are preserved without expansion. For example,
+   `Set #channel Bot  knock #channel user key` sends a message beginning with one
+   space before `knock`.
+
    Repeating `Set` replaces the rules for the listed channels. It does not remove
    unlisted channels from an existing configuration; use `Del` to remove their
    rules. Identical messages to the same bot share a retry schedule, including
@@ -69,6 +78,72 @@ Repeat the network-specific steps for each IRC network. Knock settings are store
 in ZNC's persistent module registry on the `/config` volume. Authentication
 messages are stored as plaintext there; keep them out of Git. Your IRC client may
 also retain commands in its history.
+
+## Migrate from Perform in a terminal
+
+Run the Python 3 migration tool from this repository:
+
+```sh
+python3 k8s/apps/default/znc/migrate_knock.py --kubernetes --user USER_ONE --user USER_TWO
+```
+
+If Python is not on `PATH`, prefix the command with `nix shell nixpkgs#python3 -c`.
+
+Replace the usernames with your ZNC users. Include an administrator so the tool
+can save the configuration for both users. Omit `--user` to enter usernames
+interactively. Passwords are prompted without echo and retained only in memory.
+
+`--kubernetes` uses `kubectl` to create a temporary loopback port-forward to the
+ZNC service. It extracts the public CA certificate from `znc-tls` and verifies
+the server certificate for `znc.default.svc.cluster.local`. It uses `KUBECONFIG`
+when set, otherwise the repository's `kubeconfig` if present, then kubectl's
+normal configuration. The port-forward closes when the tool exits.
+
+The tool discovers each user's networks and walks you through their Perform
+entries:
+
+1. Enter the explicit channel names for each message you want to migrate, such as
+   `#channel1,#channel2,#channel3`. Press Enter to leave an entry alone. Bot
+   nicknames and entry numbers are shown; authentication messages stay hidden.
+2. Review the combined migration summary and confirm it. The tool loads `knock`
+   on selected networks, sets timing parameters, configures the selected groups,
+   verifies their status, and saves ZNC's configuration through the administrator.
+3. Choose whether to remove the selected Perform entries. Only entries whose
+   target channels are all joined are removed. Other Perform entries remain.
+
+Defaults are a 30-second initial delay and retry backoff from 60 to 1800 seconds.
+To change them for the selected networks:
+
+```sh
+python3 k8s/apps/default/znc/migrate_knock.py --kubernetes \
+  --user USER_ONE --user USER_TWO --initial-delay 60 --backoff 120 1800
+```
+
+These timing settings apply to every knock rule on each selected network. Existing
+rules for selected channels are replaced only after the preview is approved.
+`--show-messages` displays full message bodies, including keys, if you need to
+distinguish several messages to the same bot.
+
+The tool supports English ZNC command responses with the default `*` status
+prefix, and network-scoped Perform entries containing static `PRIVMSG` commands.
+It skips other commands, messages with dynamic substitutions, and user-scoped
+Perform modules. Leading spaces in messages are preserved. Configure messages with
+intentional trailing spaces manually: Perform's table output cannot preserve
+trailing spaces unambiguously. Deploy the literal-message version of `knock`
+before using the tool to migrate messages with leading spaces.
+
+Do not edit Perform from another client during migration. The tool rechecks its
+snapshot before applying or deleting entries, but ZNC's index-based `Del` command
+does not offer an atomic compare-and-delete operation. On failure, completed
+changes remain; the tool does not automatically retry writes or roll them back.
+Perform entries stay intact if configuration or persistence verification fails.
+Rerun the tool to finish a partial migration or remove entries after channels have
+recovered, approving replacement of the already configured rules.
+
+For a directly reachable ZNC TLS listener, use `--host HOST --port 6697` instead
+of `--kubernetes`. Use `--ca-file CA.pem` for a private CA and `--tls-name NAME`
+when the certificate hostname differs from the connection address. Certificate
+verification is always enabled.
 
 ## Operate the module
 
@@ -131,7 +206,8 @@ reloader; the process restart loads the mounted code.
 ## Validate changes
 
 Run the integration tests with Python 3 and a ZNC 1.10.3 binary built with
-`modpython` available:
+`modpython` available. Migration tests also require `openssl` to generate a
+temporary TLS certificate:
 
 ```sh
 python3 -m unittest discover -s k8s/apps/default/znc/tests -v

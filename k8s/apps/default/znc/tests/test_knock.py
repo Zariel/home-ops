@@ -231,6 +231,23 @@ LoadModule = modpython
         self._until(lambda: "PRIVMSG BotUser :identify fake-key" in self.server_lines, timeout=40)
         self._command("List", "#one -> BotUser: waiting")
 
+    def test_literal_message(self):
+        self._command("Set #one Bot   knock #chan user ..key  ", "configured")
+        self._until(lambda: "PRIVMSG Bot :  knock #chan user ..key  " in self.server_lines)
+
+        self._command("Set #two Bot :identify %nick% ${key} |\t ", "configured")
+        self._until(lambda: "PRIVMSG Bot ::identify %nick% ${key} |\t " in self.server_lines)
+        self._command("Set #three Bot    ", "configured")
+        self._until(lambda: "PRIVMSG Bot :   " in self.server_lines)
+
+        self.client_lines.clear()
+        self._send(self.client, "PRIVMSG *status :SaveConfig")
+        self._until(lambda: any("Wrote config to " in line for line in self.client_lines))
+        self._stop()
+        self._start()
+        self._until(lambda: "PRIVMSG Bot :  knock #chan user ..key  " in self.server_lines, timeout=40)
+        self._until(lambda: "PRIVMSG Bot ::identify %nick% ${key} |\t " in self.server_lines, timeout=40)
+
     def test_configuration(self):
         for command, response in (
             ("Set #one Bot,Other secret", "one bot nickname"),

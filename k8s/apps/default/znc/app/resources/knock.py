@@ -2,6 +2,7 @@
 
 import json
 import random
+import re
 import time
 
 import znc
@@ -146,8 +147,14 @@ class knock(znc.Module):
         parts = command.split(None, 3)
         action = parts[0].lower() if parts else "help"
         try:
-            if action == "set" and len(parts) == 4:
-                _, names, target, message = parts
+            if action == "set":
+                header = re.match(r"[ \t]*set[ \t]+(\S+)[ \t]+(\S+)[ \t]", command, re.IGNORECASE)
+                if header is None:
+                    raise ValueError("Usage: Set <#channel[,#channel...]> <bot> <message>")
+                names, target = header.groups()
+                # Only the first separator after the bot belongs to the command.
+                # Everything after it is the literal PRIVMSG body, including whitespace.
+                message = command[header.end():]
                 names = list(dict.fromkeys(_fold(name) for name in names.split(",")))
                 for name in names:
                     self._validate(name, target, message)
