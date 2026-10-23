@@ -17,5 +17,6 @@ configMapGenerator:
   - name: znc-custom-init
     files:
       - disable-protected-web-sessions.sh=resources/disable-protected-web-sessions.sh
+      - enable-modpython.sh=resources/enable-modpython.sh
 generatorOptions:
   disableNameSuffixHash: true

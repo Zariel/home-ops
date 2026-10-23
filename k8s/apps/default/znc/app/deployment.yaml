@@ -75,6 +75,10 @@ spec:
               mountPath: /config/modules/knock.py
               subPath: knock.py
               readOnly: true
+            - name: custom-init
+              mountPath: /custom-cont-init.d/enable-modpython.sh
+              subPath: enable-modpython.sh
+              readOnly: true
           startupProbe:
             tcpSocket:
               port: web
