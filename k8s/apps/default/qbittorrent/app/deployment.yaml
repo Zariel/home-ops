@@ -19,7 +19,6 @@ spec:
     spec:
       hostname: qbittorrent
       priorityClassName: cluster-p1
-      terminationGracePeriodSeconds: 300
       volumes:
         - name: arr-media
           nfs:
