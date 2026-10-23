@@ -35,6 +35,7 @@ spec:
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/music/downloads
+      terminationGracePeriodSeconds: 30
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
