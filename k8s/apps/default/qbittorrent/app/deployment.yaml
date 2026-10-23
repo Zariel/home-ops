@@ -59,7 +59,7 @@ spec:
             value: "1"
       containers:
         - name: qbittorrent
-          image: ghcr.io/home-operations/qbittorrent-libtorrentv1:5.3.0@sha256:74a9dd7824d960e1c3355ab07ba23c9946aa18236eebac0c51fe9f5cac35ff8f
+          image: ghcr.io/home-operations/qbittorrent:5.3.0@sha256:5a858e61f94cf2712391db32ed03556576c700858f3e62c4c6fcde262443ebd8
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
