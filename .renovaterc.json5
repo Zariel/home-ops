@@ -26,6 +26,15 @@
   },
   packageRules: [
     {
+      description: 'Limit Silo updates to one per day',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/silo-server/silo-server'],
+      schedule: ['* 5 * * *'],
+      commitHourlyLimit: 1,
+      prHourlyLimit: 1,
+      updateNotScheduled: false,
+    },
+    {
       description: 'Limit Renovate self-updates to one per day',
       matchDatasources: ['docker'],
       matchPackageNames: ['ghcr.io/renovatebot/renovate'],
