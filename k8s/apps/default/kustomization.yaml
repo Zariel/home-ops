@@ -26,6 +26,7 @@ resources:
   - thelounge/ks.yaml
   - maintainerr/ks.yaml
   - pocket-id/ks.yaml
+  - pocket-id-operator/ks.yaml
   - audiobookshelf/ks.yaml
   - tqm/ks.yaml
   - qui/ks.yaml

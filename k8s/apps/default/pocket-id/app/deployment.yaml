@@ -29,6 +29,11 @@ spec:
         - name: app
           image: ghcr.io/pocket-id/pocket-id:v2.19.1
           env:
+            - name: STATIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pocket-id-operator-api
+                  key: token
             - name: APP_URL
               value: https://id.cbannister.xyz
             - name: TRUST_PROXY

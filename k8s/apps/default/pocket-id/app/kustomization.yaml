@@ -6,3 +6,4 @@ resources:
   - service.yaml
   - httproute.yaml
   - app.secret.sops.yaml
+  - operator-api.secret.sops.yaml

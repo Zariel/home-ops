@@ -1,0 +1,12 @@
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDInstance
+metadata:
+  name: pocket-id
+  namespace: default
+spec:
+  # Flux owns the workload and storage; the operator manages API resources only.
+  external:
+    url: https://id.cbannister.xyz
+    apiKeySecretRef:
+      name: pocket-id-operator-api
+      key: token
