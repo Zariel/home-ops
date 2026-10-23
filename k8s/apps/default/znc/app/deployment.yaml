@@ -31,6 +31,9 @@ spec:
           configMap:
             name: znc-custom-init
             defaultMode: 0775
+        - name: modules
+          configMap:
+            name: znc-modules
       securityContext:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
@@ -67,6 +70,10 @@ spec:
             - name: custom-init
               mountPath: /custom-cont-init.d/disable-protected-web-sessions.sh
               subPath: disable-protected-web-sessions.sh
+              readOnly: true
+            - name: modules
+              mountPath: /config/modules/knock.py
+              subPath: knock.py
               readOnly: true
           startupProbe:
             tcpSocket:

@@ -8,6 +8,12 @@ resources:
   - httproute.yaml
   - service.yaml
 configMapGenerator:
+  - name: znc-modules
+    options:
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+    files:
+      - knock.py=resources/knock.py
   - name: znc-custom-init
     files:
       - disable-protected-web-sessions.sh=resources/disable-protected-web-sessions.sh
