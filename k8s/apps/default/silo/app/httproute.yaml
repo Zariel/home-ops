@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: silo
+  namespace: default
+  labels:
+    app.kubernetes.io/instance: silo
+    app.kubernetes.io/name: silo
+spec:
+  hostnames:
+    - silo.cbannister.xyz
+  parentRefs:
+    - name: internal-cbannister-xyz
+      namespace: network
+      kind: ListenerSet
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: silo
+          port: 8080
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

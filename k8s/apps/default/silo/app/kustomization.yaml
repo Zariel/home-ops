@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - deployment.yaml
+  - service.yaml
+  - httproute.yaml
+  - externalsecret.yaml
+  - app.secret.sops.yaml
+  - recovery.secret.sops.yaml
+configMapGenerator:
+  - name: silo-initdb
+    files:
+      - silo.sql

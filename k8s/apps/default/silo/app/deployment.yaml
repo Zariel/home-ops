@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: silo
+  namespace: default
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: silo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: silo
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 3005
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [3005]
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: initdb
+          image: ghcr.io/home-operations/postgres-init:18.6.0@sha256:87627baaddb0cabed4ebe033e75038e5c7b6b081c18e86514c99067179a90719
+          envFrom:
+            - secretRef:
+                name: silo-app
+            - secretRef:
+                name: silo-initdb
+          volumeMounts:
+            - name: initdb
+              mountPath: /initdb
+              readOnly: true
+      containers:
+        - name: app
+          image: ghcr.io/silo-server/silo-server:build-1642@sha256:86c6f7c3b57645206518da5250cb6342e25bf723203477d56b51be934cb82a9d
+          env:
+            - name: MODE
+              value: integrated
+            - name: POSTGRES_TUNE
+              value: "off"
+            - name: SILO_PLUGIN_CACHE_DIR
+              value: /var/lib/silo/plugins
+            - name: SILO_TRUSTED_PROXIES
+              value: 172.20.0.0/16
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: silo-app
+                  key: DATABASE_URL
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: silo-app
+                  key: SECRET_KEY
+          ports:
+            - name: http
+              containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 4Gi
+          # Migrations run before the HTTP listener and may take up to 20 minutes.
+          startupProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 240
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/silo
+            - name: transcode
+              mountPath: /tmp/silo-transcode
+            - name: downloads
+              mountPath: /tmp/silo-download-artifacts
+            - name: media
+              mountPath: /data/media
+              subPath: media
+              readOnly: true
+      volumes:
+        - name: initdb
+          configMap:
+            name: silo-initdb
+        - name: data
+          persistentVolumeClaim:
+            claimName: silo
+        - name: transcode
+          emptyDir:
+            sizeLimit: 20Gi
+        - name: downloads
+          emptyDir:
+            sizeLimit: 20Gi
+        - name: media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
+            readOnly: true
