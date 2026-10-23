@@ -13,14 +13,15 @@ limit while the channel is missing and enabled.
 
 The Deployment mounts `app/resources/knock.py` at `/config/modules/knock.py` from
 the `znc-modules` ConfigMap. Flux must deploy this change before the module can be
-loaded. The container includes `modpython`; the startup script ensures it is loaded
-globally before ZNC starts.
+loaded. The container includes `modpython`.
 
 From an IRC client connected to the intended ZNC network:
 
-1. Load the module on this network:
+1. Load the Python runtime globally, if it is not already loaded, and load the
+   module on this network:
 
    ```irc
+   /msg *status LoadMod --type=global modpython
    /msg *status LoadMod --type=network knock
    ```
 
