@@ -207,6 +207,37 @@ The development shell includes that plugin. A failed upgrade leaves its node
 cordoned and stops the run; inspect and recover it before retrying. The workflow
 requires the Rook toolbox deployment in each Ceph cluster namespace.
 
+Before each primary switchover or drain, the cluster task applies the
+`katl-upgrade` `Silence` in `.taskfiles/Katl/silences.yaml` for
+`PostgresReplicationMissing` and `etcdHighNumberOfLeaderChanges`. The installed
+silence-operator manages the Alertmanager silence. This temporary resource
+is kept outside Flux's Kustomizations. The task refreshes its `valid-until`
+annotation to two hours ahead before switchovers and drains, bounding the
+silence if the process disappears without cleanup. The task proceeds once
+Kubernetes accepts the update; silence-operator reconciles it to Alertmanager.
+
+After successful recovery the task sets expiry to 20 minutes ahead and exits
+without waiting for that time to pass. Alertmanager expires the silence, and
+the CR remains for reuse. Sequential upgrade trains and retries renew the same
+`katl-upgrade` resource, including after expiry. Runs with no nodes to upgrade
+leave any existing silence and its grace period untouched. A failed plan or
+health check before the first silence update also leaves the previous silence
+alone. Failure or interruption after an update deletes the silence so ongoing
+faults can notify.
+
+The task atomically creates `monitoring/katl-upgrade-lock`, a ConfigMap, before
+planning and holds it through silence updates and cleanup. Another invocation
+fails without changing the silence. Lock release uses a UID precondition to
+avoid deleting a replacement lock. The lock has no automatic expiry: an old
+process could otherwise resume after another run had started. If a hard kill
+or lost API response leaves a stale lock, inspect its holder and target version
+with `kubectl -n monitoring get configmap katl-upgrade-lock -o yaml`, confirm the
+old process has stopped, then remove it with
+`kubectl -n monitoring delete configmap katl-upgrade-lock` before retrying.
+
+Direct `katl:upgrade` and CLI operations do not take this lock or manage the
+maintenance silence; do not run them alongside the cluster task.
+
 Katl provides native management, in-tree GPU/MEI drivers and firmware, and Intel
 microcode. API audit output goes to the API container's stdout and through
 normal pod-log collection. Host security follows Katl's runtime defaults apart

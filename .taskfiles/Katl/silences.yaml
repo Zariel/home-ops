@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/observability.giantswarm.io/silence_v1alpha2.json
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: Silence
+metadata:
+  name: katl-upgrade
+  namespace: monitoring
+spec:
+  matchers:
+    - name: alertname
+      matchType: =~
+      value: PostgresReplicationMissing|etcdHighNumberOfLeaderChanges
+    - name: namespace
+      matchType: =~
+      value: database|kube-system
