@@ -83,7 +83,9 @@ spec:
             - --repo=https://github.com/blacktwin/JBOPS
             - --ref=master
             - --period=24h
-            - --root=/add-ons
+            # Let git-sync create its repository directory with its own UID.
+            - --root=/add-ons/git-sync
+            - --link=/add-ons/JBOPS
           resources:
             requests:
               memory: 64Mi
