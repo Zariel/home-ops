@@ -13,6 +13,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    # Wait for the operator to create the OIDC credential Secret.
+    - name: grafana-oidc
     - name: onepassword-store
       namespace: external-secrets
     - name: rook-ceph-cluster
@@ -35,3 +37,24 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana-oidc
+  namespace: monitoring
+spec:
+  dependsOn:
+    - name: pocket-id-instance
+      namespace: default
+  interval: 1h
+  path: ./k8s/apps/monitoring/grafana/oidc
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: monitoring
+  timeout: 5m
+  wait: true

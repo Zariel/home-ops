@@ -51,16 +51,48 @@ spec:
       GF_SERVER_ROOT_URL: https://grafana.cbannister.xyz
     envFromSecrets:
       - name: grafana-secret
+    envValueFrom:
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+        secretKeyRef:
+          name: grafana-oidc
+          key: client_id
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+        secretKeyRef:
+          name: grafana-oidc
+          key: client_secret
     grafana.ini:
       analytics:
         check_for_updates: false
         check_for_plugin_updates: false
         reporting_enabled: false
+      auth:
+        disable_login_form: true
+      auth.basic:
+        enabled: false
       auth.anonymous:
-        enabled: true
+        enabled: false
         org_id: 1
         org_name: Main Org.
         org_role: Viewer
+      auth.generic_oauth:
+        enabled: true
+        name: Pocket ID
+        allow_sign_up: true
+        auto_login: true
+        scopes: openid profile email groups offline_access
+        auth_url: https://id.cbannister.xyz/authorize
+        token_url: https://id.cbannister.xyz/api/oidc/token
+        api_url: https://id.cbannister.xyz/api/oidc/userinfo
+        use_pkce: true
+        use_refresh_token: true
+        validate_id_token: true
+        jwk_set_url: https://id.cbannister.xyz/.well-known/jwks.json
+        login_attribute_path: preferred_username
+        groups_attribute_path: groups
+        allowed_groups: admin
+        role_attribute_path: "contains(groups || `[]`, 'admin') && 'GrafanaAdmin'"
+        role_attribute_strict: true
+        allow_assign_grafana_admin: true
       news:
         news_feed_enabled: false
     dashboardProviders:
