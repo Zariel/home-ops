@@ -27,6 +27,10 @@ spec:
     # Create default monitoring rules
     defaultRules:
       create: true
+      sources:
+        # Node-exporter runs in a separate HelmRelease.
+        node-exporter:
+          enabled: true
       rules:
         TargetDown:
           spec:
