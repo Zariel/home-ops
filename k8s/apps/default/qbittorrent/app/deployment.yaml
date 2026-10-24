@@ -26,7 +26,7 @@ spec:
             path: /mnt/bighorse/arr
         - name: config
           persistentVolumeClaim:
-            claimName: qbittorrent
+            claimName: qbittorrent-lt12
         - name: scripts
           configMap:
             name: qbittorrent-scripts
@@ -35,7 +35,7 @@ spec:
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/music/downloads
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 300
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -59,7 +59,7 @@ spec:
             value: "1"
       containers:
         - name: qbittorrent
-          image: ghcr.io/home-operations/qbittorrent:5.3.0@sha256:5a858e61f94cf2712391db32ed03556576c700858f3e62c4c6fcde262443ebd8
+          image: ghcr.io/home-operations/qbittorrent-libtorrentv1:5.3.0@sha256:74a9dd7824d960e1c3355ab07ba23c9946aa18236eebac0c51fe9f5cac35ff8f
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
@@ -78,9 +78,9 @@ spec:
             - name: QBT_Preferences_WebUI_LocalHostAuth
               value: "false"
             - name: QBT_BitTorrent_Session_DefaultSavePath
-              value: /data/torrents/complete
+              value: /data/downloads/torrents/complete
             - name: QBT_BitTorrent_Session_TempPath
-              value: /data/torrents/incomplete
+              value: /data/downloads/torrents/incomplete
           envFrom:
             - secretRef:
                 name: qbittorrent-secret

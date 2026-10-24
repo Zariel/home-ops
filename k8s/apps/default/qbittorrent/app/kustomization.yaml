@@ -27,3 +27,11 @@ generatorOptions:
   disableNameSuffixHash: true
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
+patches:
+  - target:
+      group: volsync.backube
+      kind: ReplicationSource
+    patch: |-
+      - op: replace
+        path: /spec/sourcePVC
+        value: qbittorrent-lt12
