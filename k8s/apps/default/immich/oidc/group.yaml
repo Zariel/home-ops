@@ -1,0 +1,14 @@
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: immich
+  namespace: default
+spec:
+  name: immich
+  friendlyName: Immich
+  instanceSelector:
+    matchLabels:
+      pocketid.internal/instance: pocket-id
+  users:
+    usernames:
+      - Chris

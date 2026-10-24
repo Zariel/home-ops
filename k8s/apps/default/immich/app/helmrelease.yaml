@@ -18,7 +18,44 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  valuesFrom:
+    - kind: Secret
+      name: immich-oidc
+      valuesKey: client_id
+      targetPath: immichConfig.oauth.clientId
+    - kind: Secret
+      name: immich-oidc
+      valuesKey: client_secret
+      targetPath: immichConfig.oauth.clientSecret
   values:
+    # Config-file mode owns all system settings, including existing overrides.
+    immichConfig:
+      ffmpeg:
+        accel: qsv
+        accelDecode: true
+        targetResolution: original
+        targetVideoCodec: hevc
+        acceptedVideoCodecs:
+          - hevc
+      newVersionCheck:
+        enabled: false
+      oauth:
+        enabled: true
+        issuerUrl: https://id.cbannister.xyz
+        scope: openid email profile
+        buttonText: Sign in with Pocket ID
+        autoLaunch: false
+        autoRegister: false
+      passwordLogin:
+        enabled: true
+    secrets:
+      config:
+        includeInChecksum: true
+        includeChecksumInControllers:
+          - server
+          - microservices
+        stringData:
+          immich.json: '{{ .Values.immichConfig | toJson }}'
     controllers:
       machine-learning:
         strategy: Recreate
@@ -90,6 +127,7 @@ spec:
               - secretRef:
                   name: immich-valkey
             env:
+              IMMICH_CONFIG_FILE: /config/immich.json
               IMMICH_MEDIA_LOCATION: /photos
               IMMICH_TELEMETRY_INCLUDE: all
               IMMICH_TRUSTED_PROXIES: 10.45.0.10
@@ -137,6 +175,7 @@ spec:
               - secretRef:
                   name: immich-valkey
             env:
+              IMMICH_CONFIG_FILE: /config/immich.json
               IMMICH_MEDIA_LOCATION: /photos
               IMMICH_TELEMETRY_INCLUDE: all
               IMMICH_TRUSTED_PROXIES: 10.45.0.10
@@ -197,6 +236,19 @@ spec:
         name: cluster-ca-certificates.crt
         globalMounts:
           - path: /certs
+      config:
+        type: secret
+        identifier: config
+        defaultMode: 0440
+        advancedMounts:
+          server:
+            server:
+              - path: /config
+                readOnly: true
+          microservices:
+            microservices:
+              - path: /config
+                readOnly: true
       geocoding-dump:
         type: emptyDir
         advancedMounts:
