@@ -32,6 +32,9 @@ spec:
         node-exporter:
           enabled: true
       rules:
+        NodeBondingDegraded:
+          # A single link-up member is sufficient for the current bond topology.
+          enabled: false
         TargetDown:
           spec:
             # On-demand node exporters are intentionally unavailable while powered off.

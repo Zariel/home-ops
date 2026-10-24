@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://crds.jank.ing/operator.victoriametrics.com/vmrule_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: node-bonding
+  namespace: monitoring
+spec:
+  groups:
+    - name: node-bonding.rules
+      rules:
+        - alert: NodeBondingDown
+          expr: node_bonding_active{job="node-exporter"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: Bond {{ $labels.master }} has no working links
+            description: >-
+              Bond {{ $labels.master }} on {{ $labels.instance }} has had no
+              members with physical link up for at least 2 minutes.
