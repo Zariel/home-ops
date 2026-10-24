@@ -18,6 +18,18 @@ spec:
     - name: onepassword-store
       namespace: external-secrets
   prune: true
+  patches:
+    - target:
+        kind: PersistentVolumeClaim
+        name: filebrowser
+      patch: |
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: filebrowser
+          namespace: default
+          annotations:
+            kustomize.toolkit.fluxcd.io/prune: disabled
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
