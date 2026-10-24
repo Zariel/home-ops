@@ -304,6 +304,8 @@ spec:
           memory: 128Mi
       dashboards:
         enabled: true
+        # File polling avoids the reload API's password authentication requirement.
+        skipReload: true
         searchNamespace: ALL
         label: grafana_dashboard
         labelValue: "1"
@@ -311,10 +313,7 @@ spec:
         provider:
           disableDelete: true
           foldersFromFilesStructure: false
-      datasources:
-        enabled: true
-        searchNamespace: ALL
-        labelValue: "1"
+          updateIntervalSeconds: 30
     plugins:
       - victoriametrics-logs-datasource
     serviceMonitor:
