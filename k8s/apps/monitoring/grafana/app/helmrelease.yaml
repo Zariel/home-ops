@@ -48,7 +48,6 @@ spec:
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
-      GF_LOG_FILTERS: oauth.generic_oauth:debug
       GF_SERVER_ROOT_URL: https://grafana.cbannister.xyz
     envFromSecrets:
       - name: grafana-secret
