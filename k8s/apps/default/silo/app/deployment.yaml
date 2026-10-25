@@ -42,7 +42,7 @@ spec:
               readOnly: true
       containers:
         - name: app
-          image: ghcr.io/silo-server/silo-server:latest@sha256:d82c05626e62b65f1e998d3edb8662614cab2a05dd7397f04a6added25868b06
+          image: ghcr.io/silo-server/silo-server:latest@sha256:e20eb911334fe774d569f894010241f8ca4e9916faf238836e433e8f261d27f7
           env:
             - name: MODE
               value: integrated
