@@ -1,0 +1,17 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana-operator
+  namespace: monitoring
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: grafana-operator
+  values:
+    crds:
+      immutable: false
+    dashboard:
+      enabled: true
+    serviceMonitor:
+      enabled: true
