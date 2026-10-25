@@ -1,0 +1,128 @@
+# First rollout: retire the grafana HelmRelease in a separate GitOps revision
+# before enabling this instance; both deployments would mount the same SQLite PVC.
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    dashboards: grafana
+spec:
+  # renovate: datasource=docker depName=docker.io/grafana/grafana
+  version: 13.2.4-distroless
+  disableDefaultAdminSecret: true
+  disableDefaultSecurityContext: All
+  config:
+    analytics:
+      check_for_updates: "false"
+      check_for_plugin_updates: "false"
+      reporting_enabled: "false"
+    auth:
+      disable_login_form: "true"
+    auth.basic:
+      # The operator authenticates to the internal Grafana API with admin credentials.
+      enabled: "true"
+    auth.anonymous:
+      enabled: "false"
+      org_id: "1"
+      org_name: Main Org.
+      org_role: Viewer
+    auth.generic_oauth:
+      enabled: "true"
+      name: Pocket ID
+      allow_sign_up: "true"
+      auto_login: "true"
+      scopes: openid profile email groups offline_access
+      auth_url: https://id.cbannister.xyz/authorize
+      token_url: https://id.cbannister.xyz/api/oidc/token
+      api_url: https://id.cbannister.xyz/api/oidc/userinfo
+      use_pkce: "true"
+      use_refresh_token: "true"
+      validate_id_token: "true"
+      jwk_set_url: https://id.cbannister.xyz/.well-known/jwks.json
+      login_attribute_path: preferred_username
+      groups_attribute_path: groups
+      allowed_groups: admin
+      role_attribute_path: contains(groups || `[]`, 'admin') && 'GrafanaAdmin'
+      role_attribute_strict: "true"
+      allow_assign_grafana_admin: "true"
+    news:
+      news_feed_enabled: "false"
+    server:
+      root_url: https://grafana.cbannister.xyz
+    date_formats:
+      use_browser_locale: "true"
+    explore:
+      enabled: "true"
+    log:
+      mode: console
+    metrics:
+      enabled: "true"
+  deployment:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    spec:
+      replicas: 1
+      strategy:
+        type: Recreate
+      template:
+        spec:
+          containers:
+            - name: grafana
+              env:
+                - name: GF_SECURITY_ADMIN_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-secret
+                      key: admin-user
+                - name: GF_SECURITY_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-secret
+                      key: admin-password
+                - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-oidc
+                      key: client_id
+                - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-oidc
+                      key: client_secret
+                - name: GF_PLUGINS_PREINSTALL_SYNC
+                  value: victoriametrics-logs-datasource
+              resources:
+                requests:
+                  memory: 256Mi
+                limits:
+                  memory: 512Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+                seccompProfile:
+                  type: RuntimeDefault
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 472
+            runAsGroup: 472
+            fsGroup: 472
+            fsGroupChangePolicy: OnRootMismatch
+          volumes:
+            # Flux and VolSync retain ownership of the existing claim.
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: grafana
+  httpRoute:
+    spec:
+      hostnames:
+        - grafana.cbannister.xyz
+      parentRefs:
+        - name: internal-cbannister-xyz
+          namespace: network
+          kind: ListenerSet
+          sectionName: https

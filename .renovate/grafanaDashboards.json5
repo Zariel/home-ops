@@ -13,9 +13,9 @@
       customType: "regex",
       managerFilePatterns: ["/(^|/)k8s/.+\\.ya?ml$/"],
       matchStrings: [
-        'depName="(?<depName>.*)"\\n(?<indentation>\\s+)gnetId: (?<packageName>\\d+)\\n.+revision: (?<currentValue>\\d+)'
+        'depName="(?<depName>.*)"\\n(?<indentation>\\s+)(?<idKey>gnetId|id): (?<packageName>\\d+)\\n.+revision: (?<currentValue>\\d+)'
       ],
-      autoReplaceStringTemplate: 'depName="{{{depName}}}"\n{{{indentation}}}gnetId: {{{packageName}}}\n{{{indentation}}}revision: {{{newValue}}}',
+      autoReplaceStringTemplate: 'depName="{{{depName}}}"\n{{{indentation}}}{{{idKey}}}: {{{packageName}}}\n{{{indentation}}}revision: {{{newValue}}}',
       datasourceTemplate: "custom.grafana-dashboards",
       versioningTemplate: "regex:^(?<major>\\d+)$",
     },

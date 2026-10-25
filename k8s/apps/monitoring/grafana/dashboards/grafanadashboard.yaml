@@ -1,0 +1,815 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-dashboard
+  namespace: kube-system
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  configMapRef:
+    name: cilium-dashboard
+    key: cilium-dashboard.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-operator-dashboard
+  namespace: kube-system
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  configMapRef:
+    name: cilium-operator-dashboard
+    key: cilium-operator-dashboard.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: hubble-dashboard
+  namespace: kube-system
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  configMapRef:
+    name: hubble-dashboard
+    key: hubble-dashboard.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: hubble-dns-namespace
+  namespace: kube-system
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  configMapRef:
+    name: hubble-dns-namespace
+    key: hubble-dns-namespace.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: hubble-l7-http-metrics-by-workload
+  namespace: kube-system
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  configMapRef:
+    name: hubble-l7-http-metrics-by-workload
+    key: hubble-l7-http-metrics-by-workload.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: hubble-network-overview-namespace
+  namespace: kube-system
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  configMapRef:
+    name: hubble-network-overview-namespace
+    key: hubble-network-overview-namespace.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: drm-exporter-dashboard
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: drm-exporter-dashboard
+    key: drm-exporter.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-apiserver
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-apiserver
+    key: apiserver.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-cluster-total
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-cluster-total
+    key: cluster-total.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-controller-manager
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-controller-manager
+    key: controller-manager.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-etcd
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-etcd
+    key: etcd.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-cluster
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-cluster
+    key: k8s-resources-cluster.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-multicluster
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-multicluster
+    key: k8s-resources-multicluster.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-namespace
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-namespace
+    key: k8s-resources-namespace.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-node
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-node
+    key: k8s-resources-node.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-nodes-overview
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-nodes-overview
+    key: k8s-resources-nodes-overview.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-pod
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-pod
+    key: k8s-resources-pod.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-windows-cluster
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-windows-cluster
+    key: k8s-resources-windows-cluster.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-windows-namespace
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-windows-namespace
+    key: k8s-resources-windows-namespace.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-windows-pod
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-windows-pod
+    key: k8s-resources-windows-pod.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-workload
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-workload
+    key: k8s-resources-workload.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-resources-workloads-namespace
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-resources-workloads-namespace
+    key: k8s-resources-workloads-namespace.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-windows-cluster-rsrc-use
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-windows-cluster-rsrc-use
+    key: k8s-windows-cluster-rsrc-use.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-k8s-windows-node-rsrc-use
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-k8s-windows-node-rsrc-use
+    key: k8s-windows-node-rsrc-use.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-kubelet
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-kubelet
+    key: kubelet.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-kubernetes-system-api-server
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-kubernetes-system-api-server
+    key: kubernetes-system-api-server.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-kubernetes-system-coredns
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-kubernetes-system-coredns
+    key: kubernetes-system-coredns.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-kubernetes-views-global
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-kubernetes-views-global
+    key: kubernetes-views-global.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-kubernetes-views-namespaces
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-kubernetes-views-namespaces
+    key: kubernetes-views-namespaces.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-kubernetes-views-nodes
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-kubernetes-views-nodes
+    key: kubernetes-views-nodes.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-kubernetes-views-pods
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-kubernetes-views-pods
+    key: kubernetes-views-pods.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-namespace-by-pod
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-namespace-by-pod
+    key: namespace-by-pod.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-namespace-by-workload
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-namespace-by-workload
+    key: namespace-by-workload.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-node-cluster-rsrc-use
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-node-cluster-rsrc-use
+    key: node-cluster-rsrc-use.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-node-rsrc-use
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-node-rsrc-use
+    key: node-rsrc-use.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-nodes
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-nodes
+    key: nodes.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-nodes-aix
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-nodes-aix
+    key: nodes-aix.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-nodes-darwin
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-nodes-darwin
+    key: nodes-darwin.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-persistentvolumesusage
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-persistentvolumesusage
+    key: persistentvolumesusage.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-pod-total
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-pod-total
+    key: pod-total.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-prometheus-remote-write
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-prometheus-remote-write
+    key: prometheus-remote-write.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-scheduler
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-scheduler
+    key: scheduler.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-victoriametrics-operator
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-victoriametrics-operator
+    key: victoriametrics-operator.json
+  variables:
+    - name: ds
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoria-metrics-workload-total
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: victoria-metrics-k8s-stack-dashboard-workload-total
+    key: workload-total.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General

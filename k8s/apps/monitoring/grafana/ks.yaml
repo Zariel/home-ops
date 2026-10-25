@@ -13,6 +13,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: grafana-operator
     # Wait for the operator to create the OIDC credential Secret.
     - name: grafana-oidc
     - name: onepassword-store
@@ -21,6 +22,11 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: grafana-deployment
+      namespace: monitoring
   path: ./k8s/apps/monitoring/grafana/app
   postBuild:
     substitute:
@@ -58,3 +64,23 @@ spec:
   targetNamespace: monitoring
   timeout: 5m
   wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+spec:
+  dependsOn:
+    - name: grafana
+  interval: 30m
+  path: ./k8s/apps/monitoring/grafana/dashboards
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  # Dashboard ConfigMap references must stay in their source namespace.
+  timeout: 5m
+  wait: false

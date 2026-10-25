@@ -6,36 +6,22 @@ labels:
       app: grafana
 resources:
   - externalsecret.yaml
+  - grafana.yaml
+  - grafanadatasource.yaml
+  - grafanadashboard.yaml
+  - servicemonitor.yaml
+configurations:
+  - kustomizeconfig.yaml
 configMapGenerator:
   - name: zfs-better-dashboard
     files:
       - resources/dashboards/zfs-better.json
-    options:
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: "default"
   - name: brocade-temperature-dashboard
     files:
       - resources/dashboards/brocade-temperature.json
-    options:
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: "default"
   - name: raritan-pdu-dashboard
     files:
       - resources/dashboards/raritan-pdu.json
-    options:
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: "default"
   - name: homelab-power-cpu-thermals-dashboard
     files:
       - resources/dashboards/homelab-power-cpu-thermals.json
-    options:
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: "default"
