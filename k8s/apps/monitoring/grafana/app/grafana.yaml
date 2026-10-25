@@ -48,6 +48,9 @@ spec:
       allow_assign_grafana_admin: "true"
     news:
       news_feed_enabled: "false"
+    plugins:
+      # Updating bundled plugins fails on the read-only image and unloads them.
+      preinstall_auto_update: "false"
     server:
       root_url: https://grafana.cbannister.xyz
     date_formats:
