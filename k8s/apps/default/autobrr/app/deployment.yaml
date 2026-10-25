@@ -56,6 +56,24 @@ spec:
               value: "80"
             - name: AUTOBRR__HOST
               value: "0.0.0.0"
+            - name: AUTOBRR__OIDC_ENABLED
+              value: "true"
+            - name: AUTOBRR__OIDC_ISSUER
+              value: https://id.cbannister.xyz
+            - name: AUTOBRR__OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: autobrr-oidc
+                  key: client_id
+            - name: AUTOBRR__OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: autobrr-oidc
+                  key: client_secret
+            - name: AUTOBRR__OIDC_REDIRECT_URL
+              value: https://autobrr.cbannister.xyz/api/auth/oidc/callback
+            - name: AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN
+              value: "true"
             - name: SSL_CERT_FILE
               value: /etc/ssl/certs/ca-certificates.crt
           envFrom:

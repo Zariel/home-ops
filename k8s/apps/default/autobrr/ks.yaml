@@ -12,6 +12,7 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: autobrr-oidc
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: onepassword-store
@@ -32,3 +33,24 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: autobrr-oidc
+  namespace: default
+spec:
+  dependsOn:
+    - name: pocket-id-instance
+      namespace: default
+  interval: 1h
+  path: ./k8s/apps/default/autobrr/oidc
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: default
+  timeout: 5m
+  wait: true

@@ -1,0 +1,21 @@
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: autobrr
+  namespace: default
+spec:
+  name: autobrr
+  clientID: autobrr
+  instanceSelector:
+    matchLabels:
+      pocketid.internal/instance: pocket-id
+  pkceEnabled: true
+  callbackUrls:
+    - https://autobrr.cbannister.xyz/api/auth/oidc/callback
+  launchUrl: https://autobrr.cbannister.xyz
+  allowedUserGroups:
+    - groupName: admin
+  secret:
+    name: autobrr-oidc
+  logo:
+    autoGenerate: false
