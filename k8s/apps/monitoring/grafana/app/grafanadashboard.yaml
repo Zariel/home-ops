@@ -136,12 +136,15 @@ spec:
       dashboards: grafana
   resyncPeriod: 30m
   grafanaCom:
-    # renovate: depName="ZFS"
-    id: 7845
-    revision: 4
+    # renovate: depName="ZFS / Overview"
+    id: 24987
+    revision: 12
   datasources:
     - inputName: DS_PROMETHEUS
       datasourceName: victoriametrics
+  variables:
+    - name: datasource
+      value: victoriametrics
   folder: General
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -439,6 +442,50 @@ spec:
   configMapRef:
     name: grafana-operator-dashboard
     key: grafana-operator.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: qbittorrent
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="qBittorrent / Overview"
+    id: 25156
+    revision: 10
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: General
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: brrpolice
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="brrpolice / Overview"
+    id: 25155
+    revision: 8
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
   variables:
     - name: datasource
       value: victoriametrics
