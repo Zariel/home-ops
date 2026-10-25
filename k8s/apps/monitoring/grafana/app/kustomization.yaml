@@ -5,7 +5,6 @@ labels:
   - pairs:
       app: grafana
 resources:
-  - helmrelease.yaml
   - externalsecret.yaml
 configMapGenerator:
   - name: zfs-better-dashboard
