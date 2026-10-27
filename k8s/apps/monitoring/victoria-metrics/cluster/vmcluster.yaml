@@ -79,17 +79,18 @@ spec:
     replicaCount: 2
     useStrictSecurity: true
     # Bound native-import parsing concurrency independently of host CPU count.
+    # Keep import headroom until the history migration has completed.
     extraEnvs:
       - name: GOMAXPROCS
-        value: "2"
+        value: "8"
       - name: GOMEMLIMIT
-        value: 768MiB
+        value: 1536MiB
     resources:
       requests:
         cpu: 100m
         memory: 256Mi
       limits:
-        memory: 1Gi
+        memory: 2Gi
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
