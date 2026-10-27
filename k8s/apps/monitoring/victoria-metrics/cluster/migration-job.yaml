@@ -2,11 +2,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: vmsingle-to-vmcluster-20261027
+  name: vmsingle-to-vmcluster-20261027-v2
   namespace: monitoring
 spec:
   backoffLimit: 1
-  activeDeadlineSeconds: 21600
+  activeDeadlineSeconds: 86400
   template:
     spec:
       restartPolicy: Never
@@ -33,7 +33,7 @@ spec:
             - --vm-native-filter-time-end=2026-10-27T22:51:00Z
             - --vm-native-step-interval=month
             - --vm-concurrency=1
-            - --vm-rate-limit=8388608
+            - --vm-rate-limit=33554432
           resources:
             requests:
               cpu: 250m
