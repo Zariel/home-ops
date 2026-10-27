@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: vmsingle-to-vmcluster-20261027-v2
+  name: vmsingle-to-vmcluster-20261027-v3
   namespace: monitoring
 spec:
   backoffLimit: 1
@@ -31,9 +31,12 @@ spec:
             - --vm-native-filter-time-start=2026-09-01T00:00:00Z
             # Overlap with dual writes to avoid a gap at the boundary.
             - --vm-native-filter-time-end=2026-10-27T22:51:00Z
-            - --vm-native-step-interval=month
+            - --vm-native-step-interval=day
+            - --vm-native-disable-per-metric-migration
             - --vm-concurrency=1
             - --vm-rate-limit=33554432
+            - --pushmetrics.url=http://vmagent-victoria.monitoring.svc:8429/api/v1/import/prometheus
+            - --pushmetrics.extraLabel=job="vmcluster-migration"
           resources:
             requests:
               cpu: 250m
