@@ -2,10 +2,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: vmsingle-to-vmcluster-20261027-v4
+  name: vmsingle-to-vmcluster-20261027-v5
   namespace: monitoring
 spec:
-  suspend: true
+  suspend: false
   backoffLimit: 3
   activeDeadlineSeconds: 86400
   template:
