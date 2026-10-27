@@ -78,12 +78,18 @@ spec:
   vminsert:
     replicaCount: 2
     useStrictSecurity: true
+    # Bound native-import parsing concurrency independently of host CPU count.
+    extraEnvs:
+      - name: GOMAXPROCS
+        value: "2"
+      - name: GOMEMLIMIT
+        value: 768MiB
     resources:
       requests:
         cpu: 100m
-        memory: 128Mi
+        memory: 256Mi
       limits:
-        memory: 512Mi
+        memory: 1Gi
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -97,3 +103,5 @@ spec:
       unhealthyPodEvictionPolicy: AlwaysAllow
     extraArgs:
       maxLabelsPerTimeseries: "100"
+      memory.allowedBytes: 256MiB
+      maxConcurrentInserts: "4"
