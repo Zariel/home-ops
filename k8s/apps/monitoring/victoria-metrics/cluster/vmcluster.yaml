@@ -12,10 +12,10 @@ spec:
     useStrictSecurity: true
     resources:
       requests:
-        cpu: 250m
-        memory: 1Gi
+        cpu: "2"
+        memory: 4Gi
       limits:
-        memory: 2Gi
+        memory: 8Gi
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -82,15 +82,15 @@ spec:
     # Keep import headroom until the history migration has completed.
     extraEnvs:
       - name: GOMAXPROCS
-        value: "8"
+        value: "16"
       - name: GOMEMLIMIT
-        value: 1536MiB
+        value: 6GiB
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
+        cpu: "2"
         memory: 2Gi
+      limits:
+        memory: 8Gi
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -104,5 +104,5 @@ spec:
       unhealthyPodEvictionPolicy: AlwaysAllow
     extraArgs:
       maxLabelsPerTimeseries: "100"
-      memory.allowedBytes: 256MiB
-      maxConcurrentInserts: "4"
+      memory.allowedBytes: 1GiB
+      maxConcurrentInserts: "32"
