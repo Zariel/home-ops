@@ -1,0 +1,47 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vmsingle-to-vmcluster-20261027
+  namespace: monitoring
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 21600
+  template:
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: vmctl
+          image: victoriametrics/vmctl:v1.155.0
+          args:
+            - vm-native
+            - -s
+            - --disable-progress-bar
+            - --vm-native-src-addr=http://vmsingle-victoria.monitoring.svc:8429
+            - --vm-native-dst-addr=http://vminsert-victoria.monitoring.svc:8480/insert/0/prometheus
+            - --vm-native-filter-match={__name__!=""}
+            # Both source data directories contain only these two months.
+            - --vm-native-filter-time-start=2026-09-01T00:00:00Z
+            # Overlap with dual writes to avoid a gap at the boundary.
+            - --vm-native-filter-time-end=2026-10-27T22:51:00Z
+            - --vm-native-step-interval=month
+            - --vm-concurrency=1
+            - --vm-rate-limit=8388608
+          resources:
+            requests:
+              cpu: 250m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
