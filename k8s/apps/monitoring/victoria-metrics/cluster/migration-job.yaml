@@ -5,7 +5,7 @@ metadata:
   name: vmsingle-to-vmcluster-20261027-v4
   namespace: monitoring
 spec:
-  suspend: false
+  suspend: true
   backoffLimit: 3
   activeDeadlineSeconds: 86400
   template:
