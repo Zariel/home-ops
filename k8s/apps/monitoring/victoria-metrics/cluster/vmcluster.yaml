@@ -1,0 +1,99 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMCluster
+metadata:
+  name: victoria
+  namespace: monitoring
+spec:
+  retentionPeriod: "12"
+  replicationFactor: 2
+  vmstorage:
+    replicaCount: 3
+    useStrictSecurity: true
+    resources:
+      requests:
+        cpu: 250m
+        memory: 1Gi
+      limits:
+        memory: 2Gi
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: vmstorage
+                app.kubernetes.io/instance: victoria
+    podDisruptionBudget:
+      maxUnavailable: 1
+      unhealthyPodEvictionPolicy: AlwaysAllow
+    storageDataPath: /vm-data
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ceph-block
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 100Gi
+    extraArgs:
+      dedup.minScrapeInterval: 30s
+      memory.allowedPercent: "50"
+  vmselect:
+    replicaCount: 2
+    useStrictSecurity: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 1Gi
+      limits:
+        memory: 2Gi
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: vmselect
+                app.kubernetes.io/instance: victoria
+    podDisruptionBudget:
+      maxUnavailable: 1
+      unhealthyPodEvictionPolicy: AlwaysAllow
+    cacheMountPath: /select-cache
+    storage:
+      emptyDir: {}
+    serviceSpec:
+      metadata:
+        name: vmselect-victoria-query
+      spec:
+        type: ClusterIP
+    extraArgs:
+      dedup.minScrapeInterval: 30s
+      memory.allowedBytes: 512MiB
+      search.cacheTimestampOffset: 15m
+      search.maxConcurrentRequests: "2"
+      search.maxMemoryPerQuery: 256MiB
+      search.minStalenessInterval: 5m
+  vminsert:
+    replicaCount: 2
+    useStrictSecurity: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: vminsert
+                app.kubernetes.io/instance: victoria
+    podDisruptionBudget:
+      maxUnavailable: 1
+      unhealthyPodEvictionPolicy: AlwaysAllow
+    extraArgs:
+      maxLabelsPerTimeseries: "100"
