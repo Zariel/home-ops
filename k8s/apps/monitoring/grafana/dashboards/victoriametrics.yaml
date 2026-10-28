@@ -1,0 +1,56 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoriametrics-cluster
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Monitoring
+  grafanaCom:
+    # renovate: depName="VictoriaMetrics - cluster"
+    id: 11176
+    revision: 64
+  variables:
+    - name: ds
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoriametrics-vmagent
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Monitoring
+  grafanaCom:
+    # renovate: depName="VictoriaMetrics - vmagent"
+    id: 12683
+    revision: 42
+  variables:
+    - name: ds
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victoriametrics-vmalert
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Monitoring
+  grafanaCom:
+    # renovate: depName="VictoriaMetrics - vmalert"
+    id: 14950
+    revision: 22
+  variables:
+    - name: ds
+      value: victoriametrics
