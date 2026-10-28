@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - vmsingle.yaml
   - vmcluster.yaml
-  - migration-job.yaml
   - vlsingle.yaml
   - vmagent.yaml
   - vmalert.yaml

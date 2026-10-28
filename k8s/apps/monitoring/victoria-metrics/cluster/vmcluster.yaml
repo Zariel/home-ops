@@ -12,10 +12,10 @@ spec:
     useStrictSecurity: true
     resources:
       requests:
-        cpu: "2"
-        memory: 4Gi
+        cpu: 250m
+        memory: 1Gi
       limits:
-        memory: 8Gi
+        memory: 2Gi
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -79,18 +79,17 @@ spec:
     replicaCount: 2
     useStrictSecurity: true
     # Bound native-import parsing concurrency independently of host CPU count.
-    # Keep import headroom until the history migration has completed.
     extraEnvs:
       - name: GOMAXPROCS
-        value: "16"
+        value: "2"
       - name: GOMEMLIMIT
-        value: 6GiB
+        value: 768MiB
     resources:
       requests:
-        cpu: "2"
-        memory: 2Gi
+        cpu: 100m
+        memory: 256Mi
       limits:
-        memory: 8Gi
+        memory: 1Gi
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -104,5 +103,5 @@ spec:
       unhealthyPodEvictionPolicy: AlwaysAllow
     extraArgs:
       maxLabelsPerTimeseries: "100"
-      memory.allowedBytes: 1GiB
-      maxConcurrentInserts: "32"
+      memory.allowedBytes: 256MiB
+      maxConcurrentInserts: "4"
