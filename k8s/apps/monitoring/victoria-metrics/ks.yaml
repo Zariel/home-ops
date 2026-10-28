@@ -7,8 +7,6 @@ metadata:
 spec:
   path: ./k8s/apps/monitoring/victoria-metrics/cluster
   targetNamespace: monitoring
-  components:
-    - ../../../../components/volsync
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -20,19 +18,8 @@ spec:
   dependsOn:
     - name: alertmanager
     - name: victoria-metrics-k8s-stack
-    - name: onepassword-store
-      namespace: external-secrets
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
-  postBuild:
-    substitute:
-      APP: vmsingle
-      VOLSYNC_CAPACITY: 150Gi
-      VOLSYNC_CACHE_CAPACITY: 10Gi
-      VOLSYNC_PUID: "65534"
-      VOLSYNC_PGID: "65534"
   wait: false
   interval: 30m
   retryInterval: 1m
