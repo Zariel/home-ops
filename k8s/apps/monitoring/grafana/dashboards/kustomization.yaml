@@ -7,6 +7,13 @@ resources:
 configurations:
   - kustomizeconfig.yaml
 configMapGenerator:
+  # Upstream: cloudnative-pg/grafana-dashboards, commit
+  # 47e4c51219fdbb3c7ef2c4d91a2d8855e9ca1880, charts/cluster/grafana-dashboard.json.
+  # Replace hard-coded prometheus UIDs with the dashboard's datasource variable.
+  - name: cloudnative-pg-dashboard
+    namespace: monitoring
+    files:
+      - resources/cloudnative-pg.json
   # Upstream: prometheus-operator/kube-prometheus, commit
   # f71fb6c77d108ad2b4cbf4d9771b56cbe92611fb, manifests/grafana-dashboardDefinitions.yaml.
   - name: grafana-overview-dashboard

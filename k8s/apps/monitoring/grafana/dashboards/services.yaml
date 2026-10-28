@@ -9,7 +9,9 @@ spec:
       dashboards: grafana
   resyncPeriod: 30m
   folder: Storage
-  url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/47e4c51219fdbb3c7ef2c4d91a2d8855e9ca1880/charts/cluster/grafana-dashboard.json
+  configMapRef:
+    name: cloudnative-pg-dashboard
+    key: cloudnative-pg.json
   datasources:
     - inputName: DS_EXPRESSION
       datasourceName: __expr__
@@ -35,6 +37,8 @@ spec:
   datasources:
     - inputName: DS_PROMETHEUS
       datasourceName: victoriametrics
+    - inputName: VAR_REPLICATIONDESTNAME
+      datasourceName: .*-dst|.*-bootstrap
   variables:
     - name: replicationDestName
       value: .*-dst|.*-bootstrap
