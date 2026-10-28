@@ -170,7 +170,7 @@ spec:
         enabled: true
         urlPrefix: /
         ssl: false
-        prometheusEndpoint: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
+        prometheusEndpoint: http://vmselect-victoria-query.monitoring.svc.cluster.local:8481/select/0/prometheus
       storage:
         useAllNodes: false
         useAllDevices: false
