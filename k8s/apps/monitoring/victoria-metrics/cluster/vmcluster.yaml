@@ -9,6 +9,10 @@ spec:
   replicationFactor: 2
   vmstorage:
     replicaCount: 3
+    # Let peer DNS caches recover before restarting the next storage pod.
+    minReadySeconds: 30
+    readinessProbe:
+      successThreshold: 3
     useStrictSecurity: true
     resources:
       requests:

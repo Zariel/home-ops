@@ -11,8 +11,7 @@ spec:
     memory.allowedBytes: 2GiB
     maxLabelsPerTimeseries: "100"
     search.cacheTimestampOffset: 15m
-    # Temporary export concurrency while VMCluster history is copied.
-    search.maxConcurrentRequests: "8"
+    search.maxConcurrentRequests: "2"
     search.maxMemoryPerQuery: 256MiB
     search.minStalenessInterval: 5m
   volumes:
@@ -24,4 +23,4 @@ spec:
       cpu: 1
       memory: 8Gi
     limits:
-      memory: 16Gi
+      memory: 8Gi
