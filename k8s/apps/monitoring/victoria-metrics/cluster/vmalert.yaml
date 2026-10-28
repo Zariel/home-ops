@@ -11,9 +11,9 @@ spec:
   evaluationInterval: 1m
   selectAllByDefault: true
   datasource:
-    url: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
+    url: http://vmselect-victoria-query.monitoring.svc.cluster.local:8481/select/0/prometheus
   remoteRead:
-    url: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
+    url: http://vmselect-victoria-query.monitoring.svc.cluster.local:8481/select/0/prometheus
   remoteWrite:
     url: http://vmagent-victoria.monitoring.svc.cluster.local:8429
   notifiers:
