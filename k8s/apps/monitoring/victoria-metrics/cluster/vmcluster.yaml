@@ -11,6 +11,7 @@ spec:
     replicaCount: 3
     # Let peer DNS caches recover before restarting the next storage pod.
     minReadySeconds: 30
+    rollingUpdateStrategy: OnDelete
     readinessProbe:
       successThreshold: 3
     useStrictSecurity: true
