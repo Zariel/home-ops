@@ -3,3 +3,25 @@ kind: Kustomization
 resources:
   - grafanadashboard.yaml
   - victoriametrics.yaml
+  - services.yaml
+configurations:
+  - kustomizeconfig.yaml
+configMapGenerator:
+  # Upstream: prometheus-operator/kube-prometheus, commit
+  # f71fb6c77d108ad2b4cbf4d9771b56cbe92611fb, manifests/grafana-dashboardDefinitions.yaml.
+  - name: grafana-overview-dashboard
+    namespace: monitoring
+    files:
+      - resources/grafana-overview.json
+  - name: alertmanager-overview-dashboard
+    namespace: monitoring
+    files:
+      - resources/alertmanager-overview.json
+  - name: forgejo-overview-dashboard
+    namespace: monitoring
+    files:
+      - resources/forgejo-overview.json
+  - name: blackbox-icmp-dashboard
+    namespace: monitoring
+    files:
+      - resources/blackbox-icmp.json

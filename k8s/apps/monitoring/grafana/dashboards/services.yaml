@@ -1,0 +1,130 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cloudnative-pg
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Storage
+  url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/47e4c51219fdbb3c7ef2c4d91a2d8855e9ca1880/charts/cluster/grafana-dashboard.json
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+    - name: DS_EXPRESSION
+      value: __expr__
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: volsync
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Storage
+  grafanaCom:
+    # renovate: depName="VolSync Dashboard"
+    id: 21356
+    revision: 3
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: VAR_REPLICATIONDESTNAME
+      value: .*-dst|.*-bootstrap
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: victorialogs
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Monitoring
+  grafanaCom:
+    # renovate: depName="VictoriaLogs - single-node"
+    id: 22084
+    revision: 12
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: grafana-overview
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Monitoring
+  configMapRef:
+    name: grafana-overview-dashboard
+    key: grafana-overview.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: alertmanager-overview
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Monitoring
+  configMapRef:
+    name: alertmanager-overview-dashboard
+    key: alertmanager-overview.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: forgejo-overview
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Development
+  configMapRef:
+    name: forgejo-overview-dashboard
+    key: forgejo-overview.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: blackbox-icmp
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Networking
+  configMapRef:
+    name: blackbox-icmp-dashboard
+    key: blackbox-icmp.json
+  variables:
+    - name: datasource
+      value: victoriametrics
