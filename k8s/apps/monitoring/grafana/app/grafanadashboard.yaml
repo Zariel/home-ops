@@ -15,7 +15,7 @@ spec:
   datasources:
     - inputName: DS_PROMETHEUS
       datasourceName: victoriametrics
-  folder: General
+  folder: Networking
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -34,7 +34,7 @@ spec:
   variables:
     - name: ds_prometheus
       value: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -50,7 +50,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -66,7 +66,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -85,7 +85,7 @@ spec:
   variables:
     - name: DS_PROMETHEUS
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -104,7 +104,7 @@ spec:
   datasources:
     - inputName: DS_PROMETHEUS
       datasourceName: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -123,7 +123,7 @@ spec:
   datasources:
     - inputName: DS_PROMETHEUS
       datasourceName: victoriametrics
-  folder: General
+  folder: Networking
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -145,7 +145,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Storage
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -382,7 +382,7 @@ spec:
   configMapRef:
     name: zfs-better-dashboard
     key: zfs-better.json
-  folder: General
+  folder: Storage
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -397,7 +397,7 @@ spec:
   configMapRef:
     name: brocade-temperature-dashboard
     key: brocade-temperature.json
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -412,7 +412,7 @@ spec:
   configMapRef:
     name: raritan-pdu-dashboard
     key: raritan-pdu.json
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -427,7 +427,7 @@ spec:
   configMapRef:
     name: homelab-power-cpu-thermals-dashboard
     key: homelab-power-cpu-thermals.json
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -445,7 +445,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Monitoring
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -467,7 +467,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Media
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -489,4 +489,4 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Media

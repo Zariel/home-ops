@@ -146,7 +146,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -164,7 +164,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -182,7 +182,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -200,7 +200,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -218,7 +218,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -236,7 +236,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -254,7 +254,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -272,7 +272,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -290,7 +290,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -308,7 +308,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -326,7 +326,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -344,7 +344,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -362,7 +362,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -380,7 +380,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -398,7 +398,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -416,7 +416,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -434,7 +434,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -452,7 +452,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -470,7 +470,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -488,7 +488,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -506,7 +506,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -524,7 +524,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -542,7 +542,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -560,7 +560,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -578,7 +578,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -596,7 +596,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -614,7 +614,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -632,7 +632,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -650,7 +650,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -668,7 +668,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -686,7 +686,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -704,7 +704,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Hardware
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -722,7 +722,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -740,7 +740,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -758,7 +758,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Monitoring
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -776,7 +776,7 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -794,7 +794,7 @@ spec:
   variables:
     - name: ds
       value: victoriametrics
-  folder: General
+  folder: Monitoring
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
@@ -812,4 +812,4 @@ spec:
   variables:
     - name: datasource
       value: victoriametrics
-  folder: General
+  folder: Kubernetes
