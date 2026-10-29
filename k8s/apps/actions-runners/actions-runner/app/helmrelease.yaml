@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: actions-runner
+  namespace: actions-runners
+spec:
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.15.0
+  url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: actions-runner
+  namespace: actions-runners
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: actions-runner
+  values:
+    githubConfigUrl: https://github.com/katl-dev/katl
+    githubConfigSecret: actions-runner-github-app
+    runnerScaleSetName: katl-vmtest
+    minRunners: 0
+    maxRunners: 3
+    controllerServiceAccount:
+      name: actions-runner-controller
+      namespace: actions-runner-system
+    listenerTemplate:
+      spec:
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65532
+          runAsGroup: 65532
+          seccompProfile:
+            type: RuntimeDefault
+        containers:
+          - name: listener
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+    template:
+      spec:
+        automountServiceAccountToken: false
+        enableServiceLinks: false
+        hostNetwork: false
+        hostPID: false
+        hostIPC: false
+        nodeSelector:
+          kubernetes.io/arch: amd64
+          kubernetes.io/os: linux
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+        containers:
+          - name: runner
+            image: ghcr.io/zariel/katl-vmtest-runner:2.338.0-1
+            command: ["/usr/local/bin/katl-vmtest-runner"]
+            args: ["/home/runner/run.sh"]
+            securityContext:
+              # Libvirt networking, disk inspection, and nested builders need
+              # privileges; all daemons and storage belong to this job's pod.
+              privileged: true
+            resources:
+              requests:
+                cpu: "4"
+                memory: 16Gi
+                ephemeral-storage: 60Gi
+              limits:
+                cpu: "12"
+                memory: 32Gi
+                ephemeral-storage: 160Gi
+                kernel.org/vmtest: "1"
+            volumeMounts:
+              - name: work
+                mountPath: /home/runner/_work
+              - name: docker
+                mountPath: /var/lib/docker
+              - name: libvirt
+                mountPath: /var/lib/libvirt
+        volumes:
+          - name: work
+            emptyDir:
+              sizeLimit: 80Gi
+          - name: docker
+            emptyDir:
+              sizeLimit: 40Gi
+          - name: libvirt
+            emptyDir:
+              sizeLimit: 40Gi
