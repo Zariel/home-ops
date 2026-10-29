@@ -4,90 +4,52 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: brrpolice
+  namespace: default
 spec:
   interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 5.3.0
-  url: oci://ghcr.io/bjw-s-labs/helm/app-template
+    tag: 0.16.1
+  url: oci://ghcr.io/zariel/charts/brrpolice
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: brrpolice
+  namespace: default
 spec:
   chartRef:
     kind: OCIRepository
     name: brrpolice
   interval: 1h
   values:
-    controllers:
-      brrpolice:
-        containers:
-          app:
-            image:
-              repository: ghcr.io/zariel/brrpolice
-              tag: v0.16.0@sha256:0584b0ebefe211a89f3d8f5b039d3056b94a5ae26392e4ac55e68f3adb2e3f70
-            env:
-              BRRPOLICE_QBITTORRENT__BASE_URL: http://qbittorrent.default.svc.cluster.local
-              BRRPOLICE_LOGGING__LEVEL: info
-              BRRPOLICE_HTTP__PORT: &port 80
-              TZ: Europe/London
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /healthz
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 5
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /readyz
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 5
-                  failureThreshold: 3
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 64Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
+    config:
+      qbittorrent:
+        base_url: http://qbittorrent.default.svc.cluster.local
+      http:
+        port: 80
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
+    extraEnv:
+      - name: TZ
+        value: Europe/London
     persistence:
-      data:
-        existingClaim: "{{ .Release.Name }}"
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
+      existingClaim: brrpolice
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 64Mi
     service:
-      app:
-        ports:
-          http:
-            port: *port
-    serviceMonitor:
-      app:
-        endpoints:
-          - port: http
+      port: 80
+    monitoring:
+      serviceMonitor:
+        enabled: true
