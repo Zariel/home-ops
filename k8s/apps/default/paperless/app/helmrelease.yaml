@@ -202,6 +202,31 @@ spec:
               CALLBACK_IP: 10.1.2.162
               PYTHONUNBUFFERED: "1"
             probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - python3
+                      - -c
+                      - |
+                        from pathlib import Path
+                        import resource
+                        import sys
+
+                        # brscan-skey retains UDP sockets during registration refreshes.
+                        # Recover before it exhausts descriptors and loses the destination.
+                        used = len(list(Path('/proc/1/fd').iterdir()))
+                        limit = resource.prlimit(1, resource.RLIMIT_NOFILE)[0]
+                        if limit != resource.RLIM_INFINITY and used >= limit * 3 // 4:
+                            sys.exit(f'brscan-skey uses {used}/{limit} file descriptors')
+                        listeners = Path('/proc/1/net/udp').read_text().splitlines()[1:]
+                        if not any(line.split()[1].endswith(':D68D') for line in listeners):
+                            sys.exit('Brother scan listener is missing on UDP 54925')
+                  periodSeconds: 60
+                  timeoutSeconds: 5
+                  failureThreshold: 3
               readiness:
                 enabled: true
                 custom: true
