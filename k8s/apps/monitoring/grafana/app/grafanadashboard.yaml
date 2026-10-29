@@ -479,13 +479,9 @@ spec:
     matchLabels:
       dashboards: grafana
   resyncPeriod: 30m
-  grafanaCom:
-    # renovate: depName="brrpolice / Overview"
-    id: 25155
-    revision: 8
-  datasources:
-    - inputName: DS_PROMETHEUS
-      datasourceName: victoriametrics
+  configMapRef:
+    name: brrpolice-dashboard
+    key: brrpolice-overview.json
   variables:
     - name: datasource
       value: victoriametrics
