@@ -1,0 +1,110 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdm
+  namespace: default
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pdm
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pdm
+    spec:
+      hostname: pdm
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: pdm
+          image: ghcr.io/88plug/proxmox-dc-manager-dockerized:1.1.7@sha256:d0fc207cf20552f41fd501085b7f9a527d8a80aa1b05d635dfba067b96e165e9
+          # The image accepts TLS material as base64 environment variables.
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              export PDM_TLS_CERT_B64="$(base64 -w0 /tls/tls.crt)"
+              export PDM_TLS_KEY_B64="$(base64 -w0 /tls/tls.key)"
+              exec /init
+          env:
+            - name: PDM_FQDN
+              value: pdm.cbannister.xyz
+            - name: TZ
+              value: Europe/London
+            # /etc/shadow is ephemeral; reseed PAM credentials on every start.
+            - name: PDM_ROOT_PASSWORD_FORCE
+              value: "1"
+            - name: PDM_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pdm
+                  key: PDM_ROOT_PASSWORD
+          ports:
+            - name: https
+              containerPort: 8443
+          startupProbe:
+            httpGet: &probe
+              path: /api2/json/ping
+              port: https
+              scheme: HTTPS
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet: *probe
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet: *probe
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+          securityContext:
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: storage
+              mountPath: /etc/proxmox-datacenter-manager
+              subPath: config
+            - name: storage
+              mountPath: /var/lib/proxmox-datacenter-manager
+              subPath: data
+            - name: storage
+              mountPath: /var/cache/proxmox-datacenter-manager
+              subPath: cache
+            - name: storage
+              mountPath: /var/log/proxmox-datacenter-manager
+              subPath: logs
+            - name: runtime
+              mountPath: /run/proxmox-datacenter-manager
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: pdm
+        - name: runtime
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
+        - name: tls
+          secret:
+            secretName: pdm-tls

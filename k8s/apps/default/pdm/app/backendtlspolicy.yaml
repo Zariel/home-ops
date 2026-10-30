@@ -1,0 +1,15 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: pdm
+  namespace: default
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: pdm
+      sectionName: https
+  validation:
+    hostname: pdm.cbannister.xyz
+    wellKnownCACertificates: System

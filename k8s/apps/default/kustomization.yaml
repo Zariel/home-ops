@@ -43,3 +43,4 @@ resources:
   - ./karakeep/ks.yaml
   - ./paperless/ks.yaml
   - ./paperless-gpt/ks.yaml
+  - ./pdm/ks.yaml

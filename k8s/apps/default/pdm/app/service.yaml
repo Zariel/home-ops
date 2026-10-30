@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pdm
+  namespace: default
+spec:
+  selector:
+    app.kubernetes.io/name: pdm
+  ports:
+    - name: https
+      port: 8443
+      targetPort: https
+      protocol: TCP
