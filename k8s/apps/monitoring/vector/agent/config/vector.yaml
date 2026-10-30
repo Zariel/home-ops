@@ -27,7 +27,7 @@ sinks:
     type: vector
     compression: gzip
     version: "2"
-    address: "vector-aggregator.monitoring.svc.cluster.local:6000"
+    address: "http://vector-aggregator.monitoring.svc.cluster.local:6000"
     inputs:
       - kubernetes_logs
     # Batching for better throughput
@@ -44,7 +44,7 @@ sinks:
     type: vector
     compression: gzip
     version: "2"
-    address: vector-aggregator.monitoring.svc.cluster.local:6005
+    address: http://vector-aggregator.monitoring.svc.cluster.local:6005
     inputs:
       - katl_journal
     buffer:
