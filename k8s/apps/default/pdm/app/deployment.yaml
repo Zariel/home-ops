@@ -30,13 +30,14 @@ spec:
       containers:
         - name: pdm
           image: ghcr.io/88plug/proxmox-dc-manager-dockerized:1.1.7@sha256:d0fc207cf20552f41fd501085b7f9a527d8a80aa1b05d635dfba067b96e165e9
-          # The image accepts TLS material as base64 environment variables.
+          # Keep auth owned by root; the image's TLS env bootstrap uses www-data.
           command:
             - /bin/bash
             - -ec
             - |
-              export PDM_TLS_CERT_B64="$(base64 -w0 /tls/tls.crt)"
-              export PDM_TLS_KEY_B64="$(base64 -w0 /tls/tls.key)"
+              install -d -m 0750 -o root -g www-data /etc/proxmox-datacenter-manager/auth
+              install -m 0640 -o root -g www-data /tls/tls.crt /etc/proxmox-datacenter-manager/auth/api.pem
+              install -m 0640 -o root -g www-data /tls/tls.key /etc/proxmox-datacenter-manager/auth/api.key
               exec /init
           env:
             - name: PDM_FQDN
