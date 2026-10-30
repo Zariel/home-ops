@@ -38,6 +38,7 @@ spec:
               install -d -m 0750 -o root -g www-data /etc/proxmox-datacenter-manager/auth
               install -m 0640 -o root -g www-data /tls/tls.crt /etc/proxmox-datacenter-manager/auth/api.pem
               install -m 0640 -o root -g www-data /tls/tls.key /etc/proxmox-datacenter-manager/auth/api.key
+              install -d -m 0755 -o www-data -g www-data /var/cache/proxmox-datacenter-manager
               exec /init
           env:
             - name: PDM_FQDN
