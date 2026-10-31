@@ -1,0 +1,22 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: pdm
+  namespace: default
+spec:
+  name: Proxmox Datacenter Manager
+  clientID: pdm
+  instanceSelector:
+    matchLabels:
+      pocketid.internal/instance: pocket-id
+  pkceEnabled: true
+  callbackUrls:
+    - https://pdm.cbannister.xyz
+  launchUrl: https://pdm.cbannister.xyz
+  allowedUserGroups:
+    - groupName: admin
+  secret:
+    name: pdm-oidc
+  logo:
+    autoGenerate: false

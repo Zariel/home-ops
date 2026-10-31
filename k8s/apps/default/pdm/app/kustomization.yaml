@@ -10,3 +10,12 @@ resources:
   - service.yaml
   - httproute.yaml
   - backendtlspolicy.yaml
+  - oidc-client.yaml
+configMapGenerator:
+  - name: pdm-access
+    files:
+      - domains.cfg=./config/domains.cfg
+      - user.cfg=./config/user.cfg
+      - acl.cfg=./config/acl.cfg
+generatorOptions:
+  disableNameSuffixHash: true

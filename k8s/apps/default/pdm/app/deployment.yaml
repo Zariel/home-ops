@@ -39,6 +39,12 @@ spec:
               install -m 0640 -o root -g www-data /tls/tls.crt /etc/proxmox-datacenter-manager/auth/api.pem
               install -m 0640 -o root -g www-data /tls/tls.key /etc/proxmox-datacenter-manager/auth/api.key
               install -d -m 0755 -o www-data -g www-data /var/cache/proxmox-datacenter-manager
+              # Git owns realms, users and ACLs; the operator supplies the client secret.
+              install -d -m 0750 -o root -g www-data /etc/proxmox-datacenter-manager/access
+              for config in domains user acl; do
+                install -m 0640 -o root -g www-data "/access/$config.cfg" "/etc/proxmox-datacenter-manager/access/$config.cfg"
+              done
+              printf '\tclient-key %s\n' "$(cat /oidc/client_secret)" >> /etc/proxmox-datacenter-manager/access/domains.cfg
               exec /init
           env:
             - name: PDM_FQDN
@@ -99,6 +105,12 @@ spec:
             - name: tls
               mountPath: /tls
               readOnly: true
+            - name: access
+              mountPath: /access
+              readOnly: true
+            - name: oidc
+              mountPath: /oidc
+              readOnly: true
       volumes:
         - name: storage
           persistentVolumeClaim:
@@ -110,3 +122,9 @@ spec:
         - name: tls
           secret:
             secretName: pdm-tls
+        - name: access
+          configMap:
+            name: pdm-access
+        - name: oidc
+          secret:
+            secretName: pdm-oidc
