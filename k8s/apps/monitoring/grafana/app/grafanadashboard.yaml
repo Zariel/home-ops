@@ -30,7 +30,7 @@ spec:
   grafanaCom:
     # renovate: depName="Node Exporter Full"
     id: 1860
-    revision: 45
+    revision: 46
   variables:
     - name: ds_prometheus
       value: victoriametrics
