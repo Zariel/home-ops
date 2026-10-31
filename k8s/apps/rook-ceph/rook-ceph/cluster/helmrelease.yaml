@@ -61,8 +61,50 @@ spec:
         CephNodeDiskspaceWarning:
           # Host filesystem capacity is covered by the node-exporter rules.
           disabled: true
+        CephNodeRootFilesystemFull:
+          # NodeFilesystemAlmostOutOfSpace covers the same 5% threshold.
+          disabled: true
         CephNodeNetworkBondDegraded:
           disabled: true
+        # Host metrics must only inspect the Ceph nodes and storage VLAN.
+        CephNodeNetworkPacketDrops:
+          expr: |
+            (
+              rate(node_network_receive_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) / (
+              rate(node_network_receive_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 0.0050000000000000001 and (
+              rate(node_network_receive_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 10
+        CephNodeNetworkPacketErrors:
+          expr: |
+            (
+              rate(node_network_receive_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) / (
+              rate(node_network_receive_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 0.0001 or (
+              rate(node_network_receive_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 10
+        CephNodeInconsistentMTU:
+          expr: |
+            node_network_mtu_bytes{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} * (node_network_up{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} > 0)
+            != on (cluster, device) group_left
+              quantile by (cluster, device) (
+                0.5, node_network_mtu_bytes{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} * (node_network_up{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} > 0)
+              )
+          annotations:
+            fix: >-
+              Compare the MTU of bond0.300 on k8s-0, k8s-1 and k8s-2;
+              persist corrections in the Katl systemd-networkd configuration.
+        NVMeoFHighHostCPU:
+          expr: |
+            100-((100*(avg by(cluster,host) (label_replace(rate(node_cpu_seconds_total{job="node-exporter",kubernetes_node=~"k8s-[012]",mode="idle"}[5m]),"host","$1","instance","(.*):.*")) * on(cluster, host) group_right label_replace(ceph_nvmeof_gateway_info,"host","$1","instance","(.*):.*")))) >= 80.00
         PrometheusJobExporterMissing:
           disabled: true
         PrometheusJobMissing:
