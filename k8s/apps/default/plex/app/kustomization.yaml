@@ -5,7 +5,6 @@ resources:
   - backendtrafficpolicy.yaml
   - deployment.yaml
   - networkpolicy.yaml
-  - resourceclaimtemplate-gpu.yaml
   - service.yaml
   - httproute.yaml
   - pvc.yaml

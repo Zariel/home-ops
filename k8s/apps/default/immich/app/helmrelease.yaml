@@ -115,7 +115,7 @@ spec:
         pod:
           resourceClaims:
             - name: gpu
-              resourceClaimTemplateName: immich-microservices-gpu
+              resourceClaimName: transcode-gpu
         containers:
           microservices:
             image: &serverImage

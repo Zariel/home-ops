@@ -12,6 +12,8 @@ spec:
   dependsOn:
     - name: external-secrets
       namespace: external-secrets
+    - name: intel-gpu-resource-driver
+      namespace: kube-system
   interval: 1h
   path: ./k8s/apps/default/common/app
   prune: true

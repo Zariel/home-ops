@@ -18,7 +18,7 @@ spec:
       priorityClassName: cluster-p0
       resourceClaims:
         - name: gpu
-          resourceClaimTemplateName: plex-gpu
+          resourceClaimName: transcode-gpu
       securityContext:
         runAsNonRoot: true
         runAsUser: 568

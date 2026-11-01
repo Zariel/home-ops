@@ -6,6 +6,7 @@ components:
   - ../../components/common
 resources:
   - cleanrr/ks.yaml
+  - jellyfin/ks.yaml
   - plex/ks.yaml
   - prowlarr/ks.yaml
   - radarr/ks.yaml

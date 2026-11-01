@@ -13,6 +13,8 @@ spec:
     - ../../../../components/volsync
   path: ./k8s/apps/default/plex/app
   dependsOn:
+    - name: common
+      namespace: default
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: intel-gpu-resource-driver

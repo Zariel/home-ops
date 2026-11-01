@@ -1,0 +1,172 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      priorityClassName: cluster-p0
+      resourceClaims:
+        - name: gpu
+          resourceClaimName: transcode-gpu
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [3005]
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: defaults
+          image: &image docker.io/jellyfin/jellyfin:12.4@sha256:fea863d0cd9ec445985d9c75fc6ed64e38a1d2766cf0c250a33d553f4fc1b771
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              mkdir -p /config/config
+              # Jellyfin checks its marker and loads built-in provider defaults at startup.
+              touch /plugins/.jellyfin-plugin
+              mkdir -p /plugins/configurations
+              for plugin in Tmdb Omdb StudioImages MusicBrainz AudioDb; do
+                printf '<PluginConfiguration />\n' > "/plugins/configurations/Jellyfin.Plugin.$plugin.xml"
+              done
+              # Seed new installations without overwriting persisted dashboard settings.
+              for file in network.xml encoding.xml; do
+                if [ ! -e "/config/config/$file" ]; then
+                  cp "/defaults/$file" "/config/config/$file"
+                fi
+              done
+          securityContext: &securityContext
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          volumeMounts:
+            - name: plugins
+              mountPath: /plugins
+            - name: config
+              mountPath: /config
+            - name: defaults
+              mountPath: /defaults
+              readOnly: true
+      containers:
+        - name: jellyfin
+          image: *image
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: JELLYFIN_PublishedServerUrl
+              value: https://jellyfin.cbannister.xyz
+            - name: JELLYFIN_LOG_DIR
+              value: /logs
+          ports:
+            - containerPort: 8096
+              name: http
+          securityContext: *securityContext
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+              ephemeral-storage: 1Gi
+            limits:
+              memory: 4Gi
+              ephemeral-storage: 30Gi
+            claims:
+              - name: gpu
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          readinessProbe:
+            # Keep the unclaimed setup wizard off the gateway, including after data loss.
+            # A pod port-forward bypasses Service readiness for private account creation.
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - >-
+                  curl --fail --silent --show-error --max-time 2
+                  http://127.0.0.1:8096/System/Info/Public
+                  | grep -q '"StartupWizardCompleted":true'
+            periodSeconds: 10
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            # Prevent installing executable plugins through a compromised account.
+            - name: plugins
+              mountPath: /config/plugins
+              readOnly: true
+            - name: cache
+              mountPath: /cache
+            - name: transcode
+              mountPath: /transcode
+            - name: logs
+              mountPath: /logs
+            - name: tmp
+              mountPath: /tmp
+            - name: arr-media
+              mountPath: /data/media
+              subPath: media/
+              readOnly: true
+            - name: arr-media
+              mountPath: /data/media/sports/tennis
+              subPath: downloads/torrents/complete/sports/tennis
+              readOnly: true
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyfin
+        - name: defaults
+          configMap:
+            name: jellyfin-defaults
+        - name: plugins
+          emptyDir: {}
+        - name: cache
+          emptyDir:
+            sizeLimit: 5Gi
+        - name: transcode
+          emptyDir:
+            sizeLimit: 20Gi
+        - name: logs
+          emptyDir:
+            sizeLimit: 1Gi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+        - name: arr-media
+          nfs:
+            server: nas.cbannister.casa
+            path: /mnt/bighorse/arr
+            readOnly: true

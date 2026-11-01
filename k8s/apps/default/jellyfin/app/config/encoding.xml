@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EncodingOptions>
+  <TranscodingTempPath>/transcode</TranscodingTempPath>
+  <HardwareAccelerationType>qsv</HardwareAccelerationType>
+  <QsvDevice>/dev/dri/renderD128</QsvDevice>
+  <EnableHardwareEncoding>true</EnableHardwareEncoding>
+  <HardwareDecodingCodecs>
+    <string>h264</string>
+    <string>hevc</string>
+    <string>mpeg2video</string>
+    <string>vc1</string>
+    <string>vp8</string>
+    <string>vp9</string>
+    <string>av1</string>
+  </HardwareDecodingCodecs>
+</EncodingOptions>

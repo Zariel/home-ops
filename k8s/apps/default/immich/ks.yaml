@@ -11,6 +11,8 @@ spec:
   path: ./k8s/apps/default/immich/app
   prune: true
   dependsOn:
+    - name: common
+      namespace: default
     - name: immich-oidc
     - name: external-secrets
       namespace: external-secrets

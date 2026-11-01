@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetworkConfiguration>
+  <BaseUrl />
+  <EnableHttps>false</EnableHttps>
+  <RequireHttps>false</RequireHttps>
+  <InternalHttpPort>8096</InternalHttpPort>
+  <PublicHttpsPort>443</PublicHttpsPort>
+  <AutoDiscovery>false</AutoDiscovery>
+  <EnableUPnP>false</EnableUPnP>
+  <EnableIPv4>true</EnableIPv4>
+  <EnableIPv6>false</EnableIPv6>
+  <EnableRemoteAccess>true</EnableRemoteAccess>
+  <LocalNetworkSubnets>
+    <string>10.0.0.0/8</string>
+  </LocalNetworkSubnets>
+  <!-- Only external Envoy pods may reach HTTP through the network policy. -->
+  <KnownProxies>
+    <string>172.20.0.0/16</string>
+  </KnownProxies>
+  <EnablePublishedServerUriByRequest>false</EnablePublishedServerUriByRequest>
+  <PublishedServerUriBySubnet>
+    <string>all=https://jellyfin.cbannister.xyz</string>
+  </PublishedServerUriBySubnet>
+</NetworkConfiguration>

@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - backendtrafficpolicy.yaml
+  - deployment.yaml
+  - httproute.yaml
+  - networkpolicy.yaml
+  - service.yaml
+configMapGenerator:
+  - name: jellyfin-defaults
+    files:
+      - config/network.xml
+      - config/encoding.xml

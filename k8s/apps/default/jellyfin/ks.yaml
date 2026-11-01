@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &name jellyfin
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *name
+  components:
+    - ../../../../components/volsync
+  path: ./k8s/apps/default/jellyfin/app
+  dependsOn:
+    - name: common
+      namespace: default
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: intel-gpu-resource-driver
+      namespace: kube-system
+  postBuild:
+    substitute:
+      APP: *name
+      VOLSYNC_CAPACITY: 20Gi
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  # Readiness deliberately waits for the operator to complete private setup.
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m

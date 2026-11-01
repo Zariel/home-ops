@@ -1,0 +1,52 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: jellyfin
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      app: jellyfin
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+    # Kubelet health checks originate on the node hosting Jellyfin.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Built-in movie/TV metadata providers; no general Internet or LAN access.
+    # NFS is mounted by the kubelet, outside the pod network namespace.
+    - toFQDNs:
+        - matchName: api.themoviedb.org
+        - matchName: image.tmdb.org
+        - matchName: www.omdbapi.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
