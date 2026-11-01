@@ -4,7 +4,13 @@ brscanr v0.1.0 runs separately from Paperless and uses ordinary routed pod netwo
 
 ## Rollout status
 
-Registration and Paperless API authentication have been verified. Physical acquisition, feeder page order, Paperless import, and the physical Scan to PC callback still require test pages and an operator button press.
+Hardware validation on 2026-11-01 found:
+
+- Registration succeeds through routed pod networking.
+- A feeder scan captured three pages, assembled a valid PDF and imported into Paperless as document 17. The stored original has three pages and SHA-256 `e42f8ab173c7f9aca5946264ce8f747e96a4dc3b4844f71c690caf70307aaa87`, independently matching the scanner PDF. All three pages render successfully. The operator must still confirm the expected page order.
+- A platen scan captured one valid JPEG but failed PDF assembly. Its JPEG frame is 2448 × 3435 pixels; the final scanner record reports 3436 lines. v0.1.0 rejects this discrepancy in `crates/brother-scan/src/document.rs::correct_height`. The raw page remains on the PVC under job `e1e44ce1-d496-4e60-8bae-4dc36aed3432`; it was never uploaded. Resolve this upstream before cutover.
+- Replaying the platen request's idempotency key returned the same job with HTTP 200 without starting another acquisition.
+- The physical Scan to PC callback still requires an operator button press and confirmation in `/api/status` and `/api/jobs`.
 
 The public route at <https://brscanr.cbannister.xyz> requires Pocket ID membership in `admin`. It deliberately targets the empty `brscanr-pending` Service until hardware validation completes. Envoy protects every HTTP path, including the JSON API and retained PDFs. Authentication must be renewed after the 15-minute access token expires.
 
