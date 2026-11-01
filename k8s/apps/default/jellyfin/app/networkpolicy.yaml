@@ -25,6 +25,9 @@ spec:
             app.kubernetes.io/name: sonarr
         - matchLabels:
             io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: wizarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
             app: radarr
       toPorts:
         - ports:
