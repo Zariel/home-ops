@@ -20,6 +20,8 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
       hostname: wizarr
       volumes:
         - name: config
@@ -47,6 +49,9 @@ spec:
               value: "568"
             - name: PGID
               value: "568"
+            # The ingress policy prevents callers from bypassing gateway authentication.
+            - name: DISABLE_BUILTIN_AUTH
+              value: "true"
           resources:
             requests:
               cpu: 512m
@@ -63,17 +68,16 @@ spec:
               mountPath: /.cache
             - name: etc
               mountPath: /etc/wizarr
-          # startupProbe:
-          #   httpGet:
-          #     path: /ping
-          #     port: web
-          #   failureThreshold: 6
-          #   periodSeconds: 10
-          # livenessProbe: &probe
-          #   httpGet:
-          #     path: /ping
-          #     port: web
-          #   periodSeconds: 20
-          #   timeoutSeconds: 5
-          #   failureThreshold: 5
-          # readinessProbe: *probe
+          startupProbe:
+            httpGet:
+              path: /health
+              port: web
+            failureThreshold: 60
+            periodSeconds: 5
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: web
+            periodSeconds: 10
+            timeoutSeconds: 3
