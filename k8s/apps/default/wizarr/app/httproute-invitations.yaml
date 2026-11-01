@@ -1,0 +1,56 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: wizarr-invitations
+  namespace: default
+  annotations:
+    external-dns.kubernetes.io/controller: none
+spec:
+  hostnames:
+    - join.cbannister.xyz
+  parentRefs:
+    - name: external-cbannister-xyz
+      namespace: network
+      kind: ListenerSet
+      sectionName: https
+  rules:
+    # All other paths, including /login, /setup and /api, use the protected route.
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /j
+        - path:
+            type: Exact
+            value: /join
+        - path:
+            type: Exact
+            value: /invitation/process
+          method: POST
+        - path:
+            type: Exact
+            value: /plex/callback
+        - path:
+            type: PathPrefix
+            value: /reset
+        - path:
+            type: PathPrefix
+            value: /static
+        - path:
+            type: Exact
+            value: /image-proxy
+        - path:
+            type: Exact
+            value: /cinema-posters
+      backendRefs: &backend
+        - name: wizarr
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /favicon.ico
+        # Only guest wizard endpoints; administrator previews stay protected.
+        - path:
+            type: RegularExpression
+            value: '^/wizard(?:/(?:pre-wizard(?:/(?:[0-9]+|complete))?|post-wizard(?:/[0-9]+)?|complete|help|combo/(?:pre_invite|post_invite)(?:/[0-9]+)?|bundle/[0-9]+|(?:plex|jellyfin|emby|audiobookshelf|romm|komga|kavita)/[0-9]+))?/?$'
+      backendRefs: *backend

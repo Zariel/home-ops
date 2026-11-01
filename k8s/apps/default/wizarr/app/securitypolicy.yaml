@@ -1,0 +1,27 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: wizarr
+  namespace: default
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: wizarr
+  oidc:
+    provider:
+      issuer: https://id.cbannister.xyz
+    clientID: wizarr
+    clientSecret:
+      name: wizarr-oidc
+    redirectURL: https://join.cbannister.xyz/oauth2/callback
+    logoutPath: /logout
+    scopes:
+      - openid
+      - profile
+      - email
+    # Recheck Pocket ID's admin-group restriction when the 15-minute token expires.
+    refreshToken: false
+    cookieConfig:
+      sameSite: Lax

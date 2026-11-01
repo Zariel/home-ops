@@ -2,7 +2,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: default
 resources:
+  - backendtrafficpolicy.yaml
   - httproute.yaml
+  - httproute-invitations.yaml
+  - networkpolicy.yaml
+  - securitypolicy.yaml
   - deployment.yaml
   - service.yaml
