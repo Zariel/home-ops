@@ -43,5 +43,6 @@ resources:
   - ./meilisearch/ks.yaml
   - ./karakeep/ks.yaml
   - ./paperless/ks.yaml
+  - ./brscanr/ks.yaml
   - ./paperless-gpt/ks.yaml
   - ./pdm/ks.yaml
