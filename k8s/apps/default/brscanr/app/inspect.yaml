@@ -5,7 +5,7 @@ metadata:
   name: brscanr-inspect
   namespace: default
   labels:
-    app.kubernetes.io/name: brscanr-inspect
+    home-ops.cbannister.xyz/role: brscanr-inspect
 spec:
   automountServiceAccountToken: false
   restartPolicy: Never
@@ -56,7 +56,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: brscanr-inspect
+      home-ops.cbannister.xyz/role: brscanr-inspect
   enableDefaultDeny:
     ingress: true
     egress: true
