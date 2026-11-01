@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: brscanr-pending
+  namespace: default
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  # Publish authentication before connecting the route to the scanner.
+  selector:
+    app.kubernetes.io/name: brscanr-pending

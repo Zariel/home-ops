@@ -1,0 +1,25 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: brscanr
+  namespace: default
+spec:
+  name: brscanr
+  clientID: brscanr
+  instanceSelector:
+    matchLabels:
+      pocketid.internal/instance: pocket-id
+  pkceEnabled: true
+  callbackUrls:
+    - https://brscanr.cbannister.xyz/oauth2/callback
+  launchUrl: https://brscanr.cbannister.xyz
+  allowedUserGroups:
+    - groupName: admin
+  accessTokenDurationMinutes: 15
+  secret:
+    name: brscanr-oidc
+    keys:
+      clientSecret: client-secret
+  logo:
+    autoGenerate: false

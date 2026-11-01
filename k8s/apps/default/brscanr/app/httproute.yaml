@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: brscanr
+  labels:
+    app.kubernetes.io/instance: brscanr
+    app.kubernetes.io/name: brscanr
+spec:
+  hostnames:
+    - brscanr.cbannister.xyz
+  parentRefs:
+    - name: external-cbannister-xyz
+      namespace: network
+      kind: ListenerSet
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: brscanr-pending
+          port: 8080
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
