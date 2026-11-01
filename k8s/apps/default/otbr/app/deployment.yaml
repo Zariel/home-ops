@@ -26,7 +26,7 @@ spec:
       hostname: otbr
       containers:
         - name: otbr
-          image: openthread/border-router:v2026.10.0@sha256:70d2260eb5022f4c40be4f50195a1952d49041fc766fb3b2f213b06dcdc31a18
+          image: openthread/border-router:v2026.11.0@sha256:5ae17855e42000abce4420098c3cc0f16d8b7cf3745ee091810afad75b37d1cc
           env:
             - name: OT_RCP_DEVICE
               value: "spinel+hdlc+uart:///dev/ttyACM0?uart-baudrate=460800&uart-flow-control"
