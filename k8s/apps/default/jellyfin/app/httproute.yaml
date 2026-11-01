@@ -15,5 +15,5 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: jellyfin-private-setup
+        - name: jellyfin
           port: 8096
