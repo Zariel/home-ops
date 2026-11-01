@@ -30,13 +30,15 @@ Verify a viewer can sign in and play media at the public hostname, then stop the
 
 ## Isolation and storage
 
-The container runs as UID/GID `568`, drops all capabilities, uses the runtime seccomp profile, has a read-only root filesystem, and receives no Kubernetes service-account token. Only the external Envoy pods and the hosting node can reach TCP `8096`; discovery ports and direct LAN ingress are not exposed.
+The container runs as UID/GID `568`, drops all capabilities, uses the runtime seccomp profile, has a read-only root filesystem, and receives no Kubernetes service-account token. Only the external Envoy pods, Sonarr, Radarr, and the hosting node can reach TCP `8096`; discovery ports and direct LAN ingress are not exposed.
+
+Sonarr and Radarr can send library-update notifications to `http://jellyfin.default.svc.cluster.local:8096` using a Jellyfin API key. The network policy grants connectivity; Jellyfin still authenticates API requests.
 
 Outbound connections are restricted to cluster DNS and HTTPS for TMDb and OMDb. Other metadata providers, remote streams, plugin downloads, and arbitrary LAN/Internet connections are blocked. The plugin directory is read-only, including built-in provider settings. Their default configuration is seeded before startup; installing plugins or changing provider settings requires a manifest change.
 
 Network and encoding settings in `app/config/` seed an empty configuration volume. Subsequent dashboard settings persist in the `jellyfin` Ceph PVC, backed up through the shared VolSync component. Cache, logs, temporary files, and transcoding output are disposable and size-limited. Media mounts are read-only at both the NFS volume and container mount.
 
-The pod CIDR is trusted for forwarded headers because the network policy permits HTTP ingress only from the external gateway pods and hosting node. Do not broaden that ingress rule without reviewing proxy trust. The shared Envoy access-log format removes query strings, which can contain media-client tokens. Authentication and password-reset requests share a limit of 20 requests per minute per Envoy replica; playback requests are outside that limit.
+The pod CIDR is trusted for forwarded headers. Ingress is limited to the external gateway, the hosting node, and the trusted Sonarr and Radarr automation clients. Review proxy trust before allowing additional callers. The shared Envoy access-log format removes query strings, which can contain media-client tokens. Authentication and password-reset requests share a limit of 20 requests per minute per Envoy replica; playback requests are outside that limit.
 
 ## Shared transcoding GPU
 

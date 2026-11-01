@@ -19,6 +19,17 @@ spec:
         - ports:
             - port: "8096"
               protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: sonarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: radarr
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
     # Kubelet health checks originate on the node hosting Jellyfin.
     - fromEntities:
         - host
