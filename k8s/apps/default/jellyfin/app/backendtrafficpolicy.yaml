@@ -10,6 +10,10 @@ spec:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: jellyfin
+  healthCheck:
+    # Envoy's default panic mode sends traffic to unready endpoints when all are unhealthy.
+    # Readiness is the boundary that keeps the initial setup wizard private.
+    panicThreshold: 0
   rateLimit:
     local:
       rules:

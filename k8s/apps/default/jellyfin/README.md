@@ -4,7 +4,7 @@ Jellyfin serves local accounts at `https://jellyfin.cbannister.xyz` through the 
 
 ## Complete private setup
 
-The Service has no ready endpoints until Jellyfin reports that its setup wizard is complete. The public hostname returns `503` during setup, including after configuration loss. Do not enable `publishNotReadyAddresses` or replace the readiness probe with `/health`.
+The Service has no ready endpoints until Jellyfin reports that its setup wizard is complete. Envoy panic routing is disabled for this backend so it cannot fall back to unready endpoints. The public hostname returns `503` during setup, including after configuration loss. Keep `healthCheck.panicThreshold: 0`, do not enable `publishNotReadyAddresses`, and do not replace the readiness probe with `/health`.
 
 From the repository root, forward directly to the running Deployment:
 
