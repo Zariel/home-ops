@@ -29,7 +29,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
         - name: pdm
-          image: ghcr.io/88plug/proxmox-dc-manager-dockerized:1.1.7@sha256:c9ca57f76e09495b3286d6f10f7600104363dfd1b51e124e13d72a9459c2d2a0
+          image: ghcr.io/88plug/proxmox-dc-manager-dockerized:1.1.7@sha256:d0fc207cf20552f41fd501085b7f9a527d8a80aa1b05d635dfba067b96e165e9
           # Keep auth owned by root; the image's TLS env bootstrap uses www-data.
           command:
             - /bin/bash

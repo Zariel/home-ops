@@ -26,6 +26,12 @@
   },
   packageRules: [
     {
+      description: 'Review PDM updates while upstream image indexes reference missing manifests',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/88plug/proxmox-dc-manager-dockerized'],
+      automerge: false,
+    },
+    {
       description: 'Limit Silo updates to one per day',
       matchDatasources: ['docker'],
       matchPackageNames: ['ghcr.io/silo-server/silo-server'],
