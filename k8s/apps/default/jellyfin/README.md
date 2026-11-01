@@ -36,7 +36,7 @@ Sonarr and Radarr can send library-update notifications to `http://jellyfin.defa
 
 Wizarr can use the same internal URL with its own Jellyfin API key to manage invitations. Set its public Jellyfin URL to `https://jellyfin.cbannister.xyz` for viewers.
 
-Outbound connections are restricted to cluster DNS and HTTPS for TMDb and OMDb. Other metadata providers, remote streams, plugin downloads, and arbitrary LAN/Internet connections are blocked. The plugin directory is read-only, including built-in provider settings. Their default configuration is seeded before startup; installing plugins or changing provider settings requires a manifest change.
+Outbound connections are restricted to cluster DNS and HTTPS for TMDb, OMDb, TVDB artwork (`artworks.thetvdb.com`), and studio images (`raw.githubusercontent.com`). The GitHub hostname allowance also permits other content hosted on that hostname. Other destinations, including plugin repositories, remote streams, and arbitrary LAN/Internet connections, are blocked. The plugin directory is read-only, including built-in provider settings. Their default configuration is seeded before startup; installing plugins or changing provider settings requires a manifest change.
 
 Network and encoding settings in `app/config/` seed an empty configuration volume. Subsequent dashboard settings persist in the `jellyfin` Ceph PVC, backed up through the shared VolSync component. Cache, logs, temporary files, and transcoding output are disposable and size-limited. Media mounts are read-only at both the NFS volume and container mount.
 

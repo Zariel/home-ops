@@ -60,6 +60,9 @@ spec:
         - matchName: api.themoviedb.org
         - matchName: image.tmdb.org
         - matchName: www.omdbapi.com
+        # Referenced actor artwork and the built-in studio image provider.
+        - matchName: artworks.thetvdb.com
+        - matchName: raw.githubusercontent.com
       toPorts:
         - ports:
             - port: "443"
