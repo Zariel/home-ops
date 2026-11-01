@@ -37,6 +37,7 @@ spec:
                 - tautulli
                 - seerr
                 - maintainerr
+                - wizarr
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app: radarr
