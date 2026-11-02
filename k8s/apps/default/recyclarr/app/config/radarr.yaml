@@ -72,6 +72,15 @@ quality_profiles:
       - *trash
 
 custom_formats:
+  # Block hybrids even when positive scores stack.
+  - trash_ids:
+      - 0f12c086e289cf966fa5948eac571f44 # Hybrid
+    assign_scores_to:
+      - name: *remux
+        score: -50000
+      - name: *bd1080
+        score: -50000
+
   - assign_scores_to:
       - name: *remux
         score: 5000
