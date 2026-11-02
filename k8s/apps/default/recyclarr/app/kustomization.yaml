@@ -10,5 +10,11 @@ configMapGenerator:
     files:
       - sonarr.yaml=config/sonarr.yaml
       - radarr.yaml=config/radarr.yaml
+  - name: recyclarr-settings
+    files:
+      - settings.yml=config/settings.yml
+  - name: recyclarr-radarr-custom-formats
+    files:
+      - config/custom-formats/radarr/hybrid-except-wildcat.json
 generatorOptions:
   disableNameSuffixHash: true
