@@ -27,44 +27,13 @@ spec:
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
+        fsGroupChangePolicy: Always
         supplementalGroups: [3005]
         seccompProfile:
           type: RuntimeDefault
-      initContainers:
-        - name: defaults
-          image: &image docker.io/jellyfin/jellyfin:12.4@sha256:fea863d0cd9ec445985d9c75fc6ed64e38a1d2766cf0c250a33d553f4fc1b771
-          command:
-            - /bin/sh
-            - -ec
-            - |
-              mkdir -p /config/config
-              # Seed new installations without overwriting persisted dashboard settings.
-              for file in network.xml encoding.xml; do
-                if [ ! -e "/config/config/$file" ]; then
-                  cp "/defaults/$file" "/config/config/$file"
-                fi
-              done
-          securityContext: &securityContext
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: ["ALL"]
-          resources:
-            requests:
-              cpu: 10m
-              memory: 32Mi
-            limits:
-              memory: 64Mi
-          volumeMounts:
-            - name: config
-              mountPath: /config
-            - name: defaults
-              mountPath: /defaults
-              readOnly: true
       containers:
         - name: jellyfin
-          image: *image
+          image: docker.io/jellyfin/jellyfin:12.4@sha256:fea863d0cd9ec445985d9c75fc6ed64e38a1d2766cf0c250a33d553f4fc1b771
           env:
             - name: TZ
               value: Europe/London
@@ -75,7 +44,11 @@ spec:
           ports:
             - containerPort: 8096
               name: http
-          securityContext: *securityContext
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           resources:
             requests:
               cpu: 1000m
@@ -136,9 +109,6 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: jellyfin
-        - name: defaults
-          configMap:
-            name: jellyfin-defaults
         - name: cache
           emptyDir:
             sizeLimit: 5Gi

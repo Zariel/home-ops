@@ -26,6 +26,8 @@ Keep the port-forward open while configuring accounts in **Dashboard > Users**:
 - Hide viewer accounts from login screens and set a finite failed-login limit, such as `5`. Unlocking an account requires an administrator.
 - Disable content deletion, downloads, public sharing, Live TV management, and control of other users' sessions unless the viewer needs those features. Keep video/audio transcoding and remuxing enabled for client compatibility.
 
+For a new installation, configure networking in the dashboard: trust `172.20.0.0/16` as known proxies, set local networks to `10.0.0.0/8`, and disable automatic discovery and port mapping. Configure hardware transcoding as described below.
+
 Verify a viewer can sign in and play media at the public hostname, then stop the port-forward. This deployment uses local accounts; no OIDC plugin is installed.
 
 ## Isolation and storage
@@ -38,7 +40,7 @@ Wizarr can use the same internal URL with its own Jellyfin API key to manage inv
 
 The network policy restricts ingress only; outbound connections are unrestricted. Administrators can install plugins and change provider settings through the dashboard. Plugins and their settings are writable under `/config/plugins` on the `jellyfin` Ceph PVC and persist across pod replacements. Jellyfin manages provider configuration defaults.
 
-Network and encoding settings in `app/config/` seed an empty configuration volume. Subsequent dashboard settings persist in the `jellyfin` Ceph PVC, backed up through the shared VolSync component. Cache, logs, temporary files, and transcoding output are disposable and size-limited. Media mounts are read-only at both the NFS volume and container mount.
+Jellyfin manages its configuration in the `jellyfin` Ceph PVC, backed up through the shared VolSync component. Configure new installations through the dashboard; no init container seeds or overwrites settings. Cache, logs, temporary files, and transcoding output are disposable and size-limited. Media mounts are read-only at both the NFS volume and container mount.
 
 The pod CIDR is trusted for forwarded headers. Ingress is limited to the external gateway, the hosting node, and the trusted Sonarr, Radarr, and Wizarr automation clients. Review proxy trust before allowing additional callers. The shared Envoy access-log format removes query strings, which can contain media-client tokens. Authentication and password-reset requests share a limit of 20 requests per minute per Envoy replica; playback requests are outside that limit.
 
@@ -48,4 +50,4 @@ The `common` Flux Kustomization owns `default/transcode-gpu`. Plex, Jellyfin, an
 
 The shared claim retains its node allocation across pod restarts. Node replacement or permanent node failure requires an operator-planned claim replacement after stopping its consumers; ordinary pod rescheduling does not move the allocation to another node.
 
-Jellyfin seeds Intel Quick Sync acceleration and writes transcoding output to `/transcode`. Confirm hardware transcoding with a representative client after creating a viewer account. Successful pod startup alone does not verify playback compatibility.
+Configure Intel Quick Sync acceleration in the dashboard with device `/dev/dri/renderD128` and transcoding output at `/transcode`. Confirm hardware transcoding with a representative client after creating a viewer account. Successful pod startup alone does not verify playback compatibility.
