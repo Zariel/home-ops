@@ -9,3 +9,11 @@ resources:
   - httproute.yaml
   - networkpolicy.yaml
   - service.yaml
+patches:
+  # The existing local backup cache uses a storage class that cannot expand.
+  - target:
+      kind: ReplicationSource
+    patch: |-
+      - op: replace
+        path: /spec/restic/cacheCapacity
+        value: 20Gi
