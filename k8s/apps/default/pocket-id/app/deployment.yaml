@@ -27,7 +27,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: app
-          image: ghcr.io/pocket-id/pocket-id:v2.19.1
+          image: ghcr.io/pocket-id/pocket-id:v2.19.2
           env:
             - name: STATIC_API_KEY
               valueFrom:
