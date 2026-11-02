@@ -43,6 +43,8 @@ spec:
       containers:
         - name: app
           image: ghcr.io/silo-server/silo-server:latest@sha256:b2e78645fca45846cdf344d022def67b5c7f802d4c413f10dc07e5256244cb12
+          # Run directly as the pod user with external PostgreSQL.
+          command: [silo]
           env:
             - name: MODE
               value: integrated
@@ -93,7 +95,8 @@ spec:
               port: http
           volumeMounts:
             - name: data
-              mountPath: /var/lib/silo
+              # /var/lib/silo is a symlink to this directory in the image.
+              mountPath: /config/silo
             - name: transcode
               mountPath: /tmp/silo-transcode
             - name: downloads
