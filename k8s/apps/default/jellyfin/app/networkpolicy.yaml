@@ -54,7 +54,7 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    # Built-in movie/TV metadata providers; no general Internet or LAN access.
+    # Metadata providers and the official plugin repository; no general Internet or LAN access.
     # NFS is mounted by the kubelet, outside the pod network namespace.
     - toFQDNs:
         - matchName: api.themoviedb.org
@@ -63,6 +63,7 @@ spec:
         # Referenced actor artwork and the built-in studio image provider.
         - matchName: artworks.thetvdb.com
         - matchName: raw.githubusercontent.com
+        - matchName: repo.jellyfin.org
       toPorts:
         - ports:
             - port: "443"
