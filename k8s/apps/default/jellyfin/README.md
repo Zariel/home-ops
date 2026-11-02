@@ -36,7 +36,7 @@ Sonarr and Radarr can send library-update notifications to `http://jellyfin.defa
 
 Wizarr can use the same internal URL with its own Jellyfin API key to manage invitations. Set its public Jellyfin URL to `https://jellyfin.cbannister.xyz` for viewers.
 
-The network policy restricts ingress only; outbound connections are unrestricted. The plugin directory is read-only, including built-in provider settings. Their default configuration is seeded before startup; installing plugins or changing provider settings requires a manifest change.
+The network policy restricts ingress only; outbound connections are unrestricted. Administrators can install plugins and change provider settings through the dashboard. Plugins and their settings are writable under `/config/plugins` on the `jellyfin` Ceph PVC and persist across pod replacements. Jellyfin manages provider configuration defaults.
 
 Network and encoding settings in `app/config/` seed an empty configuration volume. Subsequent dashboard settings persist in the `jellyfin` Ceph PVC, backed up through the shared VolSync component. Cache, logs, temporary files, and transcoding output are disposable and size-limited. Media mounts are read-only at both the NFS volume and container mount.
 

@@ -39,12 +39,6 @@ spec:
             - -ec
             - |
               mkdir -p /config/config
-              # Jellyfin checks its marker and loads built-in provider defaults at startup.
-              touch /plugins/.jellyfin-plugin
-              mkdir -p /plugins/configurations
-              for plugin in Tmdb Omdb StudioImages MusicBrainz AudioDb; do
-                printf '<PluginConfiguration />\n' > "/plugins/configurations/Jellyfin.Plugin.$plugin.xml"
-              done
               # Seed new installations without overwriting persisted dashboard settings.
               for file in network.xml encoding.xml; do
                 if [ ! -e "/config/config/$file" ]; then
@@ -63,8 +57,6 @@ spec:
             limits:
               memory: 64Mi
           volumeMounts:
-            - name: plugins
-              mountPath: /plugins
             - name: config
               mountPath: /config
             - name: defaults
@@ -124,10 +116,6 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-            # Prevent installing executable plugins through a compromised account.
-            - name: plugins
-              mountPath: /config/plugins
-              readOnly: true
             - name: cache
               mountPath: /cache
             - name: transcode
@@ -151,8 +139,6 @@ spec:
         - name: defaults
           configMap:
             name: jellyfin-defaults
-        - name: plugins
-          emptyDir: {}
         - name: cache
           emptyDir:
             sizeLimit: 5Gi
