@@ -1,6 +1,25 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
+  name: autobrr
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Media
+  grafanaCom:
+    # renovate: depName="autobrr / Overview"
+    id: 25872
+    revision: 4
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
   name: cloudnative-pg
   namespace: monitoring
 spec:

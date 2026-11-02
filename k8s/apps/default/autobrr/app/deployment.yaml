@@ -56,6 +56,10 @@ spec:
               value: "80"
             - name: AUTOBRR__HOST
               value: "0.0.0.0"
+            - name: AUTOBRR__METRICS_ENABLED
+              value: "true"
+            - name: AUTOBRR__METRICS_HOST
+              value: "0.0.0.0"
             - name: AUTOBRR__OIDC_ENABLED
               value: "true"
             - name: AUTOBRR__OIDC_ISSUER
@@ -86,6 +90,8 @@ spec:
           ports:
             - containerPort: 80
               name: web
+            - containerPort: 9074
+              name: metrics
           resources:
             requests:
               cpu: 100m
