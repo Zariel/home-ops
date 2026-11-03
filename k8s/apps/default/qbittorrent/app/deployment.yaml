@@ -81,9 +81,6 @@ spec:
               value: /data/downloads/torrents/complete
             - name: QBT_BitTorrent_Session_TempPath
               value: /data/downloads/torrents/incomplete
-          envFrom:
-            - secretRef:
-                name: qbittorrent-secret
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false

@@ -20,7 +20,6 @@ resources:
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
   - znc/ks.yaml
-  - cross-seed/ks.yaml
   - seerr/ks.yaml
   - thelounge/ks.yaml
   - maintainerr/ks.yaml

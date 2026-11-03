@@ -3,12 +3,6 @@
 
 set -euo pipefail
 
-# User-defined variables
-CROSS_SEED_HOST="${CROSS_SEED_HOST:-required}"
-CROSS_SEED_PORT="${CROSS_SEED_PORT:-required}"
-CROSS_SEED_API_KEY="${CROSS_SEED_API_KEY:-required}"
-CROSS_SEED_SLEEP_INTERVAL="${CROSS_SEED_SLEEP_INTERVAL:-30}"
-
 # Function to set release variables from SABnzbd
 set_sab_vars() {
     RELEASE_NAME="${SAB_FILENAME:-}"
@@ -31,31 +25,6 @@ set_qb_vars() {
     RELEASE_TYPE="Torrent"
 }
 
-
-# Function to search for cross-seed
-search_cross_seed() {
-    local status_code
-    status_code=$(curl \
-        --silent \
-        --output /dev/null \
-        --write-out "%{http_code}" \
-        --request POST \
-        --data-urlencode "path=${RELEASE_DIR}" \
-        --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \
-        "http://${CROSS_SEED_HOST}:${CROSS_SEED_PORT}/api/webhook"
-    )
-
-    if [[ $status_code == 204 ]]; then
-        echo "cross-seed did not find a match for $RELEASE_NAME"
-        ls -lR "$RELEASE_DIR"
-    fi
-
-    printf "cross-seed search returned with HTTP status code %s and path %s\n" \
-        "${status_code}" \
-        "${RELEASE_DIR}" >&2
-
-    sleep "${CROSS_SEED_SLEEP_INTERVAL}"
-}
 
 # replaces spaces with dot's in release file names which apparently
 # helps prevent loops with poorly named releases (HONE)
@@ -88,9 +57,6 @@ main() {
 
     # Update permissions on the release directory
     chmod -R 750 "${RELEASE_DIR}"
-
-    # Search for cross-seed
-    search_cross_seed
 
     replace_spaces
 }
