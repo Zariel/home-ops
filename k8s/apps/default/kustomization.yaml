@@ -21,7 +21,6 @@ resources:
   - autobrr/ks.yaml
   - znc/ks.yaml
   - cross-seed/ks.yaml
-  - sporos/ks.yaml
   - seerr/ks.yaml
   - thelounge/ks.yaml
   - maintainerr/ks.yaml
@@ -31,7 +30,6 @@ resources:
   - audiobookshelf/ks.yaml
   - tqm/ks.yaml
   - qui/ks.yaml
-  - wrtag/ks.yaml
   - wizarr/ks.yaml
   - home-assistant/ks.yaml
   - matterjs/ks.yaml
