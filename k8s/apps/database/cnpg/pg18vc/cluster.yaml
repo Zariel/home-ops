@@ -26,11 +26,6 @@ spec:
         key: queries
   postgresql:
     extensions:
-      - name: postgis
-        image:
-          reference: ghcr.io/cloudnative-pg/postgis-extension:3.6.4-18-trixie
-        ld_library_path:
-          - system
       - name: vchord
         image:
           reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.0.0
