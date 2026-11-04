@@ -12,7 +12,7 @@ spec:
   grafanaCom:
     # renovate: depName="VictoriaMetrics - cluster"
     id: 11176
-    revision: 64
+    revision: 65
   variables:
     - name: ds
       value: victoriametrics
