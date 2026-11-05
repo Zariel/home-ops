@@ -1,0 +1,17 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: flux
+spec:
+  namespaceSelector:
+    matchNames: [flux-system]
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: flux
+  jobLabel: app
+  podMetricsEndpoints:
+    - port: http-prom
+      relabelConfigs:
+        - sourceLabels: [__meta_kubernetes_pod_label_app]
+          targetLabel: controller

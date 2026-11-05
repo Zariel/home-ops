@@ -1,0 +1,114 @@
+rule_files:
+  - rules.yaml
+evaluation_interval: 1m
+tests:
+  - name: Readiness delay and suspension
+    interval: 1m
+    input_series:
+      - series: gotk_resource_info{customresource_kind="HelmRelease", exported_namespace="default", name="healthy", ready="True"}
+        values: 1x20
+      - series: gotk_resource_info{customresource_kind="OCIRepository", exported_namespace="monitoring", name="failed", ready="False", instance="a"}
+        values: 1x20
+      - series: gotk_resource_info{customresource_kind="OCIRepository", exported_namespace="monitoring", name="failed", ready="False", instance="b"}
+        values: 1x20
+      - series: gotk_resource_info{customresource_kind="Kustomization", exported_namespace="default", name="waiting", ready="Unknown", suspended="false"}
+        values: 1x20
+      - series: gotk_resource_info{customresource_kind="HelmRelease", exported_namespace="default", name="suspended", ready="False", suspended="true"}
+        values: 1x20
+    alert_rule_test:
+      - eval_time: 14m
+        alertname: FluxResourceNotReady
+        exp_alerts: []
+      - eval_time: 15m
+        alertname: FluxResourceNotReady
+        exp_alerts:
+          - exp_labels:
+              customresource_kind: OCIRepository
+              exported_namespace: monitoring
+              name: failed
+              namespace: monitoring
+              severity: warning
+            exp_annotations:
+              summary: Flux OCIRepository monitoring/failed is not ready
+              description: Flux has not reconciled this resource successfully for at least 15 minutes. Check its status conditions and the status of its dependencies.
+          - exp_labels:
+              customresource_kind: Kustomization
+              exported_namespace: default
+              name: waiting
+              namespace: default
+              severity: warning
+            exp_annotations:
+              summary: Flux Kustomization default/waiting is not ready
+              description: Flux has not reconciled this resource successfully for at least 15 minutes. Check its status conditions and the status of its dependencies.
+  - name: Recovered resources stop alerting
+    interval: 1m
+    input_series:
+      - series: gotk_resource_info{customresource_kind="HelmRelease", exported_namespace="default", name="recovering", ready="False"}
+        values: 1x16 stale
+      - series: gotk_resource_info{customresource_kind="HelmRelease", exported_namespace="default", name="recovering", ready="True"}
+        values: _x17 1x5
+    alert_rule_test:
+      - eval_time: 18m
+        alertname: FluxResourceNotReady
+        exp_alerts: []
+  - name: Controller endpoints and absent targets
+    interval: 1m
+    input_series:
+      - series: kube_deployment_spec_replicas{namespace="flux-system", deployment="helm-controller"}
+        values: 1x10
+      - series: kube_deployment_spec_replicas{namespace="flux-system", deployment="source-controller"}
+        values: 1x10
+      - series: kube_deployment_spec_replicas{namespace="flux-system", deployment="kustomize-controller"}
+        values: 1x10
+      - series: kube_deployment_spec_replicas{namespace="flux-system", deployment="disabled-controller"}
+        values: 0x10
+      - series: up{namespace="flux-system", controller="helm-controller", instance="healthy"}
+        values: 1x10
+      - series: up{namespace="flux-system", controller="helm-controller", instance="failed"}
+        values: 0x10
+      - series: up{namespace="flux-system", controller="source-controller"}
+        values: 0x10
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: FluxControllerMetricsUnavailable
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: FluxControllerMetricsUnavailable
+        exp_alerts:
+          - exp_labels:
+              namespace: flux-system
+              controller: source-controller
+              severity: warning
+            exp_annotations:
+              summary: Flux source-controller metrics are unavailable
+              description: No metrics endpoint for this Flux controller has been scraped successfully for at least 5 minutes. The controller may be unavailable or its scrape target may be missing.
+          - exp_labels:
+              namespace: flux-system
+              controller: kustomize-controller
+              severity: warning
+            exp_annotations:
+              summary: Flux kustomize-controller metrics are unavailable
+              description: No metrics endpoint for this Flux controller has been scraped successfully for at least 5 minutes. The controller may be unavailable or its scrape target may be missing.
+  - name: Missing resource metrics are detected per kind
+    interval: 1m
+    input_series:
+      - series: gotk_resource_info{customresource_kind="Kustomization", name="apps", ready="True"}
+        values: 1x10
+      - series: gotk_resource_info{customresource_kind="GitRepository", name="repo", ready="True"}
+        values: 1x10
+      - series: gotk_resource_info{customresource_kind="OCIRepository", name="chart", ready="True"}
+        values: 1x10
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: FluxResourceMetricsMissing
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: FluxResourceMetricsMissing
+        exp_alerts:
+          - exp_labels:
+              customresource_kind: HelmRelease
+              namespace: flux-system
+              severity: warning
+            exp_annotations:
+              summary: Flux HelmRelease state metrics are missing
+              description: kube-state-metrics is not exporting HelmRelease readiness, or its metrics are not being scraped. Flux reconciliation failures for this resource kind cannot be detected.

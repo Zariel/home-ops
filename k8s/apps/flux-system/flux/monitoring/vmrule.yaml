@@ -1,0 +1,58 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: flux
+spec:
+  groups:
+    - name: flux.rules
+      rules:
+        - alert: FluxResourceNotReady
+          expr: |
+            max by (customresource_kind, exported_namespace, name) (
+              gotk_resource_info{ready!="True", suspended!="true"}
+            ) == 1
+          for: 15m
+          labels:
+            severity: warning
+            namespace: "{{ $labels.exported_namespace }}"
+          annotations:
+            summary: Flux {{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} is not ready
+            description: >-
+              Flux has not reconciled this resource successfully for at least 15 minutes.
+              Check its status conditions and the status of its dependencies.
+        - alert: FluxControllerMetricsUnavailable
+          expr: |
+            max by (namespace, controller) (
+              label_replace(
+                kube_deployment_spec_replicas{namespace="flux-system"} > 0,
+                "controller", "$1", "deployment", "(.+)"
+              )
+            )
+            unless on (namespace, controller)
+            max by (namespace, controller) (
+              up{namespace="flux-system", controller!=""} == 1
+            )
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Flux {{ $labels.controller }} metrics are unavailable
+            description: >-
+              No metrics endpoint for this Flux controller has been scraped successfully
+              for at least 5 minutes. The controller may be unavailable or its scrape target may be missing.
+        - alert: FluxResourceMetricsMissing
+          expr: |
+            absent(gotk_resource_info{customresource_kind="Kustomization"})
+            or absent(gotk_resource_info{customresource_kind="HelmRelease"})
+            or absent(gotk_resource_info{customresource_kind="GitRepository"})
+            or absent(gotk_resource_info{customresource_kind="OCIRepository"})
+          for: 5m
+          labels:
+            severity: warning
+            namespace: flux-system
+          annotations:
+            summary: Flux {{ $labels.customresource_kind }} state metrics are missing
+            description: >-
+              kube-state-metrics is not exporting {{ $labels.customresource_kind }} readiness,
+              or its metrics are not being scraped. Flux reconciliation failures for this resource kind cannot be detected.
