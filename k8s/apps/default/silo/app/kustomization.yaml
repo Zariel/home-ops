@@ -6,8 +6,6 @@ resources:
   - service.yaml
   - httproute.yaml
   - externalsecret.yaml
-  - app.secret.sops.yaml
-  - recovery.secret.sops.yaml
 configMapGenerator:
   - name: silo-initdb
     files:
