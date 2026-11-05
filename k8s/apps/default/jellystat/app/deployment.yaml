@@ -60,6 +60,13 @@ spec:
           env:
             - name: TZ
               value: Europe/London
+            - name: JF_HOST
+              value: http://jellyfin.default.svc.cluster.local:8096
+            - name: JF_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jellystat-jellyfin
+                  key: JF_API_KEY
           envFrom:
             - secretRef:
                 name: jellystat
