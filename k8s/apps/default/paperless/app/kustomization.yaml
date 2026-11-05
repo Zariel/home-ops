@@ -6,6 +6,3 @@ resources:
   - ocirepository.yaml
   - helmrelease.yaml
   - externalsecret.yaml
-  - app.secret.sops.yaml
-  - db.secret.sops.yaml
-  - valkey.secret.sops.yaml
