@@ -5,6 +5,7 @@ namespace: default
 components:
   - ../../components/common
 resources:
+  - jellystat/ks.yaml
   - cleanrr/ks.yaml
   - jellyfin/ks.yaml
   - plex/ks.yaml
