@@ -4,11 +4,11 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: cloudflared
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./k8s/apps/network/cloudflared/app
   dependsOn:
+    - name: onepassword-store
+      namespace: external-secrets
     - name: external-dns
     - name: envoy-gateway-gateways
   prune: true
@@ -18,7 +18,3 @@ spec:
     namespace: flux-system
   wait: false
   interval: 1h
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: cloudflared-secret
