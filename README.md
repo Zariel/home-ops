@@ -9,7 +9,13 @@ Personal home-ops repo for my homelab. This repository tracks my Kubernetes and 
 - `truenas/` contains TrueNAS-related assets
 - Task automation is defined in `Taskfile.yaml` and `.taskfiles/`
 
-## Network Architecture
+## Repository guidance
+
+- [Agent instructions](AGENTS.md): working rules, validation, and operational permissions.
+- [Kubernetes conventions](k8s/README.md): manifest organization, secret ownership, network trust, and Pocket ID integration.
+- [Observability operations](k8s/OPERATIONS.md): Grafana metrics and logs, Alertmanager access, and incident investigation.
+
+## Network architecture
 
 This homelab is fully L3 routed. Cluster nodes are not on a shared L2 domain.
 
