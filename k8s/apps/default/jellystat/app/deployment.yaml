@@ -56,7 +56,9 @@ spec:
       containers:
         - name: jellystat
           image: *image
-          command: [node, backend/server.js]
+          # Task workers resolve their paths relative to the backend directory.
+          workingDir: /app/backend
+          command: [node, server.js]
           env:
             - name: TZ
               value: Europe/London
