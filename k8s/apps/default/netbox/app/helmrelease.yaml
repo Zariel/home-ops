@@ -34,6 +34,26 @@ spec:
     admins:
       - ["cbannister", "c.bannister@gmail.com"]
     loginRequired: true
+    remoteAuth:
+      enabled: true
+      backends:
+        - social_core.backends.open_id_connect.OpenIdConnectAuth
+      autoCreateUser: true
+    extraVolumes:
+      - name: oidc-config
+        configMap:
+          name: netbox-oidc-config
+      - name: oidc-credentials
+        secret:
+          secretName: netbox-oidc
+    extraVolumeMounts:
+      - name: oidc-config
+        mountPath: /etc/netbox/config/oidc.py
+        subPath: oidc.py
+        readOnly: true
+      - name: oidc-credentials
+        mountPath: /run/secrets/oidc
+        readOnly: true
     extraConfig:
       - secret:
           secretName: netbox-extra-config

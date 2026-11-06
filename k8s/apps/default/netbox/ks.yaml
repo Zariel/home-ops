@@ -11,6 +11,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: netbox-oidc
+      namespace: default
     - name: common
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -30,3 +32,24 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 1Gi
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: netbox-oidc
+  namespace: default
+spec:
+  dependsOn:
+    - name: pocket-id-instance
+      namespace: default
+  interval: 1h
+  path: ./k8s/apps/default/netbox/oidc
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: default
+  timeout: 5m
+  wait: true

@@ -2,9 +2,16 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: default
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./objectbucketclaim.yaml
   - ./route.yaml
   - ./valkey.yaml
+configMapGenerator:
+  - name: netbox-oidc-config
+    files:
+      - oidc.py=./config/oidc.py
+generatorOptions:
+  disableNameSuffixHash: true
