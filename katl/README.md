@@ -27,7 +27,7 @@ All nodes inherit `kubelet.yaml` from `spec.defaults.kubernetes.kubelet`.
 Use `nodes[].kubernetes.kubelet` only for a node-specific override.
 
 Native networkd files implement the ConnectX-4 active-backup `bond0` (MTU 9000),
-VLANs 20/40/300/1100, the secondary active-backup `bond1`, and management VRF
+VLANs 20/40/300/1100/1101, the secondary active-backup `bond1`, and management VRF
 (table 100). Katl management uses the existing routed `10.254.1.1/.3/.5`
 addresses, not the interfaces inside the management VRF. The ConnectX link files
 match the PCI slots implied by the existing predictable interface names; verify

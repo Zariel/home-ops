@@ -8,7 +8,7 @@ bpf:
   datapathMode: netkit
   preallocateMaps: true
   hostLegacyRouting: false
-  vlanBypass: [20, 40, 300]
+  vlanBypass: [20, 40, 300, 1100, 1101]
 bpfClockProbe: true
 cgroup:
   autoMount:

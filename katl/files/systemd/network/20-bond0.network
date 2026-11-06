@@ -11,3 +11,4 @@ VLAN=bond0.20
 VLAN=bond0.40
 VLAN=bond0.300
 VLAN=bond0.1100
+VLAN=bond0.1101
