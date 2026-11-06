@@ -12,10 +12,17 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: otbr
+      namespace: default
     - name: multus-networks
       namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: matterjs
+      namespace: default
   interval: 1h
   path: ./k8s/apps/default/matterjs/app
   postBuild:

@@ -28,9 +28,27 @@ the singleton applications' `Recreate` deployment strategy during migration.
 
 ## Rollout
 
-This change prepares host configuration and attachment definitions. The
-OTBR and Matter.js deployments still use `iot`; they are not migrated by
-adding these definitions. No VXLAN devices or tunnels are configured.
+OTBR uses `thread-infra` at `fd74:f571:d3bd:1060::2/64`; Matter.js uses
+`matter-controllers` at `fd74:f571:d3bd:1061::2/64`. Both addresses are
+allocated in NetBox. Their PVCs, Thread dataset, Matter fabric and existing
+MAC addresses are retained. Home Assistant keeps its existing IoT/trusted
+attachments and reaches the controller through its Kubernetes Service; its
+former IoT RA/RIO learning is disabled. No VXLAN devices are configured.
+
+VyOS learns `/64` RIOs only on VLAN 1100 and only from OTBR's retained
+`0a:92:17:bd:44:6e` / `fe80::892:17ff:febd:446e` identity. It ignores PIOs,
+default-router announcements and advertised MTUs on that interface. The
+OMR prefix remains `fd42:dfb5:24e4:1::/64`; it has no static IoT next hop.
+The service-filtered mDNS reflector includes trusted, IoT, OTBR and controller
+networks. VyOS 1.4 needs the mixed-address-family mDNS validator patch in the
+router repository's preconfiguration boot hook: the stock validator rejects
+IPv6-only links in `both` mode even though Avahi supports them. Review that
+compatibility patch when upgrading VyOS. Matter UDP is permitted between the controller and Thread/IoT
+endpoints, with trusted commissioning access to Thread and the border agent.
+UDP ports are learned from discovery and can include an ephemeral controller
+port, so the firewall scopes these flows by endpoint/prefix rather than only
+allowing destination port 5540. Both new attachments retain default-drop WAN
+policies.
 
 1. Plan and apply the reviewed Katl host configuration through the normal
    operator workflow. Check `bond0.1100` and `bond0.1101` exist and are up on
@@ -44,16 +62,18 @@ adding these definitions. No VXLAN devices or tunnels are configured.
    `kube-system`. The ICX must carry both VLANs to VyOS and each node; the
    VyOS gateways and ICX tagging were provisioned separately.
 4. Test IPv6 neighbor discovery and gateway reachability from temporary
-   attachments on each node. This preparation has not performed that rollout
-   or those live tests.
-5. Prepare the application firewall rules and selective discovery on VyOS,
-   allocate pod addresses, then migrate the workloads separately. Preserve
-   the Thread dataset and current OMR prefix `fd42:dfb5:24e4:1::/64`. Keep
-   the current OMR static route while OTBR is on IoT. Change its next hop
-   during OTBR migration; enable restricted RIO learning only after OTBR is
-   on VLAN 1100. Keep RA learning disabled on IoT. The current gateway
-   baseline drops application traffic between the new zones, so gateway
-   reachability alone does not establish that Matter is ready.
+   attachments on each node. All six node/VLAN combinations passed 1500-byte
+   IPv6 tests on 2026-11-06 after the Katl and Cilium rollout; test namespaces
+   and interfaces were removed.
+5. Before migrating workloads, back up OTBR's active dataset and both data
+   volumes, and apply the VyOS application/discovery policies. Deploy OTBR
+   on VLAN 1100 with its retained MAC, then enable the restricted RIO input
+   policy. Confirm a live `proto ra` OMR route via OTBR's link-local address
+   before removing the old static IoT route. Matter.js depends on OTBR's
+   Deployment health; verify all previously available nodes reconnect and
+   Home Assistant retains its WebSocket connection after their restarts.
+   Check both the learned route and the devices after router configuration
+   changes, since gateway HTTP health alone cannot establish Matter health.
 
 For rollback before workload migration, revert these preparation files;
 existing workloads keep their IoT attachment. Once workloads have moved,

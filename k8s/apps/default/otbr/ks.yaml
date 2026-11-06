@@ -14,6 +14,11 @@ spec:
   dependsOn:
     - name: multus-networks
       namespace: kube-system
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: otbr
+      namespace: default
   interval: 1h
   retryInterval: 1m
   path: ./k8s/apps/default/otbr/app

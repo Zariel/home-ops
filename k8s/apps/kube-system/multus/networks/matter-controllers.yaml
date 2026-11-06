@@ -17,7 +17,8 @@ spec:
           "mode": "bridge",
           "mtu": 1500,
           "capabilities": {
-            "ips": true
+            "ips": true,
+            "mac": true
           },
           "ipam": {
             "type": "static",

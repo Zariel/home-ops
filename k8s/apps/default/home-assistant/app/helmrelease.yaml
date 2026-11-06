@@ -64,11 +64,9 @@ spec:
           - name: net.ipv6.conf.all.forwarding
             value: "0"
           - name: net.ipv6.conf.net1.accept_ra
-            value: "2"
-          - name: net.ipv6.conf.net1.accept_ra_defrtr
-            value: "1"
-          - name: net.ipv6.conf.net1.accept_ra_rt_info_max_plen
-            value: "64"
+            value: "0"
+          - name: net.ipv6.conf.net1.autoconf
+            value: "0"
     service:
       app:
         ports:
