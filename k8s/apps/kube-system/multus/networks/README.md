@@ -33,7 +33,7 @@ OTBR uses `thread-infra` at `fd74:f571:d3bd:1060::2/64`; Matter.js uses
 allocated in NetBox. Their PVCs, Thread dataset, Matter fabric and existing
 MAC addresses are retained. Home Assistant keeps its existing IoT/trusted
 attachments and reaches the controller through its Kubernetes Service; its
-former IoT RA/RIO learning is disabled. No VXLAN devices are configured.
+former IoT RA/RIO learning is disabled.
 
 VyOS learns `/64` RIOs only on VLAN 1100 and only from OTBR's retained
 `0a:92:17:bd:44:6e` / `fe80::892:17ff:febd:446e` identity. It ignores PIOs,
@@ -43,8 +43,9 @@ The service-filtered mDNS reflector includes trusted, IoT, OTBR and controller
 networks. VyOS 1.4 needs the mixed-address-family mDNS validator patch in the
 router repository's preconfiguration boot hook: the stock validator rejects
 IPv6-only links in `both` mode even though Avahi supports them. Review that
-compatibility patch when upgrading VyOS. Matter UDP is permitted between the controller and Thread/IoT
-endpoints, with trusted commissioning access to Thread and the border agent.
+compatibility patch when upgrading VyOS. Matter UDP is permitted between the
+controller and Thread/IoT endpoints, with trusted commissioning access to Thread
+and the border agent.
 UDP ports are learned from discovery and can include an ephemeral controller
 port, so the firewall scopes these flows by endpoint/prefix rather than only
 allowing destination port 5540. Both new attachments retain default-drop WAN
@@ -79,6 +80,27 @@ For rollback before workload migration, revert these preparation files;
 existing workloads keep their IoT attachment. Once workloads have moved,
 restore their previous attachments and routing before removing these VLANs
 or Cilium bypass entries.
+
+## North star: VXLAN pod attachments over a routed underlay
+
+Consider moving VLAN-backed Multus pod attachments to VXLAN-backed Linux
+bridges as the node fabric moves toward routed, dual-homed links. This would
+carry the required Ethernet networks over IP and remove their dependency on
+VLAN trunks reaching every eligible Kubernetes node. Preserve separate
+broadcast domains and the existing IPv6 addressing and gateway policy.
+
+Katl would own the host bridges and VXLAN endpoints; Multus would attach pods
+through the bridge CNI. Linux on the nodes and VyOS could terminate tunnels,
+with the ICX switches routing the outer packets. Stable, routable endpoint
+addresses would let routing handle physical-link failover. A small deployment
+could use static peer and flood lists; EVPN is a later option for distributing
+endpoint reachability as the fabric grows.
+
+The node underlay already uses MTU 9000. Before a migration, verify the MTU
+across the complete tunnel path and account for encapsulation. Validate
+multicast replication, mDNS, ND/RA, Cilium interaction and link/node failure
+behavior, including OTBR's OMR advertisements. Keep this as a future direction
+to evaluate alongside the routed fabric work.
 
 References: [macvlan CNI](https://www.cni.dev/plugins/current/main/macvlan/),
 [static IPAM](https://www.cni.dev/plugins/current/ipam/static/), and
