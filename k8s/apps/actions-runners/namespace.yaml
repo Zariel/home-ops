@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: actions-runners
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    # VM tests run libvirt and nested image builders inside ephemeral pods.
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

@@ -2,6 +2,14 @@
 log-level: info
 domain: kernel.org
 devices:
+  # Allocate one complete VM-test device group per node.
+  - name: vmtest
+    groups:
+      - count: 1
+        paths:
+          - path: /dev/kvm
+          - path: /dev/vhost-vsock
+          - path: /dev/net/tun
   - name: zbt
     groups:
       - count: 1
