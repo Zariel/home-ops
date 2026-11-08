@@ -166,6 +166,8 @@ def main():
     if bmc.served_fingerprint() == desired:
         print("BMC already serves the desired certificate:", desired)
         return
+    if os.environ.get("BMC_ALLOW_RESET", "false").lower() != "true":
+        raise RuntimeError("Certificate changed; deployment needs a BMC reset. Automatic resets are disabled pending sensor recovery")
     try:
         bmc.login()
         bmc.upload(cert, key)

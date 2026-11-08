@@ -39,6 +39,8 @@ spec:
                   value: pve-ipmi.cbannister.casa
                 - name: BMC_ADDRESS
                   value: 10.1.1.30
+                - name: BMC_ALLOW_RESET
+                  value: "false"
                 - name: BMC_BOOTSTRAP_SHA256
                   value: 16cb30064b717c9a11a4e89cc1b6004eef6586b34f3c59a2baa2b3b84b73a5b4
               resources:
