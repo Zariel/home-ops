@@ -1,0 +1,76 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: printer-certificate
+spec:
+  schedule: "41 4 * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: printer-certificate
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: deploy
+              image: docker.io/library/python:3.14.10-alpine3.24@sha256:a18b20ad69e74df6cf6d2e1b1a260d7a1ecf5380fd83b310f83ba88c461cf894
+              command: [python, -B, /config/deploy.py]
+              env:
+                - name: PYTHONUNBUFFERED
+                  value: "1"
+                - name: PRINTER_HOST
+                  value: printer.cbannister.casa
+                - name: PRINTER_ADDRESS
+                  value: 10.1.2.70
+                - name: PRINTER_BOOTSTRAP_SHA256
+                  value: e38af48a8cdcce91c1994b2faaf601f3a22e3833916837adaf2aa5c419b04f7c
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 128Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: [ALL]
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+                - name: tls
+                  mountPath: /tls
+                  readOnly: true
+                - name: credentials
+                  mountPath: /credentials
+                  readOnly: true
+          volumes:
+            - name: config
+              configMap:
+                name: printer-deploy
+            - name: tls
+              secret:
+                secretName: printer-tls
+                defaultMode: 0440
+            - name: credentials
+              secret:
+                secretName: printer-credentials
+                defaultMode: 0440

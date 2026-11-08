@@ -5,3 +5,9 @@ namespace: network
 resources:
   - certificate.yaml
   - externalsecret.yaml
+  - cronjob.yaml
+  - networkpolicy.yaml
+configMapGenerator:
+  - name: printer-deploy
+    files:
+      - config/deploy.py
