@@ -1,5 +1,6 @@
 # First rollout: retire the grafana HelmRelease in a separate GitOps revision
 # before enabling this instance; both deployments would mount the same SQLite PVC.
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafana_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: Grafana
 metadata:

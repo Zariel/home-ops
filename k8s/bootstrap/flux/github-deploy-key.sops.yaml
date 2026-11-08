@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
 apiVersion: v1
 data:
     identity: ENC[AES256_GCM,data:zuVv0YZVtHedzUUUTeMJnheS1/Gp8UTb3PVQcLk6QlWcDbphE+xNo236T7/K7bCjZmoRET58MudSfGVaWAP2ESbGo5x22gCi22yOw63B1Y5rG9WFesdrdfUo89Vj5924fgQwqmNAMWV+EQxDnNG+9Sbl91p0j068SUSLJOi/0x+iMMs3c1fijUxjgm0IvZLp9E8qRKNcWB2VL5Gy3ef9JKqSH8G6L2vWOUN/S7VFuIKve0MlFt97B+6Ve1IFoEk8K7v479GU+TnAaNzUICjVlYNZBay2WT0QMpzV0nuiCb2i9RZSZ2BY9w+btZ+a5nn2ivaADS3iOesg50ZlrmnI0tXPeCQWVk54zFnnNcX+1I7FeP+PS7HWNduC8DhZaJhRSKIs2gHtAVPOSoLyf4jcicKtmd3MFJ9r5no7GSORb0WOCpP1wH/FPDDFl6XkNugmTz2be9HZWFnH/HSe9m9AJFbe70sA8Wm1j9EZTdkcl3wQ/QV/M1/6iZK2CWCIYo6X6EFcF8wwHfB9ORDesFU1ePIY7lNA/fhK,iv:JHXwPjnbHbEffLZKUNqFzEw5UcOOyURzfgQlSXkXsQY=,tag:teP7Oyn/ji2v9hd63WyYLQ==,type:str]
