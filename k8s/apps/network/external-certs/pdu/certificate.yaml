@@ -3,15 +3,15 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: pdu01
+  name: pdu
 spec:
-  secretName: pdu01-tls
+  secretName: pdu-tls
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: pdu01.cbannister.casa
+  commonName: pdu.cbannister.casa
   dnsNames:
-    - pdu01.cbannister.casa
+    - pdu.cbannister.casa
   privateKey:
     algorithm: RSA
     size: 2048

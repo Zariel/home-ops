@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: pdu01-certificate
+  name: pdu-certificate
 spec:
   schedule: "23 * * * *"
   timeZone: Etc/UTC
@@ -17,7 +17,7 @@ spec:
       template:
         metadata:
           labels:
-            app.kubernetes.io/name: pdu01-certificate
+            app.kubernetes.io/name: pdu-certificate
         spec:
           automountServiceAccountToken: false
           restartPolicy: Never
@@ -36,11 +36,11 @@ spec:
                 - name: PYTHONUNBUFFERED
                   value: "1"
                 - name: PDU_HOST
-                  value: pdu01.cbannister.casa
+                  value: pdu.cbannister.casa
                 - name: PDU_ADDRESS
                   value: 10.1.0.31
                 - name: PDU_BOOTSTRAP_SHA256
-                  value: 6a918dab59a434db097b04746c113c64c9f12508497d1b95065f8e373e3b14d2
+                  value: 99c8099bc46ac2b0cc6fd334fe8ffd5fcfce5501aabef3f3ce64a5c397af63ec
               resources:
                 requests:
                   cpu: 10m
@@ -65,12 +65,12 @@ spec:
           volumes:
             - name: config
               configMap:
-                name: pdu01-deploy
+                name: pdu-deploy
             - name: tls
               secret:
-                secretName: pdu01-tls
+                secretName: pdu-tls
                 defaultMode: 0440
             - name: credentials
               secret:
-                secretName: pdu01-credentials
+                secretName: pdu-credentials
                 defaultMode: 0440

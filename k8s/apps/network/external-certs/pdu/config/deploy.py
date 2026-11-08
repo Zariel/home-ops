@@ -13,7 +13,7 @@ import time
 import uuid
 
 
-HOST = os.environ.get("PDU_HOST", "pdu01.cbannister.casa")
+HOST = os.environ.get("PDU_HOST", "pdu.cbannister.casa")
 ADDRESS = os.environ.get("PDU_ADDRESS", "10.1.0.31")
 
 

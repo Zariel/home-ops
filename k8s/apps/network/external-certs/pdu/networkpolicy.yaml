@@ -2,11 +2,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: pdu01-certificate
+  name: pdu-certificate
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: pdu01-certificate
+      app.kubernetes.io/name: pdu-certificate
   policyTypes:
     - Ingress
     - Egress

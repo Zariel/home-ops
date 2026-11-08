@@ -8,6 +8,6 @@ resources:
   - cronjob.yaml
   - networkpolicy.yaml
 configMapGenerator:
-  - name: pdu01-deploy
+  - name: pdu-deploy
     files:
       - config/deploy.py
