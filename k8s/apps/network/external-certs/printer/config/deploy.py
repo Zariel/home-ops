@@ -241,6 +241,11 @@ class Printer:
             if dict(values(form)).get("hidden_certificate_idx") != index:
                 raise RuntimeError("Printer certificate delete confirmation differs from the requested slot")
             self.submit(form, path)
+            deadline = time.monotonic() + 30
+            while any(saved["serial"] == cert["serial"] for saved in self.certificates().values()):
+                if time.monotonic() >= deadline:
+                    raise RuntimeError("Printer did not confirm retirement of its previous managed certificate")
+                time.sleep(3)
             print("Retired previous managed certificate slot:", index)
 
     def upload(self, bundle, serial):
@@ -284,25 +289,17 @@ class Printer:
             raise RuntimeError("Could not identify the printer restart flag")
         if index not in [option["value"] for option in selector["options"]]:
             raise RuntimeError("Imported certificate is not offered by the printer TLS selector")
-        body = self.submit(form, HTTP_SETTINGS, {selector["name"]: index, flag.group(1): "1"})
-        page = Page(body)
-        forms = [form for form in page.forms if "http_page_mode" in dict(values(form))]
-        if len(forms) != 1 or "restart" not in words(page.text).lower():
-            raise RuntimeError("Printer did not present the expected restart confirmation")
-        confirmation = forms[0]
-        if any(field["tag"] == "select" or field.get("type") in {"checkbox", "radio"} for field in confirmation["controls"]):
-            raise RuntimeError("Unexpected protocol changes in the printer restart confirmation")
-        if dict(values(confirmation))["http_page_mode"] not in {"4", "5"}:
-            raise RuntimeError("Unknown printer restart confirmation mode")
         status = self.status()
         if status not in IDLE:
-            print("Printer is busy; activation deferred until the next scheduled check:", status)
+            print("Printer is busy; certificate selection deferred until the next scheduled check:", status)
             return False
-        print("Activating the managed certificate; printer status:", status)
+        print("Selecting the managed certificate; printer status:", status)
+        # This model reloads TLS after the settings POST, even though its UI
+        # offers a full printer restart afterward. Never submit that restart.
         try:
-            self.submit(confirmation, HTTP_SETTINGS)
+            self.submit(form, HTTP_SETTINGS, {selector["name"]: index, flag.group(1): "1"})
         except (OSError, http.client.RemoteDisconnected):
-            # A printer restart may close HTTPS before returning its response.
+            # TLS reload can interrupt the response; verify the resulting state.
             pass
         deadline = time.monotonic() + 180
         while time.monotonic() < deadline:
@@ -314,7 +311,7 @@ class Printer:
                 pass
             time.sleep(3)
         else:
-            raise RuntimeError("Printer did not start serving the desired publicly trusted certificate")
+            raise RuntimeError("Printer did not reload the desired publicly trusted certificate; no printer restart was requested")
         self.login()
         _, _, active, after = self.http_settings()
         if active != index or after != preferences:
