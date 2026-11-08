@@ -1,0 +1,20 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pdu01-certificate
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: pdu01-certificate
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: []
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.1.0.31/32
+      ports:
+        - protocol: TCP
+          port: 443
