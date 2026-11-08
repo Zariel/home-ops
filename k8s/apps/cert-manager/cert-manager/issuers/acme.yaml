@@ -18,6 +18,7 @@ spec:
               key: api-key
         selector:
           dnsZones:
+            - cbannister.casa
             - cbannister.xyz
             - rociobolanos.com
 ---
@@ -40,5 +41,6 @@ spec:
               key: api-key
         selector:
           dnsZones:
+            - cbannister.casa
             - cbannister.xyz
             - rociobolanos.com
