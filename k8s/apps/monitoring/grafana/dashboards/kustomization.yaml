@@ -43,3 +43,4 @@ configMapGenerator:
       - resources/blocky.json
       - resources/bind9.json
       - resources/dnsdist.json
+      - resources/external-dns.json

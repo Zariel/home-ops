@@ -100,8 +100,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -123,7 +122,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           },
           "min": 0,
           "max": 1,
@@ -218,7 +218,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -296,7 +297,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -348,8 +350,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -371,7 +372,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           },
           "min": 0,
           "max": 1,
@@ -422,7 +424,7 @@
     },
     {
       "id": 5,
-      "title": "BIND ready",
+      "title": "Cluster BIND ready",
       "description": "Expected: one primary and two secondary replicas.",
       "type": "stat",
       "datasource": {
@@ -466,7 +468,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -518,8 +521,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -541,7 +543,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           },
           "min": 0,
           "max": 1,
@@ -608,7 +611,7 @@
       "id": 8,
       "title": "DNS answer checks",
       "description": "Successful responses matching expected answer records; missing checks are unknown.",
-      "type": "timeseries",
+      "type": "status-history",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -624,42 +627,51 @@
           "unit": "bool",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "red",
                 "value": null
               },
               {
-                "color": "yellow",
+                "color": "green",
                 "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
           "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "axisCenteredZero": false,
-            "scaleDistribution": {
-              "type": "linear"
+            "lineWidth": 0,
+            "fillOpacity": 90
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
             }
-          }
+          ]
         },
         "overrides": []
       },
       "options": {
+        "showValue": "never",
+        "rowHeight": 0.8,
+        "colWidth": 0.9,
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "showLegend": false
         },
         "tooltip": {
           "mode": "multi",
@@ -701,23 +713,22 @@
           "unit": "s",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "green",
                 "value": null
               },
               {
                 "color": "yellow",
-                "value": 1
+                "value": 0.05
               },
               {
                 "color": "red",
-                "value": 2
+                "value": 0.25
               }
             ]
           },
@@ -728,7 +739,9 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false,
+            "gradientMode": "scheme"
           }
         },
         "overrides": []
@@ -793,7 +806,7 @@
           "noValue": "No data",
           "color": {
             "mode": "fixed",
-            "fixedColor": "blue"
+            "fixedColor": "orange"
           },
           "thresholds": {
             "mode": "absolute",
@@ -801,14 +814,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -819,7 +824,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -878,14 +884,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -896,7 +894,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -944,7 +943,7 @@
       "id": 14,
       "title": "DNSdist backend health",
       "description": "Local BIND, Blocky, cluster BIND and Cloudflare health from each DNS node.",
-      "type": "timeseries",
+      "type": "status-history",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -960,42 +959,51 @@
           "unit": "bool",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "red",
                 "value": null
               },
               {
-                "color": "yellow",
+                "color": "green",
                 "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
           "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "axisCenteredZero": false,
-            "scaleDistribution": {
-              "type": "linear"
+            "lineWidth": 0,
+            "fillOpacity": 90
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
             }
-          }
+          ]
         },
         "overrides": []
       },
       "options": {
+        "showValue": "never",
+        "rowHeight": 0.8,
+        "colWidth": 0.9,
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "showLegend": false
         },
         "tooltip": {
           "mode": "multi",
@@ -1037,23 +1045,22 @@
           "unit": "s",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "green",
                 "value": null
               },
               {
                 "color": "yellow",
-                "value": 1
+                "value": 0.05
               },
               {
                 "color": "red",
-                "value": 2
+                "value": 0.25
               }
             ]
           },
@@ -1064,7 +1071,9 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false,
+            "gradientMode": "scheme"
           }
         },
         "overrides": []
@@ -1120,23 +1129,18 @@
               "unit": "reqps",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
+                "mode": "thresholds"
               },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "text",
+                    "color": "#8a8a8a",
                     "value": null
                   },
                   {
-                    "color": "yellow",
-                    "value": 1
-                  },
-                  {
                     "color": "red",
-                    "value": 2
+                    "value": 1e-06
                   }
                 ]
               },
@@ -1147,7 +1151,9 @@
                 "axisCenteredZero": false,
                 "scaleDistribution": {
                   "type": "linear"
-                }
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
               }
             },
             "overrides": []
@@ -1197,23 +1203,18 @@
               "unit": "reqps",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
+                "mode": "thresholds"
               },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "text",
+                    "color": "#8a8a8a",
                     "value": null
                   },
                   {
-                    "color": "yellow",
-                    "value": 1
-                  },
-                  {
                     "color": "red",
-                    "value": 2
+                    "value": 1e-06
                   }
                 ]
               },
@@ -1224,7 +1225,9 @@
                 "axisCenteredZero": false,
                 "scaleDistribution": {
                   "type": "linear"
-                }
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
               }
             },
             "overrides": []
@@ -1273,7 +1276,7 @@
           "id": 22,
           "title": "Collection status",
           "description": "Zero is a failed scrape; missing series indicate absent collection.",
-          "type": "timeseries",
+          "type": "status-history",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
@@ -1289,42 +1292,51 @@
               "unit": "bool",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
+                "mode": "thresholds"
               },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "text",
+                    "color": "red",
                     "value": null
                   },
                   {
-                    "color": "yellow",
+                    "color": "green",
                     "value": 1
-                  },
-                  {
-                    "color": "red",
-                    "value": 2
                   }
                 ]
               },
               "custom": {
-                "drawStyle": "line",
-                "lineWidth": 1,
-                "fillOpacity": 0,
-                "axisCenteredZero": false,
-                "scaleDistribution": {
-                  "type": "linear"
+                "lineWidth": 0,
+                "fillOpacity": 90
+              },
+              "min": 0,
+              "max": 1,
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "DOWN",
+                      "color": "red"
+                    },
+                    "1": {
+                      "text": "UP",
+                      "color": "green"
+                    }
+                  }
                 }
-              }
+              ]
             },
             "overrides": []
           },
           "options": {
+            "showValue": "never",
+            "rowHeight": 0.8,
+            "colWidth": 0.9,
             "legend": {
-              "displayMode": "list",
-              "placement": "bottom"
+              "showLegend": false
             },
             "tooltip": {
               "mode": "multi",
@@ -1349,7 +1361,7 @@
         {
           "id": 23,
           "title": "External DNS reconcile age",
-          "description": "Age of the last reconciliation for each record controller.",
+          "description": "Age of the last reconciliation for each record controller. Warning/red after 5/10 minutes.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -1366,23 +1378,22 @@
               "unit": "s",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
+                "mode": "thresholds"
               },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "text",
+                    "color": "green",
                     "value": null
                   },
                   {
                     "color": "yellow",
-                    "value": 1
+                    "value": 300
                   },
                   {
                     "color": "red",
-                    "value": 2
+                    "value": 600
                   }
                 ]
               },
@@ -1393,7 +1404,9 @@
                 "axisCenteredZero": false,
                 "scaleDistribution": {
                   "type": "linear"
-                }
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
               }
             },
             "overrides": []

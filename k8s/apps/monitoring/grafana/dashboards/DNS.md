@@ -6,9 +6,9 @@ The DNS folder contains five dashboards after rollout:
 | --- | --- |
 | DNS / Overview | Answer checks, DNS node coverage, filtering traffic, backend health and routing logs |
 | Blocky / Overview | Node/client/outcome filters, query logs, list freshness and winning upstreams |
-| BIND9 / Overview | Pod health, responses, primary/secondary serial comparison and transfer/update logs |
+| BIND9 / Overview | Separate internal-VM and cluster-managed DNS groups, with a planned gateway DHCP transfer section |
 | DNSdist / Overview | Node/backend filters, latency, errors, outstanding requests and separate pool caches |
-| External DNS | Existing record reconciliation dashboard, retained |
+| External DNS / Overview | Controller freshness, desired/observed records, errors and runtime |
 
 The imported DNSdist resource is replaced in place, preserving UID
 `c8a04601-b1d2-4085-9407-98ffadd0ab27` and its existing links. Its old queries
@@ -22,7 +22,10 @@ All Kubernetes changes are Flux managed. No live dashboards or workloads were
 changed during preparation. The `grafana-dashboards` unit owns the stable
 `dns-dashboards` ConfigMap. The existing DNSdist GrafanaDashboard in the `grafana`
 unit references it; the operator retries until that ConfigMap exists. The other
-three GrafanaDashboard resources live in `grafana-dashboards`.
+three GrafanaDashboard resources live in `grafana-dashboards`. External DNS also
+references this ConfigMap through its existing resource in `grafana`, retaining
+UID `eea5u_I7z` and grafana.com ID 15038. Its obsolete per-type metric queries
+are replaced with the current `record_type` labelled metrics.
 
 The monitoring cluster unit adds native Blocky/DNSdist scrapes against stable
 node addresses (10.254.53.0, .2 and .4), labelled dns-1, dns-2 and dns-3.
@@ -123,3 +126,34 @@ stable name. ConfigMap-only changes otherwise wait for the operator's resync.
 Log regexes use LogsQL raw strings so selected client addresses retain valid
 escaping. Response choices are deliberate regex patterns and use raw interpolation.
 Validated 72 host/client/outcome/domain combinations against VictoriaLogs.
+
+## Colours and BIND ownership groups
+
+All five dashboards in the DNS folder use the same semantic colours from the
+buroa guidance: incoming queries and desired records orange; served responses,
+cache hits and observed records blue; neutral facts and expected policy blocks
+grey; CPU teal; memory purple. Entity identities never receive arbitrary colours.
+Cached responses use a dashed blue line to distinguish them from resolved replies.
+Health uses red/green status-history grids. Missing data remains unknown.
+
+Latency uses green below 50 ms, yellow from 50 ms and red from 250 ms; these are
+diagnostic guides, not availability SLOs. Controller freshness warns after five
+minutes and turns red after ten; list freshness uses 24/48 hours. Any nonzero
+error rate is red, while zero is neutral grey. Thresholds are display-only.
+
+The BIND dashboard's VM selector applies only to internal DNS panels; cluster pod
+and zone selectors apply only to the cluster group. VM observations come from
+each node's DNSdist backend for 127.0.53.10:53, including local health-check
+traffic. These independently configured internal servers are not treated as
+replicas of the Kubernetes BIND installation. Native VM BIND statistics and zone
+serials require additional VM exporters; no VM deployment was performed.
+
+The gateway DHCP reverse-zone primary is planned, not deployed by this change.
+Its future transfer group comprises the gateway and DNS VM secondaries, and must
+compare only transferred reverse zones. It must never share a serial-spread
+calculation with unrelated internal forward zones or cluster-managed zones.
+
+Validation for this revision: all five dashboards pass strict linting; all 83
+panel queries execute against the live metrics/log APIs (79 returned data, four
+quiet diagnostic panels were empty). Updated Grafana units pass server-side dry
+runs. Visual screenshot validation remains unavailable as described above.

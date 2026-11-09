@@ -172,8 +172,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -195,7 +194,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           },
           "min": 0,
           "max": 1,
@@ -264,8 +264,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -287,7 +286,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           },
           "min": 0,
           "max": 1,
@@ -365,14 +365,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -383,7 +375,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -435,23 +428,18 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#8a8a8a",
                 "value": null
               },
               {
-                "color": "yellow",
-                "value": 1
-              },
-              {
                 "color": "red",
-                "value": 2
+                "value": 1e-06
               }
             ]
           },
@@ -462,7 +450,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -514,23 +503,22 @@
           "unit": "s",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "green",
                 "value": null
               },
               {
                 "color": "yellow",
-                "value": 1
+                "value": 0.05
               },
               {
                 "color": "red",
-                "value": 2
+                "value": 0.25
               }
             ]
           },
@@ -541,7 +529,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -602,14 +591,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -620,7 +601,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -695,14 +677,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -713,10 +687,75 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^(BLOCKED|NXDOMAIN|Nxrrset|Referral)$"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#8a8a8a"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^(err|SERVFAIL|FORMERR|REFUSED|Failure)$"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^(REBIND|BOGUS)$"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CACHED"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    6,
+                    4
+                  ]
+                }
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
@@ -772,14 +811,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -790,7 +821,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           },
           "displayName": "${__field.labels.client}"
         },
@@ -915,7 +947,7 @@
       "id": 100,
       "type": "row",
       "title": "Upstreams",
-      "description": "Resolved-query outcomes by upstream.",
+      "description": "Upstreams diagnostics.",
       "collapsed": false,
       "gridPos": {
         "x": 0,
@@ -954,14 +986,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -972,7 +996,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -1011,7 +1036,7 @@
         {
           "id": 13,
           "title": "List refresh age",
-          "description": "Time since each list group refreshed.",
+          "description": "Time since each list group refreshed. Warning/red after 24/48 hours.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -1028,23 +1053,22 @@
               "unit": "s",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
+                "mode": "thresholds"
               },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "text",
+                    "color": "green",
                     "value": null
                   },
                   {
                     "color": "yellow",
-                    "value": 1
+                    "value": 86400
                   },
                   {
                     "color": "red",
-                    "value": 2
+                    "value": 172800
                   }
                 ]
               },
@@ -1055,7 +1079,9 @@
                 "axisCenteredZero": false,
                 "scaleDistribution": {
                   "type": "linear"
-                }
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
               }
             },
             "overrides": []
@@ -1105,23 +1131,18 @@
               "unit": "ops",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
+                "mode": "thresholds"
               },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "text",
+                    "color": "#8a8a8a",
                     "value": null
                   },
                   {
-                    "color": "yellow",
-                    "value": 1
-                  },
-                  {
                     "color": "red",
-                    "value": 2
+                    "value": 1e-06
                   }
                 ]
               },
@@ -1132,7 +1153,9 @@
                 "axisCenteredZero": false,
                 "scaleDistribution": {
                   "type": "linear"
-                }
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
               }
             },
             "overrides": []

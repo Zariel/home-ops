@@ -14,7 +14,7 @@
   "tags": [
     "dns"
   ],
-  "description": "DNS health and diagnosis. Missing telemetry is unknown, not healthy.",
+  "description": "Internal DNS VMs are independent fault domains. Cluster BIND replicates Kubernetes-managed zones. Gateway DHCP reverse-zone transfers are planned.",
   "annotations": {
     "list": []
   },
@@ -78,18 +78,42 @@
         }
       },
       {
-        "name": "pod",
-        "label": "Pod",
+        "name": "host",
+        "label": "DNS VM",
         "type": "query",
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
         "query": {
-          "query": "label_values(kube_pod_info{namespace=\"network\",pod=~\"bind-.*\"}, pod)",
+          "query": "label_values(up{job=\"dnsdist\"}, host)",
+          "refId": "host"
+        },
+        "definition": "label_values(up{job=\"dnsdist\"}, host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [],
+        "sort": 1
+      },
+      {
+        "name": "pod",
+        "label": "Cluster pod",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "query": {
+          "query": "label_values(bind_up{namespace=\"network\"}, pod)",
           "refId": "pod"
         },
-        "definition": "label_values(kube_pod_info{namespace=\"network\",pod=~\"bind-.*\"}, pod)",
+        "definition": "label_values(bind_up{namespace=\"network\"}, pod)",
         "refresh": 2,
         "multi": true,
         "includeAll": true,
@@ -103,7 +127,7 @@
       },
       {
         "name": "zone",
-        "label": "Zone",
+        "label": "Cluster zone",
         "type": "query",
         "datasource": {
           "type": "prometheus",
@@ -130,8 +154,8 @@
   "panels": [
     {
       "id": 1,
-      "title": "Statistics",
-      "description": "Exporter can read BIND statistics on selected pods.",
+      "title": "Internal DNS",
+      "description": "Local BIND health observed through each selected VM\u2019s DNSdist; native BIND statistics are not collected.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
@@ -148,8 +172,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -171,7 +194,251 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
+            },
+            "axisBorderShow": false
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DEGRADED",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "ONLINE",
+                  "color": "green"
+                }
+              }
             }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "min(dnsdist_server_status{host=~\"$host\",address=\"127.0.53.10:53\"}) * min(up{job=\"dnsdist\",host=~\"$host\"})",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Internal queries",
+      "description": "Queries forwarded to selected internal BIND servers; includes DNSdist health checks.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "noValue": "No data",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum (rate(dnsdist_server_queries{host=~\"$host\",address=\"127.0.53.10:53\"}[$__rate_interval]))",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Internal latency",
+      "description": "Worst selected internal BIND UDP latency, observed by DNSdist.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.05
+              },
+              {
+                "color": "red",
+                "value": 0.25
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(dnsdist_server_latency{host=~\"$host\",address=\"127.0.53.10:53\"}) / 1000",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Cluster DNS",
+      "description": "Native BIND statistics availability for selected Kubernetes pods.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
           },
           "min": 0,
           "max": 1,
@@ -221,108 +488,16 @@
       ]
     },
     {
-      "id": 2,
-      "title": "Ready",
-      "description": "Kubernetes readiness of selected pods.",
+      "id": 5,
+      "title": "Cluster queries",
+      "description": "Queries received for Kubernetes-managed DNS resources.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "x": 4,
-        "y": 0,
-        "w": 4,
-        "h": 4
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "noValue": "No data",
-          "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "axisCenteredZero": false,
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          },
-          "min": 0,
-          "max": 1,
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "DEGRADED",
-                  "color": "red"
-                },
-                "1": {
-                  "text": "ONLINE",
-                  "color": "green"
-                }
-              }
-            }
-          ]
-        },
-        "overrides": []
-      },
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "min(kube_pod_status_ready{namespace=\"network\",pod=~\"$pod\",condition=\"true\"})",
-          "legendFormat": "{{instance}}",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "range": false,
-          "instant": true,
-          "format": "time_series"
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "title": "Queries",
-      "description": "Queries received by selected BIND pods.",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
+        "x": 16,
         "y": 0,
         "w": 4,
         "h": 4
@@ -341,14 +516,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -359,7 +526,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -392,16 +560,16 @@
       ]
     },
     {
-      "id": 4,
-      "title": "SERVFAIL",
-      "description": "SERVFAIL responses in the selected range; BIND omits counters before their first occurrence.",
+      "id": 6,
+      "title": "Cluster serials",
+      "description": "Observed serial spread within the cluster group; compare all replicas and check observation counts.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "x": 12,
+        "x": 20,
         "y": 0,
         "w": 4,
         "h": 4
@@ -411,8 +579,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -424,10 +591,6 @@
               {
                 "color": "yellow",
                 "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -438,86 +601,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "sum (increase(bind_responses_total{namespace=\"network\",pod=~\"$pod\",result=\"SERVFAIL\"}[$__range]))",
-          "legendFormat": "{{instance}}",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "range": false,
-          "instant": true,
-          "format": "time_series"
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "title": "Serial spread",
-      "description": "Zero indicates equal observed serials; select all pods to compare replicas.",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 0,
-        "w": 4,
-        "h": 4
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "noValue": "No data",
-          "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
-              }
-            ]
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "axisCenteredZero": false,
-            "scaleDistribution": {
-              "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -550,27 +635,126 @@
       ]
     },
     {
-      "id": 6,
-      "title": "Restarts",
-      "description": "BIND container restarts in the selected range.",
-      "type": "stat",
+      "id": 7,
+      "type": "row",
+      "title": "Internal DNS",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Internal DNS diagnostics."
+    },
+    {
+      "id": 8,
+      "title": "Internal BIND health",
+      "description": "Independent BIND instances on DNS VMs, observed by DNSdist lazy health checks.",
+      "type": "status-history",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "x": 20,
-        "y": 0,
-        "w": 4,
-        "h": 4
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "bool",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds",
-            "fixedColor": "text"
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 90
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "showValue": "never",
+        "rowHeight": 0.8,
+        "colWidth": 0.9,
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "dnsdist_server_status{host=~\"$host\",address=\"127.0.53.10:53\"}",
+          "legendFormat": "{{host}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Internal BIND latency",
+      "description": "Local backend UDP latency by DNS VM; idle samples can retain old values.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -581,11 +765,11 @@
               },
               {
                 "color": "yellow",
-                "value": 1
+                "value": 0.05
               },
               {
                 "color": "red",
-                "value": 2
+                "value": 0.25
               }
             ]
           },
@@ -596,56 +780,42 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false,
+            "gradientMode": "scheme"
           }
         },
         "overrides": []
       },
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum (increase(kube_pod_container_status_restarts_total{namespace=\"network\",pod=~\"$pod\",container=\"bind\"}[$__range]))",
-          "legendFormat": "{{instance}}",
+          "expr": "dnsdist_server_latency{host=~\"$host\",address=\"127.0.53.10:53\"} / 1000",
+          "legendFormat": "{{host}}",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "range": false,
-          "instant": true,
+          "range": true,
+          "instant": false,
           "format": "time_series"
         }
       ]
     },
     {
-      "id": 7,
-      "type": "row",
-      "title": "Traffic",
-      "collapsed": false,
-      "panels": [],
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 24,
-        "h": 1
-      },
-      "description": "Traffic diagnostics."
-    },
-    {
-      "id": 8,
-      "title": "Queries by pod",
-      "description": "Authoritative and recursive queries by pod.",
+      "id": 10,
+      "title": "Internal BIND queries",
+      "description": "Requests forwarded to each independent internal BIND instance.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -653,7 +823,77 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 13,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "noValue": "No data",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (host)(rate(dnsdist_server_queries{host=~\"$host\",address=\"127.0.53.10:53\"}[$__rate_interval]))",
+          "legendFormat": "{{host}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Internal BIND responses",
+      "description": "Responses received from each independent internal BIND instance.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 13,
         "w": 12,
         "h": 8
       },
@@ -671,14 +911,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -689,7 +921,178 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
+            },
+            "axisBorderShow": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (host)(rate(dnsdist_server_responses{host=~\"$host\",address=\"127.0.53.10:53\"}[$__rate_interval]))",
+          "legendFormat": "{{host}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "row",
+      "title": "Cluster-managed DNS",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Cluster-managed DNS diagnostics."
+    },
+    {
+      "id": 13,
+      "title": "Cluster BIND health",
+      "description": "Native BIND statistics availability by Kubernetes pod.",
+      "type": "status-history",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bool",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 90
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
             }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "showValue": "never",
+        "rowHeight": 0.8,
+        "colWidth": 0.9,
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "bind_up{namespace=\"network\",pod=~\"$pod\"}",
+          "legendFormat": "{{pod}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Cluster BIND queries",
+      "description": "Queries received by the primary and secondary servers for Kubernetes-managed resources.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 22,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "noValue": "No data",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -720,17 +1123,17 @@
       ]
     },
     {
-      "id": 9,
-      "title": "Responses by result",
-      "description": "Response results distinguish NXDOMAIN from server failures.",
+      "id": 15,
+      "title": "Cluster responses by result",
+      "description": "Response outcomes for cluster-managed DNS resources.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "x": 12,
-        "y": 5,
+        "x": 0,
+        "y": 30,
         "w": 12,
         "h": 8
       },
@@ -748,14 +1151,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -766,10 +1161,57 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^(BLOCKED|CACHED|NXDOMAIN|Nxrrset|Referral)$"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#8a8a8a"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^(err|SERVFAIL|FORMERR|REFUSED|Failure)$"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^(REBIND|BOGUS)$"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
@@ -797,93 +1239,9 @@
       ]
     },
     {
-      "id": 10,
-      "type": "row",
-      "title": "Zones",
-      "collapsed": false,
-      "panels": [],
-      "gridPos": {
-        "x": 0,
-        "y": 13,
-        "w": 24,
-        "h": 1
-      },
-      "description": "Zones diagnostics."
-    },
-    {
-      "id": 11,
-      "title": "Zone serials",
-      "description": "Compare primary and secondary serials for each selected zone.",
-      "type": "table",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 14,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "noValue": "No data",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
-              }
-            ]
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "axisCenteredZero": false,
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "showHeader": true
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "bind_zone_serial{namespace=\"network\",pod=~\"$pod\",zone_name=~\"$zone\"}",
-          "legendFormat": "{{instance}}",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "range": false,
-          "instant": true,
-          "format": "table"
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "title": "Zone observations",
-      "description": "Expect three observations per zone with all pods selected; absent replicas cannot prove synchronization.",
+      "id": 16,
+      "title": "Cluster zone observations",
+      "description": "Expect three observations per zone when all cluster pods are selected.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -891,7 +1249,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 14,
+        "y": 30,
         "w": 12,
         "h": 8
       },
@@ -901,7 +1259,7 @@
           "noValue": "No data",
           "color": {
             "mode": "fixed",
-            "fixedColor": "blue"
+            "fixedColor": "#8a8a8a"
           },
           "thresholds": {
             "mode": "absolute",
@@ -909,14 +1267,6 @@
               {
                 "color": "text",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
               }
             ]
           },
@@ -927,7 +1277,8 @@
             "axisCenteredZero": false,
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "axisBorderShow": false
           }
         },
         "overrides": []
@@ -958,103 +1309,15 @@
       ]
     },
     {
-      "id": 13,
+      "id": 17,
       "type": "row",
-      "title": "Logs",
-      "collapsed": false,
-      "panels": [],
-      "gridPos": {
-        "x": 0,
-        "y": 22,
-        "w": 24,
-        "h": 1
-      },
-      "description": "Logs diagnostics."
-    },
-    {
-      "id": 14,
-      "title": "BIND log",
-      "description": "Transfer, update and server diagnostics. Zone selection scopes serial panels, not service logs.",
-      "type": "logs",
-      "datasource": {
-        "type": "victoriametrics-logs-datasource",
-        "uid": "${DS_LOGS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 23,
-        "w": 24,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "noValue": "No data",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
-              }
-            ]
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "axisCenteredZero": false,
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "showTime": true,
-        "showLabels": false,
-        "wrapLogMessage": true,
-        "enableLogDetails": true,
-        "sortOrder": "Descending",
-        "dedupStrategy": "none"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "victoriametrics-logs-datasource",
-            "uid": "${DS_LOGS}"
-          },
-          "expr": "namespace:\"network\" container_name:\"bind\" pod_name:~`${pod:regex}`",
-          "queryType": "instant",
-          "editorMode": "code",
-          "maxLines": 500
-        }
-      ]
-    },
-    {
-      "id": 15,
-      "type": "row",
-      "title": "Failures \u00b7 query errors & transfers",
+      "title": "Internal DNS \u00b7 failures & logs",
       "collapsed": true,
       "panels": [
         {
-          "id": 16,
-          "title": "Query errors",
-          "description": "Dropped and failed queries.",
+          "id": 18,
+          "title": "Internal BIND health-check failures",
+          "description": "Failed local BIND health checks by DNS VM.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -1062,13 +1325,161 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 32,
+            "y": 39,
             "w": 12,
             "h": 8
           },
           "fieldConfig": {
             "defaults": {
               "unit": "ops",
+              "noValue": "No data",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#8a8a8a",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1e-06
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (host)(rate(dnsdist_server_healthcheckfailures{host=~\"$host\",address=\"127.0.53.10:53\"}[$__rate_interval]))",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": true,
+              "instant": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 19,
+          "title": "Internal BIND send errors",
+          "description": "DNSdist failures sending requests to local BIND.",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 39,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ops",
+              "noValue": "No data",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#8a8a8a",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1e-06
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (host)(rate(dnsdist_server_senderrors{host=~\"$host\",address=\"127.0.53.10:53\"}[$__rate_interval]))",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": true,
+              "instant": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "title": "Internal BIND log",
+          "description": "BIND service diagnostics from selected DNS VMs, independently of Kubernetes pods.",
+          "type": "logs",
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_LOGS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 47,
+            "w": 24,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
               "noValue": "No data",
               "color": {
                 "mode": "fixed",
@@ -1099,6 +1510,185 @@
                 "scaleDistribution": {
                   "type": "linear"
                 }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "showTime": true,
+            "showLabels": false,
+            "wrapLogMessage": true,
+            "enableLogDetails": true,
+            "sortOrder": "Descending",
+            "dedupStrategy": "none"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_LOGS}"
+              },
+              "expr": "source_stream:\"nixos\" service:\"bind.service\" host:~`${host:regex}`",
+              "queryType": "instant",
+              "editorMode": "code",
+              "maxLines": 500
+            }
+          ]
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 38,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Internal DNS diagnostics."
+    },
+    {
+      "id": 21,
+      "type": "row",
+      "title": "Cluster-managed DNS \u00b7 zones, failures & logs",
+      "collapsed": true,
+      "panels": [
+        {
+          "id": 22,
+          "title": "Cluster zone serials",
+          "description": "Compare primary and secondary serials only within the cluster replication group.",
+          "type": "table",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 56,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "noValue": "No data",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "#8a8a8a"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "showHeader": true
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "bind_zone_serial{namespace=\"network\",pod=~\"$pod\",zone_name=~\"$zone\"}",
+              "legendFormat": "{{instance}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "container": true,
+                  "endpoint": true,
+                  "instance": true,
+                  "job": true,
+                  "namespace": true,
+                  "prometheus": true,
+                  "view": true
+                },
+                "indexByName": {
+                  "zone_name": 0,
+                  "role": 1,
+                  "pod": 2,
+                  "Value": 3
+                },
+                "renameByName": {
+                  "zone_name": "Zone",
+                  "role": "Role",
+                  "pod": "Pod",
+                  "Value": "Serial"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "title": "Cluster query errors",
+          "description": "Query failures on cluster BIND; counters may be absent before their first occurrence.",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 56,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ops",
+              "noValue": "No data",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#8a8a8a",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1e-06
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
               }
             },
             "overrides": []
@@ -1129,23 +1719,173 @@
           ]
         },
         {
-          "id": 17,
-          "title": "Rejected transfers",
-          "description": "Rejected zone transfer requests.",
+          "id": 24,
+          "title": "Cluster rejected transfers",
+          "description": "Rejected transfers within the cluster DNS group; absent counters are not proof of working transfers.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
           "gridPos": {
-            "x": 12,
-            "y": 32,
+            "x": 0,
+            "y": 64,
             "w": 12,
             "h": 8
           },
           "fieldConfig": {
             "defaults": {
               "unit": "ops",
+              "noValue": "No data",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#8a8a8a",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1e-06
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false,
+                "gradientMode": "scheme"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (pod)(rate(bind_zone_transfer_rejected_total{namespace=\"network\",pod=~\"$pod\"}[$__rate_interval]))",
+              "legendFormat": "{{pod}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": true,
+              "instant": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 25,
+          "title": "Cluster BIND restarts",
+          "description": "BIND container restarts in the selected range.",
+          "type": "bargauge",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 64,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#8a8a8a",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1e-06
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false
+              },
+              "displayName": "${__field.labels.pod}"
+            },
+            "overrides": []
+          },
+          "options": {
+            "orientation": "horizontal",
+            "displayMode": "basic",
+            "showUnfilled": true,
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (pod)(increase(kube_pod_container_status_restarts_total{namespace=\"network\",pod=~\"$pod\",container=\"bind\"}[$__range]))",
+              "legendFormat": "{{pod}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": false,
+              "instant": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 26,
+          "title": "Cluster BIND log",
+          "description": "Zone updates, transfers and server diagnostics from selected Kubernetes pods.",
+          "type": "logs",
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_LOGS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 72,
+            "w": 24,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
               "noValue": "No data",
               "color": {
                 "mode": "fixed",
@@ -1181,38 +1921,66 @@
             "overrides": []
           },
           "options": {
-            "legend": {
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
+            "showTime": true,
+            "showLabels": false,
+            "wrapLogMessage": true,
+            "enableLogDetails": true,
+            "sortOrder": "Descending",
+            "dedupStrategy": "none"
           },
           "targets": [
             {
               "refId": "A",
-              "expr": "sum by (pod)(rate(bind_zone_transfer_rejected_total{namespace=\"network\",pod=~\"$pod\"}[$__rate_interval]))",
-              "legendFormat": "{{pod}}",
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_LOGS}"
               },
-              "range": true,
-              "instant": false,
-              "format": "time_series"
+              "expr": "namespace:\"network\" container_name:\"bind\" pod_name:~`${pod:regex}`",
+              "queryType": "instant",
+              "editorMode": "code",
+              "maxLines": 500
             }
           ]
         }
       ],
       "gridPos": {
         "x": 0,
-        "y": 31,
+        "y": 55,
         "w": 24,
         "h": 1
       },
-      "description": "Failures diagnostics."
+      "description": "Cluster-managed DNS diagnostics."
+    },
+    {
+      "id": 27,
+      "type": "row",
+      "title": "Gateway DHCP \u00b7 planned transfers",
+      "collapsed": true,
+      "panels": [
+        {
+          "id": 28,
+          "type": "text",
+          "title": "DNS ownership and planned transfers",
+          "description": "Separate current ownership from the planned reverse-zone replication path.",
+          "gridPos": {
+            "x": 0,
+            "y": 81,
+            "w": 24,
+            "h": 7
+          },
+          "options": {
+            "mode": "markdown",
+            "content": "**Internal DNS:** dns-1, dns-2 and dns-3 run independent BIND instances for internal names. Current configuration serves `cbannister.casa`, `unifi` and local reverse zones. These are separate fault domains from Kubernetes. VM panels use DNSdist observations; native BIND zone serials and transfer counters are not yet collected.\n\n**Cluster-managed DNS:** the Kubernetes BIND primary and two secondaries serve `cbannister.xyz` and `rociobolanos.com` for cluster-managed resources. Serial comparison applies only within this replication group.\n\n**Planned DHCP reverse zones:** a new BIND on the gateway will own DHCP reverse zones and transfer them to the DNS VM BIND servers. The gateway is not yet deployed or monitored here. Once available, compare gateway and VM serials only for these transferred reverse zones; keep internal forward zones and cluster-managed zones separate."
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 80,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Gateway DHCP diagnostics."
     }
   ]
 }
