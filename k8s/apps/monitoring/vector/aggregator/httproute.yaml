@@ -18,19 +18,9 @@ spec:
         - path:
             type: Exact
             value: /health
-          method: GET
-        - path:
-            type: Exact
-            value: /health
-          method: HEAD
       backendRefs:
         - name: vector-aggregator
           port: 8686
-    - matches:
-        - path:
-            type: Exact
-            value: /
-          method: POST
-      backendRefs:
+    - backendRefs:
         - name: vector-ingest
           port: 6006
