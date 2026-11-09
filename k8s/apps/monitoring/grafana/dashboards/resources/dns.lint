@@ -1,0 +1,11 @@
+exclusions:
+  target-instance-rule:
+    reason: DNS drill-downs scope by stable host or pod labels; the overview intentionally includes all DNS instances.
+  target-job-rule:
+    reason: The overview combines multiple DNS jobs; component dashboards use component-specific metrics and host or namespace/pod selectors.
+  template-instance-rule:
+    reason: Host and pod selectors are the user-facing entities, rather than scrape addresses.
+  template-job-rule:
+    reason: Job is fixed by component or intentionally spans services; it is not a user-facing selector.
+  template-datasource-rule:
+    reason: DS_PROMETHEUS follows the requested buroa convention; DS_LOGS selects the required VictoriaLogs datasource.

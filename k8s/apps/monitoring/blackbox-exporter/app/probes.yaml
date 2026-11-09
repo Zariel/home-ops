@@ -14,3 +14,139 @@ spec:
         - nas.cbannister.casa
         - pikvm.cbannister.casa
         - pve.cbannister.casa
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-local-udp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-local-udp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['172.53.53.53:53']
+      labels:
+        dns_path: vip-local
+        transport: udp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-local-tcp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-local-tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['172.53.53.53:53']
+      labels:
+        dns_path: vip-local
+        transport: tcp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-upstream-udp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-upstream-udp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['172.53.53.53:53']
+      labels:
+        dns_path: vip-upstream
+        transport: udp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-upstream-tcp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-upstream-tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['172.53.53.53:53']
+      labels:
+        dns_path: vip-upstream
+        transport: tcp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-bind-udp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-bind-udp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.45.0.55:53']
+      labels:
+        dns_path: bind
+        transport: udp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-bind-tcp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-bind-tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.45.0.55:53']
+      labels:
+        dns_path: bind
+        transport: tcp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-coredns-udp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-coredns-udp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['172.21.0.10:53']
+      labels:
+        dns_path: coredns
+        transport: udp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-coredns-tcp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-coredns-tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['172.21.0.10:53']
+      labels:
+        dns_path: coredns
+        transport: tcp

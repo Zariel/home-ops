@@ -120,3 +120,22 @@ spec:
               subPath: rndc.key
             - mountPath: /var/cache/bind
               name: bind-cache
+        - name: bind-exporter
+          image: docker.io/prometheuscommunity/bind-exporter:v0.8.0
+          args:
+            - --bind.stats-url=http://127.0.0.1:8053/
+            - --bind.stats-groups=server,view
+          ports:
+            - name: metrics
+              containerPort: 9119
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]

@@ -5,6 +5,7 @@ resources:
   - grafanadashboard.yaml
   - victoriametrics.yaml
   - services.yaml
+  - dns.yaml
 configurations:
   - kustomizeconfig.yaml
 configMapGenerator:
@@ -33,3 +34,12 @@ configMapGenerator:
     namespace: monitoring
     files:
       - resources/blackbox-icmp.json
+  - name: dns-dashboards
+    namespace: monitoring
+    options:
+      disableNameSuffixHash: true
+    files:
+      - resources/dns-overview.json
+      - resources/blocky.json
+      - resources/bind9.json
+      - resources/dnsdist.json

@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - node-exporter.yaml
   - smartctl.yaml
+  - dns.yaml

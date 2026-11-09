@@ -187,13 +187,9 @@ spec:
       dashboards: grafana
   resyncPeriod: 30m
   folder: DNS
-  grafanaCom:
-    # renovate: depName="Dnsdist"
-    id: 20422
-    revision: 4
-  datasources:
-    - inputName: DS_PROMETHEUS
-      datasourceName: victoriametrics
+  configMapRef:
+    name: dns-dashboards
+    key: dnsdist.json
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1

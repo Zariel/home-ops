@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: bind-secondary
+  namespace: network
+spec:
+  selector:
+    matchLabels:
+      app: bind
+      role: secondary
+  podTargetLabels: [role]
+  podMetricsEndpoints:
+    - port: metrics
+      interval: 30s
