@@ -27,6 +27,17 @@ sources:
     type: vector
     version: "2"
 
+  http_source:
+    type: http_server
+    address: 0.0.0.0:6006
+    decoding:
+      codec: json
+    framing:
+      method: bytes
+    host_key: source_ip
+    path: /
+    strict_path: true
+
   vyos_syslog:
     type: syslog
     mode: tcp
@@ -194,6 +205,13 @@ transforms:
       .node = ._HOSTNAME
       .service = ._SYSTEMD_UNIT
 
+  vlogs_http_tag:
+    type: remap
+    inputs:
+      - http_source
+    source: |-
+      .source_stream = "http"
+
   vlogs_kubernetes_tag:
     type: remap
     inputs:
@@ -246,6 +264,7 @@ transforms:
       - vlogs_vyos_tag
       - vlogs_katl_tag
       - vlogs_pve_netconsole_tag
+      - vlogs_http_tag
     source: |-
       if !exists(.node) && exists(.node_name) {
         .node = .node_name

@@ -98,6 +98,9 @@ spec:
       - name: nixos
         containerPort: 6004
         protocol: TCP
+      - name: ingestion
+        containerPort: 6006
+        protocol: TCP
       - name: netconsole
         containerPort: 6666
         protocol: UDP
@@ -125,7 +128,6 @@ spec:
       type: LoadBalancer
       externalTrafficPolicy: Cluster
       annotations:
-        external-dns.kubernetes.io/hostname: vector.cbannister.xyz
         io.cilium/lb-ipam-ips: 10.45.0.2
       ipFamilies:
         - IPv4
