@@ -102,6 +102,45 @@
         "sort": 1
       },
       {
+        "name": "upstream",
+        "label": "Upstream class",
+        "type": "custom",
+        "query": "All : .*,Internal BIND : 127[.]0[.]53[.]10:53,Cluster BIND : 10[.]45[.]0[.]55:53,Blocky : 127[.]0[.]53[.]20:53,Public resolvers : 1[.]1[.]1[.]1:853|1[.]0[.]0[.]1:853",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        },
+        "options": [
+          {
+            "text": "All",
+            "value": ".*",
+            "selected": true
+          },
+          {
+            "text": "Internal BIND",
+            "value": "127[.]0[.]53[.]10:53",
+            "selected": false
+          },
+          {
+            "text": "Cluster BIND",
+            "value": "10[.]45[.]0[.]55:53",
+            "selected": false
+          },
+          {
+            "text": "Blocky",
+            "value": "127[.]0[.]53[.]20:53",
+            "selected": false
+          },
+          {
+            "text": "Public resolvers",
+            "value": "1[.]1[.]1[.]1:853|1[.]0[.]0[.]1:853",
+            "selected": false
+          }
+        ],
+        "multi": false,
+        "includeAll": false
+      },
+      {
         "name": "backend",
         "label": "Backend",
         "type": "query",
@@ -110,10 +149,10 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "query": {
-          "query": "label_values(dnsdist_server_status{host=~\"$host\"}, address)",
+          "query": "label_values(dnsdist_server_status{host=~\"$host\",address=~\"${upstream:raw}\"}, address)",
           "refId": "backend"
         },
-        "definition": "label_values(dnsdist_server_status{host=~\"$host\"}, address)",
+        "definition": "label_values(dnsdist_server_status{host=~\"$host\",address=~\"${upstream:raw}\"}, address)",
         "refresh": 2,
         "multi": true,
         "includeAll": true,
@@ -300,7 +339,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "min(dnsdist_server_status{host=~\"$host\",address=~\"$backend\"})",
+          "expr": "min(dnsdist_server_status{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"})",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -314,7 +353,7 @@
     },
     {
       "id": 3,
-      "title": "Queries",
+      "title": "Node queries",
       "description": "Received queries on selected nodes.",
       "type": "stat",
       "datasource": {
@@ -386,7 +425,7 @@
     },
     {
       "id": 4,
-      "title": "SERVFAIL",
+      "title": "Node servfail",
       "description": "Backend SERVFAIL answers in the selected range.",
       "type": "stat",
       "datasource": {
@@ -461,7 +500,7 @@
     },
     {
       "id": 5,
-      "title": "Latency",
+      "title": "Node latency",
       "description": "Worst node average over its last 100 answers.",
       "type": "stat",
       "datasource": {
@@ -598,7 +637,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(dnsdist_server_outstanding{host=~\"$host\",address=~\"$backend\"})",
+          "expr": "sum(dnsdist_server_outstanding{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"})",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -627,7 +666,7 @@
     {
       "id": 8,
       "title": "Queries by node",
-      "description": "Traffic received by each DNS node.",
+      "description": "Total incoming traffic by DNS node; upstream and backend filters apply only to backend panels.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -752,7 +791,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (host,address)(rate(dnsdist_server_queries{host=~\"$host\",address=~\"$backend\"}[$__rate_interval]))",
+          "expr": "sum by (host,address)(rate(dnsdist_server_queries{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"}[$__rate_interval]))",
           "legendFormat": "{{host}} {{address}}",
           "datasource": {
             "type": "prometheus",
@@ -782,7 +821,7 @@
       "id": 11,
       "title": "Backend health",
       "description": "One means available; lazy checks are not continuous end-to-end verification.",
-      "type": "status-history",
+      "type": "state-timeline",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -815,7 +854,8 @@
           },
           "custom": {
             "lineWidth": 0,
-            "fillOpacity": 90
+            "fillOpacity": 90,
+            "spanNulls": false
           },
           "min": 0,
           "max": 1,
@@ -838,9 +878,10 @@
         "overrides": []
       },
       "options": {
+        "mergeValues": true,
         "showValue": "never",
         "rowHeight": 0.8,
-        "colWidth": 0.9,
+        "alignValue": "left",
         "legend": {
           "showLegend": false
         },
@@ -852,7 +893,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "dnsdist_server_status{host=~\"$host\",address=~\"$backend\"}",
+          "expr": "dnsdist_server_status{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"}",
           "legendFormat": "{{host}} {{address}}",
           "datasource": {
             "type": "prometheus",
@@ -930,7 +971,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "dnsdist_server_latency{host=~\"$host\",address=~\"$backend\"} / 1000",
+          "expr": "dnsdist_server_latency{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"} / 1000",
           "legendFormat": "{{host}} {{address}}",
           "datasource": {
             "type": "prometheus",
@@ -951,7 +992,7 @@
         {
           "id": 14,
           "title": "Downstream timeouts",
-          "description": "Failure rate for selected nodes and applicable backends.",
+          "description": "Total timeouts on selected nodes; this counter has no backend or upstream labels.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -1084,7 +1125,7 @@
           "targets": [
             {
               "refId": "A",
-              "expr": "sum by (host)(rate(dnsdist_server_senderrors{host=~\"$host\",address=~\"$backend\"}[$__rate_interval]))",
+              "expr": "sum by (host)(rate(dnsdist_server_senderrors{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"}[$__rate_interval]))",
               "legendFormat": "{{host}}",
               "datasource": {
                 "type": "prometheus",
@@ -1158,7 +1199,7 @@
           "targets": [
             {
               "refId": "A",
-              "expr": "sum by (host)(rate(dnsdist_server_healthcheckfailures{host=~\"$host\",address=~\"$backend\"}[$__rate_interval]))",
+              "expr": "sum by (host)(rate(dnsdist_server_healthcheckfailures{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"}[$__rate_interval]))",
               "legendFormat": "{{host}}",
               "datasource": {
                 "type": "prometheus",
@@ -1232,7 +1273,7 @@
           "targets": [
             {
               "refId": "A",
-              "expr": "sum by (host)(rate(dnsdist_server_drops{host=~\"$host\",address=~\"$backend\"}[$__rate_interval]))",
+              "expr": "sum by (host)(rate(dnsdist_server_drops{host=~\"$host\",address=~\"$backend\",address=~\"${upstream:raw}\"}[$__rate_interval]))",
               "legendFormat": "{{host}}",
               "datasource": {
                 "type": "prometheus",
@@ -1262,7 +1303,7 @@
         {
           "id": 19,
           "title": "Cache entries",
-          "description": "Filtered and unfiltered pools use separate caches.",
+          "description": "All cache pools on selected nodes; upstream and backend filters do not apply to pool metrics.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -1332,7 +1373,7 @@
         {
           "id": 20,
           "title": "Cache hits",
-          "description": "Responses served from each pool cache.",
+          "description": "All cache pools on selected nodes; upstream and backend filters do not apply to pool metrics.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",

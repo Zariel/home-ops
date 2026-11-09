@@ -503,8 +503,8 @@
     },
     {
       "id": 6,
-      "title": "Backends",
-      "description": "DNSdist backend health across all three nodes.",
+      "title": "Upstream classes",
+      "description": "Minimum class availability; missing DNS-node or pool observations produce unknown rather than healthy.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
@@ -518,7 +518,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "percentunit",
           "noValue": "No data",
           "color": {
             "mode": "thresholds"
@@ -531,20 +531,14 @@
                 "value": null
               },
               {
+                "color": "yellow",
+                "value": 1e-06
+              },
+              {
                 "color": "green",
                 "value": 1
               }
             ]
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "axisCenteredZero": false,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "axisBorderShow": false
           },
           "min": 0,
           "max": 1,
@@ -553,12 +547,23 @@
               "type": "value",
               "options": {
                 "0": {
-                  "text": "DEGRADED",
+                  "text": "UNAVAILABLE",
                   "color": "red"
                 },
                 "1": {
-                  "text": "ONLINE",
+                  "text": "HEALTHY",
                   "color": "green"
+                }
+              }
+            },
+            {
+              "type": "range",
+              "options": {
+                "from": 1e-06,
+                "to": 0.999999,
+                "result": {
+                  "text": "DEGRADED",
+                  "color": "yellow"
                 }
               }
             }
@@ -581,7 +586,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "min(dnsdist_server_status)",
+          "expr": "min(label_replace((min(dnsdist_pool_active_servers{pool=\"bind\"} / dnsdist_pool_servers{pool=\"bind\"}) and on() (count(dnsdist_pool_active_servers{pool=\"bind\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"bind\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"k8s\"} / dnsdist_pool_servers{pool=\"k8s\"}) and on() (count(dnsdist_pool_active_servers{pool=\"k8s\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"k8s\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"blocky\"} / dnsdist_pool_servers{pool=\"blocky\"}) and on() (count(dnsdist_pool_active_servers{pool=\"blocky\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"blocky\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"cloudflare\"} / dnsdist_pool_servers{pool=\"cloudflare\"}) and on() (count(dnsdist_pool_active_servers{pool=\"cloudflare\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"cloudflare\", \"\", \"\")) and on() (count(label_replace((min(dnsdist_pool_active_servers{pool=\"bind\"} / dnsdist_pool_servers{pool=\"bind\"}) and on() (count(dnsdist_pool_active_servers{pool=\"bind\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"bind\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"k8s\"} / dnsdist_pool_servers{pool=\"k8s\"}) and on() (count(dnsdist_pool_active_servers{pool=\"k8s\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"k8s\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"blocky\"} / dnsdist_pool_servers{pool=\"blocky\"}) and on() (count(dnsdist_pool_active_servers{pool=\"blocky\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"blocky\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"cloudflare\"} / dnsdist_pool_servers{pool=\"cloudflare\"}) and on() (count(dnsdist_pool_active_servers{pool=\"cloudflare\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"cloudflare\", \"\", \"\")) == 4)",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -611,7 +616,7 @@
       "id": 8,
       "title": "DNS answer checks",
       "description": "Successful responses matching expected answer records; missing checks are unknown.",
-      "type": "status-history",
+      "type": "state-timeline",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -644,7 +649,8 @@
           },
           "custom": {
             "lineWidth": 0,
-            "fillOpacity": 90
+            "fillOpacity": 90,
+            "spanNulls": false
           },
           "min": 0,
           "max": 1,
@@ -667,9 +673,10 @@
         "overrides": []
       },
       "options": {
+        "mergeValues": true,
         "showValue": "never",
         "rowHeight": 0.8,
-        "colWidth": 0.9,
+        "alignValue": "left",
         "legend": {
           "showLegend": false
         },
@@ -941,9 +948,9 @@
     },
     {
       "id": 14,
-      "title": "DNSdist backend health",
-      "description": "Local BIND, Blocky, cluster BIND and Cloudflare health from each DNS node.",
-      "type": "status-history",
+      "title": "Upstream class health",
+      "description": "Worst active-backend fraction across three DNS nodes. Missing observations are unknown; partial public-resolver availability is degraded.",
+      "type": "state-timeline",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -956,7 +963,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "bool",
+          "unit": "percentunit",
           "noValue": "No data",
           "color": {
             "mode": "thresholds"
@@ -969,6 +976,10 @@
                 "value": null
               },
               {
+                "color": "yellow",
+                "value": 1e-06
+              },
+              {
                 "color": "green",
                 "value": 1
               }
@@ -976,7 +987,8 @@
           },
           "custom": {
             "lineWidth": 0,
-            "fillOpacity": 90
+            "fillOpacity": 90,
+            "spanNulls": false
           },
           "min": 0,
           "max": 1,
@@ -985,23 +997,116 @@
               "type": "value",
               "options": {
                 "0": {
-                  "text": "DOWN",
+                  "text": "UNAVAILABLE",
                   "color": "red"
                 },
                 "1": {
-                  "text": "UP",
+                  "text": "HEALTHY",
                   "color": "green"
+                }
+              }
+            },
+            {
+              "type": "range",
+              "options": {
+                "from": 1e-06,
+                "to": 0.999999,
+                "result": {
+                  "text": "DEGRADED",
+                  "color": "yellow"
                 }
               }
             }
           ]
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Internal BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D10%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Cluster BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=10%5B.%5D45%5B.%5D0%5B.%5D55%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Blocky backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D20%3A53"
+                  },
+                  {
+                    "title": "Open Blocky diagnostics",
+                    "url": "/d/blocky?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Public resolvers backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=1%5B.%5D1%5B.%5D1%5B.%5D1%3A853%7C1%5B.%5D0%5B.%5D0%5B.%5D1%3A853"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       "options": {
+        "mergeValues": true,
         "showValue": "never",
         "rowHeight": 0.8,
-        "colWidth": 0.9,
+        "alignValue": "left",
         "legend": {
           "showLegend": false
         },
@@ -1013,8 +1118,44 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "dnsdist_server_status",
-          "legendFormat": "{{host}} {{address}}",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"bind\"} / dnsdist_pool_servers{pool=\"bind\"}) and on() (count(dnsdist_pool_active_servers{pool=\"bind\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Internal BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "B",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"k8s\"} / dnsdist_pool_servers{pool=\"k8s\"}) and on() (count(dnsdist_pool_active_servers{pool=\"k8s\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Cluster BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "C",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"blocky\"} / dnsdist_pool_servers{pool=\"blocky\"}) and on() (count(dnsdist_pool_active_servers{pool=\"blocky\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Blocky",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "D",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"cloudflare\"} / dnsdist_pool_servers{pool=\"cloudflare\"}) and on() (count(dnsdist_pool_active_servers{pool=\"cloudflare\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Public resolvers",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
@@ -1023,12 +1164,34 @@
           "instant": false,
           "format": "time_series"
         }
+      ],
+      "links": [
+        {
+          "title": "Internal BIND",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D10%3A53",
+          "targetBlank": false
+        },
+        {
+          "title": "Cluster BIND",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=10%5B.%5D45%5B.%5D0%5B.%5D55%3A53",
+          "targetBlank": false
+        },
+        {
+          "title": "Blocky",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D20%3A53",
+          "targetBlank": false
+        },
+        {
+          "title": "Public resolvers",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=1%5B.%5D1%5B.%5D1%5B.%5D1%3A853%7C1%5B.%5D0%5B.%5D0%5B.%5D1%3A853",
+          "targetBlank": false
+        }
       ]
     },
     {
       "id": 15,
-      "title": "DNSdist backend latency",
-      "description": "Backend UDP latency; idle backends may retain old values.",
+      "title": "Upstream class latency",
+      "description": "Worst observed backend latency within each class, across DNS nodes. Click a class to inspect individual backends.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1076,7 +1239,88 @@
             "gradientMode": "scheme"
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Internal BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D10%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Cluster BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=10%5B.%5D45%5B.%5D0%5B.%5D55%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Blocky backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D20%3A53"
+                  },
+                  {
+                    "title": "Open Blocky diagnostics",
+                    "url": "/d/blocky?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Public resolvers backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=1%5B.%5D1%5B.%5D1%5B.%5D1%3A853%7C1%5B.%5D0%5B.%5D0%5B.%5D1%3A853"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
@@ -1091,8 +1335,44 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "dnsdist_server_latency / 1000",
-          "legendFormat": "{{host}} {{address}}",
+          "expr": "max(dnsdist_server_latency{address=~\"127[.]0[.]53[.]10:53\"}) / 1000",
+          "legendFormat": "Internal BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "B",
+          "expr": "max(dnsdist_server_latency{address=~\"10[.]45[.]0[.]55:53\"}) / 1000",
+          "legendFormat": "Cluster BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "C",
+          "expr": "max(dnsdist_server_latency{address=~\"127[.]0[.]53[.]20:53\"}) / 1000",
+          "legendFormat": "Blocky",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "D",
+          "expr": "max(dnsdist_server_latency{address=~\"1[.]1[.]1[.]1:853|1[.]0[.]0[.]1:853\"}) / 1000",
+          "legendFormat": "Public resolvers",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
@@ -1276,7 +1556,7 @@
           "id": 22,
           "title": "Collection status",
           "description": "Zero is a failed scrape; missing series indicate absent collection.",
-          "type": "status-history",
+          "type": "state-timeline",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
@@ -1309,7 +1589,8 @@
               },
               "custom": {
                 "lineWidth": 0,
-                "fillOpacity": 90
+                "fillOpacity": 90,
+                "spanNulls": false
               },
               "min": 0,
               "max": 1,
@@ -1332,9 +1613,10 @@
             "overrides": []
           },
           "options": {
+            "mergeValues": true,
             "showValue": "never",
             "rowHeight": 0.8,
-            "colWidth": 0.9,
+            "alignValue": "left",
             "legend": {
               "showLegend": false
             },
@@ -1523,7 +1805,7 @@
           },
           "options": {
             "mode": "markdown",
-            "content": "DNS VIP `172.53.53.53` \u2192 DNSdist on dns-1/2/3 \u2192 local BIND for local zones, cluster BIND for hosted zones, Blocky for trusted clients, or Cloudflare DoT for unfiltered clients.\n\nBlocky uses parallel DoT upstreams (Cloudflare, Google, Quad9); its exported metrics do not expose individual upstream health. DNSdist backend checks are lazy. VIP probes originate inside Kubernetes and do not test every client VLAN or the filtered client path. Local BIND and VIP routing state have logs and backend checks, not dedicated metrics. Missing telemetry is unknown."
+            "content": "DNS VIP `172.53.53.53` \u2192 DNSdist on dns-1/2/3 \u2192 local BIND for local zones, cluster BIND for hosted zones, Blocky for trusted clients, or Cloudflare DoT for unfiltered clients.\n\nBlocky uses parallel DoT upstreams (Cloudflare, Google, Quad9); its exported metrics do not expose individual upstream health. DNSdist backend checks are lazy. VIP probes originate inside Kubernetes and do not test every client VLAN or the filtered client path. Local BIND and VIP routing state have logs and backend checks, not dedicated metrics. Missing telemetry is unknown.\n\nUpstream classes correspond to DNSdist pools: internal BIND (`bind`), cluster BIND (`k8s`), Blocky (`blocky`), and public Cloudflare resolvers (`cloudflare`). Class health uses the least healthy node, so a fault on one node is not averaged away. Click a class to inspect its backend members; Blocky\u2019s own resolver choices remain on the Blocky dashboard."
           }
         }
       ],

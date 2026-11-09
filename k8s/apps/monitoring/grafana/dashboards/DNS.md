@@ -7,7 +7,7 @@ The DNS folder contains five dashboards after rollout:
 | DNS / Overview | Answer checks, DNS node coverage, filtering traffic, backend health and routing logs |
 | Blocky / Overview | Node/client/outcome filters, query logs, list freshness and winning upstreams |
 | BIND9 / Overview | Separate internal-VM and cluster-managed DNS groups, with a planned gateway DHCP transfer section |
-| DNSdist / Overview | Node/backend filters, latency, errors, outstanding requests and separate pool caches |
+| DNSdist / Overview | Node/upstream-class/backend filters, latency, errors, outstanding requests and separate pool caches |
 | External DNS / Overview | Controller freshness, desired/observed records, errors and runtime |
 
 The imported DNSdist resource is replaced in place, preserving UID
@@ -134,7 +134,10 @@ buroa guidance: incoming queries and desired records orange; served responses,
 cache hits and observed records blue; neutral facts and expected policy blocks
 grey; CPU teal; memory purple. Entity identities never receive arbitrary colours.
 Cached responses use a dashed blue line to distinguish them from resolved replies.
-Health uses red/green status-history grids. Missing data remains unknown.
+Health uses merged state timelines with semantic severity colours. Missing data
+remains unknown. The status-history grid was replaced because it rejects sample
+counts above half the panel width, including the default 721-point range.
+Timelines preserve the query samples and merge consecutive equal states.
 
 Latency uses green below 50 ms, yellow from 50 ms and red from 250 ms; these are
 diagnostic guides, not availability SLOs. Controller freshness warns after five
@@ -157,3 +160,22 @@ Validation for this revision: all five dashboards pass strict linting; all 83
 panel queries execute against the live metrics/log APIs (79 returned data, four
 quiet diagnostic panels were empty). Updated Grafana units pass server-side dry
 runs. Visual screenshot validation remains unavailable as described above.
+
+## Logical upstream drilldowns
+
+The overview groups health and latency into four DNSdist pools: Internal BIND,
+Cluster BIND, Blocky and Public resolvers (Cloudflare). Health shows the lowest
+active-backend fraction across the three DNS nodes; a partially available public
+resolver pool is degraded. All three scrapes and pool observations must be present
+before a class can report healthy. Latency shows the worst observed backend in
+each class, so an unhealthy node is not hidden by averaging.
+
+Class links preserve the time range and open DNSdist with the upstream class
+selected. The backend selector then lists only that class's members. Backend
+metrics honour both filters. Node totals, pool caches and service logs retain their
+own scope, stated on the panels. BIND and Blocky diagnostic links remain available.
+
+Validation: all three modified dashboards pass strict linting and the dashboard
+Kustomization passes server-side dry-run. All 122 metric query/filter combinations
+execute successfully; timeline queries return data at 24-hour/120-second (721
+samples) and seven-day/600-second ranges. Screenshot QA remains unavailable.

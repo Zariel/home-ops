@@ -652,7 +652,7 @@
       "id": 8,
       "title": "Internal BIND health",
       "description": "Independent BIND instances on DNS VMs, observed by DNSdist lazy health checks.",
-      "type": "status-history",
+      "type": "state-timeline",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -685,7 +685,8 @@
           },
           "custom": {
             "lineWidth": 0,
-            "fillOpacity": 90
+            "fillOpacity": 90,
+            "spanNulls": false
           },
           "min": 0,
           "max": 1,
@@ -708,9 +709,10 @@
         "overrides": []
       },
       "options": {
+        "mergeValues": true,
         "showValue": "never",
         "rowHeight": 0.8,
-        "colWidth": 0.9,
+        "alignValue": "left",
         "legend": {
           "showLegend": false
         },
@@ -970,7 +972,7 @@
       "id": 13,
       "title": "Cluster BIND health",
       "description": "Native BIND statistics availability by Kubernetes pod.",
-      "type": "status-history",
+      "type": "state-timeline",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -1003,7 +1005,8 @@
           },
           "custom": {
             "lineWidth": 0,
-            "fillOpacity": 90
+            "fillOpacity": 90,
+            "spanNulls": false
           },
           "min": 0,
           "max": 1,
@@ -1026,9 +1029,10 @@
         "overrides": []
       },
       "options": {
+        "mergeValues": true,
         "showValue": "never",
         "rowHeight": 0.8,
-        "colWidth": 0.9,
+        "alignValue": "left",
         "legend": {
           "showLegend": false
         },
