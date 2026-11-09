@@ -4,7 +4,7 @@ The DNS folder contains five dashboards after rollout:
 
 | Dashboard | Purpose |
 | --- | --- |
-| DNS / Overview | Answer checks, DNS node coverage, cluster traffic, backend health, forwarding and routing logs |
+| DNS / Overview | Answer checks, DNS node coverage, filtering traffic, backend health and routing logs |
 | Blocky / Overview | Node/client/outcome filters, query logs, list freshness and winning upstreams |
 | BIND9 / Overview | Pod health, responses, primary/secondary serial comparison and transfer/update logs |
 | DNSdist / Overview | Node/backend filters, latency, errors, outstanding requests and separate pool caches |
@@ -13,8 +13,8 @@ The DNS folder contains five dashboards after rollout:
 The imported DNSdist resource is replaced in place, preserving UID
 `c8a04601-b1d2-4085-9407-98ffadd0ab27` and its existing links. Its old queries
 incorrectly applied rates to outstanding-query and dynamic-block-size gauges.
-CoreDNS remains in the overview; the existing Kubernetes CoreDNS and Cilium
-Hubble dashboards remain useful for their separate Kubernetes/network contexts.
+CoreDNS is intentionally excluded from the DNS dashboards. The existing CoreDNS
+dashboard stays in the Kubernetes folder; Hubble remains in Cilium.
 
 ## Ownership and rollout
 
@@ -28,13 +28,13 @@ The monitoring cluster unit adds native Blocky/DNSdist scrapes against stable
 node addresses (10.254.53.0, .2 and .4), labelled dns-1, dns-2 and dns-3.
 BIND primary and secondary units add bind-exporter v0.8.0 sidecars and
 PodMonitors. Each statistics channel binds only to pod loopback. The blackbox
-unit adds eight UDP/TCP DNS answer probes, using the existing exporter and Probe
+unit adds six UDP/TCP DNS answer probes, using the existing exporter and Probe
 collection. These probes also participate in the existing BlackboxProbeFailed
 rule; no alert rules or notification settings are changed.
 
 After the changes are committed and pushed through the normal review process,
 reconcile the affected Flux units and allow several scrape intervals for rates.
-Verify three endpoints each for Blocky and DNSdist, three BIND exporters, eight
+Verify three endpoints each for Blocky and DNSdist, three BIND exporters, six
 DNS probes, and matching observations for both hosted zones across all BIND pods.
 The BIND configuration changes cause rolling replacement (primary uses Recreate).
 No secrets or new externally exposed endpoints are needed.
@@ -54,7 +54,7 @@ Git, and reverting the all-query forwarding change separately in nix-ops.
   Diagnostic rows are collapsed. Defaults are 24 hours and a one-minute refresh,
   following https://github.com/buroa/grafana-dashboards/blob/main/AGENTS.md.
 - DNS traffic is shown by layer, never summed across layers. One query can pass
-  through DNSdist, Blocky or BIND, and CoreDNS.
+  through DNSdist, Blocky or BIND.
 - Blocky client charts and logs omit the local 127.0.53.20 health-check client.
   Client/outcome filters affect client counters and query logs. Service-wide
   metrics and service logs remain scoped to the selected host, as described.
@@ -68,8 +68,7 @@ Git, and reverting the all-query forwarding change separately in nix-ops.
   two replicas do not prove a missing third replica is synchronized. Zone filters
   apply to serial panels; pod filters apply to traffic and logs.
 - VIP probes run inside Kubernetes. They verify local-zone and unfiltered upstream
-  resolution, not every VLAN, IPv6 path or trusted-client filtering path. CoreDNS
-  probes verify the Kubernetes service answer from inside the cluster.
+  resolution, not every VLAN, IPv6 path or trusted-client filtering path.
 - Missing telemetry displays No data, never an invented healthy zero. Local node
   BIND and BGP/VIP routing have backend checks and service logs; they do not have
   dedicated BIND/BGP metrics in this change.
@@ -103,3 +102,18 @@ for dashboard in dns-overview blocky bind9 dnsdist; do
   dashboard-linter lint --strict -c resources/dns.lint "resources/$dashboard.json"
 done
 ```
+
+## Rollout verification
+
+Published and reconciled through Flux on 2026-11-09. All six native DNS-node
+scrapes and all three BIND exporters report healthy. Both hosted zones have
+three matching serial observations. The Grafana operator reports all four
+dashboards synchronized. All 62 original panel queries were checked after rollout:
+56 returned data, with the remaining error/log panels empty. BIND trims the Qry
+prefix from response labels; the SERVFAIL filter was corrected to match. Zone
+selection is limited to the two hosted zones to omit automatic empty reverse zones.
+
+CoreDNS was subsequently removed from the DNS overview at operator request; its
+existing dashboard remains in Kubernetes. Screenshot QA is unavailable: Grafana's
+renderer returns HTTP 500 and no browser connection is available. All-query
+Blocky log forwarding still requires the separate NixOS rollout.

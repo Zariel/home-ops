@@ -111,28 +111,6 @@ spec:
             valid_rcodes: [NOERROR]
             validate_answer_rrs:
               fail_if_none_matches_regexp: ['.*\sSOA\s+.*']
-        dns-coredns-udp:
-          prober: dns
-          timeout: 5s
-          dns:
-            transport_protocol: udp
-            preferred_ip_protocol: ip4
-            query_name: kubernetes.default.svc.cluster.local
-            query_type: A
-            valid_rcodes: [NOERROR]
-            validate_answer_rrs:
-              fail_if_none_matches_regexp: ['.*\sA\s+172\.21\.0\.1$']
-        dns-coredns-tcp:
-          prober: dns
-          timeout: 5s
-          dns:
-            transport_protocol: tcp
-            preferred_ip_protocol: ip4
-            query_name: kubernetes.default.svc.cluster.local
-            query_type: A
-            valid_rcodes: [NOERROR]
-            validate_answer_rrs:
-              fail_if_none_matches_regexp: ['.*\sA\s+172\.21\.0\.1$']
         http_2xx:
           prober: http
           timeout: 5s

@@ -83,7 +83,7 @@
     {
       "id": 1,
       "title": "DNS probes",
-      "description": "Eight UDP/TCP answer checks across VIP, upstream, BIND and CoreDNS.",
+      "description": "Six UDP/TCP answer checks across the DNS VIP, upstream resolution and cluster BIND.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
@@ -160,7 +160,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "min(probe_success{dns_path!=\"\"}) * (count(probe_success{dns_path!=\"\"}) == bool 8)",
+          "expr": "min(probe_success{dns_path=~\"vip-local|vip-upstream|bind\"}) * (count(probe_success{dns_path=~\"vip-local|vip-upstream|bind\"}) == bool 6)",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -330,8 +330,8 @@
     },
     {
       "id": 4,
-      "title": "CoreDNS",
-      "description": "CoreDNS metric endpoint availability; answer probes verify resolution.",
+      "title": "Blocking",
+      "description": "Blocking is enabled on every reporting Blocky node.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
@@ -408,7 +408,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "min(up{job=\"core-dns\"})",
+          "expr": "min(blocky_blocking_enabled)",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -669,7 +669,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "probe_success{dns_path!=\"\"}",
+          "expr": "probe_success{dns_path=~\"vip-local|vip-upstream|bind\"}",
           "legendFormat": "{{dns_path}} {{transport}}",
           "datasource": {
             "type": "prometheus",
@@ -746,7 +746,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "probe_duration_seconds{dns_path!=\"\"}",
+          "expr": "probe_duration_seconds{dns_path=~\"vip-local|vip-upstream|bind\"}",
           "legendFormat": "{{dns_path}} {{transport}}",
           "datasource": {
             "type": "prometheus",
@@ -851,8 +851,8 @@
     },
     {
       "id": 12,
-      "title": "CoreDNS queries",
-      "description": "Cluster DNS traffic by replica.",
+      "title": "Blocky client queries",
+      "description": "Client responses by filtering node, excluding local health checks.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -914,8 +914,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (pod)(rate(coredns_dns_requests_total[$__rate_interval]))",
-          "legendFormat": "{{pod}}",
+          "expr": "sum by(host)(rate(blocky_client_response_total{client!=\"127.0.53.20\"}[$__rate_interval]))",
+          "legendFormat": "{{host}}",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
@@ -1019,8 +1019,8 @@
     },
     {
       "id": 15,
-      "title": "CoreDNS forwarding latency",
-      "description": "Mean forwarding latency by destination.",
+      "title": "DNSdist backend latency",
+      "description": "Backend UDP latency; idle backends may retain old values.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus",
@@ -1082,8 +1082,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (to)(rate(coredns_proxy_request_duration_seconds_sum[$__rate_interval]))/sum by (to)(rate(coredns_proxy_request_duration_seconds_count[$__rate_interval]))",
-          "legendFormat": "{{to}}",
+          "expr": "dnsdist_server_latency / 1000",
+          "legendFormat": "{{host}} {{address}}",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
@@ -1097,13 +1097,13 @@
     {
       "id": 16,
       "type": "row",
-      "title": "Failures \u00b7 response codes & forwarding",
+      "title": "Failures \u00b7 resolver errors & SERVFAIL",
       "collapsed": true,
       "panels": [
         {
           "id": 17,
-          "title": "CoreDNS failure responses",
-          "description": "DNS failures excluding normal negative answers.",
+          "title": "Blocky resolver errors",
+          "description": "Resolver errors reported by each filtering node.",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -1165,8 +1165,8 @@
           "targets": [
             {
               "refId": "A",
-              "expr": "sum by (rcode)(rate(coredns_dns_responses_total{rcode=~\"SERVFAIL|REFUSED|FORMERR\"}[$__rate_interval]))",
-              "legendFormat": "{{rcode}}",
+              "expr": "sum by(host)(rate(blocky_error_total[$__rate_interval]))",
+              "legendFormat": "{{host}}",
               "datasource": {
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
@@ -1244,160 +1244,6 @@
               "refId": "A",
               "expr": "sum by (host)(rate(dnsdist_servfail_responses[$__rate_interval]))",
               "legendFormat": "{{host}}",
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "range": true,
-              "instant": false,
-              "format": "time_series"
-            }
-          ]
-        },
-        {
-          "id": 19,
-          "title": "CoreDNS broken health checks",
-          "description": "Forwarding attempts when all upstream health checks fail.",
-          "type": "timeseries",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 40,
-            "w": 12,
-            "h": 8
-          },
-          "fieldConfig": {
-            "defaults": {
-              "unit": "ops",
-              "noValue": "No data",
-              "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
-              },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "text",
-                    "value": null
-                  },
-                  {
-                    "color": "yellow",
-                    "value": 1
-                  },
-                  {
-                    "color": "red",
-                    "value": 2
-                  }
-                ]
-              },
-              "custom": {
-                "drawStyle": "line",
-                "lineWidth": 1,
-                "fillOpacity": 0,
-                "axisCenteredZero": false,
-                "scaleDistribution": {
-                  "type": "linear"
-                }
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "targets": [
-            {
-              "refId": "A",
-              "expr": "sum by (pod)(rate(coredns_forward_healthcheck_broken_total[$__rate_interval]))",
-              "legendFormat": "{{pod}}",
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "range": true,
-              "instant": false,
-              "format": "time_series"
-            }
-          ]
-        },
-        {
-          "id": 20,
-          "title": "CoreDNS concurrency rejections",
-          "description": "Queries rejected by the forward concurrency limit.",
-          "type": "timeseries",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 40,
-            "w": 12,
-            "h": 8
-          },
-          "fieldConfig": {
-            "defaults": {
-              "unit": "ops",
-              "noValue": "No data",
-              "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
-              },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "text",
-                    "value": null
-                  },
-                  {
-                    "color": "yellow",
-                    "value": 1
-                  },
-                  {
-                    "color": "red",
-                    "value": 2
-                  }
-                ]
-              },
-              "custom": {
-                "drawStyle": "line",
-                "lineWidth": 1,
-                "fillOpacity": 0,
-                "axisCenteredZero": false,
-                "scaleDistribution": {
-                  "type": "linear"
-                }
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "targets": [
-            {
-              "refId": "A",
-              "expr": "sum by (pod)(rate(coredns_forward_max_concurrent_rejects_total[$__rate_interval]))",
-              "legendFormat": "{{pod}}",
               "datasource": {
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
@@ -1488,7 +1334,7 @@
           "targets": [
             {
               "refId": "A",
-              "expr": "up{job=~\"dnsdist|blocky|core-dns\"} or up{namespace=\"network\",pod=~\"bind-.*\",endpoint=\"metrics\"}",
+              "expr": "up{job=~\"dnsdist|blocky\"} or up{namespace=\"network\",pod=~\"bind-.*\",endpoint=\"metrics\"}",
               "legendFormat": "{{job}} {{instance}}",
               "datasource": {
                 "type": "prometheus",
@@ -1664,7 +1510,7 @@
           },
           "options": {
             "mode": "markdown",
-            "content": "DNS VIP `172.53.53.53` \u2192 DNSdist on dns-1/2/3 \u2192 local BIND for local zones, cluster BIND for hosted zones, Blocky for trusted clients, or Cloudflare DoT for unfiltered clients. CoreDNS serves cluster names and forwards external queries.\n\nBlocky uses parallel DoT upstreams (Cloudflare, Google, Quad9); its exported metrics do not expose individual upstream health. DNSdist backend checks are lazy. VIP probes originate inside Kubernetes and do not test every client VLAN or the filtered client path. Local BIND and VIP routing state have logs and backend checks, not dedicated metrics. Missing telemetry is unknown."
+            "content": "DNS VIP `172.53.53.53` \u2192 DNSdist on dns-1/2/3 \u2192 local BIND for local zones, cluster BIND for hosted zones, Blocky for trusted clients, or Cloudflare DoT for unfiltered clients.\n\nBlocky uses parallel DoT upstreams (Cloudflare, Google, Quad9); its exported metrics do not expose individual upstream health. DNSdist backend checks are lazy. VIP probes originate inside Kubernetes and do not test every client VLAN or the filtered client path. Local BIND and VIP routing state have logs and backend checks, not dedicated metrics. Missing telemetry is unknown."
           }
         }
       ],

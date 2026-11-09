@@ -116,37 +116,3 @@ spec:
       labels:
         dns_path: bind
         transport: tcp
----
-apiVersion: monitoring.coreos.com/v1
-kind: Probe
-metadata:
-  name: dns-coredns-udp
-  namespace: monitoring
-spec:
-  interval: 30s
-  module: dns-coredns-udp
-  prober:
-    url: blackbox-exporter.monitoring.svc.cluster.local:9115
-  targets:
-    staticConfig:
-      static: ['172.21.0.10:53']
-      labels:
-        dns_path: coredns
-        transport: udp
----
-apiVersion: monitoring.coreos.com/v1
-kind: Probe
-metadata:
-  name: dns-coredns-tcp
-  namespace: monitoring
-spec:
-  interval: 30s
-  module: dns-coredns-tcp
-  prober:
-    url: blackbox-exporter.monitoring.svc.cluster.local:9115
-  targets:
-    staticConfig:
-      static: ['172.21.0.10:53']
-      labels:
-        dns_path: coredns
-        transport: tcp

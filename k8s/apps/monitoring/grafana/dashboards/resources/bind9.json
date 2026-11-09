@@ -110,14 +110,14 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "query": {
-          "query": "label_values(bind_zone_serial{namespace=\"network\",pod=~\"$pod\"}, zone_name)",
+          "query": "label_values(bind_zone_serial{namespace=\"network\",pod=~\"$pod\",zone_name=~\"cbannister[.]xyz|rociobolanos[.]com\"}, zone_name)",
           "refId": "zone"
         },
-        "definition": "label_values(bind_zone_serial{namespace=\"network\",pod=~\"$pod\"}, zone_name)",
+        "definition": "label_values(bind_zone_serial{namespace=\"network\",pod=~\"$pod\",zone_name=~\"cbannister[.]xyz|rociobolanos[.]com\"}, zone_name)",
         "refresh": 2,
         "multi": true,
         "includeAll": true,
-        "allValue": ".*",
+        "allValue": "cbannister[.]xyz|rociobolanos[.]com",
         "current": {
           "text": "All",
           "value": "$__all"
@@ -394,7 +394,7 @@
     {
       "id": 4,
       "title": "SERVFAIL",
-      "description": "SERVFAIL responses in the selected range.",
+      "description": "SERVFAIL responses in the selected range; BIND omits counters before their first occurrence.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
@@ -458,7 +458,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum (increase(bind_responses_total{namespace=\"network\",pod=~\"$pod\",result=\"QrySERVFAIL\"}[$__range]))",
+          "expr": "sum (increase(bind_responses_total{namespace=\"network\",pod=~\"$pod\",result=\"SERVFAIL\"}[$__range]))",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
