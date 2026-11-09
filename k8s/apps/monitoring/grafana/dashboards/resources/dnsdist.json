@@ -683,8 +683,7 @@
           "unit": "reqps",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "orange"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
@@ -703,10 +702,57 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "axisBorderShow": false
+            "axisBorderShow": false,
+            "gradientMode": "none"
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
@@ -753,8 +799,7 @@
           "unit": "reqps",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "orange"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
@@ -773,7 +818,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "axisBorderShow": false
+            "axisBorderShow": false,
+            "gradientMode": "none"
           }
         },
         "overrides": []
@@ -925,7 +971,7 @@
           "unit": "s",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
@@ -953,7 +999,7 @@
               "type": "linear"
             },
             "axisBorderShow": false,
-            "gradientMode": "scheme"
+            "gradientMode": "none"
           }
         },
         "overrides": []
@@ -1009,7 +1055,7 @@
               "unit": "ops",
               "noValue": "No data",
               "color": {
-                "mode": "thresholds"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1033,10 +1079,56 @@
                   "type": "linear"
                 },
                 "axisBorderShow": false,
-                "gradientMode": "scheme"
+                "gradientMode": "none"
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-1"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-2"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-3"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "options": {
             "legend": {
@@ -1083,7 +1175,7 @@
               "unit": "ops",
               "noValue": "No data",
               "color": {
-                "mode": "thresholds"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1107,10 +1199,56 @@
                   "type": "linear"
                 },
                 "axisBorderShow": false,
-                "gradientMode": "scheme"
+                "gradientMode": "none"
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-1"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-2"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-3"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "options": {
             "legend": {
@@ -1157,7 +1295,7 @@
               "unit": "ops",
               "noValue": "No data",
               "color": {
-                "mode": "thresholds"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1181,10 +1319,56 @@
                   "type": "linear"
                 },
                 "axisBorderShow": false,
-                "gradientMode": "scheme"
+                "gradientMode": "none"
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-1"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-2"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-3"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "options": {
             "legend": {
@@ -1231,7 +1415,7 @@
               "unit": "ops",
               "noValue": "No data",
               "color": {
-                "mode": "thresholds"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1255,10 +1439,56 @@
                   "type": "linear"
                 },
                 "axisBorderShow": false,
-                "gradientMode": "scheme"
+                "gradientMode": "none"
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-1"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-2"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-3"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "options": {
             "legend": {
@@ -1320,8 +1550,7 @@
               "unit": "short",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "#8a8a8a"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1340,7 +1569,8 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "axisBorderShow": false
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": []
@@ -1390,8 +1620,7 @@
               "unit": "reqps",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "blue"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1410,7 +1639,8 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "axisBorderShow": false
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": []

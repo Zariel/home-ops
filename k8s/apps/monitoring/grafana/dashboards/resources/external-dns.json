@@ -607,7 +607,7 @@
           "unit": "s",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
@@ -635,7 +635,7 @@
               "type": "linear"
             },
             "axisBorderShow": false,
-            "gradientMode": "scheme"
+            "gradientMode": "none"
           }
         },
         "overrides": []
@@ -685,7 +685,7 @@
           "unit": "s",
           "noValue": "No data",
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
@@ -713,7 +713,7 @@
               "type": "linear"
             },
             "axisBorderShow": false,
-            "gradientMode": "scheme"
+            "gradientMode": "none"
           }
         },
         "overrides": []
@@ -777,8 +777,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "orange"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
@@ -797,7 +796,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "axisBorderShow": false
+            "axisBorderShow": false,
+            "gradientMode": "none"
           }
         },
         "overrides": []
@@ -847,8 +847,7 @@
           "unit": "short",
           "noValue": "No data",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
@@ -867,7 +866,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "axisBorderShow": false
+            "axisBorderShow": false,
+            "gradientMode": "none"
           }
         },
         "overrides": []
@@ -923,7 +923,7 @@
               "unit": "ops",
               "noValue": "No data",
               "color": {
-                "mode": "thresholds"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -947,7 +947,7 @@
                   "type": "linear"
                 },
                 "axisBorderShow": false,
-                "gradientMode": "scheme"
+                "gradientMode": "none"
               }
             },
             "overrides": []
@@ -997,7 +997,7 @@
               "unit": "ops",
               "noValue": "No data",
               "color": {
-                "mode": "thresholds"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1021,7 +1021,7 @@
                   "type": "linear"
                 },
                 "axisBorderShow": false,
-                "gradientMode": "scheme"
+                "gradientMode": "none"
               }
             },
             "overrides": []
@@ -1086,8 +1086,7 @@
               "unit": "short",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "#4fb3bf"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1106,7 +1105,8 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "axisBorderShow": false
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": []
@@ -1156,8 +1156,7 @@
               "unit": "bytes",
               "noValue": "No data",
               "color": {
-                "mode": "fixed",
-                "fixedColor": "purple"
+                "mode": "palette-classic"
               },
               "thresholds": {
                 "mode": "absolute",
@@ -1176,7 +1175,8 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "axisBorderShow": false
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": []

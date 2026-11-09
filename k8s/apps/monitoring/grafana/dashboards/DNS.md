@@ -129,11 +129,11 @@ Validated 72 host/client/outcome/domain combinations against VictoriaLogs.
 
 ## Colours and BIND ownership groups
 
-All five dashboards in the DNS folder use the same semantic colours from the
-buroa guidance: incoming queries and desired records orange; served responses,
-cache hits and observed records blue; neutral facts and expected policy blocks
-grey; CPU teal; memory purple. Entity identities never receive arbitrary colours.
-Cached responses use a dashed blue line to distinguish them from resolved replies.
+All five DNS dashboards use Grafana's categorical palette for time-series and
+bar charts so series within a chart have different colours. Node-only charts
+consistently use blue for dns-1, orange for dns-2 and purple for dns-3. Chart
+colours identify series rather than metric direction or severity, following the
+operator's preference. Cached responses also retain their dashed line style.
 Health uses merged state timelines with semantic severity colours. Missing data
 remains unknown. The status-history grid was replaced because it rejects sample
 counts above half the panel width, including the default 721-point range.
@@ -141,8 +141,8 @@ Timelines preserve the query samples and merge consecutive equal states.
 
 Latency uses green below 50 ms, yellow from 50 ms and red from 250 ms; these are
 diagnostic guides, not availability SLOs. Controller freshness warns after five
-minutes and turns red after ten; list freshness uses 24/48 hours. Any nonzero
-error rate is red, while zero is neutral grey. Thresholds are display-only.
+minutes and turns red after ten; list freshness uses 24/48 hours. Health/error tiles retain severity colours. Chart lines retain their series
+colours as values change. Thresholds are display-only.
 
 The BIND dashboard's VM selector applies only to internal DNS panels; cluster pod
 and zone selectors apply only to the cluster group. VM observations come from
@@ -179,3 +179,7 @@ Validation: all three modified dashboards pass strict linting and the dashboard
 Kustomization passes server-side dry-run. All 122 metric query/filter combinations
 execute successfully; timeline queries return data at 24-hour/120-second (721
 samples) and seven-day/600-second ranges. Screenshot QA remains unavailable.
+
+Series-colour revision: updated all 40 time-series/bar charts across the five DNS
+dashboards, preserving queries, drilldowns and health-timeline mappings. All five
+dashboards pass strict linting; the dashboard Kustomization renders successfully.
