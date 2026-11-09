@@ -1038,7 +1038,7 @@
             "type": "victoriametrics-logs-datasource",
             "uid": "${DS_LOGS}"
           },
-          "expr": "namespace:\"network\" container_name:\"bind\" pod_name:~\"${pod:regex}\"",
+          "expr": "namespace:\"network\" container_name:\"bind\" pod_name:~`${pod:regex}`",
           "queryType": "instant",
           "editorMode": "code",
           "maxLines": 500

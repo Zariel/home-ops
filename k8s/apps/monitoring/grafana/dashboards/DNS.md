@@ -117,3 +117,9 @@ CoreDNS was subsequently removed from the DNS overview at operator request; its
 existing dashboard remains in Kubernetes. Screenshot QA is unavailable: Grafana's
 renderer returns HTTP 500 and no browser connection is available. All-query
 Blocky log forwarding still requires the separate NixOS rollout.
+
+DNS dashboard resources resync every minute because their shared ConfigMap has a
+stable name. ConfigMap-only changes otherwise wait for the operator's resync.
+Log regexes use LogsQL raw strings so selected client addresses retain valid
+escaping. Response choices are deliberate regex patterns and use raw interpolation.
+Validated 72 host/client/outcome/domain combinations against VictoriaLogs.

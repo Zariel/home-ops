@@ -185,7 +185,7 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
-  resyncPeriod: 30m
+  resyncPeriod: 1m
   folder: DNS
   configMapRef:
     name: dns-dashboards

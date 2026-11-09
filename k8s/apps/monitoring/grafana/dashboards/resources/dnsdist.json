@@ -1514,7 +1514,7 @@
                 "type": "victoriametrics-logs-datasource",
                 "uid": "${DS_LOGS}"
               },
-              "expr": "service:\"dnsdist.service\" host:~\"${host:regex}\"",
+              "expr": "service:\"dnsdist.service\" host:~`${host:regex}`",
               "queryType": "instant",
               "editorMode": "code",
               "maxLines": 500
