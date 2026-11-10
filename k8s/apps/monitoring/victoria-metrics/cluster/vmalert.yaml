@@ -4,11 +4,6 @@ kind: VMAlert
 metadata:
   name: victoria
 spec:
-  initContainers:
-    - name: config-init
-      env:
-        - name: TZ
-          value: Europe/London
   extraEnvs:
     - name: TZ
       value: Europe/London
