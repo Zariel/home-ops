@@ -5,6 +5,14 @@ kind: VMAgent
 metadata:
   name: victoria
 spec:
+  extraEnvs:
+    - name: TZ
+      value: Europe/London
+  containers:
+    - name: config-reloader
+      env:
+        - name: TZ
+          value: Europe/London
   useStrictSecurity: true
   # metrics config
   selectAllByDefault: true

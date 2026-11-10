@@ -6,6 +6,9 @@ metadata:
 spec:
   containers:
     - name: kube-scheduler
+      env:
+        - name: TZ
+          value: Europe/London
       resources:
         requests:
           cpu: 200m

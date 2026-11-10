@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: blackbox-exporter
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: blackbox-exporter
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: blackbox-exporter
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: blackbox-exporter
   interval: 1h
   chartRef:
     kind: OCIRepository

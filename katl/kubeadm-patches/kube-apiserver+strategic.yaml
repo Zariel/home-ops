@@ -6,6 +6,9 @@ metadata:
 spec:
   containers:
     - name: kube-apiserver
+      env:
+        - name: TZ
+          value: Europe/London
       resources:
         requests:
           cpu: 1000m

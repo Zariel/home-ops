@@ -78,6 +78,9 @@ spec:
             readOnlyRootFilesystem: true
             capabilities: { drop: ["ALL"] }
         - name: jbops
+          env:
+            - name: TZ
+              value: Europe/London
           image: registry.k8s.io/git-sync/git-sync:v4.8.0
           imagePullPolicy: IfNotPresent
           args:

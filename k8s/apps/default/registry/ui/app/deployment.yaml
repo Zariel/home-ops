@@ -35,6 +35,8 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
+            - name: TZ
+              value: Europe/London
             - name: SINGLE_REGISTRY
               value: "true"
             - name: NGINX_PROXY_PASS_URL

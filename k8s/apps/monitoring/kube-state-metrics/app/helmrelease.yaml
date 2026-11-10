@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: &app kube-state-metrics
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: kube-state-metrics
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: kube-state-metrics
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: kube-state-metrics
   interval: 1h
   releaseName: *app
   chartRef:

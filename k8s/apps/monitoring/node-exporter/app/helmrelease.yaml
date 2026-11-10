@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: &app node-exporter
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: node-exporter
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: node-exporter
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: node-exporter
   interval: 1h
   chartRef:
     kind: OCIRepository

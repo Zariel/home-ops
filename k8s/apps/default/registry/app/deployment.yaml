@@ -35,6 +35,8 @@ spec:
               containerPort: 5000
               protocol: TCP
           env:
+            - name: TZ
+              value: Europe/London
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: /var/lib/registry
             - name: REGISTRY_HTTP_ADDR

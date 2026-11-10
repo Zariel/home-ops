@@ -7,6 +7,14 @@ metadata:
   labels:
     monitoring.cbannister.xyz/alertmanager: primary
 spec:
+  extraEnvs:
+    - name: TZ
+      value: Europe/London
+  containers:
+    - name: config-reloader
+      env:
+        - name: TZ
+          value: Europe/London
   replicaCount: 2
   image:
     repository: quay.io/prometheus/alertmanager

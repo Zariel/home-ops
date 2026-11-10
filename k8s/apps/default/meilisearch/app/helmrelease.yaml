@@ -35,6 +35,7 @@ spec:
               - /bin/meilisearch
               - --upgrade-db
             env:
+              TZ: Europe/London
               MEILI_NO_ANALYTICS: true
               MEILI_MASTER_KEY:
                 valueFrom:

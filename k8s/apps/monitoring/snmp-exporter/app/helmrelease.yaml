@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: &app snmp-exporter
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: snmp-exporter
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: snmp-exporter
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: snmp-exporter
   interval: 30m
   chartRef:
     kind: OCIRepository

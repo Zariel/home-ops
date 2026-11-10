@@ -12,6 +12,21 @@ spec:
     type: Kubernetes
     kubernetes:
       envoyDeployment:
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              template:
+                spec:
+                  containers:
+                    - name: envoy
+                      env:
+                        - name: TZ
+                          value: Europe/London
+                    - name: shutdown-manager
+                      env:
+                        - name: TZ
+                          value: Europe/London
         replicas: 2
         pod:
           priorityClassName: cluster-p2
