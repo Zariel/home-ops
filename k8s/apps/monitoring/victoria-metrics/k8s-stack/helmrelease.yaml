@@ -167,6 +167,9 @@ spec:
 
     victoria-metrics-operator:
       enabled: true
+      operator:
+        # Garbage-collect converted resources when their Prometheus source is removed.
+        enable_converter_ownership: true
       resources:
         requests:
           memory: 224Mi
