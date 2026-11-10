@@ -63,7 +63,9 @@ variable; there is no cluster-wide admission mutation for timezone.
 
 Ceph daemon pods (including discovery and maintenance jobs), CSI driver pods,
 and VolSync mover pods are exceptions: their installed operator APIs do not
-expose arbitrary container environment variables. Keep these resources under
+expose arbitrary container environment variables. CloudNativePG's generated
+`bootstrap-controller` init container also does not inherit the cluster's `env`
+setting. Keep these resources under
 operator ownership rather than patching generated workloads. Helm-managed
 operator and toolbox containers still set `TZ`. Set the variable explicitly
 when creating ad hoc pods or ephemeral debug containers.

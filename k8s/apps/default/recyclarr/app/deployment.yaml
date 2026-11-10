@@ -49,8 +49,6 @@ spec:
           env:
             - name: TZ
               value: Europe/London
-            - name: TZ
-              value: Europe/London
             - name: DOTNET_EnableDiagnostics
               value: "0"
             - name: DOTNET_gcServer
