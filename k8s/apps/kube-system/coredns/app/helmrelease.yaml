@@ -69,7 +69,7 @@ spec:
           - name: forward
             parameters: rociobolanos.com 10.45.0.55
           - name: forward
-            parameters: . 172.53.53.53
+            parameters: . 10.254.253.53
           - name: cache
             configBlock: |-
               prefetch 20

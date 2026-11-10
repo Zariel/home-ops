@@ -27,7 +27,7 @@ spec:
     url: blackbox-exporter.monitoring.svc.cluster.local:9115
   targets:
     staticConfig:
-      static: ['172.53.53.53:53']
+      static: ['10.254.253.53:53']
       labels:
         dns_path: vip-local
         transport: udp
@@ -44,7 +44,7 @@ spec:
     url: blackbox-exporter.monitoring.svc.cluster.local:9115
   targets:
     staticConfig:
-      static: ['172.53.53.53:53']
+      static: ['10.254.253.53:53']
       labels:
         dns_path: vip-local
         transport: tcp
@@ -61,7 +61,7 @@ spec:
     url: blackbox-exporter.monitoring.svc.cluster.local:9115
   targets:
     staticConfig:
-      static: ['172.53.53.53:53']
+      static: ['10.254.253.53:53']
       labels:
         dns_path: vip-upstream
         transport: udp
@@ -78,7 +78,7 @@ spec:
     url: blackbox-exporter.monitoring.svc.cluster.local:9115
   targets:
     staticConfig:
-      static: ['172.53.53.53:53']
+      static: ['10.254.253.53:53']
       labels:
         dns_path: vip-upstream
         transport: tcp
