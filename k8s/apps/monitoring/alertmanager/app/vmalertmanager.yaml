@@ -23,8 +23,10 @@ spec:
   disableAutomountServiceAccountToken: true
   resources:
     requests:
+      cpu: 30m
       memory: 96Mi
     limits:
+      cpu: 500m
       memory: 96Mi
   configReloaderResources:
     requests:

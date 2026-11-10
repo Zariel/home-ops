@@ -116,8 +116,8 @@ spec:
             failureThreshold: 20
           resources:
             requests:
-              cpu: 2
-              memory: 16Gi
+              cpu: 1250m
+              memory: 6Gi
             limits:
               memory: 32Gi
           volumeMounts:

@@ -103,7 +103,7 @@ spec:
             resources:
               requests:
                 cpu: 500m
-                memory: 8Gi
+                memory: 5Gi
               claims:
                 - name: gpu
             securityContext: &csc
@@ -159,7 +159,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 1Gi
+                memory: 2Gi
               claims:
                 - name: gpu
             securityContext: *csc
@@ -209,7 +209,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 512Mi
+                memory: 1Gi
             securityContext: *csc
         initContainers:
           initdb:
