@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: snapshot-controller
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: snapshot-controller
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: snapshot-controller
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: snapshot-controller
   interval: 30m
   chartRef:
     kind: OCIRepository

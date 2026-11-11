@@ -24,6 +24,57 @@ kind: HelmRelease
 metadata:
   name: external-secrets
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: external-secrets
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: external-secrets
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets-cert-controller
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cert-controller
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: external-secrets-cert-controller
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets-webhook
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: webhook
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: external-secrets-webhook
   interval: 30m
   chartRef:
     kind: OCIRepository

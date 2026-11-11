@@ -7,6 +7,19 @@ metadata:
   labels:
     monitoring.cbannister.xyz/alertmanager: primary
 spec:
+  initContainers:
+    - name: config-init
+      env:
+        - name: TZ
+          value: Europe/London
+  extraEnvs:
+    - name: TZ
+      value: Europe/London
+  containers:
+    - name: config-reloader
+      env:
+        - name: TZ
+          value: Europe/London
   replicaCount: 2
   image:
     repository: quay.io/prometheus/alertmanager
@@ -23,8 +36,10 @@ spec:
   disableAutomountServiceAccountToken: true
   resources:
     requests:
+      cpu: 30m
       memory: 96Mi
     limits:
+      cpu: 500m
       memory: 96Mi
   configReloaderResources:
     requests:

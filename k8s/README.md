@@ -52,3 +52,26 @@ Document unsupported identity integrations and deliberate anonymous routes besid
 Render changed units and namespace composition with `kubectl kustomize <path>`. Check ownership, namespaces, secret references, route parents, and required CRDs. The root `apps/` path relies on Flux composition and does not contain a standalone Kustomize build file.
 
 Use server-side dry runs where cluster schemas or admission matter. Rendering does not establish secret readiness or application behavior. After an authorized rollout, verify actual behavior and relevant metrics, logs, and alerts. Report when live verification was not performed.
+
+## Container timezone
+
+Set `TZ=Europe/London` in container and init-container templates. Use workload
+manifests, Helm values or static Helm post-render patches, and operator-supported
+pod overrides. Katl's kubeadm patches set it for static control-plane pods.
+New containers added to charts or templates must carry the same environment
+variable; there is no cluster-wide admission mutation for timezone.
+
+Ceph daemon pods (including discovery and maintenance jobs), CSI driver pods,
+and VolSync mover pods are exceptions: their installed operator APIs do not
+expose arbitrary container environment variables. CloudNativePG's generated
+`bootstrap-controller` init container also does not inherit the cluster's `env`
+setting. VMAlert's generated `config-init` container cannot be overridden by
+name in operator v0.75.2 (its init-container list is appended, unlike VMAgent and
+VMAlertmanager). Keep these resources under
+operator ownership rather than patching generated workloads. Helm-managed
+operator and toolbox containers still set `TZ`. Set the variable explicitly
+when creating ad hoc pods or ephemeral debug containers.
+
+The variable does not install timezone data into images or override applications
+that deliberately log or schedule in UTC. Completed Jobs retain their original
+pod environments; apply the setting to subsequent executions.

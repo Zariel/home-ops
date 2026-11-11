@@ -4,6 +4,9 @@ kind: VLSingle
 metadata:
   name: vlogs
 spec:
+  extraEnvs:
+    - name: TZ
+      value: Europe/London
   retentionPeriod: "14d"
   storage:
     accessModes:

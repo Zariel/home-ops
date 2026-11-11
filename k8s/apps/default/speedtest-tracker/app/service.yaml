@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/service_v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker
+spec:
+  selector:
+    app.kubernetes.io/name: speedtest-tracker
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

@@ -9,6 +9,9 @@ spec:
   retentionPeriod: "12"
   replicationFactor: 2
   vmstorage:
+    extraEnvs:
+      - name: TZ
+        value: Europe/London
     replicaCount: 3
     # Let peer DNS caches recover before restarting the next storage pod.
     minReadySeconds: 30
@@ -47,6 +50,9 @@ spec:
       dedup.minScrapeInterval: 30s
       memory.allowedPercent: "50"
   vmselect:
+    extraEnvs:
+      - name: TZ
+        value: Europe/London
     replicaCount: 2
     useStrictSecurity: true
     resources:
@@ -86,6 +92,8 @@ spec:
     useStrictSecurity: true
     # Bound native-import parsing concurrency independently of host CPU count.
     extraEnvs:
+      - name: TZ
+        value: Europe/London
       - name: GOMAXPROCS
         value: "2"
       - name: GOMEMLIMIT

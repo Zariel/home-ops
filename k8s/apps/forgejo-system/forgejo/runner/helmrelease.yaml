@@ -29,6 +29,8 @@ spec:
             runAsUser: 568
         containers:
           k8s-plugin:
+            env:
+              TZ: Europe/London
             image:
               repository: git.erwanleboucher.dev/eleboucher/runner-k8s-plugin
               tag: 13.2.1
@@ -46,6 +48,8 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
           runner:
+            env:
+              TZ: Europe/London
             image:
               repository: data.forgejo.org/forgejo/runner
               tag: 13.2.1

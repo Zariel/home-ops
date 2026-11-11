@@ -5,6 +5,30 @@ kind: HelmRelease
 metadata:
   name: multus
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: multus
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: multus
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: cni-plugins
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: multus
   chartRef:
     kind: OCIRepository
     name: multus

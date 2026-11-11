@@ -20,6 +20,57 @@ metadata:
   name: cert-manager
   namespace: cert-manager
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: cert-manager
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cert-manager-controller
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: cert-manager
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: cert-manager-cainjector
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cert-manager-cainjector
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: cert-manager-cainjector
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: cert-manager-webhook
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cert-manager-webhook
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: cert-manager-webhook
   interval: 1h
   chartRef:
     kind: OCIRepository

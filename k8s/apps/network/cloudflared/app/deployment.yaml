@@ -40,6 +40,8 @@ spec:
             - tunnel
             - run
           env:
+            - name: TZ
+              value: Europe/London
             - name: NO_AUTOUPDATE
               value: "true"
             - name: TUNNEL_METRICS

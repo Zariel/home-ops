@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tautulli
-          image: ghcr.io/home-operations/tautulli:2.18.2@sha256:d7ea1a79cf8cc2603890287d7c0e5bc277e4909c1df93f48f000833d2771eca0
+          image: ghcr.io/home-operations/tautulli:2.19.1@sha256:de490b2e01593b4efa062ebe8ceb802a2bc119d727df0e545629394ac3667eb0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
@@ -78,6 +78,9 @@ spec:
             readOnlyRootFilesystem: true
             capabilities: { drop: ["ALL"] }
         - name: jbops
+          env:
+            - name: TZ
+              value: Europe/London
           image: registry.k8s.io/git-sync/git-sync:v4.8.0
           imagePullPolicy: IfNotPresent
           args:

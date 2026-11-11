@@ -30,6 +30,8 @@ spec:
         - name: app
           image: ghcr.io/pocket-id/pocket-id:v2.19.2
           env:
+            - name: TZ
+              value: Europe/London
             - name: STATIC_API_KEY
               valueFrom:
                 secretKeyRef:
