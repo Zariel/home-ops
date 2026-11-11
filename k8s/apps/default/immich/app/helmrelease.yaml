@@ -70,7 +70,7 @@ spec:
           machine-learning:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v3.3.6-openvino
+              tag: v3.4.1-openvino
             env:
               TZ: Europe/London
               MACHINE_LEARNING_PRELOAD__CLIP__TEXTUAL: ViT-B-32__openai
@@ -121,7 +121,7 @@ spec:
           microservices:
             image: &serverImage
               repository: ghcr.io/immich-app/immich-server
-              tag: v3.3.6
+              tag: v3.4.1
             envFrom:
               - secretRef:
                   name: immich-db
