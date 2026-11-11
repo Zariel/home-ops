@@ -57,12 +57,13 @@ spec:
         TargetDown:
           spec:
             # On-demand node exporters are intentionally unavailable while powered off.
-            expr: >-
-              100 * (
-                count(up{availability!="on-demand"} == 0) by (cluster, job, namespace, service)
-                /
-                count(up{availability!="on-demand"}) by (cluster, job, namespace, service)
-              ) > 10
+            expr: up{availability!="on-demand"} == 0
+            for: 10m
+            annotations:
+              summary: Scrape target is down
+              description: >-
+                Target {{ $labels.instance }} in job {{ $labels.job }} has been
+                unreachable for at least 10 minutes.
 
     # Enable Grafana dashboards
     defaultDashboards:
