@@ -14,6 +14,22 @@ spec:
         - severity = "info"
       equal:
         - namespace
+    # Internet reachability is shared across namespaces in this cluster.
+    - source_matchers:
+        - alertname = "InternetUnavailable"
+      target_matchers:
+        - alertname = "FluxResourceNotReady"
+        - customresource_kind =~ "GitRepository|OCIRepository|HelmRepository|HelmChart|Bucket"
+    - source_matchers:
+        - alertname = "InternetUnavailable"
+      target_matchers:
+        - alertname = "BlackboxProbeFailed"
+        - connectivity = "internet"
+    - source_matchers:
+        - alertname = "InternetUnavailable"
+      target_matchers:
+        - alertname = "KubeContainerWaiting"
+        - reason =~ "ErrImagePull|ImagePullBackOff"
   route:
     receiver: pushover
     group_by:
