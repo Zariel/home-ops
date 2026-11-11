@@ -1,0 +1,80 @@
+rule_files:
+  - rules.yaml
+evaluation_interval: 30s
+tests:
+  - name: Healthy internet
+    interval: 30s
+    input_series:
+      - series: probe_success{job="probe/monitoring/internet", instance="1.1.1.1:443"}
+        values: 1x10
+      - series: probe_success{job="probe/monitoring/internet", instance="8.8.8.8:443"}
+        values: 1x10
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: InternetUnavailable
+        exp_alerts: []
+  - name: A single provider failure does not inhibit alerts
+    interval: 30s
+    input_series:
+      - series: probe_success{job="probe/monitoring/internet", instance="1.1.1.1:443"}
+        values: 0x10
+      - series: probe_success{job="probe/monitoring/internet", instance="8.8.8.8:443"}
+        values: 1x10
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: InternetUnavailable
+        exp_alerts: []
+  - name: Both providers fail and then one recovers
+    interval: 30s
+    input_series:
+      - series: probe_success{job="probe/monitoring/internet", instance="1.1.1.1:443"}
+        values: 0x10
+      - series: probe_success{job="probe/monitoring/internet", instance="8.8.8.8:443"}
+        values: 0x5 1x5
+    alert_rule_test:
+      - eval_time: 1m30s
+        alertname: InternetUnavailable
+        exp_alerts: []
+      - eval_time: 2m
+        alertname: InternetUnavailable
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+            exp_annotations:
+              summary: Internet connectivity is unavailable
+              description: >-
+                TCP connections to both Cloudflare (1.1.1.1:443) and Google (8.8.8.8:443)
+                have failed for at least 2 minutes. Internet-dependent alerts are inhibited
+                until connectivity recovers.
+      - eval_time: 3m
+        alertname: InternetUnavailable
+        exp_alerts: []
+  - name: Missing target is not evidence of an internet outage
+    interval: 30s
+    input_series:
+      - series: probe_success{job="probe/monitoring/internet", instance="1.1.1.1:443"}
+        values: 0x10
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: InternetUnavailable
+        exp_alerts: []
+  - name: Duplicate scrapes of one failing target do not count as two providers
+    interval: 30s
+    input_series:
+      - series: probe_success{job="probe/monitoring/internet", instance="1.1.1.1:443", replica="a"}
+        values: 0x10
+      - series: probe_success{job="probe/monitoring/internet", instance="1.1.1.1:443", replica="b"}
+        values: 0x10
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: InternetUnavailable
+        exp_alerts: []
+  - name: Missing scrapes and failing DNS do not trigger internet inhibition
+    interval: 30s
+    input_series:
+      - series: probe_success{job="probe/monitoring/dns-vip-upstream-udp", connectivity="internet", dns_path="vip-upstream"}
+        values: 0x10
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: InternetUnavailable
+        exp_alerts: []
