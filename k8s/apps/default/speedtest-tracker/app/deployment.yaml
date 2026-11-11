@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speedtest-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: speedtest-tracker
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: speedtest-tracker
+      annotations:
+        reloader.stakater.com/auto: "true"
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: lscr.io/linuxserver/speedtest-tracker:1.15.1@sha256:3851956ddff5b230a096c5414bfdf005e91aff3af48da9bcb4327dc41eff49e4
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: PUID
+              value: "568"
+            - name: PGID
+              value: "568"
+            - name: APP_URL
+              value: https://speedtest.cbannister.xyz
+            - name: ASSET_URL
+              value: https://speedtest.cbannister.xyz
+            - name: APP_TIMEZONE
+              value: Europe/London
+            - name: DISPLAY_TIMEZONE
+              value: Europe/London
+            - name: DB_CONNECTION
+              value: sqlite
+            - name: ADMIN_NAME
+              value: Admin
+            - name: ADMIN_EMAIL
+              value: admin@cbannister.xyz
+            - name: PUBLIC_DASHBOARD
+              value: "true"
+            - name: SPEEDTEST_SCHEDULE
+              value: "17 */6 * * *"
+            - name: PRUNE_RESULTS_OLDER_THAN
+              value: "365"
+          envFrom:
+            - secretRef:
+                name: speedtest-tracker-secret
+          ports:
+            - name: http
+              containerPort: 80
+          startupProbe:
+            httpGet:
+              path: /admin/login
+              port: http
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /admin/login
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /admin/login
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: speedtest-tracker
