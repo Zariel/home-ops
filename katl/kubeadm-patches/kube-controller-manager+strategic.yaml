@@ -6,6 +6,9 @@ metadata:
 spec:
   containers:
     - name: kube-controller-manager
+      env:
+        - name: TZ
+          value: Europe/London
       resources:
         requests:
           cpu: 500m

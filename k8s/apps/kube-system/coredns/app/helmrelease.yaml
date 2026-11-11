@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: coredns
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: coredns
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: coredns
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: coredns
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -69,7 +88,7 @@ spec:
           - name: forward
             parameters: rociobolanos.com 10.45.0.55
           - name: forward
-            parameters: . 172.53.53.53
+            parameters: . 10.254.253.53
           - name: cache
             configBlock: |-
               prefetch 20

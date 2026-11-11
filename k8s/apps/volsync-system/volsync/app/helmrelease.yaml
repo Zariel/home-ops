@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: volsync
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: volsync
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: manager
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: volsync
   interval: 30m
   chartRef:
     kind: OCIRepository

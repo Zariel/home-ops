@@ -31,6 +31,9 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: initdb
+          env:
+            - name: TZ
+              value: Europe/London
           image: ghcr.io/home-operations/postgres-init:18.6.0@sha256:87627baaddb0cabed4ebe033e75038e5c7b6b081c18e86514c99067179a90719
           envFrom:
             - secretRef:
@@ -47,6 +50,8 @@ spec:
           # Run directly as the pod user with external PostgreSQL.
           command: [silo]
           env:
+            - name: TZ
+              value: Europe/London
             - name: MODE
               value: integrated
             - name: POSTGRES_TUNE

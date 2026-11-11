@@ -7,6 +7,8 @@ initContainers:
       privileged: true
     restartPolicy: Always
     env:
+      - name: TZ
+        value: Europe/London
       - name: DOCKER_TLS_CERTDIR
         value: /certs
     resources:
@@ -31,6 +33,8 @@ initContainers:
       periodSeconds: 1
 containers:
   - env:
+      - name: TZ
+        value: Europe/London
       - name: DEBIAN_FRONTEND
         value: noninteractive
       - name: DOCKER_HOST
@@ -44,7 +48,7 @@ containers:
     name: main
     resources:
       limits:
-        cpu: "1"
+        cpu: "4"
         memory: 2Gi
       requests:
         cpu: 100m

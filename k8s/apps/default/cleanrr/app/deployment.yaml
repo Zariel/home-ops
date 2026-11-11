@@ -25,6 +25,8 @@ spec:
           image: ghcr.io/zariel/cleanrr:v0.3.0@sha256:a74f5055dcd287aa4003070bbc77d1581f4bb326c1e48cc29402ce67ae25a480
           imagePullPolicy: IfNotPresent
           env:
+            - name: TZ
+              value: Europe/London
             - name: CLEANRR_SERVERS__RADARR__URL
               value: http://radarr
             - name: CLEANRR_SERVERS__SONARR__URL

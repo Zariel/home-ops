@@ -47,6 +47,8 @@ spec:
           image: ghcr.io/recyclarr/recyclarr:8.8.1
           imagePullPolicy: IfNotPresent
           env:
+            - name: TZ
+              value: Europe/London
             - name: DOTNET_EnableDiagnostics
               value: "0"
             - name: DOTNET_gcServer

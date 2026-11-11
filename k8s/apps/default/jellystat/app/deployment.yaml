@@ -30,6 +30,9 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: init-db
+          env:
+            - name: TZ
+              value: Europe/London
           image: ghcr.io/home-operations/postgres-init:18.6.0@sha256:87627baaddb0cabed4ebe033e75038e5c7b6b081c18e86514c99067179a90719
           envFrom:
             - secretRef:
@@ -42,6 +45,9 @@ spec:
             capabilities:
               drop: [ALL]
         - name: init-frontend
+          env:
+            - name: TZ
+              value: Europe/London
           image: &image docker.io/cyfershepard/jellystat:1.1.12@sha256:e61c759ec706da378bc8374e797da1dfd298ab30f804cefd82d192c301a888c7
           command: [/bin/sh, -ec]
           # Jellystat writes dist/env.js at startup; keep the packaged image read-only.

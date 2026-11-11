@@ -60,7 +60,7 @@ spec:
                 name: radarr-secret
           resources:
             requests:
-              cpu: "512m"
+              cpu: 200m
               memory: 1Gi
             limits:
               memory: 2Gi

@@ -2,7 +2,7 @@
 Name=bond0
 
 [Network]
-DNS=172.53.53.53
+DNS=10.254.253.53
 NTP=10.254.254.1
 Domains=~.
 LinkLocalAddressing=no

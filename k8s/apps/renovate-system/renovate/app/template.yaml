@@ -6,6 +6,9 @@ metadata:
   name: renovate
   namespace: renovate-system
 spec:
+  extraEnv:
+    - name: TZ
+      value: Europe/London
   image: ghcr.io/renovatebot/renovate:44.222.4-full
   parallelism: 1
   serviceAccount:

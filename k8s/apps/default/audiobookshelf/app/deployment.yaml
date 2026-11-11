@@ -34,6 +34,8 @@ spec:
               containerPort: 80
               protocol: TCP
           env:
+            - name: TZ
+              value: Europe/London
             - name: AUDIOBOOKSHELF_UID
               value: "568"
             - name: AUDIOBOOKSHELF_GID

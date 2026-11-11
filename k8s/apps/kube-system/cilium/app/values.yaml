@@ -46,7 +46,7 @@ resources:
     cpu: 1500m
     memory: 1Gi
   limits:
-    cpu: 1500m
+    cpu: 3000m
     memory: 2Gi
 rollOutCiliumPods: true
 routingMode: native

@@ -30,6 +30,8 @@ spec:
           image: ghcr.io/home-operations/prowlarr:3.0.1.5752@sha256:83cc967a3b7b754634e31773d4d58ea606714490b7e8592d41b608f7c249afe6
           imagePullPolicy: "IfNotPresent"
           env:
+            - name: TZ
+              value: Europe/London
             - name: DOTNET_EnableDiagnostics
               value: "0"
             - name: DOTNET_gcServer
@@ -43,7 +45,7 @@ spec:
                 name: prowlarr-secret
           resources:
             requests:
-              cpu: 500m
+              cpu: 100m
               memory: 768Mi
             limits:
               memory: 1Gi

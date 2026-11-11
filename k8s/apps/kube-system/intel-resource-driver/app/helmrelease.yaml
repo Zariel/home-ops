@@ -18,6 +18,25 @@ kind: HelmRelease
 metadata:
   name: intel-gpu-resource-driver
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: intel-gpu-resource-driver-kubelet-plugin
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: kubelet-plugin
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: intel-gpu-resource-driver-kubelet-plugin
   interval: 1h
   chartRef:
     kind: OCIRepository

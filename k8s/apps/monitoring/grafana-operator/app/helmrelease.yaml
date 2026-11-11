@@ -5,6 +5,25 @@ metadata:
   name: grafana-operator
   namespace: monitoring
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: grafana-operator
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: grafana-operator
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: grafana-operator
   interval: 1h
   chartRef:
     kind: OCIRepository

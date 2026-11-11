@@ -19,6 +19,38 @@ kind: HelmRelease
 metadata:
   name: forgejo
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: forgejo
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: forgejo
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: init-directories
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: init-app-ini
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: configure-gitea
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: forgejo
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -40,7 +72,7 @@ spec:
     resources:
       requests:
         memory: 256Mi
-        cpu: "2"
+        cpu: 100m
       limits:
         memory: 512Mi
         cpu: "6"

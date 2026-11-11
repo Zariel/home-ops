@@ -6,10 +6,13 @@ metadata:
 spec:
   containers:
     - name: kube-scheduler
+      env:
+        - name: TZ
+          value: Europe/London
       resources:
         requests:
           cpu: 200m
           memory: 128Mi
         limits:
-          cpu: 200m
+          cpu: 1000m
           memory: 256Mi

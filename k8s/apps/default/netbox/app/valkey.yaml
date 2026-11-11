@@ -53,6 +53,7 @@ spec:
             args:
               - /config/valkey.conf
             env:
+              TZ: Europe/London
               VALKEYCLI_AUTH:
                 valueFrom:
                   secretKeyRef:
