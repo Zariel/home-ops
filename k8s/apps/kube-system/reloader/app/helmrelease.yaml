@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: reloader
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: reloader
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: reloader
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: reloader
   interval: 1h
   chartRef:
     kind: OCIRepository

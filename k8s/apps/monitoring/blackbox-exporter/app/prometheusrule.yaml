@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: internet
+spec:
+  groups:
+    - name: internet.rules
+      rules:
+        - alert: InternetUnavailable
+          # Both targets must report failure; missing scrapes are not proof of an outage.
+          expr: |
+            max(probe_success{job="probe/monitoring/internet"}) == 0
+            and
+            count(count by (instance) (probe_success{job="probe/monitoring/internet"})) == 2
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: Internet connectivity is unavailable
+            description: >-
+              TCP connections to both Cloudflare (1.1.1.1:443) and Google (8.8.8.8:443)
+              have failed for at least 2 minutes. Internet-dependent alerts are inhibited
+              until connectivity recovers.

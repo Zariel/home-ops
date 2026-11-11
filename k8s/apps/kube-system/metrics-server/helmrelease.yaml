@@ -20,6 +20,25 @@ metadata:
   name: metrics-server
   namespace: kube-system
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: metrics-server
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: metrics-server
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: metrics-server
   interval: 30m
   chartRef:
     kind: OCIRepository

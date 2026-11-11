@@ -45,7 +45,7 @@ counts. `bond0` keeps its `noqueue` discipline. Changes to `.link` files take
 effect on the next boot.
 
 Static `/etc/hosts` entries preserve resolution of the three node names.
-DNS remains `172.53.53.53`; Katl's native unit management enables
+DNS uses `10.254.253.53`; Katl's native unit management enables
 systemd-timesyncd, which uses `10.254.254.1`. It also masks
 `bluetooth.service`, while the kernel command line prevents the Bluetooth
 drivers from loading. CPU sysfs settings, network sysctls, hugepages, udev

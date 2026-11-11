@@ -5,6 +5,30 @@ kind: HelmRelease
 metadata:
   name: vector-aggregator
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: vector-aggregator
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: vector
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: init-geoip
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: vector-aggregator
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -54,6 +78,8 @@ spec:
         image: ghcr.io/maxmind/geoipupdate:v8.0
         imagePullPolicy: IfNotPresent
         env:
+          - name: TZ
+            value: Europe/London
           - name: GEOIPUPDATE_EDITION_IDS
             value: GeoLite2-Country
           - name: GEOIPUPDATE_FREQUENCY

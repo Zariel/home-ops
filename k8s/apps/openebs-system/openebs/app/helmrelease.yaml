@@ -5,6 +5,25 @@ kind: HelmRelease
 metadata:
   name: openebs
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: openebs-localpv-provisioner
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: openebs-localpv-provisioner
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: openebs-localpv-provisioner
   chartRef:
     kind: OCIRepository
     name: openebs

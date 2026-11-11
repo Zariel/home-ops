@@ -37,6 +37,7 @@ spec:
               repository: ghcr.io/karakeep-app/karakeep
               tag: 0.34.1@sha256:69ae5315c618b7c14c1af3e34c6e211acdb231793af424ecd1cab0b70691d987
             env:
+              TZ: Europe/London
               BROWSER_WEB_URL: http://karakeep-chrome.default.svc.cluster.local:9222
               CRAWLER_DOWNLOAD_BANNER_IMAGE: true
               CRAWLER_ENABLE_ADBLOCKER: true
@@ -110,6 +111,8 @@ spec:
             app.kubernetes.io/component: chrome
         containers:
           app:
+            env:
+              TZ: Europe/London
             image:
               repository: ghcr.io/karakeep-app/karakeep-chrome
               tag: 157.0.8103.38-r1@sha256:6c80ed470871bb8c129dc58692ca1714cddbc1392faad3ebf59aecd2e6e58eac

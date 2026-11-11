@@ -5,6 +5,25 @@ kind: HelmRelease
 metadata:
   name: vector-agent
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: vector-agent
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: vector
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: vector-agent
   interval: 1h
   chartRef:
     kind: OCIRepository

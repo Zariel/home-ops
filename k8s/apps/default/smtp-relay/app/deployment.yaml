@@ -28,6 +28,8 @@ spec:
           image: ghcr.io/foxcpp/maddy:0.9.7@sha256:b7423da1e97768ace9d790e441e59a698896d35432d8cdfa55b7c229d7847e72
           imagePullPolicy: IfNotPresent
           env:
+            - name: TZ
+              value: Europe/London
             - name: SMTP_RELAY_METRICS_PORT
               value: "8080"
             - name: SMTP_RELAY_SERVER_PORT

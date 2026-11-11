@@ -19,6 +19,25 @@ kind: HelmRelease
 metadata:
   name: victoria-metrics-k8s-stack
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: victoria-metrics-k8s-stack-victoria-metrics-operator
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: operator
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: victoria-metrics-k8s-stack-victoria-metrics-operator
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -38,12 +57,13 @@ spec:
         TargetDown:
           spec:
             # On-demand node exporters are intentionally unavailable while powered off.
-            expr: >-
-              100 * (
-                count(up{availability!="on-demand"} == 0) by (cluster, job, namespace, service)
-                /
-                count(up{availability!="on-demand"}) by (cluster, job, namespace, service)
-              ) > 10
+            expr: up{availability!="on-demand"} == 0
+            for: 10m
+            annotations:
+              summary: Scrape target is down
+              description: >-
+                Target {{ $labels.instance }} in job {{ $labels.job }} has been
+                unreachable for at least 10 minutes.
 
     # Enable Grafana dashboards
     defaultDashboards:

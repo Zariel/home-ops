@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: speedtest-tracker
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: speedtest-tracker
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP

@@ -5,6 +5,25 @@ metadata:
   name: pocket-id-operator
   namespace: default
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: pocket-id-operator
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: operator
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: pocket-id-operator
   interval: 1h
   chartRef:
     kind: OCIRepository

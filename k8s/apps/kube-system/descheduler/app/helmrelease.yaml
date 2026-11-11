@@ -20,6 +20,25 @@ metadata:
   name: descheduler
   namespace: kube-system
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: descheduler
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: descheduler
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: descheduler
   interval: 1h
   chartRef:
     kind: OCIRepository

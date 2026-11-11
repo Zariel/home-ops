@@ -21,6 +21,25 @@ metadata:
   name: brrpolice
   namespace: default
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: brrpolice
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: app
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: brrpolice
   chartRef:
     kind: OCIRepository
     name: brrpolice

@@ -72,6 +72,7 @@ spec:
               repository: ghcr.io/immich-app/immich-machine-learning
               tag: v3.3.6-openvino
             env:
+              TZ: Europe/London
               MACHINE_LEARNING_PRELOAD__CLIP__TEXTUAL: ViT-B-32__openai
               MACHINE_LEARNING_PRELOAD__CLIP__VISUAL: ViT-B-32__openai
               MACHINE_LEARNING_PRELOAD__FACIAL_RECOGNITION__RECOGNITION: buffalo_l
@@ -103,7 +104,7 @@ spec:
             resources:
               requests:
                 cpu: 500m
-                memory: 8Gi
+                memory: 5Gi
               claims:
                 - name: gpu
             securityContext: &csc
@@ -159,7 +160,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 1Gi
+                memory: 2Gi
               claims:
                 - name: gpu
             securityContext: *csc
@@ -209,10 +210,12 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 512Mi
+                memory: 1Gi
             securityContext: *csc
         initContainers:
           initdb:
+            env:
+              TZ: Europe/London
             image:
               repository: ghcr.io/home-operations/postgres-init
               tag: 18.6.0@sha256:87627baaddb0cabed4ebe033e75038e5c7b6b081c18e86514c99067179a90719

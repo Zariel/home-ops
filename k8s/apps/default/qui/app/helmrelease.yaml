@@ -90,6 +90,8 @@ spec:
               capabilities: { drop: ["ALL"] }
         initContainers:
           fix-database-permissions:
+            env:
+              TZ: Europe/London
             image:
               repository: docker.io/library/busybox
               tag: 1.38.0

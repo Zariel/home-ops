@@ -19,6 +19,94 @@ kind: HelmRelease
 metadata:
   name: cilium
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: cilium-operator
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cilium-operator
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: cilium-operator
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: hubble-relay
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: hubble-relay
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: hubble-relay
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: hubble-ui
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: frontend
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: backend
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: hubble-ui
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: cilium
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cilium-agent
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: config
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: mount-bpf-fs
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: clean-cilium-state
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: install-cni-binaries
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: cilium
   interval: 1h
   chartRef:
     kind: OCIRepository

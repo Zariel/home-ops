@@ -5,3 +5,20 @@ kind: Kustomization
 resources:
   # renovate: datasource=github-releases depName=cloudnative-pg/plugin-barman-cloud
   - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.16.0/manifest.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: barman-cloud
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: barman-cloud
+      spec:
+        template:
+          spec:
+            containers:
+              - name: barman-cloud
+                env:
+                  - name: TZ
+                    value: Europe/London

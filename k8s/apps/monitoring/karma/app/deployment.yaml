@@ -26,6 +26,8 @@ spec:
             - containerPort: 8080
               name: http
           env:
+            - name: TZ
+              value: Europe/London
             - name: ALERTMANAGER_URI
               value: http://alertmanager-ha.monitoring.svc.cluster.local:9093
             - name: ALERTMANAGER_EXTERNAL_URI

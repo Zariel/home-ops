@@ -19,6 +19,30 @@ kind: HelmRelease
 metadata:
   name: spegel
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: spegel
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: registry
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: configuration
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: spegel
   interval: 1h
   chartRef:
     kind: OCIRepository

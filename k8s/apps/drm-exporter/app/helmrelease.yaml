@@ -21,6 +21,25 @@ metadata:
   name: &app drm-exporter
   namespace: drm-exporter
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: drm-exporter
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: drm-exporter
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: drm-exporter
   interval: 1h
   chartRef:
     kind: OCIRepository

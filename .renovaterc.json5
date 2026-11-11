@@ -5,6 +5,7 @@
     'github>home-operations/renovate-presets//apps/cnpg.json5',
     'github>zariel/home-ops//.renovate/allowedVersions.json5',
     'github>zariel/home-ops//.renovate/autoMerge.json5',
+    'github>zariel/home-ops//.renovate/changelogs.json5',
     'github>zariel/home-ops//.renovate/customManagers.json5',
     'github>zariel/home-ops//.renovate/grafanaDashboards.json5',
     'github>zariel/home-ops//.renovate/groups.json5',
