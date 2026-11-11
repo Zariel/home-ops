@@ -1,15 +1,19 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vlsingle_v1.json
 apiVersion: operator.victoriametrics.com/v1
 kind: VLSingle
 metadata:
   name: vlogs
 spec:
+  extraEnvs:
+    - name: TZ
+      value: Europe/London
   retentionPeriod: "14d"
   storage:
     accessModes:
       - ReadWriteOnce
     resources:
       requests:
-        storage: 25Gi
+        storage: 50Gi
     storageClassName: ceph-block
   resources:
     requests:

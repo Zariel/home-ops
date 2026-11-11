@@ -1,0 +1,25 @@
+{
+  "trash_id": "hybrid-except-wildcat",
+  "name": "Hybrid (except WiLDCAT)",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "Hybrid",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": true,
+      "fields": {
+        "value": "\\bhybrid(\\b|\\d)"
+      }
+    },
+    {
+      "name": "Not WiLDCAT",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": true,
+      "required": true,
+      "fields": {
+        "value": "^WiLDCAT$"
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/probe_v1.json
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
 kind: Probe
 apiVersion: monitoring.coreos.com/v1
 metadata:
@@ -14,3 +14,124 @@ spec:
         - nas.cbannister.casa
         - pikvm.cbannister.casa
         - pve.cbannister.casa
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: internet
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: tcp_connect
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Independent providers, addressed directly so local DNS cannot mask an outage.
+      static: ['1.1.1.1:443', '8.8.8.8:443']
+      labels:
+        connectivity: internet
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-local-udp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-local-udp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.254.253.53:53']
+      labels:
+        dns_path: vip-local
+        transport: udp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-local-tcp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-local-tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.254.253.53:53']
+      labels:
+        dns_path: vip-local
+        transport: tcp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-upstream-udp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-upstream-udp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.254.253.53:53']
+      labels:
+        dns_path: vip-upstream
+        connectivity: internet
+        transport: udp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-vip-upstream-tcp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-vip-upstream-tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.254.253.53:53']
+      labels:
+        dns_path: vip-upstream
+        connectivity: internet
+        transport: tcp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-bind-udp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-bind-udp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.45.0.55:53']
+      labels:
+        dns_path: bind
+        transport: udp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: dns-bind-tcp
+  namespace: monitoring
+spec:
+  interval: 30s
+  module: dns-bind-tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static: ['10.45.0.55:53']
+      labels:
+        dns_path: bind
+        transport: tcp

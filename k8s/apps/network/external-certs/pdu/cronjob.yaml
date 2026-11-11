@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/batch/cronjob_v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pdu-certificate
+spec:
+  schedule: "23 * * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 420
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: pdu-certificate
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: deploy
+              image: docker.io/library/python:3.15.2-alpine3.24@sha256:a0f2e268f2ce8f3709611a90054ec6a8ae31f6251f5896b8648b9bb99835e30a
+              command: [python, -B, /config/deploy.py]
+              env:
+                - name: TZ
+                  value: Europe/London
+                - name: PYTHONUNBUFFERED
+                  value: "1"
+                - name: PDU_HOST
+                  value: pdu.cbannister.casa
+                - name: PDU_ADDRESS
+                  value: 10.1.0.31
+                - name: PDU_BOOTSTRAP_SHA256
+                  value: 99c8099bc46ac2b0cc6fd334fe8ffd5fcfce5501aabef3f3ce64a5c397af63ec
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 128Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: [ALL]
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+                - name: tls
+                  mountPath: /tls
+                  readOnly: true
+                - name: credentials
+                  mountPath: /credentials
+                  readOnly: true
+          volumes:
+            - name: config
+              configMap:
+                name: pdu-deploy
+            - name: tls
+              secret:
+                secretName: pdu-tls
+                defaultMode: 0440
+            - name: credentials
+              secret:
+                secretName: pdu-credentials
+                defaultMode: 0440

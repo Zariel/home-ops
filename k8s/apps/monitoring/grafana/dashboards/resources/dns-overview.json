@@ -1,0 +1,2005 @@
+{
+  "title": "DNS / Overview",
+  "uid": "dns-overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "graphTooltip": 1,
+  "refresh": "1m",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "tags": [
+    "dns"
+  ],
+  "description": "DNS health and diagnosis. Missing telemetry is unknown, not healthy.",
+  "annotations": {
+    "list": []
+  },
+  "links": [
+    {
+      "title": "DNS overview",
+      "url": "/d/dns-overview",
+      "type": "link",
+      "includeVars": false,
+      "keepTime": true
+    },
+    {
+      "title": "Blocky",
+      "url": "/d/blocky",
+      "type": "link",
+      "includeVars": false,
+      "keepTime": true
+    },
+    {
+      "title": "BIND9",
+      "url": "/d/bind9",
+      "type": "link",
+      "includeVars": false,
+      "keepTime": true
+    },
+    {
+      "title": "DNSdist",
+      "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27",
+      "type": "link",
+      "includeVars": false,
+      "keepTime": true
+    },
+    {
+      "title": "External DNS",
+      "url": "/d/eea5u_I7z",
+      "type": "link",
+      "includeVars": false,
+      "keepTime": true
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "query": "prometheus",
+        "hide": 2,
+        "current": {
+          "text": "VictoriaMetrics",
+          "value": "victoriametrics"
+        }
+      },
+      {
+        "name": "DS_LOGS",
+        "type": "datasource",
+        "query": "victoriametrics-logs-datasource",
+        "hide": 2,
+        "current": {
+          "text": "VictoriaLogs",
+          "value": "victorialogs"
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "DNS probes",
+      "description": "Six UDP/TCP answer checks across the DNS VIP, upstream resolution and cluster BIND.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DEGRADED",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "ONLINE",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "min(probe_success{dns_path=~\"vip-local|vip-upstream|bind\"}) * (count(probe_success{dns_path=~\"vip-local|vip-upstream|bind\"}) == bool 6)",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "DNSdist nodes",
+      "description": "Expected: three DNSdist endpoints.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "green",
+                "value": 3
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(up{job=\"dnsdist\"})",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Blocky nodes",
+      "description": "Expected: three Blocky endpoints.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "green",
+                "value": 3
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(up{job=\"blocky\"})",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Blocking",
+      "description": "Blocking is enabled on every reporting Blocky node.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DEGRADED",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "ONLINE",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "min(blocky_blocking_enabled)",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Cluster BIND ready",
+      "description": "Expected: one primary and two secondary replicas.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "green",
+                "value": 3
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(kube_deployment_status_replicas_available{namespace=\"network\",deployment=~\"bind-.*\"})",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Upstream classes",
+      "description": "Minimum class availability; missing DNS-node or pool observations produce unknown rather than healthy.",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1e-06
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "UNAVAILABLE",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "HEALTHY",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "range",
+              "options": {
+                "from": 1e-06,
+                "to": 0.999999,
+                "result": {
+                  "text": "DEGRADED",
+                  "color": "yellow"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "min(label_replace((min(dnsdist_pool_active_servers{pool=\"bind\"} / dnsdist_pool_servers{pool=\"bind\"}) and on() (count(dnsdist_pool_active_servers{pool=\"bind\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"bind\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"k8s\"} / dnsdist_pool_servers{pool=\"k8s\"}) and on() (count(dnsdist_pool_active_servers{pool=\"k8s\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"k8s\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"blocky\"} / dnsdist_pool_servers{pool=\"blocky\"}) and on() (count(dnsdist_pool_active_servers{pool=\"blocky\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"blocky\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"cloudflare\"} / dnsdist_pool_servers{pool=\"cloudflare\"}) and on() (count(dnsdist_pool_active_servers{pool=\"cloudflare\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"cloudflare\", \"\", \"\")) and on() (count(label_replace((min(dnsdist_pool_active_servers{pool=\"bind\"} / dnsdist_pool_servers{pool=\"bind\"}) and on() (count(dnsdist_pool_active_servers{pool=\"bind\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"bind\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"k8s\"} / dnsdist_pool_servers{pool=\"k8s\"}) and on() (count(dnsdist_pool_active_servers{pool=\"k8s\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"k8s\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"blocky\"} / dnsdist_pool_servers{pool=\"blocky\"}) and on() (count(dnsdist_pool_active_servers{pool=\"blocky\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"blocky\", \"\", \"\") or label_replace((min(dnsdist_pool_active_servers{pool=\"cloudflare\"} / dnsdist_pool_servers{pool=\"cloudflare\"}) and on() (count(dnsdist_pool_active_servers{pool=\"cloudflare\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)), \"pool\", \"cloudflare\", \"\", \"\")) == 4)",
+          "legendFormat": "{{instance}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "row",
+      "title": "Resolution",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Resolution diagnostics."
+    },
+    {
+      "id": 8,
+      "title": "DNS answer checks",
+      "description": "Successful responses matching expected answer records; missing checks are unknown.",
+      "type": "state-timeline",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bool",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 90,
+            "spanNulls": false
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "mergeValues": true,
+        "showValue": "never",
+        "rowHeight": 0.8,
+        "alignValue": "left",
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "probe_success{dns_path=~\"vip-local|vip-upstream|bind\"}",
+          "legendFormat": "{{dns_path}} {{transport}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "DNS probe latency",
+      "description": "End-to-end probe duration across each DNS path.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "No data",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.05
+              },
+              {
+                "color": "red",
+                "value": 0.25
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false,
+            "gradientMode": "none"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "probe_duration_seconds{dns_path=~\"vip-local|vip-upstream|bind\"}",
+          "legendFormat": "{{dns_path}} {{transport}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Traffic",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Traffic diagnostics."
+    },
+    {
+      "id": 11,
+      "title": "DNSdist queries",
+      "description": "Client ingress by DNS node; do not add downstream service traffic.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "noValue": "No data",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false,
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (host)(rate(dnsdist_queries[$__rate_interval]))",
+          "legendFormat": "{{host}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Blocky client queries",
+      "description": "Client responses by filtering node, excluding local health checks.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 14,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "noValue": "No data",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false,
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns-3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by(host)(rate(blocky_client_response_total{client!=\"127.0.53.20\"}[$__rate_interval]))",
+          "legendFormat": "{{host}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "row",
+      "title": "Upstreams",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Upstreams diagnostics."
+    },
+    {
+      "id": 14,
+      "title": "Upstream class health",
+      "description": "Worst active-backend fraction across three DNS nodes. Missing observations are unknown; partial public-resolver availability is degraded.",
+      "type": "state-timeline",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "noValue": "No data",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1e-06
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 90,
+            "spanNulls": false
+          },
+          "min": 0,
+          "max": 1,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "UNAVAILABLE",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "HEALTHY",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "range",
+              "options": {
+                "from": 1e-06,
+                "to": 0.999999,
+                "result": {
+                  "text": "DEGRADED",
+                  "color": "yellow"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Internal BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D10%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Cluster BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=10%5B.%5D45%5B.%5D0%5B.%5D55%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Blocky backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D20%3A53"
+                  },
+                  {
+                    "title": "Open Blocky diagnostics",
+                    "url": "/d/blocky?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Public resolvers backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=1%5B.%5D1%5B.%5D1%5B.%5D1%3A853%7C1%5B.%5D0%5B.%5D0%5B.%5D1%3A853"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "mergeValues": true,
+        "showValue": "never",
+        "rowHeight": 0.8,
+        "alignValue": "left",
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"bind\"} / dnsdist_pool_servers{pool=\"bind\"}) and on() (count(dnsdist_pool_active_servers{pool=\"bind\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Internal BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "B",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"k8s\"} / dnsdist_pool_servers{pool=\"k8s\"}) and on() (count(dnsdist_pool_active_servers{pool=\"k8s\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Cluster BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "C",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"blocky\"} / dnsdist_pool_servers{pool=\"blocky\"}) and on() (count(dnsdist_pool_active_servers{pool=\"blocky\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Blocky",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "D",
+          "expr": "min(dnsdist_pool_active_servers{pool=\"cloudflare\"} / dnsdist_pool_servers{pool=\"cloudflare\"}) and on() (count(dnsdist_pool_active_servers{pool=\"cloudflare\"}) == 3) and on() (sum(up{job=\"dnsdist\"}) == 3)",
+          "legendFormat": "Public resolvers",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "links": [
+        {
+          "title": "Internal BIND",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D10%3A53",
+          "targetBlank": false
+        },
+        {
+          "title": "Cluster BIND",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=10%5B.%5D45%5B.%5D0%5B.%5D55%3A53",
+          "targetBlank": false
+        },
+        {
+          "title": "Blocky",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D20%3A53",
+          "targetBlank": false
+        },
+        {
+          "title": "Public resolvers",
+          "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=1%5B.%5D1%5B.%5D1%5B.%5D1%3A853%7C1%5B.%5D0%5B.%5D0%5B.%5D1%3A853",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Upstream class latency",
+      "description": "Worst observed backend latency within each class, across DNS nodes. Click a class to inspect individual backends.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "No data",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.05
+              },
+              {
+                "color": "red",
+                "value": 0.25
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "axisCenteredZero": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisBorderShow": false,
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Internal BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D10%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Cluster BIND backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=10%5B.%5D45%5B.%5D0%5B.%5D55%3A53"
+                  },
+                  {
+                    "title": "Open BIND diagnostics",
+                    "url": "/d/bind9?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Blocky backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=127%5B.%5D0%5B.%5D53%5B.%5D20%3A53"
+                  },
+                  {
+                    "title": "Open Blocky diagnostics",
+                    "url": "/d/blocky?${__url_time_range}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Inspect Public resolvers backends",
+                    "url": "/d/c8a04601-b1d2-4085-9407-98ffadd0ab27?${__url_time_range}&var-host=%24__all&var-backend=%24__all&var-upstream=1%5B.%5D1%5B.%5D1%5B.%5D1%3A853%7C1%5B.%5D0%5B.%5D0%5B.%5D1%3A853"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(dnsdist_server_latency{address=~\"127[.]0[.]53[.]10:53\"}) / 1000",
+          "legendFormat": "Internal BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "B",
+          "expr": "max(dnsdist_server_latency{address=~\"10[.]45[.]0[.]55:53\"}) / 1000",
+          "legendFormat": "Cluster BIND",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "C",
+          "expr": "max(dnsdist_server_latency{address=~\"127[.]0[.]53[.]20:53\"}) / 1000",
+          "legendFormat": "Blocky",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "refId": "D",
+          "expr": "max(dnsdist_server_latency{address=~\"1[.]1[.]1[.]1:853|1[.]0[.]0[.]1:853\"}) / 1000",
+          "legendFormat": "Public resolvers",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "row",
+      "title": "Failures \u00b7 resolver errors & SERVFAIL",
+      "collapsed": true,
+      "panels": [
+        {
+          "id": 17,
+          "title": "Blocky resolver errors",
+          "description": "Resolver errors reported by each filtering node.",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "noValue": "No data",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#8a8a8a",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1e-06
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false,
+                "gradientMode": "none"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-1"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-2"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-3"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by(host)(rate(blocky_error_total[$__rate_interval]))",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": true,
+              "instant": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "title": "DNSdist backend SERVFAIL",
+          "description": "Backend server failures by DNS node.",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "noValue": "No data",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#8a8a8a",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1e-06
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false,
+                "gradientMode": "none"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-1"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-2"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dns-3"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (host)(rate(dnsdist_servfail_responses[$__rate_interval]))",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": true,
+              "instant": false,
+              "format": "time_series"
+            }
+          ]
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 24,
+        "h": 1
+      },
+      "description": "Failures diagnostics."
+    },
+    {
+      "id": 21,
+      "type": "row",
+      "title": "State \u00b7 collection, reconciliation & routing",
+      "collapsed": true,
+      "panels": [
+        {
+          "id": 22,
+          "title": "Collection status",
+          "description": "Zero is a failed scrape; missing series indicate absent collection.",
+          "type": "state-timeline",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 49,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bool",
+              "noValue": "No data",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "custom": {
+                "lineWidth": 0,
+                "fillOpacity": 90,
+                "spanNulls": false
+              },
+              "min": 0,
+              "max": 1,
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "DOWN",
+                      "color": "red"
+                    },
+                    "1": {
+                      "text": "UP",
+                      "color": "green"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "mergeValues": true,
+            "showValue": "never",
+            "rowHeight": 0.8,
+            "alignValue": "left",
+            "legend": {
+              "showLegend": false
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "up{job=~\"dnsdist|blocky\"} or up{namespace=\"network\",pod=~\"bind-.*\",endpoint=\"metrics\"}",
+              "legendFormat": "{{job}} {{instance}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": true,
+              "instant": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "title": "External DNS reconcile age",
+          "description": "Age of the last reconciliation for each record controller. Warning/red after 5/10 minutes.",
+          "type": "timeseries",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 49,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "noValue": "No data",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 300
+                  },
+                  {
+                    "color": "red",
+                    "value": 600
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "axisBorderShow": false,
+                "gradientMode": "none"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "time() - external_dns_controller_last_reconcile_timestamp_seconds",
+              "legendFormat": "{{pod}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "range": true,
+              "instant": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "title": "DNS node service log",
+          "description": "VIP health-check, routing and local BIND diagnostics across DNS nodes.",
+          "type": "logs",
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_LOGS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 57,
+            "w": 24,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 1
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "axisCenteredZero": false,
+                "scaleDistribution": {
+                  "type": "linear"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "showTime": true,
+            "showLabels": false,
+            "wrapLogMessage": true,
+            "enableLogDetails": true,
+            "sortOrder": "Descending",
+            "dedupStrategy": "none"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_LOGS}"
+              },
+              "expr": "source_stream:\"nixos\" service:in(\"dns-healthcheck.service\", \"bird.service\", \"bind.service\")",
+              "queryType": "instant",
+              "editorMode": "code",
+              "maxLines": 500
+            }
+          ]
+        },
+        {
+          "id": 25,
+          "type": "text",
+          "title": "DNS paths and coverage",
+          "description": "Routing context and monitoring boundaries.",
+          "gridPos": {
+            "x": 0,
+            "y": 65,
+            "w": 24,
+            "h": 5
+          },
+          "options": {
+            "mode": "markdown",
+            "content": "DNS VIP `10.254.253.53` \u2192 DNSdist on dns-1/2/3 \u2192 local BIND for local zones, cluster BIND for hosted zones, Blocky for trusted clients, or Cloudflare DoT for unfiltered clients.\n\nBlocky uses parallel DoT upstreams (Cloudflare, Google, Quad9); its exported metrics do not expose individual upstream health. DNSdist backend checks are lazy. VIP probes originate inside Kubernetes and do not test every client VLAN or the filtered client path. Local BIND and VIP routing state have logs and backend checks, not dedicated metrics. Missing telemetry is unknown.\n\nUpstream classes correspond to DNSdist pools: internal BIND (`bind`), cluster BIND (`k8s`), Blocky (`blocky`), and public Cloudflare resolvers (`cloudflare`). Class health uses the least healthy node, so a fault on one node is not averaged away. Click a class to inspect its backend members; Blocky\u2019s own resolver choices remain on the Blocky dashboard."
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 48,
+        "w": 24,
+        "h": 1
+      },
+      "description": "State diagnostics."
+    }
+  ]
+}

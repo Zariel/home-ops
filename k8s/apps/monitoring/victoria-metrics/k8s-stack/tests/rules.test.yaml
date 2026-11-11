@@ -1,0 +1,92 @@
+rule_files:
+  - rules.yaml
+evaluation_interval: 1m
+tests:
+  - name: One failed target out of ten alerts after ten minutes
+    interval: 1m
+    input_series:
+      - series: up{job="node-exporter", instance="gateway.cbannister.casa:9100"}
+        values: 0x15
+      - series: up{job="node-exporter", instance="pve.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="pve2.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="pbs.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="nas.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="am6b.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="dns1.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="dns2.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="dns3.cbannister.casa:9100"}
+        values: 1x15
+      - series: up{job="node-exporter", instance="builder.cbannister.casa:9100"}
+        values: 1x15
+    alert_rule_test:
+      - eval_time: 9m
+        alertname: TargetDown
+        exp_alerts: []
+      - eval_time: 10m
+        alertname: TargetDown
+        exp_alerts:
+          - exp_labels:
+              job: node-exporter
+              instance: gateway.cbannister.casa:9100
+            exp_annotations:
+              summary: Scrape target is down
+              description: Target gateway.cbannister.casa:9100 in job node-exporter has been unreachable for at least 10 minutes.
+  - name: Concurrent failures retain each target identity
+    interval: 1m
+    input_series:
+      - series: up{job="node-exporter", instance="gateway.cbannister.casa:9100"}
+        values: 0x15
+      - series: up{job="node-exporter", instance="nas.cbannister.casa:9100"}
+        values: 0x15
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: TargetDown
+        exp_alerts:
+          - exp_labels:
+              job: node-exporter
+              instance: gateway.cbannister.casa:9100
+            exp_annotations:
+              summary: Scrape target is down
+              description: Target gateway.cbannister.casa:9100 in job node-exporter has been unreachable for at least 10 minutes.
+          - exp_labels:
+              job: node-exporter
+              instance: nas.cbannister.casa:9100
+            exp_annotations:
+              summary: Scrape target is down
+              description: Target nas.cbannister.casa:9100 in job node-exporter has been unreachable for at least 10 minutes.
+  - name: Powered-off on-demand targets do not alert
+    interval: 1m
+    input_series:
+      - series: up{job="node-exporter", instance="gaming.cbannister.casa:9100", availability="on-demand"}
+        values: 0x15
+      - series: up{job="node-exporter", instance="bc250.cbannister.casa:9100", availability="on-demand"}
+        values: 0x15
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: TargetDown
+        exp_alerts: []
+  - name: Short outages do not alert
+    interval: 1m
+    input_series:
+      - series: up{job="node-exporter", instance="gateway.cbannister.casa:9100"}
+        values: 0x8 1x6
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: TargetDown
+        exp_alerts: []
+  - name: Successful scrape resolves a firing alert
+    interval: 1m
+    input_series:
+      - series: up{job="node-exporter", instance="gateway.cbannister.casa:9100"}
+        values: 0x10 1x4
+    alert_rule_test:
+      - eval_time: 11m
+        alertname: TargetDown
+        exp_alerts: []

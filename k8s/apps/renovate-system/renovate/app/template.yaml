@@ -1,11 +1,15 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/renovate-operator.mogenius.com/renovatejobtemplate_v1alpha1.json
 apiVersion: renovate-operator.mogenius.com/v1alpha1
 kind: RenovateJobTemplate
 metadata:
   name: renovate
   namespace: renovate-system
 spec:
-  image: ghcr.io/renovatebot/renovate:44.173.1-full
+  extraEnv:
+    - name: TZ
+      value: Europe/London
+  image: ghcr.io/renovatebot/renovate:44.222.4-full
   parallelism: 1
   serviceAccount:
     name: renovate-runner

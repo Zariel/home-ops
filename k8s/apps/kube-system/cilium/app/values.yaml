@@ -8,7 +8,7 @@ bpf:
   datapathMode: netkit
   preallocateMaps: true
   hostLegacyRouting: false
-  vlanBypass: [20, 40, 300]
+  vlanBypass: [20, 40, 300, 1100, 1101]
 bpfClockProbe: true
 cgroup:
   autoMount:
@@ -46,7 +46,7 @@ resources:
     cpu: 1500m
     memory: 1Gi
   limits:
-    cpu: 1500m
+    cpu: 3000m
     memory: 2Gi
 rollOutCiliumPods: true
 routingMode: native

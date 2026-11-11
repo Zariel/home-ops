@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/servicemonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: autobrr
+  namespace: default
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: metrics
+      scheme: http
+      scrapeTimeout: 10s
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app: autobrr

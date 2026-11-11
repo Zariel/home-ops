@@ -15,74 +15,63 @@ permissions:
   contents: read
 
 jobs:
-  filter:
-    name: Flate - Filter
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      changed-files: ${{ steps.changed-files.outputs.changed_files }}
-    steps:
-      - name: Get Changed Files
-        id: changed-files
-        uses: bjw-s-labs/action-changed-files@147be9638332cf68fd60714a610509d7a9360d60 # v0.7.0
-        with:
-          patterns: |
-            k8s/**/*
-            .github/workflows/flate.yaml
-
   flate:
-    if: ${{ needs.filter.outputs.changed-files != '[]' }}
-    needs: filter
     name: Flate
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
-    strategy:
-      matrix:
-        resource:
-          - helmrelease
-          - kustomization
-      fail-fast: false
     steps:
-      - name: Checkout
+      - name: Get Changed Files
+        id: changed-files
+        uses: bjw-s-labs/action-changed-files@147be9638332cf68fd60714a610509d7a9360d60 # v0.7.0
+        with:
+          include_deleted_files: true
+          patterns: |
+            k8s/**/*
+            .github/workflows/flate.yaml
+
+      - if: ${{ steps.changed-files.outputs.changed_files != '[]' }}
+        name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Setup Flate
+      - if: ${{ steps.changed-files.outputs.changed_files != '[]' }}
+        name: Setup Flate
         uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
+        with:
+          base: ${{ github.event.pull_request.base.sha }}
 
       - name: Run Flate
         id: flate
         env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.changed_files }}
           FLATE_ALLOW_MISSING_SECRETS: "true"
           FLATE_PATH: ./k8s/flux/config
         run: |-
           set -o pipefail
 
-          flate diff ${{ matrix.resource }} | tee diff.patch
-
-          if [ "$(wc -c < diff.patch)" -gt 10000 ]; then
-            {
-              head -c 10000 diff.patch
-              echo
-              echo
-              echo "... diff truncated; see workflow logs for full output ..."
-            } > diff-comment.patch
+          if [ "$CHANGED_FILES" != '[]' ]; then
+            flate diff all -o github | tee diff.patch
           else
-            cp diff.patch diff-comment.patch
+            : > diff.patch
+          fi
+
+          if [ -s diff.patch ]; then
+            echo 'has-diff=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'has-diff=false' >> "$GITHUB_OUTPUT"
           fi
 
           {
-            echo 'diff<<EOF'
-            cat diff-comment.patch
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
+            echo '```diff'
+            cat diff.patch
+            echo '```'
+          } > diff-comment.md
 
-      - if: ${{ steps.flate.outputs.diff != '' }}
+      - if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         name: Generate Token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         id: app-token
@@ -90,16 +79,24 @@ jobs:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - if: ${{ steps.flate.outputs.diff != '' }}
-        name: Add Comment
+      - if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        name: Update Diff Comment
         uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
         with:
           repo-token: ${{ steps.app-token.outputs.token }}
-          message-id: ${{ github.event.pull_request.number }}/k8s/${{ matrix.resource }}
-          message: |-
-            ```diff
-            ${{ steps.flate.outputs.diff }}
-            ```
+          # Reuse the existing ID so open PRs keep one current comment.
+          message-id: ${{ github.event.pull_request.number }}/k8s/kustomization
+          message-path: diff-comment.md
+          truncate: simple
+          delete-on-status: ${{ steps.flate.outputs.has-diff == 'false' && 'success' || 'never' }}
+
+      - if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        name: Remove Legacy HelmRelease Comment
+        uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
+        with:
+          repo-token: ${{ steps.app-token.outputs.token }}
+          message-id: ${{ github.event.pull_request.number }}/k8s/helmrelease
+          delete-on-status: success
 
   success:
     if: ${{ !cancelled() }}

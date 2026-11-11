@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.10.2@sha256:a582f4b113e3018517a5ae9727b873e262aa787fa97f07b97b71bfc57f14d470
+              tag: 2026.11.1@sha256:c129b1e4190273254d93d413fe2a083233c9202d84cb08f84dddb01861df432e
             env:
               TZ: Europe/London
               HASS_HTTP_TRUSTED_PROXY_1: 10.45.0.0/24
@@ -64,11 +64,9 @@ spec:
           - name: net.ipv6.conf.all.forwarding
             value: "0"
           - name: net.ipv6.conf.net1.accept_ra
-            value: "2"
-          - name: net.ipv6.conf.net1.accept_ra_defrtr
-            value: "1"
-          - name: net.ipv6.conf.net1.accept_ra_rt_info_max_plen
-            value: "64"
+            value: "0"
+          - name: net.ipv6.conf.net1.autoconf
+            value: "0"
     service:
       app:
         ports:

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,9 +27,11 @@ spec:
         runAsNonRoot: true
       containers:
         - name: prowlarr
-          image: ghcr.io/home-operations/prowlarr:2.6.5.5623@sha256:0e2e6e9a2a16683a160ff1c6830d8192231a0502ab0d605b416023b2ca225ff9
+          image: ghcr.io/home-operations/prowlarr:3.0.1.5752@sha256:83cc967a3b7b754634e31773d4d58ea606714490b7e8592d41b608f7c249afe6
           imagePullPolicy: "IfNotPresent"
           env:
+            - name: TZ
+              value: Europe/London
             - name: DOTNET_EnableDiagnostics
               value: "0"
             - name: DOTNET_gcServer
@@ -42,7 +45,7 @@ spec:
                 name: prowlarr-secret
           resources:
             requests:
-              cpu: 500m
+              cpu: 100m
               memory: 768Mi
             limits:
               memory: 1Gi

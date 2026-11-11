@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,7 +15,7 @@ spec:
     spec:
       containers:
         - name: karma
-          image: ghcr.io/prymitive/karma:v0.133
+          image: ghcr.io/prymitive/karma:v0.134
           resources:
             requests:
               cpu: "10m"
@@ -25,6 +26,8 @@ spec:
             - containerPort: 8080
               name: http
           env:
+            - name: TZ
+              value: Europe/London
             - name: ALERTMANAGER_URI
               value: http://alertmanager-ha.monitoring.svc.cluster.local:9093
             - name: ALERTMANAGER_EXTERNAL_URI

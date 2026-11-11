@@ -1,0 +1,506 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cloudflared
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="Cloudflare Tunnels (cloudflared)"
+    id: 17457
+    revision: 6
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  folder: Networking
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: node-exporter-full
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="Node Exporter Full"
+    id: 1860
+    revision: 46
+  variables:
+    - name: ds_prometheus
+      value: victoriametrics
+  folder: Hardware
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cert-manager
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  url: https://gitlab.com/uneeq-oss/cert-manager-mixin/-/raw/master/dashboards/cert-manager.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: Kubernetes
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: external-secrets
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: Kubernetes
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: node-feature-discovery
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+  folder: Kubernetes
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: smartctl-monitor
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="SMARTctl Exporter Dashboard"
+    id: 22604
+    revision: 4
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  folder: Hardware
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: speedtest-exporter-hub
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="Speedtest-Exporter Dashboard"
+    id: 13665
+    revision: 4
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  folder: Networking
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: zfs
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="ZFS / Overview"
+    id: 24987
+    revision: 12
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: Storage
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: external-dns
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 1m
+  folder: DNS
+  configMapRef:
+    name: dns-dashboards
+    key: external-dns.json
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: dnsdist
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 1m
+  folder: DNS
+  configMapRef:
+    name: dns-dashboards
+    key: dnsdist.json
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: ceph-cluster
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Ceph
+  grafanaCom:
+    # renovate: depName="Ceph Cluster"
+    id: 2842
+    revision: 18
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: ceph-osd
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Ceph
+  grafanaCom:
+    # renovate: depName="Ceph - OSD (Single)"
+    id: 5336
+    revision: 9
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: ceph-pools
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Ceph
+  grafanaCom:
+    # renovate: depName="Ceph - Pools"
+    id: 5342
+    revision: 9
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: flux-cluster
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Flux
+  url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: flux-control-plane
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Flux
+  url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: DS_PROMETHEUS
+      value: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-insights
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Unifi
+  grafanaCom:
+    # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
+    id: 11315
+    revision: 9
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-network-sites
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Unifi
+  grafanaCom:
+    # renovate: depName="UniFi-Poller: Network Sites - Prometheus"
+    id: 11311
+    revision: 5
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-uap
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Unifi
+  grafanaCom:
+    # renovate: depName="UniFi-Poller: UAP Insights - Prometheus"
+    id: 11314
+    revision: 10
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+    - inputName: DS_UNIFI_POLLER
+      datasourceName: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-usw
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  folder: Unifi
+  grafanaCom:
+    # renovate: depName="UniFi-Poller: USW Insights - Prometheus"
+    id: 11312
+    revision: 9
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+    - inputName: DS_UNIFI_POLLER
+      datasourceName: victoriametrics
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: zfs-better
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: zfs-better-dashboard
+    key: zfs-better.json
+  folder: Storage
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: brocade-temperature
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: brocade-temperature-dashboard
+    key: brocade-temperature.json
+  folder: Hardware
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: raritan-pdu
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: raritan-pdu-dashboard
+    key: raritan-pdu.json
+  folder: Hardware
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: homelab-power-cpu-thermals
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: homelab-power-cpu-thermals-dashboard
+    key: homelab-power-cpu-thermals.json
+  folder: Hardware
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: grafana-operator
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: grafana-operator-dashboard
+    key: grafana-operator.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: Monitoring
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: qbittorrent
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  grafanaCom:
+    # renovate: depName="qBittorrent / Overview"
+    id: 25156
+    revision: 10
+  datasources:
+    - inputName: DS_PROMETHEUS
+      datasourceName: victoriametrics
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: Media
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: brrpolice
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  configMapRef:
+    name: brrpolice-dashboard
+    key: brrpolice-overview.json
+  variables:
+    - name: datasource
+      value: victoriametrics
+  folder: Media

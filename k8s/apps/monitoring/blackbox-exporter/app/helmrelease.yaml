@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -10,15 +10,34 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 11.20.0
+    tag: 11.21.2
   url: oci://ghcr.io/prometheus-community/charts/prometheus-blackbox-exporter
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: blackbox-exporter
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: blackbox-exporter
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: blackbox-exporter
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: blackbox-exporter
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -45,6 +64,72 @@ spec:
         add: ["NET_RAW"]
     config:
       modules:
+        dns-vip-local-udp:
+          prober: dns
+          timeout: 5s
+          dns:
+            transport_protocol: udp
+            preferred_ip_protocol: ip4
+            query_name: gateway.cbannister.casa
+            query_type: A
+            valid_rcodes: [NOERROR]
+            validate_answer_rrs:
+              fail_if_none_matches_regexp: ['.*\sA\s+10\.254\.254\.1$']
+        dns-vip-local-tcp:
+          prober: dns
+          timeout: 5s
+          dns:
+            transport_protocol: tcp
+            preferred_ip_protocol: ip4
+            query_name: gateway.cbannister.casa
+            query_type: A
+            valid_rcodes: [NOERROR]
+            validate_answer_rrs:
+              fail_if_none_matches_regexp: ['.*\sA\s+10\.254\.254\.1$']
+        dns-vip-upstream-udp:
+          prober: dns
+          timeout: 5s
+          dns:
+            transport_protocol: udp
+            preferred_ip_protocol: ip4
+            query_name: example.com
+            query_type: A
+            valid_rcodes: [NOERROR]
+            validate_answer_rrs:
+              fail_if_none_matches_regexp: ['.*\sA\s+.*']
+        dns-vip-upstream-tcp:
+          prober: dns
+          timeout: 5s
+          dns:
+            transport_protocol: tcp
+            preferred_ip_protocol: ip4
+            query_name: example.com
+            query_type: A
+            valid_rcodes: [NOERROR]
+            validate_answer_rrs:
+              fail_if_none_matches_regexp: ['.*\sA\s+.*']
+        dns-bind-udp:
+          prober: dns
+          timeout: 5s
+          dns:
+            transport_protocol: udp
+            preferred_ip_protocol: ip4
+            query_name: cbannister.xyz
+            query_type: SOA
+            valid_rcodes: [NOERROR]
+            validate_answer_rrs:
+              fail_if_none_matches_regexp: ['.*\sSOA\s+.*']
+        dns-bind-tcp:
+          prober: dns
+          timeout: 5s
+          dns:
+            transport_protocol: tcp
+            preferred_ip_protocol: ip4
+            query_name: cbannister.xyz
+            query_type: SOA
+            valid_rcodes: [NOERROR]
+            validate_answer_rrs:
+              fail_if_none_matches_regexp: ['.*\sSOA\s+.*']
         http_2xx:
           prober: http
           timeout: 5s

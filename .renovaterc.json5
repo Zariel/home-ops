@@ -5,6 +5,7 @@
     'github>home-operations/renovate-presets//apps/cnpg.json5',
     'github>zariel/home-ops//.renovate/allowedVersions.json5',
     'github>zariel/home-ops//.renovate/autoMerge.json5',
+    'github>zariel/home-ops//.renovate/changelogs.json5',
     'github>zariel/home-ops//.renovate/customManagers.json5',
     'github>zariel/home-ops//.renovate/grafanaDashboards.json5',
     'github>zariel/home-ops//.renovate/groups.json5',
@@ -25,6 +26,21 @@
     enabled: true,
   },
   packageRules: [
+    {
+      description: 'Review PDM updates while upstream image indexes reference missing manifests',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/88plug/proxmox-dc-manager-dockerized'],
+      automerge: false,
+    },
+    {
+      description: 'Limit Silo updates to one per day',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/silo-server/silo-server'],
+      schedule: ['* 5 * * *'],
+      commitHourlyLimit: 1,
+      prHourlyLimit: 1,
+      updateNotScheduled: false,
+    },
     {
       description: 'Limit Renovate self-updates to one per day',
       matchDatasources: ['docker'],

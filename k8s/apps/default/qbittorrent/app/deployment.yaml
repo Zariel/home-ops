@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +20,6 @@ spec:
     spec:
       hostname: qbittorrent
       priorityClassName: cluster-p1
-      terminationGracePeriodSeconds: 300
       volumes:
         - name: arr-media
           nfs:
@@ -36,6 +36,7 @@ spec:
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/music/downloads
+      terminationGracePeriodSeconds: 300
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -78,12 +79,9 @@ spec:
             - name: QBT_Preferences_WebUI_LocalHostAuth
               value: "false"
             - name: QBT_BitTorrent_Session_DefaultSavePath
-              value: /data/torrents/complete
+              value: /data/downloads/torrents/complete
             - name: QBT_BitTorrent_Session_TempPath
-              value: /data/torrents/incomplete
-          envFrom:
-            - secretRef:
-                name: qbittorrent-secret
+              value: /data/downloads/torrents/incomplete
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false
@@ -118,8 +116,8 @@ spec:
             failureThreshold: 20
           resources:
             requests:
-              cpu: 2
-              memory: 16Gi
+              cpu: 1250m
+              memory: 6Gi
             limits:
               memory: 32Gi
           volumeMounts:

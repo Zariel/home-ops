@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: vector-ingest
+  namespace: monitoring
+spec:
+  hostnames:
+    - vector.cbannister.xyz
+  parentRefs:
+    - name: internal-cbannister-xyz
+      namespace: network
+      kind: ListenerSet
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /health
+      backendRefs:
+        - name: vector-aggregator
+          port: 8686
+    - backendRefs:
+        - name: vector-ingest
+          port: 6006

@@ -1,0 +1,48 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['helpers:githubDigestChangelogs', 'helpers:forgejoDigestChangelogs'],
+  fetchChangeLogs: 'pr',
+  // Keep Renovate's default body, including embedded release notes. References
+  // remain useful when upstream has no notes for the selected version range.
+  prBodyColumns: ['Package', 'Type', 'Update', 'Change', 'Pending', 'References'],
+  prBodyDefinitions: {
+    References: '{{#if references}}{{{references}}}{{else}}Upstream links unavailable{{/if}}',
+  },
+  packageRules: [
+    {
+      description: 'Keep upstream releases one click away when embedded notes are unavailable',
+      matchSourceUrls: ['https://github.com/**'],
+      matchUpdateTypes: ['major', 'minor', 'patch'],
+      matchJsonata: ['$not($exists(changelogUrl))'],
+      changelogUrl: '{{{sourceUrl}}}/releases',
+    },
+    {
+      description: 'Link image rebuilds to source history without treating image digests as Git commits',
+      matchDatasources: ['docker'],
+      matchSourceUrls: ['https://github.com/**'],
+      matchUpdateTypes: ['digest', 'pinDigest'],
+      matchJsonata: ['$not($exists(changelogUrl))'],
+      changelogUrl: '{{{sourceUrl}}}/commits/',
+    },
+    {
+      description: 'CoreDNS chart versions belong to the Helm repository, not the runtime repository',
+      matchDatasources: ['docker', 'helm'],
+      matchPackageNames: ['coredns', 'ghcr.io/coredns/charts/coredns'],
+      sourceUrl: 'https://github.com/coredns/helm',
+      changelogUrl: 'https://github.com/coredns/helm/compare/coredns-{{{currentVersion}}}...coredns-{{{newVersion}}}',
+      prBodyNotes: [
+        'These are CoreDNS **chart** versions. Chart changes: [compare](https://github.com/coredns/helm/compare/coredns-{{{currentVersion}}}...coredns-{{{newVersion}}}). If the rendered image changes, also review the [CoreDNS runtime release notes](https://github.com/coredns/coredns/releases).',
+      ],
+    },
+    {
+      description: 'Provide review context for Silo builds without upstream release tags',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['ghcr.io/silo-server/silo-server'],
+      sourceUrl: 'https://github.com/Silo-Server/silo-server',
+      changelogUrl: 'https://github.com/Silo-Server/silo-server/commits/main/',
+      prBodyNotes: [
+        'Silo tracks an unversioned build. Upstream publishes no release tags, so automatic version-range release notes are unavailable. Review the [source history](https://github.com/Silo-Server/silo-server/commits/main/) and [database migrations](https://github.com/Silo-Server/silo-server/tree/main/migrations/sql). For an exact comparison, resolve both pinned images\' `org.opencontainers.image.revision` labels and compare those source commits; the container digests identify image artifacts.',
+      ],
+    },
+  ],
+}

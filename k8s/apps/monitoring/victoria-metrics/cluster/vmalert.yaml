@@ -1,9 +1,17 @@
-# yaml-language-server: $schema=https://crds.jank.ing/operator.victoriametrics.com/vmalert_v1beta1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vmalert_v1beta1.json
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMAlert
 metadata:
   name: victoria
 spec:
+  extraEnvs:
+    - name: TZ
+      value: Europe/London
+  containers:
+    - name: config-reloader
+      env:
+        - name: TZ
+          value: Europe/London
   useStrictSecurity: true
   replicaCount: 2
   extraArgs:
@@ -11,9 +19,9 @@ spec:
   evaluationInterval: 1m
   selectAllByDefault: true
   datasource:
-    url: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
+    url: http://vmselect-victoria-query.monitoring.svc.cluster.local:8481/select/0/prometheus
   remoteRead:
-    url: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
+    url: http://vmselect-victoria-query.monitoring.svc.cluster.local:8481/select/0/prometheus
   remoteWrite:
     url: http://vmagent-victoria.monitoring.svc.cluster.local:8429
   notifiers:

@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -10,7 +10,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 2.13.0
+    tag: 2.14.0
   url: oci://ghcr.io/external-secrets/charts/external-secrets
   verify:
     provider: cosign
@@ -18,12 +18,63 @@ spec:
       - issuer: ^https://token.actions.githubusercontent.com$
         subject: ^https://github.com/external-secrets/external-secrets.*$
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: external-secrets
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: external-secrets
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: external-secrets
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets-cert-controller
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cert-controller
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: external-secrets-cert-controller
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: external-secrets-webhook
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: webhook
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: external-secrets-webhook
   interval: 30m
   chartRef:
     kind: OCIRepository

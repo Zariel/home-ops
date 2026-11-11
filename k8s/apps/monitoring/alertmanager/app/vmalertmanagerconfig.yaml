@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://crds.jank.ing/operator.victoriametrics.com/vmalertmanagerconfig_v1beta1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vmalertmanagerconfig_v1beta1.json
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMAlertmanagerConfig
 metadata:
@@ -14,6 +14,22 @@ spec:
         - severity = "info"
       equal:
         - namespace
+    # Internet reachability is shared across namespaces in this cluster.
+    - source_matchers:
+        - alertname = "InternetUnavailable"
+      target_matchers:
+        - alertname = "FluxResourceNotReady"
+        - customresource_kind =~ "GitRepository|OCIRepository|HelmRepository|HelmChart|Bucket"
+    - source_matchers:
+        - alertname = "InternetUnavailable"
+      target_matchers:
+        - alertname = "BlackboxProbeFailed"
+        - connectivity = "internet"
+    - source_matchers:
+        - alertname = "InternetUnavailable"
+      target_matchers:
+        - alertname = "KubeContainerWaiting"
+        - reason =~ "ErrImagePull|ImagePullBackOff"
   route:
     receiver: pushover
     group_by:
@@ -23,18 +39,30 @@ spec:
     group_interval: 5m
     repeat_interval: 12h
     routes:
+      - receiver: healthchecks
+        matchers:
+          - alertname = "Watchdog"
+        group_wait: 0s
+        group_interval: 1m
+        repeat_interval: 1m
       - receiver: blackhole
         matchers:
-          - alertname =~ "InfoInhibitor|Watchdog"
+          - alertname = "InfoInhibitor"
   receivers:
     - name: blackhole
+    - name: healthchecks
+      webhook_configs:
+        - send_resolved: false
+          url_secret:
+            name: alertmanager
+            key: HEALTHCHECK_ENDPOINT
     - name: pushover
       pushover_configs:
         - send_resolved: true
           priority: "0"
           token:
-            name: alertmanager-pushover
-            key: API_KEY
+            name: alertmanager
+            key: PUSHOVER_API_KEY
           user_key:
-            name: alertmanager-pushover
-            key: USER_KEY
+            name: alertmanager
+            key: PUSHOVER_USER_KEY

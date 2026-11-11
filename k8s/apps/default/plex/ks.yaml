@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -13,6 +13,8 @@ spec:
     - ../../../../components/volsync
   path: ./k8s/apps/default/plex/app
   dependsOn:
+    - name: common
+      namespace: default
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: intel-gpu-resource-driver

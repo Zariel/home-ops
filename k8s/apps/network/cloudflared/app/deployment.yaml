@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,11 +35,13 @@ spec:
               weight: 100
       containers:
         - name: cloudflared
-          image: mirror.gcr.io/cloudflare/cloudflared:2026.10.3@sha256:faa8e0a1475f137c910be6025f43c8e4092fdd35461b31e19fd1390657a1ff39
+          image: mirror.gcr.io/cloudflare/cloudflared:2026.10.7@sha256:4955524aeaa379e154023d5a027c250f7b35041a2e7e950cf13f144bc9b9c5ba
           args:
             - tunnel
             - run
           env:
+            - name: TZ
+              value: Europe/London
             - name: NO_AUTOUPDATE
               value: "true"
             - name: TUNNEL_METRICS

@@ -1,11 +1,13 @@
-# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.config.k8s.io/kustomization_v1beta1.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 components:
   - ../../components/common
 resources:
+  - jellystat/ks.yaml
   - cleanrr/ks.yaml
+  - jellyfin/ks.yaml
   - plex/ks.yaml
   - prowlarr/ks.yaml
   - radarr/ks.yaml
@@ -19,16 +21,14 @@ resources:
   - qbittorrent/ks.yaml
   - autobrr/ks.yaml
   - znc/ks.yaml
-  - cross-seed/ks.yaml
-  - sporos/ks.yaml
-  - filebrowser/ks.yaml
   - seerr/ks.yaml
   - thelounge/ks.yaml
   - maintainerr/ks.yaml
+  - pocket-id/ks.yaml
+  - pocket-id-operator/ks.yaml
+  - silo/ks.yaml
   - audiobookshelf/ks.yaml
-  - tqm/ks.yaml
   - qui/ks.yaml
-  - wrtag/ks.yaml
   - wizarr/ks.yaml
   - home-assistant/ks.yaml
   - matterjs/ks.yaml
@@ -40,4 +40,7 @@ resources:
   - ./meilisearch/ks.yaml
   - ./karakeep/ks.yaml
   - ./paperless/ks.yaml
+  - ./brscanr/ks.yaml
   - ./paperless-gpt/ks.yaml
+  - ./pdm/ks.yaml
+  - ./speedtest-tracker/ks.yaml

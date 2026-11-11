@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,8 +29,10 @@ spec:
       containers:
         - &container
           name: onepassword-connect
-          image: docker.io/1password/connect-api:1.8.3
+          image: docker.io/1password/connect-api:1.8.4
           env:
+            - name: TZ
+              value: Europe/London
             - name: XDG_DATA_HOME
               value: &configDir /config
             - name: OP_HTTP_PORT
@@ -76,8 +79,10 @@ spec:
             initialDelaySeconds: 15
         - <<: *container
           name: onepassword-sync
-          image: docker.io/1password/connect-sync:1.8.3
+          image: docker.io/1password/connect-sync:1.8.4
           env:
+            - name: TZ
+              value: Europe/London
             - name: XDG_DATA_HOME
               value: *configDir
             - name: OP_HTTP_PORT

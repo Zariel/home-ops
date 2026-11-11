@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -10,15 +10,103 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 1.20.3
+    tag: 1.20.4
   url: oci://quay.io/cilium/charts/cilium
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: cilium
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: cilium-operator
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cilium-operator
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: cilium-operator
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: hubble-relay
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: hubble-relay
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: hubble-relay
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: hubble-ui
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: frontend
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: backend
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: hubble-ui
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: cilium
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: cilium-agent
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: config
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: mount-bpf-fs
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: clean-cilium-state
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: install-cni-binaries
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: cilium
   interval: 1h
   chartRef:
     kind: OCIRepository

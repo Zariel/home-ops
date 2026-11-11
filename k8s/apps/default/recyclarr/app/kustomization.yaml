@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.config.k8s.io/kustomization_v1beta1.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -10,5 +10,11 @@ configMapGenerator:
     files:
       - sonarr.yaml=config/sonarr.yaml
       - radarr.yaml=config/radarr.yaml
+  - name: recyclarr-settings
+    files:
+      - settings.yml=config/settings.yml
+  - name: recyclarr-radarr-custom-formats
+    files:
+      - config/custom-formats/radarr/hybrid-except-wildcat.json
 generatorOptions:
   disableNameSuffixHash: true

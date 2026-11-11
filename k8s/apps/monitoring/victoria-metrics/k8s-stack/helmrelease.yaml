@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -10,15 +10,34 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.96.0
+    tag: 0.98.1
   url: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: victoria-metrics-k8s-stack
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: victoria-metrics-k8s-stack-victoria-metrics-operator
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: operator
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: victoria-metrics-k8s-stack-victoria-metrics-operator
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -27,16 +46,24 @@ spec:
     # Create default monitoring rules
     defaultRules:
       create: true
+      sources:
+        # Node-exporter runs in a separate HelmRelease.
+        node-exporter:
+          enabled: true
       rules:
+        NodeBondingDegraded:
+          # A single link-up member is sufficient for the current bond topology.
+          enabled: false
         TargetDown:
           spec:
             # On-demand node exporters are intentionally unavailable while powered off.
-            expr: >-
-              100 * (
-                count(up{availability!="on-demand"} == 0) by (cluster, job, namespace, service)
-                /
-                count(up{availability!="on-demand"}) by (cluster, job, namespace, service)
-              ) > 10
+            expr: up{availability!="on-demand"} == 0
+            for: 10m
+            annotations:
+              summary: Scrape target is down
+              description: >-
+                Target {{ $labels.instance }} in job {{ $labels.job }} has been
+                unreachable for at least 10 minutes.
 
     # Enable Grafana dashboards
     defaultDashboards:
@@ -160,6 +187,9 @@ spec:
 
     victoria-metrics-operator:
       enabled: true
+      operator:
+        # Garbage-collect converted resources when their Prometheus source is removed.
+        enable_converter_ownership: true
       resources:
         requests:
           memory: 224Mi

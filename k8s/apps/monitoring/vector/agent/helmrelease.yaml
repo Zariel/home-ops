@@ -1,10 +1,29 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: vector-agent
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: vector-agent
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: vector
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: DaemonSet
+              name: vector-agent
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -24,7 +43,7 @@ spec:
     image:
       repository: ghcr.io/vectordotdev/vector
       # journald requires journalctl, which the distroless image omits.
-      tag: 0.60.0-debian
+      tag: 0.61.0-debian
 
     podAnnotations:
       reloader.stakater.com/auto: "true"
@@ -37,7 +56,7 @@ spec:
         cpu: 23m
         memory: 256Mi
       limits:
-        memory: 512Mi
+        memory: 1Gi
 
     securityContext:
       privileged: true

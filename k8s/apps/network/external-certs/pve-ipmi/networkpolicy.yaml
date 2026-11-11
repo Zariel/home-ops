@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/networking.k8s.io/networkpolicy_v1.json
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pve-ipmi-certificate
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: pve-ipmi-certificate
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: []
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.1.1.30/32
+      ports:
+        - protocol: TCP
+          port: 443

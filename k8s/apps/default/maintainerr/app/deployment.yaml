@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,7 +25,10 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/maintainerr/maintainerr:3.31.0
+          env:
+            - name: TZ
+              value: Europe/London
+          image: ghcr.io/maintainerr/maintainerr:3.32.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3

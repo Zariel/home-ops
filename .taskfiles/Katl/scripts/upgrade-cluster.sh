@@ -5,6 +5,9 @@ root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)
 katlctl=katlctl
 config="$root/katl/cluster.yaml"
 version=${1:-}
+silences="$root/.taskfiles/Katl/silences.yaml"
+silences_applied=false
+lock_uid=
 
 if [[ ! $version =~ ^[0-9]{4}\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
   echo 'Pass a Katl release version as version=YYYY.M.P.' >&2
@@ -14,6 +17,37 @@ fi
 for command in kubectl kubectl-cnpg jq yq; do
   command -v "$command" >/dev/null || { echo "Missing $command" >&2; exit 1; }
 done
+
+silence_alerts() {
+  local duration=$1 valid_until
+  valid_until=$(jq -nr --argjson duration "$duration" \
+    'now + $duration | strftime("%Y-%m-%dT%H:%M:%SZ")') || return 1
+  # Attempt cleanup even if apply fails after creating the resource.
+  silences_applied=true
+  SILENCE_VALID_UNTIL="$valid_until" yq \
+    '.metadata.annotations."valid-until" = strenv(SILENCE_VALID_UNTIL)' "$silences" \
+    | kubectl apply --request-timeout=30s -f - || return 1
+}
+
+finish() {
+  local result=$?
+  if [[ $silences_applied == true && $result != 0 ]]; then
+    kubectl delete --ignore-not-found --timeout=2m -f "$silences" || result=1
+  fi
+  if [[ -n $lock_uid ]]; then
+    # UID preconditions prevent releasing a replacement lock owned by another run.
+    if ! jq -nc --arg uid "$lock_uid" '{apiVersion: "v1", kind: "DeleteOptions", preconditions: {uid: $uid}}' \
+      | kubectl delete --raw /api/v1/namespaces/monitoring/configmaps/katl-upgrade-lock \
+        --request-timeout=30s -f - >/dev/null; then
+      echo 'Failed to release monitoring/katl-upgrade-lock; inspect it before retrying.' >&2
+      result=1
+    fi
+  fi
+  exit "$result"
+}
+trap finish EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 mapfile -t nodes < <(yq -r '.nodes[].hostname' "$root/katl/nodes.yaml")
 if ((${#nodes[@]} == 0)); then
@@ -125,6 +159,18 @@ switch_primary() {
 }
 
 # Validate every upgrade while all nodes and workloads are still available.
+# Kubernetes create is atomic across clients; never steal a lock based on age.
+if ! lock_uid=$(kubectl -n monitoring create configmap katl-upgrade-lock \
+  --from-literal="holder=${USER:-operator}@$(hostname):$$" --from-literal="version=$version" \
+  -o 'jsonpath={.metadata.uid}' --request-timeout=30s); then
+  echo 'Could not acquire monitoring/katl-upgrade-lock. Check for another run or a stale lock.' >&2
+  exit 1
+fi
+if [[ -z $lock_uid ]]; then
+  echo 'Lock creation returned no UID; inspect monitoring/katl-upgrade-lock before retrying.' >&2
+  exit 1
+fi
+
 upgrade_nodes=()
 for node in "${nodes[@]}"; do
   node_state=$(kubectl get "node/$node" -o json)
@@ -142,6 +188,7 @@ for node in "${nodes[@]}"; do
   "$katlctl" node upgrade "$node" --version "$version" --config "$config" --plan
   upgrade_nodes+=("$node")
 done
+
 if ((${#upgrade_nodes[@]} == 0)); then
   exit 0
 fi
@@ -150,11 +197,18 @@ wait_healthy
 for node in "${upgrade_nodes[@]}"; do
   echo "Upgrading $node to $version"
   wait_healthy
+  # Refresh a bounded silence before any switchover or drain, through recovery.
+  silence_alerts 7200
   switch_primary "$node"
+  # A switchover can take time; renew again before draining the node.
+  silence_alerts 7200
   kubectl drain "$node" --ignore-daemonsets --delete-emptydir-data --force --timeout=20m
   # Leave a failed node cordoned so the next node cannot be touched accidentally.
-  "$katlctl" node upgrade "$node" --version "$version" --config "$config"
+  "$katlctl" node upgrade "$node" --version "$version" --config "$config" --timeout=30m
   kubectl uncordon "$node"
   kubectl wait "node/$node" --for=condition=Ready --timeout=15m
   wait_healthy
 done
+
+# Leave one reusable CR; Alertmanager owns expiry after successful recovery.
+silence_alerts 1200

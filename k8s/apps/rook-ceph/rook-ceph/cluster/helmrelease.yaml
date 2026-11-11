@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -10,10 +10,10 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 1.21.0
+    tag: 1.21.2
   url: oci://ghcr.io/rook/rook-ceph-cluster
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -23,6 +23,24 @@ spec:
   interval: 1h
   timeout: 15m
   postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: rook-ceph-tools
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: rook-ceph-tools
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: rook-ceph-tools
     - kustomize:
         patches:
           # v1.20.4 exposes monitoring.metricsDisabled but does not render it
@@ -59,12 +77,52 @@ spec:
       createPrometheusRules: true
       prometheusRuleOverrides:
         CephNodeDiskspaceWarning:
-          # External node-exporter targets also report filesystem metrics.
-          expr: >-
-            predict_linear(node_filesystem_free_bytes{device=~"/.*", kubernetes_node!=""}[2d], 3600 * 24 * 5)
-            * on(cluster, instance) group_left(nodename) node_uname_info < 0
+          # Host filesystem capacity is covered by the node-exporter rules.
+          disabled: true
+        CephNodeRootFilesystemFull:
+          # NodeFilesystemAlmostOutOfSpace covers the same 5% threshold.
+          disabled: true
         CephNodeNetworkBondDegraded:
           disabled: true
+        # Host metrics must only inspect the Ceph nodes and storage VLAN.
+        CephNodeNetworkPacketDrops:
+          expr: |
+            (
+              rate(node_network_receive_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) / (
+              rate(node_network_receive_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 0.0050000000000000001 and (
+              rate(node_network_receive_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_drop_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 10
+        CephNodeNetworkPacketErrors:
+          expr: |
+            (
+              rate(node_network_receive_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) / (
+              rate(node_network_receive_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_packets_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 0.0001 or (
+              rate(node_network_receive_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m]) +
+              rate(node_network_transmit_errs_total{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"}[1m])
+            ) >= 10
+        CephNodeInconsistentMTU:
+          expr: |
+            node_network_mtu_bytes{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} * (node_network_up{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} > 0)
+            != on (cluster, device) group_left
+              quantile by (cluster, device) (
+                0.5, node_network_mtu_bytes{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} * (node_network_up{job="node-exporter",kubernetes_node=~"k8s-[012]",device="bond0.300"} > 0)
+              )
+          annotations:
+            fix: >-
+              Compare the MTU of bond0.300 on k8s-0, k8s-1 and k8s-2;
+              persist corrections in the Katl systemd-networkd configuration.
+        NVMeoFHighHostCPU:
+          expr: |
+            100-((100*(avg by(cluster,host) (label_replace(rate(node_cpu_seconds_total{job="node-exporter",kubernetes_node=~"k8s-[012]",mode="idle"}[5m]),"host","$1","instance","(.*):.*")) * on(cluster, host) group_right label_replace(ceph_nvmeof_gateway_info,"host","$1","instance","(.*):.*")))) >= 80.00
         PrometheusJobExporterMissing:
           disabled: true
         PrometheusJobMissing:
@@ -73,7 +131,7 @@ spec:
       enabled: true
     cephImage:
       repository: quay.io/ceph/ceph
-      tag: v20.2.4
+      tag: v20.2.5
       allowUnsupported: false
     cephClusterSpec:
       resources:
@@ -172,7 +230,7 @@ spec:
         enabled: true
         urlPrefix: /
         ssl: false
-        prometheusEndpoint: http://vmsingle-victoria.monitoring.svc.cluster.local:8429
+        prometheusEndpoint: http://vmselect-victoria-query.monitoring.svc.cluster.local:8481/select/0/prometheus
       storage:
         useAllNodes: false
         useAllDevices: false

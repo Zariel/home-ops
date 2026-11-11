@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/backendtrafficpolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: jellyfin
+  namespace: default
+spec:
+  mergeType: StrategicMerge
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: jellyfin
+  healthCheck:
+    # Envoy's default panic mode sends traffic to unready endpoints when all are unhealthy.
+    # Readiness is the boundary that keeps the initial setup wizard private.
+    panicThreshold: 0
+  rateLimit:
+    local:
+      rules:
+        - clientSelectors:
+            - path:
+                type: RegularExpression
+                value: '(?i)^/(?:emby/|jellyfin/)?users/(?:authenticatebyname|[^/]+/authenticate|forgotpassword(?:/pin)?)/?(?:\?.*)?$'
+          # Shared per Envoy replica; playback requests do not consume this bucket.
+          limit:
+            requests: 20
+            unit: Minute
+  tcpKeepalive:
+    idleTime: 60s
+    interval: 10s
+    probes: 3
+  timeout:
+    http:
+      # Preserve long streams and quiet WebSocket sessions.
+      connectionIdleTimeout: 300s
+      streamIdleTimeout: 1h

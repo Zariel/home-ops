@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -10,15 +10,47 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 17.3.1
+    tag: 17.3.2
   url: oci://code.forgejo.org/forgejo-helm/forgejo
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: forgejo
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: forgejo
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: forgejo
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: init-directories
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: init-app-ini
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: configure-gitea
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: forgejo
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -40,7 +72,7 @@ spec:
     resources:
       requests:
         memory: 256Mi
-        cpu: "2"
+        cpu: 100m
       limits:
         memory: 512Mi
         cpu: "6"

@@ -27,7 +27,7 @@ All nodes inherit `kubelet.yaml` from `spec.defaults.kubernetes.kubelet`.
 Use `nodes[].kubernetes.kubelet` only for a node-specific override.
 
 Native networkd files implement the ConnectX-4 active-backup `bond0` (MTU 9000),
-VLANs 20/40/300/1100, the secondary active-backup `bond1`, and management VRF
+VLANs 20/40/300/1100/1101, the secondary active-backup `bond1`, and management VRF
 (table 100). Katl management uses the existing routed `10.254.1.1/.3/.5`
 addresses, not the interfaces inside the management VRF. The ConnectX link files
 match the PCI slots implied by the existing predictable interface names; verify
@@ -45,7 +45,7 @@ counts. `bond0` keeps its `noqueue` discipline. Changes to `.link` files take
 effect on the next boot.
 
 Static `/etc/hosts` entries preserve resolution of the three node names.
-DNS remains `172.53.53.53`; Katl's native unit management enables
+DNS uses `10.254.253.53`; Katl's native unit management enables
 systemd-timesyncd, which uses `10.254.254.1`. It also masks
 `bluetooth.service`, while the kernel command line prevents the Bluetooth
 drivers from loading. CPU sysfs settings, network sysctls, hugepages, udev
@@ -206,6 +206,37 @@ of the primary. If the next node hosts a CNPG primary, the task uses
 The development shell includes that plugin. A failed upgrade leaves its node
 cordoned and stops the run; inspect and recover it before retrying. The workflow
 requires the Rook toolbox deployment in each Ceph cluster namespace.
+
+Before each primary switchover or drain, the cluster task applies the
+`katl-upgrade` `Silence` in `.taskfiles/Katl/silences.yaml` for
+`PostgresReplicationMissing` and `etcdHighNumberOfLeaderChanges`. The installed
+silence-operator manages the Alertmanager silence. This temporary resource
+is kept outside Flux's Kustomizations. The task refreshes its `valid-until`
+annotation to two hours ahead before switchovers and drains, bounding the
+silence if the process disappears without cleanup. The task proceeds once
+Kubernetes accepts the update; silence-operator reconciles it to Alertmanager.
+
+After successful recovery the task sets expiry to 20 minutes ahead and exits
+without waiting for that time to pass. Alertmanager expires the silence, and
+the CR remains for reuse. Sequential upgrade trains and retries renew the same
+`katl-upgrade` resource, including after expiry. Runs with no nodes to upgrade
+leave any existing silence and its grace period untouched. A failed plan or
+health check before the first silence update also leaves the previous silence
+alone. Failure or interruption after an update deletes the silence so ongoing
+faults can notify.
+
+The task atomically creates `monitoring/katl-upgrade-lock`, a ConfigMap, before
+planning and holds it through silence updates and cleanup. Another invocation
+fails without changing the silence. Lock release uses a UID precondition to
+avoid deleting a replacement lock. The lock has no automatic expiry: an old
+process could otherwise resume after another run had started. If a hard kill
+or lost API response leaves a stale lock, inspect its holder and target version
+with `kubectl -n monitoring get configmap katl-upgrade-lock -o yaml`, confirm the
+old process has stopped, then remove it with
+`kubectl -n monitoring delete configmap katl-upgrade-lock` before retrying.
+
+Direct `katl:upgrade` and CLI operations do not take this lock or manage the
+maintenance silence; do not run them alongside the cluster task.
 
 Katl provides native management, in-tree GPU/MEI drivers and firmware, and Intel
 microcode. API audit output goes to the API container's stdout and through

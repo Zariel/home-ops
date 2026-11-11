@@ -72,6 +72,24 @@ quality_profiles:
       - *trash
 
 custom_formats:
+  # Keep Hybrid tagging, but let the custom format below enforce the group exception.
+  - trash_ids:
+      - 0f12c086e289cf966fa5948eac571f44 # Hybrid
+    assign_scores_to:
+      - name: *remux
+        score: 0
+      - name: *bd1080
+        score: 0
+
+  # Allow WiLDCAT hybrids to compete on their normal quality and HDR scores.
+  - trash_ids:
+      - hybrid-except-wildcat # Hybrid (except WiLDCAT)
+    assign_scores_to:
+      - name: *remux
+        score: -50000
+      - name: *bd1080
+        score: -50000
+
   - assign_scores_to:
       - name: *remux
         score: 5000

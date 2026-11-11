@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -10,14 +10,43 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 8.3.92
+    tag: 8.3.100
   url: oci://ghcr.io/netbox-community/netbox-chart/netbox
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app netbox
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: netbox
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: netbox
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                    initContainers:
+                      - name: init-dirs
+                        env:
+                          - name: TZ
+                            value: Europe/London
+                      - name: init-db
+                        env:
+                          - name: TZ
+                            value: Europe/London
+            target:
+              kind: Deployment
+              name: netbox
   interval: 1h
   dependsOn:
     - name: netbox-valkey
@@ -34,6 +63,26 @@ spec:
     admins:
       - ["cbannister", "c.bannister@gmail.com"]
     loginRequired: true
+    remoteAuth:
+      enabled: true
+      backends:
+        - social_core.backends.open_id_connect.OpenIdConnectAuth
+      autoCreateUser: true
+    extraVolumes:
+      - name: oidc-config
+        configMap:
+          name: netbox-oidc-config
+      - name: oidc-credentials
+        secret:
+          secretName: netbox-oidc
+    extraVolumeMounts:
+      - name: oidc-config
+        mountPath: /etc/netbox/config/oidc.py
+        subPath: oidc.py
+        readOnly: true
+      - name: oidc-credentials
+        mountPath: /run/secrets/oidc
+        readOnly: true
     extraConfig:
       - secret:
           secretName: netbox-extra-config
@@ -56,6 +105,9 @@ spec:
       type: Recreate
     initContainers:
       - name: init-db
+        env:
+          - name: TZ
+            value: Europe/London
         image: ghcr.io/home-operations/postgres-init:18.6.0@sha256:87627baaddb0cabed4ebe033e75038e5c7b6b081c18e86514c99067179a90719
         envFrom:
           - secretRef:

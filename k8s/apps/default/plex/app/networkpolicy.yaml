@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -37,6 +38,7 @@ spec:
                 - tautulli
                 - seerr
                 - maintainerr
+                - wizarr
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app: radarr

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +29,12 @@ spec:
         - name: recyclarr-includes
           configMap:
             name: recyclarr-includes
+        - name: recyclarr-settings
+          configMap:
+            name: recyclarr-settings
+        - name: recyclarr-radarr-custom-formats
+          configMap:
+            name: recyclarr-radarr-custom-formats
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -37,9 +44,11 @@ spec:
       containers:
         - &container
           name: recyclarr
-          image: ghcr.io/recyclarr/recyclarr:8.8.0
+          image: ghcr.io/recyclarr/recyclarr:8.8.1
           imagePullPolicy: IfNotPresent
           env:
+            - name: TZ
+              value: Europe/London
             - name: DOTNET_EnableDiagnostics
               value: "0"
             - name: DOTNET_gcServer
@@ -59,6 +68,13 @@ spec:
               readOnly: true
             - name: recyclarr-includes
               mountPath: /config/includes
+              readOnly: true
+            - name: recyclarr-settings
+              mountPath: /config/settings.yml
+              subPath: settings.yml
+              readOnly: true
+            - name: recyclarr-radarr-custom-formats
+              mountPath: /config/custom-formats/radarr
               readOnly: true
       initContainers:
         - <<: *container

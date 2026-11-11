@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -45,7 +46,7 @@ spec:
                 path: ca-certificates.crt
       containers:
         - name: autobrr
-          image: ghcr.io/autobrr/autobrr:v1.88.0@sha256:e200008d43fe6cd2d944c9bcf20900cfb8ba8a8e509625bb78ee51910b994005
+          image: ghcr.io/autobrr/autobrr:v1.90.0@sha256:72bb5fe5e8c73f85660f92502d9015b21b07156495f039b55864633b9f8b7a89
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
@@ -56,6 +57,28 @@ spec:
               value: "80"
             - name: AUTOBRR__HOST
               value: "0.0.0.0"
+            - name: AUTOBRR__METRICS_ENABLED
+              value: "true"
+            - name: AUTOBRR__METRICS_HOST
+              value: "0.0.0.0"
+            - name: AUTOBRR__OIDC_ENABLED
+              value: "true"
+            - name: AUTOBRR__OIDC_ISSUER
+              value: https://id.cbannister.xyz
+            - name: AUTOBRR__OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: autobrr-oidc
+                  key: client_id
+            - name: AUTOBRR__OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: autobrr-oidc
+                  key: client_secret
+            - name: AUTOBRR__OIDC_REDIRECT_URL
+              value: https://autobrr.cbannister.xyz/api/auth/oidc/callback
+            - name: AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN
+              value: "true"
             - name: SSL_CERT_FILE
               value: /etc/ssl/certs/ca-certificates.crt
           envFrom:
@@ -68,6 +91,8 @@ spec:
           ports:
             - containerPort: 80
               name: web
+            - containerPort: 9074
+              name: metrics
           resources:
             requests:
               cpu: 100m

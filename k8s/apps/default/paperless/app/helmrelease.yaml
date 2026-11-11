@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -32,6 +33,8 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
         initContainers:
           init-db:
+            env:
+              TZ: Europe/London
             image:
               repository: ghcr.io/home-operations/postgres-init
               tag: 18.6.0@sha256:87627baaddb0cabed4ebe033e75038e5c7b6b081c18e86514c99067179a90719
@@ -44,7 +47,7 @@ spec:
           app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 3.3.3@sha256:dba0242c1df1843643df4eb50ce5639f3a7900f414879088fd5bed8eaf2d456d
+              tag: 3.4.2@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84
             # Customize the pinned image's AI extraction and retrieval.
             command: ["/bin/sh", "-ec"]
             args:
@@ -198,10 +201,36 @@ spec:
               repository: registry.cbannister.xyz/paperless-scanner
               tag: 4@sha256:4dabee2cf803260dca047e708a13fae515e6d772a7749cb711d582b89503b2e6
             env:
+              TZ: Europe/London
               SCANNER_IP: 10.1.2.70
               CALLBACK_IP: 10.1.2.162
               PYTHONUNBUFFERED: "1"
             probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - python3
+                      - -c
+                      - |
+                        from pathlib import Path
+                        import resource
+                        import sys
+
+                        # brscan-skey retains UDP sockets during registration refreshes.
+                        # Recover before it exhausts descriptors and loses the destination.
+                        used = len(list(Path('/proc/1/fd').iterdir()))
+                        limit = resource.prlimit(1, resource.RLIMIT_NOFILE)[0]
+                        if limit != resource.RLIM_INFINITY and used >= limit * 3 // 4:
+                            sys.exit(f'brscan-skey uses {used}/{limit} file descriptors')
+                        listeners = Path('/proc/1/net/udp').read_text().splitlines()[1:]
+                        if not any(line.split()[1].endswith(':D68D') for line in listeners):
+                            sys.exit('Brother scan listener is missing on UDP 54925')
+                  periodSeconds: 60
+                  timeoutSeconds: 5
+                  failureThreshold: 3
               readiness:
                 enabled: true
                 custom: true
@@ -247,10 +276,11 @@ spec:
           app:
             image:
               repository: ghcr.io/valkey-io/valkey
-              tag: 9.1.2@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
+              tag: 9.1.3@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7
             args:
               - /config/valkey.conf
             env:
+              TZ: Europe/London
               VALKEYCLI_AUTH:
                 valueFrom:
                   secretKeyRef:

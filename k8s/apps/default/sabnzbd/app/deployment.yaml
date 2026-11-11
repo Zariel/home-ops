@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,18 +55,12 @@ spec:
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
                 sabnzbd.cbannister.xyz
-            - name: CROSS_SEED_HOST
-              value: "cross-seed.default.svc.cluster.local"
-            - name: CROSS_SEED_PORT
-              value: "80"
-            - name: CROSS_SEED_SLEEP_INTERVAL
-              value: "30"
           envFrom:
             - secretRef:
                 name: sabnzbd-secret
           resources:
             requests:
-              memory: 512Mi
+              memory: 2560Mi
               cpu: 2000m
             limits:
               memory: 3584Mi

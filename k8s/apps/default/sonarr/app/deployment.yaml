@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,7 +47,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: sonarr
-          image: ghcr.io/home-operations/sonarr:5.0.0.2742@sha256:491f13c731083c1e3a5eb707750ad61f0052a5a6c12b37f6f524eaa35664915d
+          image: ghcr.io/home-operations/sonarr:5.0.0.2941@sha256:93b0923dd12afd43247739e19dac59d74c52a15ea12e036b7ced264cffb42574
           imagePullPolicy: "IfNotPresent"
           env:
             - name: DOTNET_EnableDiagnostics
@@ -68,7 +69,7 @@ spec:
                 name: sonarr-secret
           resources:
             requests:
-              cpu: "512m"
+              cpu: 100m
               memory: 1280Mi
             limits:
               memory: 2Gi

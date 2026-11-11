@@ -1,0 +1,42 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMScrapeConfig
+metadata:
+  name: blocky
+  namespace: monitoring
+spec:
+  path: /metrics
+  staticConfigs:
+    - targets: ["10.254.53.0:4000"]
+      labels:
+        job: blocky
+        host: dns-1
+    - targets: ["10.254.53.2:4000"]
+      labels:
+        job: blocky
+        host: dns-2
+    - targets: ["10.254.53.4:4000"]
+      labels:
+        job: blocky
+        host: dns-3
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMScrapeConfig
+metadata:
+  name: dnsdist
+  namespace: monitoring
+spec:
+  path: /metrics
+  staticConfigs:
+    - targets: ["10.254.53.0:5383"]
+      labels:
+        job: dnsdist
+        host: dns-1
+    - targets: ["10.254.53.2:5383"]
+      labels:
+        job: dnsdist
+        host: dns-2
+    - targets: ["10.254.53.4:5383"]
+      labels:
+        job: dnsdist
+        host: dns-3

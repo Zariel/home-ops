@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: jellyfin
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      app: jellyfin
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: sonarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: wizarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: jellystat
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: radarr
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+    # Kubelet health checks originate on the node hosting Jellyfin.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP

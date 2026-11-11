@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.config.k8s.io/kustomization_v1beta1.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - backendtrafficpolicy.yaml
+  - deployment.yaml
+  - httproute.yaml
+  - networkpolicy.yaml
+  - service.yaml
+patches:
+  # The existing local backup cache uses a storage class that cannot expand.
+  - target:
+      kind: ReplicationSource
+    patch: |-
+      - op: replace
+        path: /spec/restic/cacheCapacity
+        value: 20Gi

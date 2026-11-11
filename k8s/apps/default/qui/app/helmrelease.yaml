@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -13,7 +13,7 @@ spec:
     tag: 5.3.0
   url: oci://ghcr.io/bjw-s-labs/helm/app-template
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/autobrr/qui
-              tag: v1.33.1@sha256:c83ce0370ab372c931ccb3f0ddd0eb1bc850026ce9eafc13ce94443f6f2a2cd3
+              tag: v1.35.0@sha256:a5b2f5faf6388cce257137c88e4b189458fd799cf9119ed476c980e5a69341b2
             env:
               QUI__AUTH_DISABLED: true
               QUI__AUTH_DISABLED_ALLOWED_CIDRS: 0.0.0.0/0
@@ -47,6 +47,9 @@ spec:
               QUI__HOST: 0.0.0.0
               QUI__PORT: &port 80
               QUI__LOG_LEVEL: INFO
+              QUI__METRICS_ENABLED: true
+              QUI__METRICS_HOST: 0.0.0.0
+              QUI__METRICS_PORT: &metricsPort 8080
               TZ: Europe/London
             envFrom:
               - secretRef:
@@ -87,6 +90,8 @@ spec:
               capabilities: { drop: ["ALL"] }
         initContainers:
           fix-database-permissions:
+            env:
+              TZ: Europe/London
             image:
               repository: docker.io/library/busybox
               tag: 1.38.0
@@ -122,6 +127,12 @@ spec:
         ports:
           http:
             port: *port
+          metrics:
+            port: *metricsPort
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics
     route:
       app:
         hostnames:
