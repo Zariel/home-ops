@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: home-assistant-mcp
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: home-assistant-mcp
+  interval: 1h
+  driftDetection:
+    mode: enabled
+  values:
+    controllers:
+      home-assistant-mcp:
+        # Settings and tool policy have a single writer on an RWO volume.
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/homeassistant-ai/ha-mcp
+              tag: 9.2.0@sha256:9de5bf6c4216142fdffe862900abe72dac8dfe9621dd0b2b050d132372b676ba
+            command:
+              - ha-mcp-web
+            env:
+              TZ: Europe/London
+              HOMEASSISTANT_URL: http://home-assistant.default.svc.cluster.local:8123
+              HOMEASSISTANT_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-mcp-secret
+                    key: HOMEASSISTANT_TOKEN
+              MCP_HOST: 0.0.0.0
+              MCP_PORT: "8086"
+              # Trusted internal machine endpoint; clients share the HA account.
+              # External exposure requires authentication (ha-mcp-oidc supports Pocket ID).
+              MCP_SECRET_PATH: /mcp
+              MCP_HEALTHZ: "true"
+            probes:
+              liveness:
+                enabled: true
+                type: HTTP
+                path: /healthz
+              readiness:
+                enabled: true
+                type: HTTP
+                path: /healthz
+              startup:
+                enabled: true
+                type: HTTP
+                path: /healthz
+                spec:
+                  periodSeconds: 5
+                  failureThreshold: 60
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: home-assistant-mcp
+        ports:
+          http:
+            port: 8086
+    route:
+      app:
+        hostnames:
+          - home-assistant-mcp.cbannister.xyz
+        parentRefs:
+          - name: internal-cbannister-xyz
+            namespace: network
+            kind: ListenerSet
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+    persistence:
+      config:
+        existingClaim: home-assistant-mcp
+        globalMounts:
+          - path: /home/mcpuser/.ha-mcp
+      tmp:
+        type: emptyDir

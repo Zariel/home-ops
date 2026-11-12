@@ -31,6 +31,7 @@ resources:
   - qui/ks.yaml
   - wizarr/ks.yaml
   - home-assistant/ks.yaml
+  - home-assistant-mcp/ks.yaml
   - matterjs/ks.yaml
   - netbox/ks.yaml
   - common/ks.yaml
