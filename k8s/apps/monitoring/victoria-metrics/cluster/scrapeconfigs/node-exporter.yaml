@@ -7,7 +7,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - gateway.cbannister.casa:9100
+        - gateway-metrics.cbannister.casa:9100
         - pve.cbannister.casa:9100
         - pve2.cbannister.casa:9100
         - pbs.cbannister.casa:9100
