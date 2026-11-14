@@ -87,7 +87,8 @@ the NTP files to each node sequentially in live mode. Each node's saved files,
 synchronization marker and systemd-timesyncd journal confirmed `10.5.0.10`, and
 all three nodes remained Ready. The new metrics hostname resolved to
 `10.5.0.11` and returned HTTP 200 from VMAgent before publishing the scrape
-change through Flux.
+change through Flux. Flux subsequently applied the new target, and VMAgent
+reported its scrape as `up` with no error.
 
 Use the repository shell and task wrapper to validate and preview host changes:
 
@@ -148,9 +149,10 @@ Inspect current state before repeating any completed step.
 3. Review and apply the VyOS configuration changes during a maintenance window.
    The container bridge shrinks to `/26`, so expect a container/network restart.
    Restart Matchbox after the commit: changing the Podman network definition
-   alone left the running bridge on `/24` during the first rollout, which
-   prevented the `/26` from being originated. Verify the kernel bridge address
-   and exact route after restarting it. Matchbox keeps `.8`; host services gain their new addresses. TFTP and metrics retain old listeners
+   alone does not update the running bridge or create the exact connected route
+   needed for BGP origination. Verify the kernel bridge address and exact route
+   after restarting it. Matchbox keeps `.8`; host services gain their new
+   addresses. TFTP and metrics retain old listeners
    during client migration. NTP binds only `.10`, with existing LAN/WireGuard
    interception and a scoped transit DNAT rule preserving the old device endpoint.
    Confirm the core learns `/26` and no longer learns the gateway's old `/24`.
@@ -170,6 +172,12 @@ Inspect current state before repeating any completed step.
    resulting live configuration. Migrate other hosts incrementally when their
    service ownership is understood; no LAN, identity, transit or shared VIP
    renumbering is required for this policy.
+
+TFTP was verified from the servers network with a real client and a matching
+SHA256 of `undionly.kpxe`. VyOS's tftpd-hpa can source transfer packets from
+`10.1.1.1` even when the request targets `.9`. Retain its compatibility listener
+and verify firmware PXE boot before retiring it. The NixOS native TFTP service
+has separate VM coverage.
 
 If a NixOS DHCP DNS primary already has persistent zone data, update the
 `primary.dhcp.cbannister.casa` A record to `.53` with authenticated `nsupdate`;
