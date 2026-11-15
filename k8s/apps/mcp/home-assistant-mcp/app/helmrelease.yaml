@@ -35,8 +35,7 @@ spec:
                     key: HOMEASSISTANT_TOKEN
               MCP_HOST: 0.0.0.0
               MCP_PORT: "8086"
-              # Trusted internal machine endpoint; clients share the HA account.
-              # External exposure requires authentication (ha-mcp-oidc supports Pocket ID).
+              # Envoy validates Pocket ID tokens; clients share the HA account.
               MCP_SECRET_PATH: /mcp
               MCP_HEALTHZ: "true"
             probes:
@@ -90,7 +89,12 @@ spec:
             kind: ListenerSet
             sectionName: https
         rules:
-          - backendRefs:
+          - filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  remove:
+                    - Authorization
+            backendRefs:
               - identifier: app
                 port: http
     persistence:

@@ -5,13 +5,22 @@ Home Assistant MCP runs in the `mcp` namespace at
 instance remains in `default`, reached at
 `http://home-assistant.default.svc.cluster.local:8123`.
 
-This is a trusted internal machine endpoint without client OAuth. It preserves
-the `ha-mcp-web` access model: clients share the Home Assistant account whose
-token External Secrets imports from the `home-assistant-mcp` 1Password item.
-The internal ListenerSet provides TLS, and the backend network policy admits
-only the internal Envoy gateway and node probes. Public exposure requires an
-authentication integration; the shared MCP OAuth component is not attached to
-this endpoint. Gaming's Codex configuration uses the existing endpoint URL.
+The shared [MCP authentication components](../README.md) require Pocket ID
+access tokens with the `home-assistant:access` permission and the endpoint URL
+as their audience. The public OAuth client is `home-assistant-mcp-codex`,
+restricted to the `admin` group. Envoy validates client tokens and removes the
+Authorization header before forwarding requests to `ha-mcp-web`.
+
+Clients share the Home Assistant account whose token External Secrets imports
+from the `home-assistant-mcp` 1Password item. Pocket ID controls admission to
+MCP; the Home Assistant account controls application permissions. The internal
+ListenerSet provides TLS, and the backend network policy admits only the
+internal Envoy gateway and node probes.
+
+Use the [Codex setup procedure](../README.md) with scope
+`home-assistant:access`, client ID `home-assistant-mcp-codex`, and the existing
+endpoint URL. After activating gaming's Codex configuration, run
+`codex mcp login home-assistant` to authorize the client.
 
 The `home-assistant-mcp` PVC holds server settings, tool policy, and usage
 history. VolSync backs it up to the `home-assistant-mcp` Restic repository and
