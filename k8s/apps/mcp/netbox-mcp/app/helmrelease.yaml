@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbox-mcp
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: netbox-mcp
+  interval: 1h
+  driftDetection:
+    mode: enabled
+  values:
+    controllers:
+      netbox-mcp:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/netboxlabs/netbox-mcp-server
+              tag: 1.2.2@sha256:c09e96b2f56bc0751d85891bbb6f6d8fe85eb2e9fe99923aa34df176e289cee5
+            env:
+              TZ: Europe/London
+              PYTHONDONTWRITEBYTECODE: "1"
+              HOME: /tmp
+              NETBOX_URL: http://netbox.default.svc.cluster.local
+              TRANSPORT: http
+              HOST: 0.0.0.0
+              PORT: "8000"
+            envFrom:
+              - secretRef:
+                  name: netbox-mcp-secret
+            probes:
+              liveness:
+                enabled: true
+                type: TCP
+              readiness:
+                enabled: true
+                type: TCP
+              startup:
+                enabled: true
+                type: TCP
+                spec:
+                  periodSeconds: 5
+                  failureThreshold: 60
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: netbox-mcp
+        ports:
+          http:
+            port: 8000
+    route:
+      app:
+        hostnames:
+          - netbox-mcp.cbannister.xyz
+        parentRefs:
+          - name: internal-cbannister-xyz
+            namespace: network
+            kind: ListenerSet
+            sectionName: https
+        rules:
+          - filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  remove:
+                    - Authorization
+            backendRefs:
+              - identifier: app
+                port: http
+    persistence:
+      tmp:
+        type: emptyDir

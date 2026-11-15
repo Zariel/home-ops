@@ -5,4 +5,5 @@ namespace: mcp
 components:
   - ../../components/common
 resources:
+  - netbox-mcp/ks.yaml
   - unifi-mcp/ks.yaml
