@@ -14,6 +14,7 @@ spec:
   values:
     controllers:
       home-assistant-mcp:
+        replicas: 0
         # Settings and tool policy have a single writer on an RWO volume.
         strategy: Recreate
         annotations:
@@ -82,6 +83,7 @@ spec:
             port: 8086
     route:
       app:
+        enabled: false
         hostnames:
           - home-assistant-mcp.cbannister.xyz
         parentRefs:
