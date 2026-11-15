@@ -7,3 +7,12 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+patches:
+  - target:
+      group: volsync.backube
+      kind: ReplicationSource
+    patch: |-
+      - op: replace
+        path: /spec/trigger
+        value:
+          manual: namespace-migration-20261115
