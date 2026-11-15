@@ -32,13 +32,13 @@ spec:
               UNIFI_MCP_HTTP_TRANSPORT: streamable-http
               UNIFI_MCP_HOST: 0.0.0.0
               UNIFI_MCP_PORT: "3000"
-              # Trusted internal machine endpoint; no public route or browser UI.
+              # Internal endpoint; Envoy validates Pocket ID access tokens.
               UNIFI_MCP_ALLOWED_HOSTS: localhost,127.0.0.1,unifi-mcp.cbannister.xyz
               UNIFI_NETWORK_TOOL_PERMISSION_MODE: confirm
-              # Diagnostic access only; enforce this for direct and meta-tool calls.
-              UNIFI_POLICY_NETWORK_CREATE: "false"
-              UNIFI_POLICY_NETWORK_UPDATE: "false"
-              UNIFI_POLICY_NETWORK_DELETE: "false"
+              # Allow Network writes while retaining the preview-and-confirm flow.
+              UNIFI_POLICY_NETWORK_CREATE: "true"
+              UNIFI_POLICY_NETWORK_UPDATE: "true"
+              UNIFI_POLICY_NETWORK_DELETE: "true"
             envFrom:
               - secretRef:
                   name: unifi-mcp-secret
@@ -90,7 +90,12 @@ spec:
             kind: ListenerSet
             sectionName: https
         rules:
-          - backendRefs:
+          - filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  remove:
+                    - Authorization
+            backendRefs:
               - identifier: app
                 port: http
     persistence:
