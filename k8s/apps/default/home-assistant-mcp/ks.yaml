@@ -17,6 +17,16 @@ spec:
       namespace: volsync-system
   interval: 1h
   path: ./k8s/apps/default/home-assistant-mcp/app
+  patches:
+    - target:
+        group: volsync.backube
+        kind: ReplicationSource
+        name: home-assistant-mcp
+      patch: |-
+        - op: replace
+          path: /spec/trigger
+          value:
+            manual: namespace-migration-20261115
   postBuild:
     substitute:
       APP: home-assistant-mcp
