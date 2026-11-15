@@ -98,7 +98,6 @@ manifests in `~/.codex/config.toml`. For example, replacing the placeholders:
 ```toml
 [mcp_servers.example]
 url = "https://<server-host>/mcp"
-oauth_resource = "https://<server-host>/mcp"
 scopes = ["openid", "<server-access-scope>", "offline_access"]
 
 [mcp_servers.example.oauth]
@@ -109,7 +108,9 @@ callback_port = 4321
 
 The callback and fixed listener port must match the Pocket ID client. Pocket ID
 advertises issuer-bound authorization responses, allowing Codex to reuse the
-exact callback. See the [Codex OAuth configuration](https://learn.chatgpt.com/docs/extend/mcp)
+exact callback. Let Codex obtain the OAuth resource from the gateway's discovery
+document; do not also set `oauth_resource`, which can duplicate the resource
+parameter and cause Pocket ID to reject the request. See the [Codex OAuth configuration](https://learn.chatgpt.com/docs/extend/mcp)
 and [Pocket ID API access](https://pocket-id.org/docs/guides/apis).
 
 After Flux has reconciled the server and its identity resources, run
