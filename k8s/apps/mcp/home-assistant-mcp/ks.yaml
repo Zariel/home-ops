@@ -4,7 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: home-assistant-mcp
-  namespace: default
+  namespace: mcp
 spec:
   components:
     - ../../../../components/volsync
@@ -15,8 +15,10 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
+    - name: envoy-gateway-operator
+      namespace: network
   interval: 1h
-  path: ./k8s/apps/default/home-assistant-mcp/app
+  path: ./k8s/apps/mcp/home-assistant-mcp/app
   postBuild:
     substitute:
       APP: home-assistant-mcp
@@ -29,6 +31,6 @@ spec:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  targetNamespace: default
+  targetNamespace: mcp
   timeout: 5m
   wait: false
