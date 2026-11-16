@@ -43,7 +43,7 @@ spec:
     image:
       repository: ghcr.io/vectordotdev/vector
       # journald requires journalctl, which the distroless image omits.
-      tag: 0.61.0-debian
+      tag: 0.62.0-debian
 
     podAnnotations:
       reloader.stakater.com/auto: "true"
