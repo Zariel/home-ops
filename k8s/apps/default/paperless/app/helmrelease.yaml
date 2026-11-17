@@ -176,6 +176,9 @@ spec:
                   httpGet:
                     path: /accounts/login/
                     port: 8000
+                    httpHeaders:
+                      - name: Host
+                        value: paperless.cbannister.xyz
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 5
@@ -187,6 +190,9 @@ spec:
                   httpGet:
                     path: /accounts/login/
                     port: 8000
+                    httpHeaders:
+                      - name: Host
+                        value: paperless.cbannister.xyz
                   periodSeconds: 5
                   timeoutSeconds: 5
                   failureThreshold: 120
