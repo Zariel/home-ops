@@ -134,6 +134,8 @@ spec:
               USERMAP_UID: 568
               USERMAP_GID: 568
               PAPERLESS_URL: https://paperless.cbannister.xyz
+              # Paperless GPT connects directly through the cluster Service.
+              PAPERLESS_ALLOWED_HOSTS: paperless-app.default.svc.cluster.local
               PAPERLESS_TIME_ZONE: Europe/London
               PAPERLESS_DBENGINE: postgresql
               PAPERLESS_DBHOST: pg18vc-rw.database.svc.cluster.local
