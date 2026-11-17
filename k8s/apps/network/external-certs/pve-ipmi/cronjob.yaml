@@ -13,6 +13,8 @@ spec:
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      # Retain failure evidence for a week without alerting on it indefinitely.
+      ttlSecondsAfterFinished: 604800
       backoffLimit: 0
       activeDeadlineSeconds: 420
       template:
