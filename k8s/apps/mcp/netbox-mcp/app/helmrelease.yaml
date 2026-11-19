@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: docker.io/netboxlabs/netbox-mcp-server
-              tag: 1.2.2@sha256:c09e96b2f56bc0751d85891bbb6f6d8fe85eb2e9fe99923aa34df176e289cee5
+              tag: 1.2.3@sha256:0a12d074d2734191b877d84aefc907ad3f3c677960dff3bc35ce8d663e9046e0
             env:
               TZ: Europe/London
               PYTHONDONTWRITEBYTECODE: "1"
