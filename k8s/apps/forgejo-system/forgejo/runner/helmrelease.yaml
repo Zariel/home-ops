@@ -52,7 +52,7 @@ spec:
               TZ: Europe/London
             image:
               repository: data.forgejo.org/forgejo/runner
-              tag: 13.2.1
+              tag: 13.2.2
             command:
               - sh
               - -ec
