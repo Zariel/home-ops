@@ -13,6 +13,13 @@ spec:
   oidc:
     provider:
       issuer: https://id.cbannister.xyz
+      authorizationEndpoint: https://id.cbannister.xyz/authorize
+      endSessionEndpoint: https://id.cbannister.xyz/api/oidc/end-session
+      tokenEndpoint: https://pocket-id.default.svc.cluster.local:1411/api/oidc/token
+      backendRefs:
+        - kind: Service
+          name: pocket-id
+          port: 1411
     clientID: wizarr
     clientSecret:
       name: wizarr-oidc

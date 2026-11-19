@@ -4,6 +4,8 @@ kind: Kustomization
 namespace: default
 resources:
   - externalsecret.yaml
+  - certificate.yaml
   - deployment.yaml
   - service.yaml
   - httproute.yaml
+  - backendtlspolicy.yaml

@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pocket-id
+spec:
+  secretName: pocket-id-tls
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: cluster-ca
+  dnsNames:
+    - pocket-id.default.svc.cluster.local
+  usages:
+    - server auth

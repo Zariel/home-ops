@@ -8,6 +8,6 @@ spec:
   selector:
     app.kubernetes.io/name: pocket-id
   ports:
-    - name: http
+    - name: https
       port: 1411
-      targetPort: http
+      targetPort: https

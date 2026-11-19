@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: pocket-id
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: pocket-id
+      sectionName: https
+  validation:
+    hostname: pocket-id.default.svc.cluster.local
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: cluster-ca.crt

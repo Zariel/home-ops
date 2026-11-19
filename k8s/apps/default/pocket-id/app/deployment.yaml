@@ -4,6 +4,8 @@ kind: Deployment
 metadata:
   name: pocket-id
   namespace: default
+  annotations:
+    secret.reloader.stakater.com/reload: pocket-id-tls
 spec:
   replicas: 1
   # SQLite must have a single writer, including during upgrades.
@@ -39,6 +41,10 @@ spec:
                   key: token
             - name: APP_URL
               value: https://id.cbannister.xyz
+            - name: TLS_CERT_FILE
+              value: /etc/pocket-id/tls/tls.crt
+            - name: TLS_KEY_FILE
+              value: /etc/pocket-id/tls/tls.key
             - name: TRUST_PROXY
               value: 172.20.0.0/16
             - name: ENCRYPTION_KEY
@@ -47,7 +53,7 @@ spec:
                   name: pocket-id
                   key: ENCRYPTION_KEY
           ports:
-            - name: http
+            - name: https
               containerPort: 1411
           securityContext:
             allowPrivilegeEscalation: false
@@ -56,17 +62,20 @@ spec:
           startupProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: https
+              scheme: HTTPS
             periodSeconds: 5
             failureThreshold: 30
           readinessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: https
+              scheme: HTTPS
           livenessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: https
+              scheme: HTTPS
           resources:
             requests:
               cpu: 10m
@@ -76,7 +85,14 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /app/data
+            - name: tls
+              mountPath: /etc/pocket-id/tls
+              readOnly: true
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: pocket-id
+        - name: tls
+          secret:
+            secretName: pocket-id-tls
+            defaultMode: 0440
