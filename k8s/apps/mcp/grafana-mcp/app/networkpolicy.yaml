@@ -27,3 +27,22 @@ spec:
         - ports:
             - port: "8000"
               protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app: grafana
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP

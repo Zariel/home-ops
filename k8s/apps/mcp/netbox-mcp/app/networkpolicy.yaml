@@ -27,3 +27,25 @@ spec:
         - ports:
             - port: "8000"
               protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # NetBox's Service maps port 80 to the API pod's port 8080.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: netbox
+            app.kubernetes.io/instance: netbox
+            app.kubernetes.io/component: netbox
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

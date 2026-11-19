@@ -27,3 +27,36 @@ spec:
         - ports:
             - port: "8086"
               protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: home-assistant
+            app.kubernetes.io/instance: home-assistant
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP
+    # The standalone server checks PyPI and retrieves release notes on demand.
+    - toFQDNs:
+        - matchName: pypi.org
+        - matchName: api.github.com
+        - matchName: raw.githubusercontent.com
+        - matchName: www.home-assistant.io
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

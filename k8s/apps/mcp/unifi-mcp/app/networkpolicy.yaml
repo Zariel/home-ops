@@ -27,3 +27,24 @@ spec:
         - ports:
             - port: "3000"
               protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # The UniFi console runs outside Kubernetes and is reached by its DNS name.
+    - toFQDNs:
+        - matchName: unifi.cbannister.casa
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
