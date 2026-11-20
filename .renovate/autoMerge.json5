@@ -23,6 +23,20 @@
       ]
     },
     {
+      "description": "Auto-merge LinuxServer image digest updates",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "lscr.io/linuxserver/**",
+        "ghcr.io/linuxserver/**",
+        "docker.io/linuxserver/**",
+        "linuxserver/**"
+      ],
+      "matchUpdateTypes": ["digest"],
+      "automerge": true,
+      "automergeType": "pr",
+      "ignoreTests": false,
+    },
+    {
       "description": "Auto-merge OCI Charts",
       "matchDatasources": ["docker"],
       "automerge": true,
