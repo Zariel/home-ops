@@ -1,35 +1,35 @@
 # MCP services
 
 The `mcp` namespace groups MCP servers and their application credentials, routes,
-and authentication policies. Each server owns its `app/` reconciliation unit and,
-when needed, an `oidc/` unit for Pocket ID resources. Shared identity and gateway
-controllers remain in their existing namespaces.
+identity registrations, and authentication policies. Each server owns a single
+`app/` reconciliation unit. Shared identity and gateway controllers remain in
+their existing namespaces.
 
-## Shared authentication components
+## Shared authentication component
 
-The reusable configuration lives in `k8s/components/mcp-auth`:
-
-| Component | Added to | Resources |
-| --- | --- | --- |
-| `../../../../components/mcp-auth` | The server's app Flux Kustomization | JWT and scope policies, OAuth discovery and challenges |
-| `../../../../components/mcp-auth/oidc` | The server's identity Flux Kustomization | Pocket ID API and public Codex client |
-
-Attach each through `spec.components`, relative to the unit's `spec.path`. Supply
-the following values through `spec.postBuild.substitute` on both Kustomizations:
+The reusable configuration lives in `k8s/components/mcp-auth`. Add
+`../../../../components/mcp-auth` to the server's Flux Kustomization through
+`spec.components`, relative to the unit's `spec.path`, and supply the following
+values through `spec.postBuild.substitute`:
 
 | Variable | Meaning |
 | --- | --- |
-| `APP` | Protected HTTPRoute name and prefix for the generated resources |
+| `APP` | Service, HTTPRoute, and workload name, and prefix for the generated resources |
 | `MCP_HOST` | Endpoint hostname without scheme or path |
 | `MCP_SCOPE` | The server's dedicated API permission, such as `example:access` |
 | `MCP_DISPLAY_NAME` | Human-readable service name |
 
-For example, the app Flux Kustomization contains:
+For example:
 
 ```yaml
 spec:
   components:
     - ../../../../components/mcp-auth
+  dependsOn:
+    - name: envoy-gateway-operator
+      namespace: network
+    - name: pocket-id-instance
+      namespace: default
   postBuild:
     substitute:
       APP: example-mcp
@@ -38,31 +38,34 @@ spec:
       MCP_DISPLAY_NAME: Example MCP
 ```
 
-Use the `mcp-auth/oidc` component with the same identity values in the identity
-unit. The generated API is named `${APP}` and the Codex client `${APP}-codex`.
-The app depends on that identity unit and Envoy Gateway; the identity unit depends
-on `pocket-id-instance` in `default`. Each server's Flux units own their generated
-resources. No shared controller or reconciliation unit owns application policies.
+The component generates:
 
-These components serve `/mcp` through the internal `internal-cbannister-xyz`
+- a PocketIDAPI named `${APP}` and the public Codex client `${APP}-codex`;
+- the JWT and scope SecurityPolicy, OAuth discovery route, and 401 challenge;
+- the authenticated `${APP}` HTTPRoute, which serves only `/mcp` from port 80
+  of the `${APP}` Service and removes Authorization and Grafana credential
+  headers before forwarding;
+- the `${APP}-gateway` CiliumNetworkPolicy, which admits ingress to the `http`
+  container port only from the internal Envoy gateway and the node.
+
+Keeping the route beside the policies that target it by name prevents a renamed
+route from losing authentication, and the ingress policy stops other workloads
+from bypassing token validation. The public clients have no secret, so the
+application does not wait on its identity registration and one unit owns both.
+No shared controller or reconciliation unit owns application policies.
+
+These resources serve `/mcp` through the internal `internal-cbannister-xyz`
 ListenerSet, use Pocket ID's `admin` group, issue 15-minute access tokens, and
 register the Codex loopback callback at `http://127.0.0.1:4321/callback`.
-The app component also owns the authenticated `${APP}` HTTPRoute, which serves
-only `/mcp` from port 80 of the `${APP}` Service and removes Authorization and
-Grafana credential headers before forwarding. Keeping the route beside the
-policies that target it by name prevents a renamed route from losing
-authentication. The component's `${APP}-gateway` CiliumNetworkPolicy admits
-ingress to the `http` container port only from the internal Envoy gateway and
-the node, so other workloads cannot bypass token validation.
 
 Each application names its MCP container port `http` and exposes it as Service
 port 80 targeting `http`; the route and ingress policy rely on both. The
 application owns its egress policy and must not declare its own route.
 
 A ListenerSet-level policy would apply the same static audiences and permissions
-to every attached route. Components share the configuration while preserving a
-separate audience, scope, and public discovery document for each server. They
-are opt-in per server; other routes on the internal gateway are unaffected.
+to every attached route. The component shares the configuration while preserving
+a separate audience, scope, and public discovery document for each server. It
+is opt-in per server; other routes on the internal gateway are unaffected.
 
 ## Authentication and network access
 
@@ -136,7 +139,7 @@ validates it locally.
 
 ## Validation and rollout
 
-Render changed `app/` and `oidc/` units and the namespace composition. Use
+Render changed `app/` units and the namespace composition. Use
 `flux build kustomization` with `--dry-run --strict-substitute`, the local
 `--kustomization-file`, the unit's `--path`, and `--namespace mcp` to include the
 components and resolve their inputs. A plain `kubectl kustomize` of an app unit
@@ -144,7 +147,7 @@ does not include components attached by its Flux Kustomization. Check that
 workloads, credentials, policies, and identity resources render into `mcp`, while
 references to shared controllers keep their original namespaces. Use server-side
 dry runs where the target namespace exists. App reconciliation must depend on
-its identity unit and Envoy Gateway where their readiness is required.
+Pocket ID and Envoy Gateway where their readiness is required.
 
 After rollout, verify anonymous discovery, `401` discovery challenges for missing
 or invalid tokens, rejection of wrong-audience tokens, and `403` responses for

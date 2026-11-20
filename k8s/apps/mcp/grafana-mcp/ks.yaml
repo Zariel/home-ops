@@ -9,7 +9,8 @@ spec:
   components:
     - ../../../../components/mcp-auth
   dependsOn:
-    - name: grafana-mcp-oidc
+    - name: pocket-id-instance
+      namespace: default
     - name: envoy-gateway-operator
       namespace: network
   interval: 1h
@@ -22,37 +23,6 @@ spec:
       MCP_DISPLAY_NAME: Grafana MCP
   prune: true
   retryInterval: 1m
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-    namespace: flux-system
-  targetNamespace: mcp
-  timeout: 5m
-  wait: true
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: grafana-mcp-oidc
-  namespace: mcp
-spec:
-  components:
-    - ../../../../components/mcp-auth/oidc
-  dependsOn:
-    - name: pocket-id-instance
-      namespace: default
-  interval: 1h
-  path: ./k8s/apps/mcp/grafana-mcp/oidc
-  postBuild:
-    substitute:
-      APP: grafana-mcp
-      MCP_HOST: grafana-mcp.cbannister.xyz
-      MCP_SCOPE: grafana:access
-      MCP_DISPLAY_NAME: Grafana MCP
-  # The app unit adopts these resources; deleting this unit must not remove them.
-  prune: false
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

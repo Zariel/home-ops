@@ -11,8 +11,8 @@ spec:
   dependsOn:
     - name: onepassword-store
       namespace: external-secrets
-    - name: netbox-mcp-oidc
-      namespace: mcp
+    - name: pocket-id-instance
+      namespace: default
     - name: envoy-gateway-operator
       namespace: network
   interval: 1h
@@ -32,34 +32,3 @@ spec:
   targetNamespace: mcp
   timeout: 5m
   wait: false
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: netbox-mcp-oidc
-  namespace: mcp
-spec:
-  components:
-    - ../../../../components/mcp-auth/oidc
-  dependsOn:
-    - name: pocket-id-instance
-      namespace: default
-  interval: 1h
-  path: ./k8s/apps/mcp/netbox-mcp/oidc
-  postBuild:
-    substitute:
-      APP: netbox-mcp
-      MCP_HOST: netbox-mcp.cbannister.xyz
-      MCP_SCOPE: netbox:access
-      MCP_DISPLAY_NAME: NetBox MCP
-  # The app unit adopts these resources; deleting this unit must not remove them.
-  prune: false
-  retryInterval: 2m
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-    namespace: flux-system
-  targetNamespace: mcp
-  timeout: 5m
-  wait: true
