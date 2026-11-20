@@ -21,6 +21,9 @@ spec:
             image:
               repository: docker.io/netboxlabs/netbox-mcp-server
               tag: 1.2.3@sha256:0a12d074d2734191b877d84aefc907ad3f3c677960dff3bc35ce8d663e9046e0
+            ports:
+              - name: http
+                containerPort: 8000
             env:
               TZ: Europe/London
               PYTHONDONTWRITEBYTECODE: "1"
@@ -69,7 +72,8 @@ spec:
         controller: netbox-mcp
         ports:
           http:
-            port: 8000
+            port: 80
+            targetPort: http
     persistence:
       tmp:
         type: emptyDir

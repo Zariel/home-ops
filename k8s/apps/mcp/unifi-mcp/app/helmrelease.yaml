@@ -21,6 +21,9 @@ spec:
             image:
               repository: ghcr.io/sirkirby/unifi-network-mcp
               tag: 0.49.1@sha256:7683750a3ea9c8d00c031d9900548efa9c23468e5ec82f85c78e57e0d52a77c5
+            ports:
+              - name: http
+                containerPort: 3000
             env:
               TZ: Europe/London
               PYTHONDONTWRITEBYTECODE: "1"
@@ -79,7 +82,8 @@ spec:
         controller: unifi-mcp
         ports:
           http:
-            port: 3000
+            port: 80
+            targetPort: http
     persistence:
       tmp:
         type: emptyDir

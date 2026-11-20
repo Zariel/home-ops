@@ -19,6 +19,9 @@ spec:
             image:
               repository: docker.io/grafana/mcp-grafana
               tag: 2.3.0@sha256:c27248b5919d09d64ea273ca1b128b32902c6796f6e2dfcd11849d4f1363f9ed
+            ports:
+              - name: http
+                containerPort: 8000
             command:
               - /app/mcp-grafana
             args:
@@ -39,7 +42,7 @@ spec:
                 spec:
                   httpGet:
                     path: /healthz
-                    port: 8000
+                    port: http
                     httpHeaders:
                       - name: Host
                         value: grafana-mcp.cbannister.xyz
@@ -68,4 +71,5 @@ spec:
         controller: grafana-mcp
         ports:
           http:
-            port: 8000
+            port: 80
+            targetPort: http

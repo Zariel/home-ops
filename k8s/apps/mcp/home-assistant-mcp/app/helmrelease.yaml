@@ -23,6 +23,9 @@ spec:
             image:
               repository: ghcr.io/homeassistant-ai/ha-mcp
               tag: 9.2.0@sha256:9de5bf6c4216142fdffe862900abe72dac8dfe9621dd0b2b050d132372b676ba
+            ports:
+              - name: http
+                containerPort: 8086
             command:
               - ha-mcp-web
             env:
@@ -78,7 +81,8 @@ spec:
         controller: home-assistant-mcp
         ports:
           http:
-            port: 8086
+            port: 80
+            targetPort: http
     persistence:
       config:
         existingClaim: home-assistant-mcp

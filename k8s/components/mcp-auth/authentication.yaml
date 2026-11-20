@@ -92,7 +92,7 @@ spec:
               - X-Grafana-URL
       backendRefs:
         - name: ${APP}
-          port: ${MCP_PORT}
+          port: 80
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1

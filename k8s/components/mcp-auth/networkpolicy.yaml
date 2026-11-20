@@ -18,5 +18,10 @@ spec:
             app.kubernetes.io/name: envoy
             gateway.envoyproxy.io/owning-gateway-name: internal
             gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts: &http
+        - ports:
+            - port: http
+              protocol: TCP
     - fromEntities:
         - host
+      toPorts: *http

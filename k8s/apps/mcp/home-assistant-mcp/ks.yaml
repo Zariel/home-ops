@@ -26,7 +26,6 @@ spec:
     substitute:
       APP: home-assistant-mcp
       MCP_HOST: home-assistant-mcp.cbannister.xyz
-      MCP_PORT: "8086"
       MCP_SCOPE: home-assistant:access
       MCP_DISPLAY_NAME: Home Assistant MCP
       VOLSYNC_CAPACITY: 1Gi
