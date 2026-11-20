@@ -32,6 +32,12 @@ spec:
               TRANSPORT: http
               HOST: 0.0.0.0
               PORT: "8000"
+              # Accept only requests that Envoy has authenticated.
+              MCP_AUTH_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: ${APP}-gateway-credential
+                    key: token
             envFrom:
               - secretRef:
                   name: netbox-mcp-secret

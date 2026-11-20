@@ -35,6 +35,12 @@ spec:
               TZ: Europe/London
               # Envoy authenticates MCP callers. Grafana grants anonymous Viewer access.
               GRAFANA_URL: http://grafana-service.monitoring.svc.cluster.local:3000
+              # Accept only requests that Envoy has authenticated.
+              MCP_GRAFANA_SERVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: ${APP}-gateway-credential
+                    key: token
             probes:
               liveness: &health
                 enabled: true

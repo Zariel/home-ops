@@ -6,4 +6,5 @@ resources:
   - api.yaml
   - authentication.yaml
   - client.yaml
+  - credential.yaml
   - networkpolicy.yaml

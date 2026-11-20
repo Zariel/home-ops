@@ -44,8 +44,11 @@ The component generates:
 - a PocketIDAPI and a public agent client, both named `${APP}`;
 - the JWT and scope SecurityPolicy, OAuth discovery route, and 401 challenge;
 - the authenticated `${APP}` HTTPRoute, which serves only `/mcp` from port 80
-  of the `${APP}` Service and removes Authorization and Grafana credential
-  headers before forwarding;
+  of the `${APP}` Service, replaces the caller's Authorization header with the
+  backend credential, and removes Grafana credential headers before forwarding;
+- the `${APP}-gateway-credential` Secret, generated once by External Secrets,
+  holding the backend bearer token as `token` and the injected header value as
+  `credential`;
 - the `${APP}-gateway` CiliumNetworkPolicy, which admits ingress to the `http`
   container port only from the internal Envoy gateway and the node.
 
@@ -62,6 +65,15 @@ register the agents' loopback callbacks on port 4321.
 Each application names its MCP container port `http` and exposes it as Service
 port 80 targeting `http`; the route and ingress policy rely on both. The
 application owns its egress policy and must not declare its own route.
+
+Envoy injects the backend credential after JWT validation and authorization.
+A server that supports a bearer token should require `token` from
+`${APP}-gateway-credential`, so a request that bypasses the gateway is rejected
+even if the ingress policy is missing. Grafana MCP (`MCP_GRAFANA_SERVER_TOKEN`)
+and NetBox MCP (`MCP_AUTH_TOKEN`) do. UniFi MCP has no caller authentication,
+and Home Assistant MCP only supports a secret path, so both rely on the ingress
+policy and ignore the injected header. Their startup warnings about
+unauthenticated HTTP are expected.
 
 A ListenerSet-level policy would apply the same static audiences and permissions
 to every attached route. The component shares the configuration while preserving

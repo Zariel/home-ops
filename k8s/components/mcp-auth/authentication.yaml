@@ -95,12 +95,18 @@ spec:
             type: Exact
             value: /mcp
       filters:
-        # Backends trust their own credentials; drop the caller's token and any
-        # headers that would let a caller override them (mcp-grafana reads X-Grafana-*).
+        # Replace the caller's token with the backend credential. Route-level
+        # header removal applies after injection, so Authorization is not listed.
+        - type: ExtensionRef
+          extensionRef:
+            group: gateway.envoyproxy.io
+            kind: HTTPRouteFilter
+            name: ${APP}-credential
+        # Backends trust their own upstream credentials; drop headers that would
+        # let a caller override them (mcp-grafana reads X-Grafana-*).
         - type: RequestHeaderModifier
           requestHeaderModifier:
             remove:
-              - Authorization
               - X-Grafana-Service-Account-Token
               - X-Grafana-API-Key
               - X-Grafana-Org-Id
