@@ -50,7 +50,8 @@ spec:
       MCP_HOST: grafana-mcp.cbannister.xyz
       MCP_SCOPE: grafana:access
       MCP_DISPLAY_NAME: Grafana MCP
-  prune: true
+  # The app unit adopts these resources; deleting this unit must not remove them.
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository

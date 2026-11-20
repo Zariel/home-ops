@@ -53,7 +53,8 @@ spec:
       MCP_HOST: unifi-mcp.cbannister.xyz
       MCP_SCOPE: unifi:access
       MCP_DISPLAY_NAME: UniFi Network MCP
-  prune: true
+  # The app unit adopts these resources; deleting this unit must not remove them.
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository

@@ -61,7 +61,8 @@ spec:
       MCP_HOST: home-assistant-mcp.cbannister.xyz
       MCP_SCOPE: home-assistant:access
       MCP_DISPLAY_NAME: Home Assistant MCP
-  prune: true
+  # The app unit adopts these resources; deleting this unit must not remove them.
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
