@@ -4,9 +4,10 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
   name: "${APP}-dst"
-  labels:
-    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
 spec:
+  # VolSync restores only when this differs from status.lastManualSync, so
+  # reapplying the same value does not restore again. Other spec changes,
+  # such as capacity, take effect at the next restore.
   trigger:
     manual: restore-once
   restic:
