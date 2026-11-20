@@ -29,9 +29,11 @@ ssh -S none -o ControlMaster=no root@am6b.cbannister.casa \
 curl --fail --silent --show-error http://am6b.cbannister.casa:9100/metrics
 ```
 
-In VictoriaMetrics, verify `up{instance="am6b.cbannister.casa:9100"} == 1`
-and that `TargetDown` resolves. A reachable SSH service does not establish
-exporter health. Disabling or uninstalling the add-on through Kodi rolls back
+While the device is awake, verify in VictoriaMetrics that
+`up{instance="am6b.cbannister.casa:9100"} == 1`. AM6B sleeps when idle, so it
+is scraped as an `availability="on-demand"` target and a failed scrape does
+not raise `TargetDown`. A reachable SSH service does not establish exporter
+health. Disabling or uninstalling the add-on through Kodi rolls back
 the device change and stops monitoring.
 
 ## Recovery on 2026-11-17

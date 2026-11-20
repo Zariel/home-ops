@@ -2,7 +2,7 @@ rule_files:
   - rules.yaml
 evaluation_interval: 1m
 tests:
-  - name: One failed target out of ten alerts after ten minutes
+  - name: One failed target out of nine alerts after ten minutes
     interval: 1m
     input_series:
       - series: up{job="node-exporter", instance="gateway.cbannister.casa:9100"}
@@ -14,8 +14,6 @@ tests:
       - series: up{job="node-exporter", instance="pbs.cbannister.casa:9100"}
         values: 1x15
       - series: up{job="node-exporter", instance="nas.cbannister.casa:9100"}
-        values: 1x15
-      - series: up{job="node-exporter", instance="am6b.cbannister.casa:9100"}
         values: 1x15
       - series: up{job="node-exporter", instance="dns1.cbannister.casa:9100"}
         values: 1x15
@@ -64,6 +62,8 @@ tests:
   - name: Powered-off on-demand targets do not alert
     interval: 1m
     input_series:
+      - series: up{job="node-exporter", instance="am6b.cbannister.casa:9100", availability="on-demand"}
+        values: 0x15
       - series: up{job="node-exporter", instance="gaming.cbannister.casa:9100", availability="on-demand"}
         values: 0x15
       - series: up{job="node-exporter", instance="bc250.cbannister.casa:9100", availability="on-demand"}
