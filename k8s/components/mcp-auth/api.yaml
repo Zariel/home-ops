@@ -6,7 +6,7 @@ metadata:
   name: ${APP}
 spec:
   name: ${MCP_DISPLAY_NAME}
-  resource: https://${MCP_HOST}/mcp
+  resource: https://${APP}.cbannister.xyz/mcp
   instanceSelector:
     matchLabels:
       pocketid.internal/instance: pocket-id

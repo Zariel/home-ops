@@ -20,7 +20,6 @@ spec:
   postBuild:
     substitute:
       APP: netbox-mcp
-      MCP_HOST: netbox-mcp.cbannister.xyz
       MCP_SCOPE: netbox:access
       MCP_DISPLAY_NAME: NetBox MCP
   prune: true

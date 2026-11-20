@@ -20,7 +20,6 @@ spec:
   postBuild:
     substitute:
       APP: unifi-mcp
-      MCP_HOST: unifi-mcp.cbannister.xyz
       MCP_SCOPE: unifi:access
       MCP_DISPLAY_NAME: UniFi Network MCP
   prune: true

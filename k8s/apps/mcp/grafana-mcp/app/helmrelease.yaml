@@ -27,7 +27,7 @@ spec:
             args:
               - --transport=streamable-http
               - --address=0.0.0.0:8000
-              - --allowed-hosts=grafana-mcp.cbannister.xyz
+              - --allowed-hosts=${APP}.cbannister.xyz
               - --disable-write
               - --enabled-tools=search,dashboard,datasource,prometheus,loki,alerting
               - --usage-stats=disabled
@@ -45,7 +45,7 @@ spec:
                     port: http
                     httpHeaders:
                       - name: Host
-                        value: grafana-mcp.cbannister.xyz
+                        value: ${APP}.cbannister.xyz
               readiness: *health
             securityContext:
               allowPrivilegeEscalation: false

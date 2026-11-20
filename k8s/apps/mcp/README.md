@@ -14,8 +14,7 @@ values through `spec.postBuild.substitute`:
 
 | Variable | Meaning |
 | --- | --- |
-| `APP` | Service, HTTPRoute, and workload name, and prefix for the generated resources |
-| `MCP_HOST` | Endpoint hostname without scheme or path |
+| `APP` | Service, HTTPRoute, and workload name, prefix for the generated resources, and endpoint host `${APP}.cbannister.xyz` |
 | `MCP_SCOPE` | The server's dedicated API permission, such as `example:access` |
 | `MCP_DISPLAY_NAME` | Human-readable service name |
 
@@ -33,10 +32,12 @@ spec:
   postBuild:
     substitute:
       APP: example-mcp
-      MCP_HOST: example-mcp.cbannister.xyz
       MCP_SCOPE: example:access
       MCP_DISPLAY_NAME: Example MCP
 ```
+
+Server manifests can use `${APP}.cbannister.xyz` wherever they need the endpoint
+host, such as allowed-host settings.
 
 The component generates:
 

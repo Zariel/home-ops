@@ -36,7 +36,7 @@ spec:
               UNIFI_MCP_HOST: 0.0.0.0
               UNIFI_MCP_PORT: "3000"
               # Internal endpoint; Envoy validates Pocket ID access tokens.
-              UNIFI_MCP_ALLOWED_HOSTS: localhost,127.0.0.1,unifi-mcp.cbannister.xyz
+              UNIFI_MCP_ALLOWED_HOSTS: localhost,127.0.0.1,${APP}.cbannister.xyz
               UNIFI_NETWORK_TOOL_PERMISSION_MODE: confirm
               # Allow Network writes while retaining the preview-and-confirm flow.
               UNIFI_POLICY_NETWORK_CREATE: "true"

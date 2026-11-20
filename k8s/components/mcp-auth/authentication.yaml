@@ -14,7 +14,7 @@ spec:
       - name: pocket-id
         issuer: https://id.cbannister.xyz
         audiences:
-          - https://${MCP_HOST}/mcp
+          - https://${APP}.cbannister.xyz/mcp
         remoteJWKS:
           uri: https://id.cbannister.xyz/.well-known/jwks.json
         extractFrom:
@@ -58,7 +58,7 @@ spec:
         header:
           set:
             - name: WWW-Authenticate
-              value: 'Bearer resource_metadata="https://${MCP_HOST}/.well-known/oauth-protected-resource/mcp", scope="openid ${MCP_SCOPE}"'
+              value: 'Bearer resource_metadata="https://${APP}.cbannister.xyz/.well-known/oauth-protected-resource/mcp", scope="openid ${MCP_SCOPE}"'
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
@@ -68,7 +68,7 @@ metadata:
   name: ${APP}
 spec:
   hostnames:
-    - ${MCP_HOST}
+    - ${APP}.cbannister.xyz
   parentRefs:
     - name: internal-cbannister-xyz
       namespace: network
@@ -101,7 +101,7 @@ metadata:
   name: ${APP}-discovery
 spec:
   hostnames:
-    - ${MCP_HOST}
+    - ${APP}.cbannister.xyz
   parentRefs:
     - name: internal-cbannister-xyz
       namespace: network
@@ -134,7 +134,7 @@ spec:
       type: Inline
       inline: |
         {
-          "resource": "https://${MCP_HOST}/mcp",
+          "resource": "https://${APP}.cbannister.xyz/mcp",
           "authorization_servers": ["https://id.cbannister.xyz"],
           "scopes_supported": ["openid", "${MCP_SCOPE}"],
           "bearer_methods_supported": ["header"],
