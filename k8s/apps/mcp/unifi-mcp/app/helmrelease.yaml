@@ -82,6 +82,9 @@ spec:
             port: 3000
     route:
       app:
+        # Kustomize takes ownership of this route; Helm must not delete it on handover.
+        annotations:
+          helm.sh/resource-policy: keep
         hostnames:
           - unifi-mcp.cbannister.xyz
         parentRefs:
