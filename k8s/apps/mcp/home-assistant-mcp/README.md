@@ -7,7 +7,7 @@ instance remains in `default`, reached at
 
 The shared [MCP authentication components](../README.md) require Pocket ID
 access tokens with the `home-assistant:access` permission and the endpoint URL
-as their audience. The public OAuth client is `home-assistant-mcp-codex`,
+as their audience. The public OAuth client is `home-assistant-mcp`,
 restricted to the `admin` group. Envoy validates client tokens and removes the
 Authorization header before forwarding requests to `ha-mcp-web`.
 
@@ -17,10 +17,10 @@ MCP; the Home Assistant account controls application permissions. The internal
 ListenerSet provides TLS, and the backend network policy admits only the
 internal Envoy gateway and node probes.
 
-Use the [Codex setup procedure](../README.md) with scope
-`home-assistant:access`, client ID `home-assistant-mcp-codex`, and the existing
-endpoint URL. After activating gaming's Codex configuration, run
-`codex mcp login home-assistant` to authorize the client.
+Use the [agent setup procedure](../README.md) with scope
+`home-assistant:access`, client ID `home-assistant-mcp`, and the existing
+endpoint URL. After activating gaming's agent configuration, sign in to the
+`home-assistant` server from each agent.
 
 The `home-assistant-mcp` PVC holds server settings, tool policy, and usage
 history. VolSync backs it up to the `home-assistant-mcp` Restic repository and

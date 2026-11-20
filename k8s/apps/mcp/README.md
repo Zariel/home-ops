@@ -40,7 +40,7 @@ spec:
 
 The component generates:
 
-- a PocketIDAPI named `${APP}` and the public Codex client `${APP}-codex`;
+- a PocketIDAPI and a public agent client, both named `${APP}`;
 - the JWT and scope SecurityPolicy, OAuth discovery route, and 401 challenge;
 - the authenticated `${APP}` HTTPRoute, which serves only `/mcp` from port 80
   of the `${APP}` Service and removes Authorization and Grafana credential
@@ -56,7 +56,7 @@ No shared controller or reconciliation unit owns application policies.
 
 These resources serve `/mcp` through the internal `internal-cbannister-xyz`
 ListenerSet, use Pocket ID's `admin` group, issue 15-minute access tokens, and
-register the Codex loopback callback at `http://127.0.0.1:4321/callback`.
+register the agents' loopback callbacks on port 4321.
 
 Each application names its MCP container port `http` and exposes it as Service
 port 80 targeting `http`; the route and ingress policy rely on both. The
@@ -79,8 +79,8 @@ The shared components implement the following for each server:
   dedicated access permission. Require that resource as the JWT audience and
   that permission as the scope in the SecurityPolicy, along with Pocket ID's
   issuer and signing keys. Extract tokens only from the Authorization header.
-- Register a public PocketIDOIDCClient for Codex with PKCE, an exact loopback
-  callback, and access restricted to the `admin` group. Grant user-delegated
+- Register a public PocketIDOIDCClient for the agents with PKCE, exact loopback
+  callbacks, and access restricted to the `admin` group. Grant user-delegated
   access to the API permission. The Pocket ID operator owns these resources;
   public clients need no client secret.
 - Serve anonymous OAuth protected-resource metadata at
@@ -101,41 +101,39 @@ ingress to the internal Envoy gateway and the node for probes.
 Keep server-side mutation confirmation enabled where supported. Human approval
 belongs to the MCP client.
 
-## Codex configuration and login
+## Agent configuration and login
 
-Use the endpoint, API permission, client ID, and callback declared by the server's
-manifests in `~/.codex/config.toml`. For example, replacing the placeholders:
+Each server has one public client, `${APP}`, shared by the coding agents. It
+accepts the loopback callbacks `http://127.0.0.1:4321/callback`, used by Codex,
+and `http://localhost:4321/callback`, used by Claude Code. Separate clients per
+agent would only separate revocation and audit; public clients have no secret.
 
-```toml
-[mcp_servers.example]
-url = "https://<server-host>/mcp"
-scopes = ["openid", "<server-access-scope>", "offline_access"]
+Agent configuration is generated from a single server list in nix-ops
+(`systems/gaming/mcp-servers.nix`), which maps each server to Codex's
+`config.toml` and Claude Code's MCP configuration. Both request the scopes
+`openid`, `${MCP_SCOPE}`, and `offline_access`, use the client ID `${APP}`, and
+listen on port 4321. The callback and fixed listener port must match the Pocket
+ID client. Pocket ID advertises issuer-bound authorization responses, allowing
+agents to reuse the exact callback. Let the agent obtain the OAuth resource from
+the gateway's discovery document; setting Codex's `oauth_resource` as well can
+duplicate the resource parameter and cause Pocket ID to reject the request. See
+the [Codex OAuth configuration](https://learn.chatgpt.com/docs/extend/mcp),
+[Claude Code MCP authentication](https://code.claude.com/docs/en/mcp), and
+[Pocket ID API access](https://pocket-id.org/docs/guides/apis).
 
-[mcp_servers.example.oauth]
-client_id = "<server-codex-client-id>"
-callback_url = "http://127.0.0.1:4321/callback"
-callback_port = 4321
-```
+After Flux has reconciled the server, sign in from the agent: run
+`codex mcp login <name>` for Codex, or select the server under `/mcp` in Claude
+Code, then complete Pocket ID sign-in. `codex mcp logout <name>` and Claude
+Code's `/mcp` menu remove locally stored credentials. The name is the server's
+key in the generated configuration.
 
-The callback and fixed listener port must match the Pocket ID client. Pocket ID
-advertises issuer-bound authorization responses, allowing Codex to reuse the
-exact callback. Let Codex obtain the OAuth resource from the gateway's discovery
-document; do not also set `oauth_resource`, which can duplicate the resource
-parameter and cause Pocket ID to reject the request. See the [Codex OAuth configuration](https://learn.chatgpt.com/docs/extend/mcp)
-and [Pocket ID API access](https://pocket-id.org/docs/guides/apis).
-
-After Flux has reconciled the server and its identity resources, run
-`codex mcp login <name>`, complete Pocket ID sign-in, and reconnect the MCP server.
-Use `codex mcp logout <name>` to remove locally stored credentials. The name is
-the key under `mcp_servers` in the local configuration.
-
-Codex stores and refreshes tokens. Access-token lifetimes are configured per
+The agents store and refresh tokens. Access-token lifetimes are configured per
 Pocket ID client; an expired access token should be renewed without another
 interactive login. Pocket ID defaults to 30 days of inactivity for refresh
 tokens, with the lifetime restarting at each refresh. See [token lifetimes](https://pocket-id.org/docs/guides/scopes-and-claims).
-Revocation, expired refresh tokens, or lost local credentials require login
-again. An already-issued access token remains valid until expiry because Envoy
-validates it locally.
+Revocation, expired refresh tokens, lost local credentials, or a recreated
+client require login again. An already-issued access token remains valid until
+expiry because Envoy validates it locally.
 
 ## Validation and rollout
 
