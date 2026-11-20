@@ -87,7 +87,9 @@ The shared components implement the following for each server:
 - Serve anonymous OAuth protected-resource metadata at
   `/.well-known/oauth-protected-resource/mcp` and
   `/.well-known/oauth-protected-resource` for an endpoint at `/mcp`. Return a
-  `WWW-Authenticate` discovery challenge with authentication failures. Keep the
+  `WWW-Authenticate` discovery challenge with authentication failures. Its
+  `scope` must include `offline_access`, because clients request the
+  challenge's scopes in preference to `scopes_supported`. Keep the
   metadata route separate from the authenticated application route.
 - Choose the route's gateway explicitly. An internal ListenerSet keeps the
   endpoint internal; public exposure requires a deliberate external route.
