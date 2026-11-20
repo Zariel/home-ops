@@ -53,8 +53,10 @@ The app component also owns the authenticated `${APP}` HTTPRoute, which serves
 only `/mcp` from the `${APP}` Service and removes Authorization and Grafana
 credential headers before forwarding. Keeping the route beside the policies that
 target it by name prevents a renamed route from losing authentication. The
-application still owns its backend network policy, including its workload
-selectors and port restrictions, and must not declare its own route.
+component's `${APP}-gateway` CiliumNetworkPolicy admits ingress only from the
+internal Envoy gateway and the node, so other workloads cannot bypass token
+validation. The application owns its egress policy and must not declare its own
+route.
 
 A ListenerSet-level policy would apply the same static audiences and permissions
 to every attached route. Components share the configuration while preserving a
@@ -90,8 +92,8 @@ The shared components implement the following for each server:
 Keep upstream application credentials under External Secrets ownership in the
 server's namespace. Gateway authentication admits clients to MCP; the upstream
 service account still determines which application operations are permitted.
-Keep a Cilium policy with each workload to admit backend traffic only from the
-internal Envoy gateway and the node for probes.
+Keep a Cilium egress policy with each workload; the shared component restricts
+ingress to the internal Envoy gateway and the node for probes.
 Keep server-side mutation confirmation enabled where supported. Human approval
 belongs to the MCP client.
 

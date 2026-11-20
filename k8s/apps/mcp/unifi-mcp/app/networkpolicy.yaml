@@ -9,24 +9,6 @@ spec:
     matchLabels:
       app.kubernetes.io/name: unifi-mcp
       app.kubernetes.io/instance: unifi-mcp
-  ingress:
-    # Require gateway token validation for access from other workloads.
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: network
-            app.kubernetes.io/name: envoy
-            gateway.envoyproxy.io/owning-gateway-name: internal
-            gateway.envoyproxy.io/owning-gateway-namespace: network
-      toPorts:
-        - ports:
-            - port: "3000"
-              protocol: TCP
-    - fromEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: "3000"
-              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:

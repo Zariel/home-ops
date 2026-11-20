@@ -9,24 +9,6 @@ spec:
     matchLabels:
       app.kubernetes.io/name: home-assistant-mcp
       app.kubernetes.io/instance: home-assistant-mcp
-  ingress:
-    # Keep workload access behind the internal gateway.
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: network
-            app.kubernetes.io/name: envoy
-            gateway.envoyproxy.io/owning-gateway-name: internal
-            gateway.envoyproxy.io/owning-gateway-namespace: network
-      toPorts:
-        - ports:
-            - port: "8086"
-              protocol: TCP
-    - fromEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: "8086"
-              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:
