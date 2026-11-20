@@ -136,7 +136,7 @@ spec:
         {
           "resource": "https://${APP}.cbannister.xyz/mcp",
           "authorization_servers": ["https://id.cbannister.xyz"],
-          "scopes_supported": ["openid", "${MCP_SCOPE}"],
+          "scopes_supported": ["openid", "${MCP_SCOPE}", "offline_access"],
           "bearer_methods_supported": ["header"],
           "resource_name": "${MCP_DISPLAY_NAME}"
         }
