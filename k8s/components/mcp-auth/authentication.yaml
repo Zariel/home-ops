@@ -64,6 +64,40 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
+  # The SecurityPolicy and BackendTrafficPolicy above target this route by name.
+  name: ${APP}
+spec:
+  hostnames:
+    - ${MCP_HOST}
+  parentRefs:
+    - name: internal-cbannister-xyz
+      namespace: network
+      kind: ListenerSet
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /mcp
+      filters:
+        # Backends trust their own credentials; drop the caller's token and any
+        # headers that would let a caller override them (mcp-grafana reads X-Grafana-*).
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            remove:
+              - Authorization
+              - X-Grafana-Service-Account-Token
+              - X-Grafana-API-Key
+              - X-Grafana-Org-Id
+              - X-Grafana-URL
+      backendRefs:
+        - name: ${APP}
+          port: ${MCP_PORT}
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
   name: ${APP}-discovery
 spec:
   hostnames:

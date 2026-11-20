@@ -23,6 +23,7 @@ the following values through `spec.postBuild.substitute` on both Kustomizations:
 | `MCP_HOST` | Endpoint hostname without scheme or path |
 | `MCP_SCOPE` | The server's dedicated API permission, such as `example:access` |
 | `MCP_DISPLAY_NAME` | Human-readable service name |
+| `MCP_PORT` | Port of the `${APP}` Service; the app unit only |
 
 For example, the app Flux Kustomization contains:
 
@@ -36,6 +37,7 @@ spec:
       MCP_HOST: example-mcp.cbannister.xyz
       MCP_SCOPE: example:access
       MCP_DISPLAY_NAME: Example MCP
+      MCP_PORT: "8000"
 ```
 
 Use the `mcp-auth/oidc` component with the same identity values in the identity
@@ -47,9 +49,12 @@ resources. No shared controller or reconciliation unit owns application policies
 These components serve `/mcp` through the internal `internal-cbannister-xyz`
 ListenerSet, use Pocket ID's `admin` group, issue 15-minute access tokens, and
 register the Codex loopback callback at `http://127.0.0.1:4321/callback`.
-The application still owns its HTTPRoute and backend network policy, including
-its workload selectors and port restrictions. It must remove Authorization before
-forwarding to a backend that does not consume OAuth tokens.
+The app component also owns the authenticated `${APP}` HTTPRoute, which serves
+only `/mcp` from the `${APP}` Service and removes Authorization and Grafana
+credential headers before forwarding. Keeping the route beside the policies that
+target it by name prevents a renamed route from losing authentication. The
+application still owns its backend network policy, including its workload
+selectors and port restrictions, and must not declare its own route.
 
 A ListenerSet-level policy would apply the same static audiences and permissions
 to every attached route. Components share the configuration while preserving a

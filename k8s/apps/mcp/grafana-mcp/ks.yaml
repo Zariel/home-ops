@@ -18,6 +18,7 @@ spec:
     substitute:
       APP: grafana-mcp
       MCP_HOST: grafana-mcp.cbannister.xyz
+      MCP_PORT: "8000"
       MCP_SCOPE: grafana:access
       MCP_DISPLAY_NAME: Grafana MCP
   prune: true

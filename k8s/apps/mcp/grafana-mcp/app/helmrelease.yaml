@@ -69,32 +69,3 @@ spec:
         ports:
           http:
             port: 8000
-    route:
-      app:
-        # Kustomize takes ownership of this route; Helm must not delete it on handover.
-        annotations:
-          helm.sh/resource-policy: keep
-        hostnames:
-          - grafana-mcp.cbannister.xyz
-        parentRefs:
-          - name: internal-cbannister-xyz
-            namespace: network
-            kind: ListenerSet
-            sectionName: https
-        rules:
-          - matches:
-              - path:
-                  type: Exact
-                  value: /mcp
-            filters:
-              - type: RequestHeaderModifier
-                requestHeaderModifier:
-                  remove:
-                    - Authorization
-                    - X-Grafana-Service-Account-Token
-                    - X-Grafana-API-Key
-                    - X-Grafana-Org-Id
-                    - X-Grafana-URL
-            backendRefs:
-              - identifier: app
-                port: http

@@ -21,6 +21,7 @@ spec:
     substitute:
       APP: unifi-mcp
       MCP_HOST: unifi-mcp.cbannister.xyz
+      MCP_PORT: "3000"
       MCP_SCOPE: unifi:access
       MCP_DISPLAY_NAME: UniFi Network MCP
   prune: true
