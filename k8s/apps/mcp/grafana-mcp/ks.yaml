@@ -28,4 +28,4 @@ spec:
     namespace: flux-system
   targetNamespace: mcp
   timeout: 5m
-  wait: true
+  wait: false
