@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: rook-ceph-operator
+  namespace: rook-ceph
+spec:
+  # The Ceph daemons use host networking, so only the operator's side of the
+  # connection is enforced. The operator serves nothing and has no probes.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app: rook-ceph-operator
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # The API server, monitors and RGW listen on the node addresses. Cilium
+    # labels the local node host, and other nodes remote-node or kube-apiserver.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+            # Monitors, msgr2 only.
+            - port: "3300"
+              protocol: TCP
+            # RGW admin operations for object store users and buckets.
+            - port: "80"
+              protocol: TCP
+    # OSDs and managers bind to the Ceph public network.
+    - toCIDR:
+        - 10.254.3.0/29
+      toPorts:
+        - ports:
+            - port: "6800"
+              endPort: 7300
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: rook-discover
+  namespace: rook-ceph
+spec:
+  # Device discovery reports to ConfigMaps through the API server only.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app: rook-discover
+  egress:
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
