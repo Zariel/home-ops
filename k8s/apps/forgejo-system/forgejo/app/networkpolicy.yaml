@@ -47,6 +47,16 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Push mirrors to GitHub over SSH.
+    - toFQDNs:
+        - matchName: github.com
+      toPorts:
+        - ports:
+            - port: "22"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: default
