@@ -37,6 +37,10 @@ spec:
               limits:
                 memory: 2Gi
     defaultPodOptions:
+      automountServiceAccountToken: false
+      labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{

@@ -1,0 +1,54 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: home-assistant
+  namespace: default
+spec:
+  # Pod labels select the shared baselines: cbannister.xyz/ingress admits the
+  # internal gateway and kubelet probes; cbannister.xyz/egress grants DNS and
+  # public internet egress for cloud integrations.
+  # Cilium enforces only on eth0. The Multus interfaces give direct access to
+  # the trusted LAN and IoT networks, where most devices live.
+  # Fail closed: removing a baseline label must not open the workload.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: home-assistant
+      app.kubernetes.io/instance: home-assistant
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: mcp
+            app.kubernetes.io/name: home-assistant-mcp
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: matterjs
+      toPorts:
+        - ports:
+            - port: "5580"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: otbr
+      toPorts:
+        - ports:
+            - port: "8081"
+              protocol: TCP
+    # Ollama on ash.cbannister.casa.
+    - toCIDR:
+        - 10.1.1.55/32
+      toPorts:
+        - ports:
+            - port: "11434"
+              protocol: TCP
