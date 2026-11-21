@@ -20,13 +20,14 @@ spec:
           app:
             image:
               repository: ghcr.io/zariel/netbox-mcp
-              tag: 0.1.0@sha256:e546eb0a01772b998fa9053dea973a7ef3477ed35994e7d3eacb6ddf010c0427
+              tag: 0.1.1@sha256:f0443501db00e59d5b2ca40a8e0c8f69ebdb27c566406fa028a94b2d1998fdce
             ports:
               - name: http
                 containerPort: 8000
             env:
               TZ: Europe/London
               NETBOX_URL: http://netbox.default.svc.cluster.local
+              NETBOX_PUBLIC_URL: https://netbox.cbannister.xyz
               # Accept only requests that Envoy has authenticated.
               MCP_AUTH_TOKEN:
                 valueFrom:

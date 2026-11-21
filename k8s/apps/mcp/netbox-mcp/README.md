@@ -19,7 +19,8 @@ hourly, and Reloader restarts the server when the Secret changes.
 Envoy validates client tokens and removes the Authorization header before
 forwarding requests. The backend network policy admits only the internal Envoy
 gateway and node probes. The server connects to NetBox's cluster Service and
-stores no persistent data.
+stores no persistent data. `NETBOX_PUBLIC_URL` makes the links in NetBox's
+responses name <https://netbox.cbannister.xyz> rather than the Service.
 
 Use the [client setup and validation procedure](../README.md) with hostname
 `netbox-mcp.cbannister.xyz`, scope `netbox:access`, and client ID
