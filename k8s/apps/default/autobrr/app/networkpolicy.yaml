@@ -1,0 +1,95 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: autobrr
+  namespace: default
+spec:
+  # DNS and public internet egress, and egress default-deny, come from the
+  # internet-egress baseline via the pod label cbannister.xyz/egress.
+  endpointSelector:
+    matchLabels:
+      app: autobrr
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts: &web
+        - ports:
+            - port: "80"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9074"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *web
+  egress:
+    # Download clients and indexer downloads.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: sonarr
+      toPorts:
+        - ports:
+            - port: "8989"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: radarr
+      toPorts:
+        - ports:
+            - port: "7878"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: prowlarr
+      toPorts:
+        - ports:
+            - port: "9696"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: qui
+        # autoannounce.sh calls the qBittorrent API directly.
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: qbittorrent
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+    # IRC announce channels are reached through the ZNC bouncer.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: znc
+      toPorts:
+        - ports:
+            - port: "6697"
+              protocol: TCP
+    # The OIDC issuer, id.cbannister.xyz, is served only by the internal
+    # gateway. This also reaches other internal routes; gateway routing, not
+    # this rule, limits which hostnames respond.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "10443"
+              protocol: TCP

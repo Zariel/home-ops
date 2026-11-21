@@ -14,10 +14,12 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: *name
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
+      automountServiceAccountToken: false
       hostname: *name
       priorityClassName: cluster-p1
       securityContext:

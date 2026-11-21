@@ -8,6 +8,7 @@ resources:
   - servicemonitor.yaml
   - httproute.yaml
   - externalsecret.yaml
+  - networkpolicy.yaml
 configMapGenerator:
   - name: autobrr-scripts
     files:
