@@ -20,7 +20,6 @@
   ignorePaths: [
     '**/*.sops.*',
     '**/resources/**',
-    '**/ansible/**',
   ],
   nix: {
     enabled: true,

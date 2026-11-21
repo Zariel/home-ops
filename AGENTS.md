@@ -8,15 +8,13 @@
 
 ## Repository Structure
 - Kubernetes GitOps configuration lives in `k8s/`: `bootstrap/` for initial bootstrap, `flux/` for cluster-level Flux resources, `apps/` for workloads, and `components/` for reusable Kustomize components.
-- Katl configuration lives in `katl/`. Ansible playbooks and inventory live under `ansible/main/`.
+- Katl node configuration lives in `katl/`; its tasks build and publish the Matchbox PXE bundle.
 - Task automation starts at `Taskfile.yaml`, with task groups under `.taskfiles/`.
 - `age.key`, `kubeconfig`, and `*.katlkey`, `*.katlcfg`, and `katl/.local/` are ignored local credentials/configuration. Never commit them.
 
 ## Common Commands
 - List tasks: `task`
-- Set up Ansible: `task ansible:venv`
-- Run a playbook: `task ansible:run playbook=<name> -- --extra-vars "cluster=<id>"`
-- Configure Matchbox: `task ansible:matchbox -- --extra-vars "cluster=<id>"`
+- Build the Matchbox PXE bundle: `task katl:matchbox:bundle`; publishing it with `task katl:matchbox:push destination=<path>` serves auto-install profiles and needs operator direction.
 - Validate Katl configuration: `task katl:validate`
 
 Prefer task wrappers so repository paths, `KUBECONFIG`, and `SOPS_AGE_KEY_FILE` are set consistently.
@@ -32,13 +30,11 @@ Prefer task wrappers so repository paths, `KUBECONFIG`, and `SOPS_AGE_KEY_FILE` 
 - Use 2-space indentation in YAML. Set namespaces in resources or their owning Kustomization and verify rendered namespaces.
 - Use Kustomize components for genuinely shared configuration, notably `k8s/components/common` and `k8s/components/volsync`.
 - Encrypted secrets must match a creation rule in `.sops.yaml`; never add plaintext secrets.
-- Follow `ansible/.ansible-lint` and prefer Ansible modules over raw shell or command tasks.
 
 ## Validation
 - Render each changed Kustomization with `kubectl kustomize <path>`.
 - When cluster-aware validation is useful, run `kubectl apply --dry-run=server -k <path>`; do not use a non-dry-run apply for GitOps-managed resources.
 - Ensure required CRDs exist and add `spec.dependsOn` only when reconciliation ordering is required.
-- For Ansible, use `--check --diff --limit <host-or-group>` when the playbook supports check mode. Start with the narrowest target.
 
 ## Git and Pull Requests
 - Use `jj` when `.jj` exists; otherwise use Git. Preserve unrelated changes and keep one logical change per commit.

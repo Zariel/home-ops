@@ -6,7 +6,6 @@ version: "3"
 # Ref: https://github.com/go-task/task/issues/1038
 
 vars:
-  ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
   KUBERNETES_DIR: "{{.ROOT_DIR}}/k8s"
 
 env:
@@ -14,7 +13,6 @@ env:
   SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
 
 includes:
-  ansible: .taskfiles/Ansible/Taskfile.yaml
   bootstrap: .taskfiles/Bootstrap/Taskfile.yaml
   # external-secrets: .taskfiles/ExternalSecrets/Taskfile.yaml
   # flux: .taskfiles/Flux/Taskfile.yaml
