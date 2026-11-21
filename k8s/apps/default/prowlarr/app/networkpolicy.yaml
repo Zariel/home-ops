@@ -21,7 +21,13 @@ spec:
             gateway.envoyproxy.io/owning-gateway-namespace: network
         - matchLabels:
             io.kubernetes.pod.namespace: default
-            app.kubernetes.io/name: sonarr
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                # qui searches indexers for cross-seeding.
+                - qui
+                - sonarr
         - matchLabels:
             io.kubernetes.pod.namespace: default
           matchExpressions:

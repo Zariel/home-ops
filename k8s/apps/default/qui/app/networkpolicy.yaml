@@ -63,3 +63,12 @@ spec:
         - ports:
             - port: "7878"
               protocol: TCP
+    # Indexer searches.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: prowlarr
+      toPorts:
+        - ports:
+            - port: "9696"
+              protocol: TCP
