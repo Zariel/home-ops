@@ -15,10 +15,12 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: *app
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
+      automountServiceAccountToken: false
       hostname: *app
       volumes:
         - name: config
