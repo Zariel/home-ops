@@ -10,9 +10,6 @@ spec:
       app.kubernetes.io/name: envoy
       gateway.envoyproxy.io/owning-gateway-name: external
       gateway.envoyproxy.io/owning-gateway-namespace: network
-  # Staged: allow rules are evaluated but unmatched egress is not yet dropped.
-  enableDefaultDeny:
-    egress: false
   egress:
     # Any namespace can attach routes to the external listener. A backend is
     # reachable only after its Service opts in, so attaching a route alone
