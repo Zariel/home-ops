@@ -23,6 +23,10 @@ spec:
             app.kubernetes.io/name: envoy
             gateway.envoyproxy.io/owning-gateway-name: external
             gateway.envoyproxy.io/owning-gateway-namespace: network
+        # Maintainerr reads requests to decide what to keep.
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: maintainerr
       toPorts: &http
         - ports:
             - port: "80"
