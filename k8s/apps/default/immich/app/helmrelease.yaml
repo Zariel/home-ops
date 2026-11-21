@@ -225,6 +225,10 @@ spec:
               - secretRef:
                   name: immich-initdb
     defaultPodOptions:
+      labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
+        cbannister.xyz/egress-internal-gateway: "true"
       enableServiceLinks: false
       securityContext:
         runAsNonRoot: true

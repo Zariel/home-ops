@@ -8,6 +8,7 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./resourceclaimtemplate-ml-gpu.yaml
+  - ./networkpolicy.yaml
 configMapGenerator:
   - name: immich-initdb
     files:
