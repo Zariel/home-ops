@@ -14,6 +14,7 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: qbittorrent
       annotations:
         reloader.stakater.com/auto: "true"

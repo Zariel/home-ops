@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: internet-egress
+spec:
+  description: >-
+    Egress baseline for workloads handling untrusted traffic: DNS and the
+    public internet. Selecting a pod enables egress default-deny, so the
+    cluster, the LAN and both gateways need explicit rules in the
+    workload's own policy.
+  endpointSelector:
+    matchLabels:
+      cbannister.xyz/egress: internet
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # An allow rule cannot be narrowed by another policy, so workloads with
+    # tighter internet allowlists, such as Plex, do not use this label.
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 100.64.0.0/10
+            - 169.254.0.0/16
+            - 172.16.0.0/12
+            - 192.168.0.0/16

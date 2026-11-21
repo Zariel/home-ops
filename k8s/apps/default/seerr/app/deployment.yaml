@@ -21,6 +21,7 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app.kubernetes.io/component: seerr
         app.kubernetes.io/instance: seerr
         app.kubernetes.io/name: seerr

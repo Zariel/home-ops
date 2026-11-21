@@ -31,6 +31,7 @@ spec:
         pod:
           labels:
             app.kubernetes.io/component: application
+            cbannister.xyz/egress: internet
         containers:
           app:
             image:
@@ -109,6 +110,7 @@ spec:
             runAsGroup: 65534
           labels:
             app.kubernetes.io/component: chrome
+            cbannister.xyz/egress: internet
         containers:
           app:
             env:

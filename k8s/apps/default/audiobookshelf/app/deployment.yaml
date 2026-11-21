@@ -18,6 +18,7 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app.kubernetes.io/name: audiobookshelf
         app.kubernetes.io/instance: audiobookshelf
     spec:

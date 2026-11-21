@@ -47,3 +47,26 @@ spec:
   interval: 1h
   retryInterval: 2m
   timeout: 5m
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &name cilium-policies
+  namespace: kube-system
+spec:
+  # Cluster-scoped policies only; no target namespace.
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *name
+  dependsOn:
+    - name: cilium
+  path: ./k8s/apps/kube-system/cilium/policies
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
