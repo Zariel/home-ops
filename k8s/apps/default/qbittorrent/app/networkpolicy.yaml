@@ -55,3 +55,9 @@ spec:
     - fromEntities:
         - host
       toPorts: *web
+  # Some peers advertise shared-address-space (CGNAT/Tailscale) addresses,
+  # which the internet egress baseline excludes. Deny them explicitly so the
+  # drops report POLICY_DENY rather than a missing allow rule.
+  egressDeny:
+    - toCIDR:
+        - 100.64.0.0/10
