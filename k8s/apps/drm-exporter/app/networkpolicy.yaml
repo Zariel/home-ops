@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: drm-exporter
+  namespace: drm-exporter
+spec:
+  # The exporter reads local device state and connects to nothing.
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: drm-exporter
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &metrics
+        - ports:
+            - port: "8081"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *metrics
+  egress:
+    - {}

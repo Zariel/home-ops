@@ -5,3 +5,4 @@ kind: Kustomization
 namespace: drm-exporter
 resources:
   - helmrelease.yaml
+  - networkpolicy.yaml
