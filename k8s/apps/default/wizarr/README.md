@@ -10,7 +10,7 @@ The `wizarr` SecurityPolicy protects the default HTTPRoute, including `/login`, 
 
 Wizarr's proxy SSO uses its built-in administrator identity. Pocket ID groups control admission to administration; they are not synchronized into Wizarr or Jellyfin. Use `/logout` to clear the gateway session. Your Pocket ID browser session is separate.
 
-The ingress policy allows only the external Envoy pods and hosting node to reach TCP `5690`. Keep that restriction in place when `DISABLE_BUILTIN_AUTH` is enabled: Wizarr trusts requests that reach its login endpoint. A Kubernetes port-forward bypasses gateway authentication and is reserved for operators with cluster access.
+The ingress policy allows only the external Envoy pods and hosting node to reach TCP `5690`. Keep that restriction in place when `DISABLE_BUILTIN_AUTH` is enabled: Wizarr trusts requests that reach its login endpoint. A Kubernetes port-forward bypasses gateway authentication and is reserved for operators with cluster access. Outbound connections are limited to DNS, Jellyfin and the public internet.
 
 ## Invite viewers
 
