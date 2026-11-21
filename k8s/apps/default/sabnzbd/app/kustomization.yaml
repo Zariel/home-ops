@@ -8,6 +8,7 @@ resources:
   - service.yaml
   - httproute.yaml
   - externalsecret.yaml
+  - networkpolicy.yaml
 configMapGenerator:
   - name: sabnzbd-scripts
     files:

@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: sabnzbd
+  namespace: default
+spec:
+  # DNS and public internet egress, and egress default-deny, come from the
+  # internet-egress baseline via the pod label cbannister.xyz/egress. Usenet
+  # providers and indexers are public; sabnzbd has no cluster or LAN
+  # dependencies.
+  endpointSelector:
+    matchLabels:
+      app: sabnzbd
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: sonarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - radarr
+                # sabnzbd has a prowlarr category for manual grabs.
+                - prowlarr
+      toPorts: &web
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *web

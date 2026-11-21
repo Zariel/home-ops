@@ -16,8 +16,10 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: sabnzbd
     spec:
+      automountServiceAccountToken: false
       hostname: sabnzbd
       volumes:
         - name: arr-media
