@@ -1,3 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/service_v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: qbittorrent
+  name: qbittorrent
+spec:
+  selector:
+    app: qbittorrent
+  type: ClusterIP
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/service_v1.json
 apiVersion: v1
 kind: Service
@@ -5,19 +24,18 @@ metadata:
   labels:
     app: qbittorrent
   annotations:
+    # The router forwards the torrenting port to this address.
     lbipam.cilium.io/ips: 10.45.0.24
-  name: qbittorrent
+  name: qbittorrent-bittorrent
 spec:
   selector:
     app: qbittorrent
   type: LoadBalancer
+  # Preserves peer addresses for the network policy.
   externalTrafficPolicy: Local
   ipFamilies:
     - IPv4
   ports:
-    - name: http
-      port: 80
-      protocol: TCP
     - name: bt-tcp
       port: 50413
       protocol: TCP
