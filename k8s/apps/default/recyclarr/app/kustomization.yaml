@@ -5,6 +5,7 @@ resources:
   - deployment.yaml
   - pvc.yaml
   - externalsecret.yaml
+  - networkpolicy.yaml
 configMapGenerator:
   - name: recyclarr-includes
     files:

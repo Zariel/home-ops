@@ -19,6 +19,8 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
         app.kubernetes.io/component: maintainerr
         app.kubernetes.io/instance: maintainerr
         app.kubernetes.io/name: maintainerr

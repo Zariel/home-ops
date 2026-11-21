@@ -8,6 +8,7 @@ resources:
   - httproute.yaml
   - pvc.yaml
   - externalsecret.yaml
+  - networkpolicy.yaml
 configMapGenerator:
   - name: tautulli-scripts
     files:

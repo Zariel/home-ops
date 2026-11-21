@@ -17,7 +17,10 @@ spec:
     type: Recreate
   template:
     metadata:
-      labels: *labels
+      labels:
+        cbannister.xyz/egress: internet
+        app.kubernetes.io/instance: cleanrr
+        app.kubernetes.io/name: cleanrr
     spec:
       automountServiceAccountToken: false
       containers:

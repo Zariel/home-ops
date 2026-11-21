@@ -7,3 +7,4 @@ resources:
   - externalsecret.yaml
   - service.yaml
   - servicemonitor.yaml
+  - networkpolicy.yaml

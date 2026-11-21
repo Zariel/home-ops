@@ -13,6 +13,10 @@ spec:
     matchLabels:
       app.kubernetes.io/name: tautulli
   template:
+    metadata:
+      labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
     spec:
       containers:
         - name: tautulli
