@@ -33,6 +33,12 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
+        sysctls:
+          # Roon is reachable over IPv4; router advertisements on the trusted
+          # LAN would otherwise install an IPv6 default route around network
+          # policy.
+          - name: net.ipv6.conf.net1.disable_ipv6
+            value: "1"
       containers:
         - name: app
           image: ghcr.io/roethlar/songr:v1.4.7@sha256:344c5b341281f9be49ea030c5104aa3793ba7d87ddde42374c23b0e8f03b4f62
