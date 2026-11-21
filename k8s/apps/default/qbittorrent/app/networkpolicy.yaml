@@ -6,6 +6,8 @@ metadata:
   name: qbittorrent
   namespace: default
 spec:
+  # DNS and public internet egress, and egress default-deny, come from the
+  # internet-egress baseline via the pod label cbannister.xyz/egress.
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: qbittorrent
@@ -47,25 +49,3 @@ spec:
     - fromEntities:
         - host
       toPorts: *web
-  egress:
-    - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-            k8s-app: kube-dns
-      toPorts:
-        - ports:
-            - port: "53"
-              protocol: UDP
-            - port: "53"
-              protocol: TCP
-    # Peers and trackers use arbitrary public ports over TCP and UDP. The
-    # cluster, LAN and gateway addresses are trusted networks that a workload
-    # handling untrusted peer traffic must not reach.
-    - toCIDRSet:
-        - cidr: 0.0.0.0/0
-          except:
-            - 10.0.0.0/8
-            - 100.64.0.0/10
-            - 169.254.0.0/16
-            - 172.16.0.0/12
-            - 192.168.0.0/16
