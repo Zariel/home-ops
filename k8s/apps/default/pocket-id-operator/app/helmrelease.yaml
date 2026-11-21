@@ -29,6 +29,10 @@ spec:
     kind: OCIRepository
     name: pocket-id-operator
   values:
+    operator:
+      labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/egress-internal-gateway: "true"
     instance:
       enabled: false
     metrics:
