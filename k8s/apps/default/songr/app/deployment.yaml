@@ -17,14 +17,6 @@ spec:
         cbannister.xyz/egress: internet
         cbannister.xyz/ingress: internal-gateway
         app.kubernetes.io/name: songr
-      annotations:
-        k8s.v1.cni.cncf.io/networks: |-
-          [{
-            "name": "trusted-lan",
-            "namespace": "kube-system",
-            "ips": ["10.1.2.161/24"],
-            "mac": "02:b4:5f:2a:9d:63"
-          }]
     spec:
       hostname: songr
       securityContext:
@@ -35,12 +27,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
-        sysctls:
-          # Roon is reachable over IPv4; router advertisements on the trusted
-          # LAN would otherwise install an IPv6 default route around network
-          # policy.
-          - name: net.ipv6.conf.net1.disable_ipv6
-            value: "1"
       containers:
         - name: app
           image: ghcr.io/roethlar/songr:v1.4.7@sha256:344c5b341281f9be49ea030c5104aa3793ba7d87ddde42374c23b0e8f03b4f62
@@ -48,6 +34,11 @@ spec:
           env:
             - name: TZ
               value: Europe/London
+            # Songr discovers the Core only on its own subnet until
+            # https://github.com/roethlar/songr/pull/27 adds direct connections;
+            # until then it cannot find Roon.
+            - name: ROON_CORE_HOST
+              value: rock.cbannister.casa
             - name: CONFIG_DIR
               value: /persist/config
             - name: DATA_DIR
