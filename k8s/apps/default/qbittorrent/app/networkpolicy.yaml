@@ -41,7 +41,13 @@ spec:
                 - sonarr
         - matchLabels:
             io.kubernetes.pod.namespace: default
-            app: radarr
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                # autobrr's autoannounce.sh calls the API directly.
+                - autobrr
+                - radarr
       toPorts: &web
         - ports:
             - port: "80"
