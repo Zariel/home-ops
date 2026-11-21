@@ -1,0 +1,74 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: prowlarr
+  namespace: default
+spec:
+  # DNS and public internet egress, and egress default-deny, come from the
+  # internet-egress baseline via the pod label cbannister.xyz/egress. Indexers
+  # are public.
+  endpointSelector:
+    matchLabels:
+      app: prowlarr
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: sonarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - autobrr
+                - radarr
+      toPorts: &web
+        - ports:
+            - port: "9696"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *web
+  egress:
+    # Application sync.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: sonarr
+      toPorts:
+        - ports:
+            - port: "8989"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: radarr
+      toPorts:
+        - ports:
+            - port: "7878"
+              protocol: TCP
+    # Manual grabs.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: qbittorrent
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: sabnzbd
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

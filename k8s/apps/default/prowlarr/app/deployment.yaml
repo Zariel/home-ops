@@ -12,8 +12,10 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: prowlarr
     spec:
+      automountServiceAccountToken: false
       hostname: prowlarr
       volumes:
         - name: config
