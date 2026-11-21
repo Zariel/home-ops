@@ -1,0 +1,145 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  # The controller holds the Cloudflare token and the ACME account keys, so its
+  # egress is an allowlist rather than the internet baseline.
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: cert-manager
+      app.kubernetes.io/component: controller
+  ingress:
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "9403"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9402"
+              protocol: TCP
+  egress:
+    # The API server listens on the node addresses. Cilium labels the local
+    # node host, and other nodes remote-node or kube-apiserver.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # ACME and the Cloudflare DNS-01 solver.
+    - toFQDNs:
+        - matchName: acme-v02.api.letsencrypt.org
+        - matchName: acme-staging-v02.api.letsencrypt.org
+        - matchName: api.cloudflare.com
+      toPorts: &https
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # DNS-01 propagation checks use only these DNS-over-HTTPS resolvers
+    # (dns01RecursiveNameserversOnly).
+    - toCIDR:
+        - 1.1.1.1/32
+        - 1.0.0.1/32
+      toPorts: *https
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cert-manager-cainjector
+  namespace: cert-manager
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: cainjector
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9402"
+              protocol: TCP
+  egress:
+    # The API server listens on the node addresses. Cilium labels the local
+    # node host, and other nodes remote-node or kube-apiserver.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cert-manager-webhook
+  namespace: cert-manager
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: webhook
+  ingress:
+    # Admission webhooks from the API server, and kubelet probes.
+    - fromEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "10250"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "6080"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9402"
+              protocol: TCP
+  egress:
+    # The API server listens on the node addresses. Cilium labels the local
+    # node host, and other nodes remote-node or kube-apiserver.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
