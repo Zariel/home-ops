@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: barman-cloud
+  namespace: cnpg-system
+spec:
+  # The operator-side plugin. Backups run in the sidecars of the Postgres
+  # instances, which reach object storage themselves.
+  endpointSelector:
+    matchLabels:
+      app: barman-cloud
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: cnpg-system
+            app.kubernetes.io/name: cloudnative-pg
+      toPorts: &grpc
+        - ports:
+            - port: "9090"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *grpc
+  # The API server listens on the node addresses. Cilium labels the local node
+  # host, and other nodes remote-node or kube-apiserver.
+  egress:
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
