@@ -18,6 +18,7 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
+      automountServiceAccountToken: false
       hostname: qbittorrent
       priorityClassName: cluster-p1
       volumes:
