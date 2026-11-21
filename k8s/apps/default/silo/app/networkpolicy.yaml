@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: silo
+  namespace: default
+spec:
+  # Pod labels select the shared policies listed in k8s/README.md. Each
+  # direction has its own rule, so removing a label cannot open the workload.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: silo
+  ingress:
+    - {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: database
+            cnpg.io/cluster: pg18vc
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP

@@ -16,6 +16,9 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
+        cbannister.xyz/egress-ollama: "true"
         app.kubernetes.io/name: silo
     spec:
       automountServiceAccountToken: false

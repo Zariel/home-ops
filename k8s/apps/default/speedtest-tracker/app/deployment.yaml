@@ -14,6 +14,9 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
+        cbannister.xyz/egress-internal-gateway: "true"
         app.kubernetes.io/name: speedtest-tracker
       annotations:
         reloader.stakater.com/auto: "true"

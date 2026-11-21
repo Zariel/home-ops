@@ -17,6 +17,9 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
+        cbannister.xyz/egress-internal-gateway: "true"
         app.kubernetes.io/name: pdm
     spec:
       hostname: pdm

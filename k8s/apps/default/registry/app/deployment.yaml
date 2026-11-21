@@ -16,6 +16,7 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/ingress: internal-gateway
         app: registry
     spec:
       securityContext:

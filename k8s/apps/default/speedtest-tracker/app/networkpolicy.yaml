@@ -4,24 +4,17 @@ apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
   name: speedtest-tracker
+  namespace: default
 spec:
+  # Pod labels select the shared policies listed in k8s/README.md. Each
+  # direction has its own rule, so removing a label cannot open the workload.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: speedtest-tracker
   ingress:
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: network
-            app.kubernetes.io/name: envoy
-            gateway.envoyproxy.io/owning-gateway-name: internal
-            gateway.envoyproxy.io/owning-gateway-namespace: network
-      toPorts:
-        - ports:
-            - port: "80"
-              protocol: TCP
-    - fromEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: "80"
-              protocol: TCP
+    - {}
+  egress:
+    - {}

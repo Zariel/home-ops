@@ -4,23 +4,32 @@ apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
   name: jellystat
+  namespace: default
 spec:
+  # Pod labels select the shared policies listed in k8s/README.md. Each
+  # direction has its own rule, so removing a label cannot open the workload.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: jellystat
   ingress:
-    - fromEndpoints:
+    - {}
+  egress:
+    - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: network
-            app.kubernetes.io/name: envoy
-            gateway.envoyproxy.io/owning-gateway-name: internal
-            gateway.envoyproxy.io/owning-gateway-namespace: network
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: jellyfin
       toPorts:
         - ports:
-            - port: "3000"
+            - port: "8096"
               protocol: TCP
-    - fromEntities: [host]
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: database
+            cnpg.io/cluster: pg18vc
       toPorts:
         - ports:
-            - port: "3000"
+            - port: "5432"
               protocol: TCP

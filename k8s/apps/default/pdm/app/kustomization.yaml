@@ -12,6 +12,7 @@ resources:
   - httproute.yaml
   - backendtlspolicy.yaml
   - oidc-client.yaml
+  - networkpolicy.yaml
 configMapGenerator:
   - name: pdm-access
     files:
