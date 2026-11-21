@@ -1,8 +1,9 @@
 # NetBox MCP
 
-The [NetBox Labs MCP server](https://github.com/netboxlabs/netbox-mcp-server)
-provides read-only NetBox tools at <https://netbox-mcp.cbannister.xyz/mcp> through
-the internal gateway. It has no native Pocket ID OAuth integration; the shared
+[netbox-mcp](https://github.com/zariel/netbox-mcp) lets agents read and manage
+NetBox at <https://netbox-mcp.cbannister.xyz/mcp> through the internal gateway.
+Its write tools apply changes directly; approval of each tool call belongs to
+the MCP client. It has no native Pocket ID OAuth integration; the shared
 [MCP authentication components](../README.md) validate Pocket ID tokens and
 require the `netbox:access` permission. The public OAuth client is
 `netbox-mcp`, restricted to the `admin` group.

@@ -19,19 +19,14 @@ spec:
         containers:
           app:
             image:
-              repository: docker.io/netboxlabs/netbox-mcp-server
-              tag: 1.3.0@sha256:79298525676fa907cdc30cf9ce7b24beeee08ae4671f17bf2b36f972855e858c
+              repository: ghcr.io/zariel/netbox-mcp
+              tag: 0.1.0@sha256:e546eb0a01772b998fa9053dea973a7ef3477ed35994e7d3eacb6ddf010c0427
             ports:
               - name: http
                 containerPort: 8000
             env:
               TZ: Europe/London
-              PYTHONDONTWRITEBYTECODE: "1"
-              HOME: /tmp
               NETBOX_URL: http://netbox.default.svc.cluster.local
-              TRANSPORT: http
-              HOST: 0.0.0.0
-              PORT: "8000"
               # Accept only requests that Envoy has authenticated.
               MCP_AUTH_TOKEN:
                 valueFrom:
@@ -80,6 +75,3 @@ spec:
           http:
             port: 80
             targetPort: http
-    persistence:
-      tmp:
-        type: emptyDir
