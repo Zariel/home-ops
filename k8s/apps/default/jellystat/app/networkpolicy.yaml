@@ -20,7 +20,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: default
-            app.kubernetes.io/name: jellyfin
+            app: jellyfin
       toPorts:
         - ports:
             - port: "8096"

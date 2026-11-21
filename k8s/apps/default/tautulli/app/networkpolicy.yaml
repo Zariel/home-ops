@@ -27,7 +27,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: default
-            app.kubernetes.io/name: plex
+            app: plex
       toPorts:
         - ports:
             - port: "32400"
