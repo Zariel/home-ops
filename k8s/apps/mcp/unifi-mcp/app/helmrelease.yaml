@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/sirkirby/unifi-network-mcp
-              tag: 0.49.1@sha256:7683750a3ea9c8d00c031d9900548efa9c23468e5ec82f85c78e57e0d52a77c5
+              tag: 0.50.0@sha256:86ccf7729ec8a89e47fe08cf3a2904d4d0aba1543202ba061222d89638b494b6
             ports:
               - name: http
                 containerPort: 3000
