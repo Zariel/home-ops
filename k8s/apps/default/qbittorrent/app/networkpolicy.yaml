@@ -47,6 +47,8 @@ spec:
               values:
                 # autobrr's autoannounce.sh calls the API directly.
                 - autobrr
+                # Prowlarr sends manual grabs to qBittorrent.
+                - prowlarr
                 - radarr
       toPorts: &web
         - ports:
