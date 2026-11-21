@@ -69,15 +69,6 @@ spec:
               value: "80"
             - name: QBT_TORRENTING_PORT
               value: "50413"
-            - name: QBT_Preferences_WebUI_AlternativeUIEnabled
-              value: "false"
-            - name: QBT_Preferences_WebUI_AuthSubnetWhitelistEnabled
-              value: "true"
-            - name: QBT_Preferences_WebUI_AuthSubnetWhitelist
-              value: |-
-                10.0.0.0/8
-            - name: QBT_Preferences_WebUI_LocalHostAuth
-              value: "false"
             - name: QBT_BitTorrent_Session_DefaultSavePath
               value: /data/downloads/torrents/complete
             - name: QBT_BitTorrent_Session_TempPath
