@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: envoy-external
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: envoy
+      gateway.envoyproxy.io/owning-gateway-name: external
+      gateway.envoyproxy.io/owning-gateway-namespace: network
+  # Staged: allow rules are evaluated but unmatched egress is not yet dropped.
+  enableDefaultDeny:
+    egress: false
+  egress:
+    # Any namespace can attach routes to the external listener. A backend is
+    # reachable only after its Service opts in, so attaching a route alone
+    # cannot expose a workload to untrusted traffic.
+    - toServices:
+        - k8sServiceSelector:
+            namespace: default
+            selector:
+              matchLabels:
+                cbannister.xyz/external-backend: "true"
+    # SecurityPolicy OIDC token exchange.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: pocket-id
+      toPorts:
+        - ports:
+            - port: "1411"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            control-plane: envoy-gateway
+      toPorts:
+        - ports:
+            - port: "18000"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP

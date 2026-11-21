@@ -5,6 +5,7 @@ kind: Service
 metadata:
   name: audiobookshelf
   labels:
+    cbannister.xyz/external-backend: "true"
     app.kubernetes.io/name: audiobookshelf
     app.kubernetes.io/instance: audiobookshelf
 spec:

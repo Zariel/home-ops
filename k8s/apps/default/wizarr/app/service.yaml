@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: wizarr
   labels:
+    cbannister.xyz/external-backend: "true"
     app.kubernetes.io/name: wizarr
     app.kubernetes.io/instance: wizarr
 spec:

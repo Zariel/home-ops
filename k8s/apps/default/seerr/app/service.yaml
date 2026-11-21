@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: seerr
   labels:
+    cbannister.xyz/external-backend: "true"
     app.kubernetes.io/instance: seerr
     app.kubernetes.io/name: seerr
     app.kubernetes.io/service: seerr
