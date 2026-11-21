@@ -6,9 +6,9 @@ metadata:
   name: thelounge
   namespace: default
 spec:
-  # DNS and public internet egress come from the
-  # internet-egress baseline via the pod label cbannister.xyz/egress. Some
-  # networks connect to IRC servers directly.
+  # Pod labels select the shared baselines: cbannister.xyz/ingress admits the
+  # internal gateway and kubelet probes; cbannister.xyz/egress grants DNS and
+  # public internet egress, which some IRC networks need directly.
   # Fail closed: removing a baseline label must not open the workload.
   enableDefaultDeny:
     ingress: true
@@ -16,20 +16,6 @@ spec:
   endpointSelector:
     matchLabels:
       app: thelounge
-  ingress:
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: network
-            app.kubernetes.io/name: envoy
-            gateway.envoyproxy.io/owning-gateway-name: internal
-            gateway.envoyproxy.io/owning-gateway-namespace: network
-      toPorts: &web
-        - ports:
-            - port: "9000"
-              protocol: TCP
-    - fromEntities:
-        - host
-      toPorts: *web
   egress:
     - toEndpoints:
         - matchLabels:
