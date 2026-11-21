@@ -9,6 +9,7 @@ resources:
   - ./objectbucketclaim.yaml
   - ./route.yaml
   - ./valkey.yaml
+  - ./networkpolicy.yaml
 configMapGenerator:
   - name: netbox-oidc-config
     files:

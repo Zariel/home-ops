@@ -54,6 +54,10 @@ spec:
     kind: OCIRepository
     name: netbox
   values:
+    podLabels:
+      cbannister.xyz/egress: internet
+      cbannister.xyz/ingress: internal-gateway
+      cbannister.xyz/egress-internal-gateway: "true"
     commonAnnotations:
       reloader.stakater.com/auto: "true"
     superuser:
