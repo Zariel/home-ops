@@ -127,14 +127,96 @@ spec:
     hubble:
       enabled: true
       metrics:
-        enabled:
-          - dns:query
-          - drop
-          - tcp
-          - flow
-          - port-distribution
-          - icmp
-          - http
+        # Dynamic metrics reload without agent restarts and support flow
+        # filters. Cilium rejects static metrics alongside them.
+        dynamic:
+          enabled: true
+          config:
+            content:
+              # Remote endpoints carry identity labels but no workload, so each
+              # series records both: the observing node's side has a workload,
+              # and the peer's app identifies the other side.
+              - name: port-distribution
+                contextOptions:
+                  - name: labelsContext
+                    values:
+                      - source_namespace
+                      - source_app
+                      - source_workload
+                      - destination_namespace
+                      - destination_app
+                      - destination_workload
+                      - traffic_direction
+                  - name: sourceContext
+                    values: [reserved-identity]
+                  - name: destinationContext
+                    values: [reserved-identity]
+                # Count connections rather than packets.
+                includeFilters:
+                  - tcp_flags: [{SYN: true}]
+                    reply: [false]
+                  - protocol: [udp]
+                  - protocol: [sctp]
+                # Peer ports of internet destinations are unbounded. Private
+                # destinations are recorded by flows-to-world.
+                excludeFilters:
+                  - destination_label: ["reserved:world", "reserved:world-ipv4"]
+              # Cilium labels LAN and internet destinations as world; keep the
+              # address only for private ranges, whose hosts are bounded.
+              - name: flows-to-world
+                contextOptions:
+                  - name: port
+                  - name: syn-only
+                  - name: any-drop
+                  - name: labelsContext
+                    values:
+                      - source_namespace
+                      - source_app
+                      - source_workload
+                      - destination_ip
+                includeFilters:
+                  - destination_ip:
+                      - 10.0.0.0/8
+                      - 100.64.0.0/10
+                      - 169.254.0.0/16
+                      - 172.16.0.0/12
+                      - 192.168.0.0/16
+              - name: drop
+                contextOptions: &peers
+                  - name: labelsContext
+                    values:
+                      - source_namespace
+                      - source_app
+                      - source_workload
+                      - destination_namespace
+                      - destination_app
+                      - destination_workload
+                      - traffic_direction
+                  - name: sourceContext
+                    values: [reserved-identity]
+                  - name: destinationContext
+                    values: [reserved-identity]
+              # Verdict events exist only for endpoints that enforce policy.
+              - name: policy
+                contextOptions: *peers
+              # The chart's dashboards query these by namespace.
+              - name: flow
+                contextOptions: &namespaces
+                  - name: labelsContext
+                    values: [source_namespace, destination_namespace]
+                  - name: sourceContext
+                    values: [namespace, reserved-identity]
+                  - name: destinationContext
+                    values: [namespace, reserved-identity]
+              - name: dns
+                contextOptions:
+                  - name: query
+                  - name: labelsContext
+                    values: [source_namespace, destination_namespace]
+              - name: tcp
+                contextOptions: *namespaces
+              - name: icmp
+                contextOptions: *namespaces
         serviceMonitor:
           enabled: true
         dashboards:
