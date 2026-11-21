@@ -94,3 +94,9 @@ spec:
         - ports:
             - port: "80"
               protocol: TCP
+  # Plex sends SSDP discovery to 239.255.255.250:1900 even with DLNA disabled;
+  # multicast cannot leave the pod network. An explicit deny reports these
+  # drops as POLICY_DENY, distinct from POLICY_DENIED for a missing allow.
+  egressDeny:
+    - toCIDR:
+        - 224.0.0.0/4
