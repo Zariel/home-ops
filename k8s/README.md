@@ -45,9 +45,11 @@ Choose internal or external exposure explicitly. Follow the Envoy Gateway and Li
 
 A workload handles untrusted traffic when it is served through the external gateway, accepts internet connections directly, or processes content from untrusted sources. qBittorrent's torrenting port is an example of direct internet exposure. Because internal access is trusted and many internal services have no authentication, a compromised workload of this kind could reach them freely. Restrict both its ingress and egress, with a `CiliumNetworkPolicy` kept with the application.
 
-Admit ingress only from actual consumers, the gateway that serves the workload, and the `host` entity for kubelet probes. For applications that trust gateway identity headers or exempt source subnets from authentication, such as Wizarr and qBittorrent, this rule is the access control.
+Admit ingress only from actual consumers, the gateway that serves the workload, and the `host` entity for kubelet probes. For applications that trust gateway identity headers or exempt source subnets from authentication, such as Wizarr and qBittorrent, this rule is the access control. For workloads served by the internal gateway, label the pod template `cbannister.xyz/ingress: internal-gateway` to select the `internal-gateway-ingress` baseline, which admits the internal Envoy pods and kubelet probes; the workload's own policy then lists only its other clients.
 
 Restrict egress to DNS, named in-cluster dependencies, and the public internet. Label the pod template `cbannister.xyz/egress: internet` to select the `internet-egress` baseline in `apps/kube-system/cilium/policies/`. The baseline grants DNS and the public internet, excluding private ranges, and enables egress default-deny. The workload's own policy then adds only the cluster or LAN destinations it needs. Because allow rules from separate policies combine and cannot be narrowed, a workload whose destinations are known, such as Plex, omits the label and keeps an FQDN allowlist in its own policy. Do not write internet egress as `toEntities: [world]`: Cilium's `world` entity includes LAN addresses.
+
+Set `enableDefaultDeny` for both directions in any policy that relies on a baseline label. A policy without rules in a direction does not otherwise deny it, so a removed label would silently leave the workload open; with explicit default-deny it instead loses that traffic and the drops become visible.
 
 Set `automountServiceAccountToken: false` unless the workload calls the Kubernetes API.
 
