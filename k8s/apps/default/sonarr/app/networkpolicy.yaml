@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: sonarr
+  namespace: default
+spec:
+  # DNS and public internet egress, and egress default-deny, come from the
+  # internet-egress baseline via the pod label cbannister.xyz/egress.
+  # Metadata providers are public; indexers are reached through Prowlarr.
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: sonarr
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - cleanrr
+                - maintainerr
+                - qui
+                - seerr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - autobrr
+                # Application sync.
+                - prowlarr
+                - recyclarr
+      toPorts: &web
+        - ports:
+            - port: "8989"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *web
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: prowlarr
+      toPorts:
+        - ports:
+            - port: "9696"
+              protocol: TCP
+    # Download clients.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: qbittorrent
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: sabnzbd
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    # Library update notifications.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: jellyfin
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: plex
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP

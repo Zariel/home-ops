@@ -16,11 +16,13 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app.kubernetes.io/name: sonarr
         app.kubernetes.io/instance: sonarr
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
+      automountServiceAccountToken: false
       hostname: sonarr
       priorityClassName: cluster-p1
       volumes:
