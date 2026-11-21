@@ -20,6 +20,10 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
+          labels:
+            cbannister.xyz/egress: internet
+            cbannister.xyz/ingress: internal-gateway
+            cbannister.xyz/egress-ollama: "true"
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
