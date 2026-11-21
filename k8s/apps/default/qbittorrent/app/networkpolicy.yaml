@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: qbittorrent
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: qbittorrent
+      app.kubernetes.io/instance: qbittorrent
+  ingress:
+    # The LoadBalancer's local traffic policy preserves peer addresses.
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "50413"
+              protocol: TCP
+            - port: "50413"
+              protocol: UDP
+    # The persisted WebUI subnet whitelist includes the pod CIDR, so this rule
+    # decides which workloads get unauthenticated access.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - brrpolice
+                - qui
+                - sonarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: radarr
+      toPorts: &web
+        - ports:
+            - port: "80"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *web
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Peers and trackers use arbitrary public ports over TCP and UDP. The
+    # cluster, LAN and gateway addresses are trusted networks that a workload
+    # handling untrusted peer traffic must not reach.
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 100.64.0.0/10
+            - 169.254.0.0/16
+            - 172.16.0.0/12
+            - 192.168.0.0/16

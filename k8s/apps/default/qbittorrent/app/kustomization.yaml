@@ -12,6 +12,7 @@ resources:
   - service.yaml
   - httproute.yaml
   - pvc.yaml
+  - networkpolicy.yaml
 configMapGenerator:
   - name: qbittorrent-loki-rules
     files:
