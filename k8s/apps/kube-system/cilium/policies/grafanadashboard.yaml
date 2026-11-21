@@ -9,7 +9,8 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
-  resyncPeriod: 30m
+  # The operator rereads the ConfigMap only on resync.
+  resyncPeriod: 1m
   allowCrossNamespaceImport: true
   folder: Cilium
   configMapRef:
