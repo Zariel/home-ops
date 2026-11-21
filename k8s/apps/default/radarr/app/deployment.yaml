@@ -14,8 +14,10 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: radarr
     spec:
+      automountServiceAccountToken: false
       hostname: radarr
       priorityClassName: cluster-p1
       volumes:
