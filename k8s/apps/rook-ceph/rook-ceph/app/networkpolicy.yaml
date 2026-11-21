@@ -14,6 +14,10 @@ spec:
   endpointSelector:
     matchLabels:
       app: rook-ceph-operator
+  # An empty rule admits nothing; enableDefaultDeny alone does not enforce a
+  # direction without rules.
+  ingress:
+    - {}
   egress:
     - toEndpoints:
         - matchLabels:
@@ -64,6 +68,8 @@ spec:
   endpointSelector:
     matchLabels:
       app: rook-discover
+  ingress:
+    - {}
   egress:
     - toEntities:
         - kube-apiserver
