@@ -35,6 +35,9 @@ spec:
       qui:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            cbannister.xyz/egress: internet
         containers:
           app:
             image:
@@ -115,6 +118,7 @@ spec:
                 drop: ["ALL"]
                 add: ["CHOWN", "FOWNER"]
     defaultPodOptions:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
