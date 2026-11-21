@@ -14,10 +14,12 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: thelounge
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
+      automountServiceAccountToken: false
       hostname: thelounge
       volumes:
         - name: config
