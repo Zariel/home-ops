@@ -6,9 +6,13 @@ metadata:
   name: znc
   namespace: default
 spec:
-  # DNS and public internet egress, and egress default-deny, come from the
+  # DNS and public internet egress come from the
   # internet-egress baseline via the pod label cbannister.xyz/egress. IRC
   # servers and the image's startup package downloads are public.
+  # Fail closed: removing a baseline label must not open the workload.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   endpointSelector:
     matchLabels:
       app: znc
