@@ -46,7 +46,7 @@ spec:
               readOnly: true
       containers:
         - name: app
-          image: ghcr.io/silo-server/silo-server:latest@sha256:06754ca9c0719b4ca748bc29e7310736c523b03403b355323af4b4ce30a6e892
+          image: ghcr.io/silo-server/silo-server:latest@sha256:fdab027fb84aaa8355557cc50fdcb194f07fba9953a8f37889b1b3acfdb968d9
           # Run directly as the pod user with external PostgreSQL.
           command: [silo]
           env:
