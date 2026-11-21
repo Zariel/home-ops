@@ -19,15 +19,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            k8s.v1.cni.cncf.io/networks: |-
-              [{
-                "name": "trusted-lan",
-                "namespace": "kube-system",
-                "interface": "trusted0",
-                "ips": ["10.1.2.162/24"],
-                "mac": "02:b4:5f:2a:9d:64"
-              }]
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
@@ -204,71 +195,6 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 4Gi
-          scanner:
-            image:
-              repository: registry.cbannister.xyz/paperless-scanner
-              tag: 4@sha256:4dabee2cf803260dca047e708a13fae515e6d772a7749cb711d582b89503b2e6
-            env:
-              TZ: Europe/London
-              SCANNER_IP: 10.1.2.70
-              CALLBACK_IP: 10.1.2.162
-              PYTHONUNBUFFERED: "1"
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - python3
-                      - -c
-                      - |
-                        from pathlib import Path
-                        import resource
-                        import sys
-
-                        # brscan-skey retains UDP sockets during registration refreshes.
-                        # Recover before it exhausts descriptors and loses the destination.
-                        used = len(list(Path('/proc/1/fd').iterdir()))
-                        limit = resource.prlimit(1, resource.RLIMIT_NOFILE)[0]
-                        if limit != resource.RLIM_INFINITY and used >= limit * 3 // 4:
-                            sys.exit(f'brscan-skey uses {used}/{limit} file descriptors')
-                        listeners = Path('/proc/1/net/udp').read_text().splitlines()[1:]
-                        if not any(line.split()[1].endswith(':D68D') for line in listeners):
-                            sys.exit('Brother scan listener is missing on UDP 54925')
-                  periodSeconds: 60
-                  timeoutSeconds: 5
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command: [sh, -c, "grep -qi ':D68D ' /proc/net/udp"]
-                  periodSeconds: 10
-                  timeoutSeconds: 5
-              startup:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command: [sh, -c, "grep -qi ':D68D ' /proc/net/udp"]
-                  periodSeconds: 5
-                  timeoutSeconds: 5
-                  failureThreshold: 60
-            resources:
-              requests:
-                cpu: 25m
-                memory: 128Mi
-              limits:
-                memory: 512Mi
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-              runAsNonRoot: true
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop: [ALL]
       valkey:
         strategy: Recreate
         annotations:
@@ -350,11 +276,6 @@ spec:
                 subPath: consume
               - path: /usr/src/paperless/export
                 subPath: export
-            scanner:
-              - path: /consume
-                subPath: consume
-              - path: /scan-spool
-                subPath: scanner-spool
       valkey-config:
         type: secret
         name: paperless-valkey
