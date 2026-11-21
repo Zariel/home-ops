@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: internal-gateway-ingress
+spec:
+  description: >-
+    Ingress baseline for workloads served by the internal gateway: the internal
+    Envoy pods and kubelet probes. Selecting a pod enables ingress default-deny,
+    so other clients need rules in the workload's own policy.
+  endpointSelector:
+    matchLabels:
+      cbannister.xyz/ingress: internal-gateway
+  ingress:
+    # Envoy connects only to ports its routes reference.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+    # Kubelet probes originate on the hosting node.
+    - fromEntities:
+        - host

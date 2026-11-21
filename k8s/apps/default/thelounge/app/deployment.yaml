@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
         app: thelounge
       annotations:
         reloader.stakater.com/auto: "true"
