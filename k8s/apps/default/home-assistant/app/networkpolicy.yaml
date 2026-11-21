@@ -8,7 +8,8 @@ metadata:
 spec:
   # Pod labels select the shared baselines: cbannister.xyz/ingress admits the
   # internal gateway and kubelet probes; cbannister.xyz/egress grants DNS and
-  # public internet egress for cloud integrations.
+  # public internet egress for cloud integrations; cbannister.xyz/egress-ollama
+  # grants Ollama on ash.
   # Cilium enforces only on eth0. The Multus interfaces give direct access to
   # the trusted LAN and IoT networks, where most devices live.
   # Fail closed: removing a baseline label must not open the workload.
@@ -44,11 +45,4 @@ spec:
       toPorts:
         - ports:
             - port: "8081"
-              protocol: TCP
-    # Ollama on ash.cbannister.casa.
-    - toCIDR:
-        - 10.1.1.55/32
-      toPorts:
-        - ports:
-            - port: "11434"
               protocol: TCP

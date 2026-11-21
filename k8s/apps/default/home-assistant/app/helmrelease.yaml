@@ -40,6 +40,7 @@ spec:
       automountServiceAccountToken: false
       labels:
         cbannister.xyz/egress: internet
+        cbannister.xyz/egress-ollama: "true"
         cbannister.xyz/ingress: internal-gateway
       annotations:
         k8s.v1.cni.cncf.io/networks: |-

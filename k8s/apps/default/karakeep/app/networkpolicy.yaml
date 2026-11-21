@@ -8,6 +8,7 @@ metadata:
 spec:
   # DNS and public internet egress come from the
   # internet-egress baseline via the pod label cbannister.xyz/egress.
+  # cbannister.xyz/egress-ollama grants the app component Ollama on ash.
   # Fail closed: removing a baseline label must not open the workload.
   enableDefaultDeny:
     ingress: true
@@ -49,13 +50,6 @@ spec:
       toPorts:
         - ports:
             - port: "7700"
-              protocol: TCP
-    # Ollama on ash.cbannister.casa.
-    - toCIDR:
-        - 10.1.1.55/32
-      toPorts:
-        - ports:
-            - port: "11434"
               protocol: TCP
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json

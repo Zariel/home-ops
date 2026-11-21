@@ -32,6 +32,7 @@ spec:
           labels:
             app.kubernetes.io/component: application
             cbannister.xyz/egress: internet
+            cbannister.xyz/egress-ollama: "true"
         containers:
           app:
             image:
