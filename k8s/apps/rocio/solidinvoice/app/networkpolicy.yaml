@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: solidinvoice
+  namespace: rocio
+spec:
+  # Pod labels select the shared baselines: cbannister.xyz/ingress admits the
+  # internal gateway and kubelet probes; cbannister.xyz/egress grants DNS and
+  # public internet egress for mail and telemetry. The empty rules admit
+  # nothing but keep both directions enforced if a label is removed.
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: solidinvoice
+  ingress:
+    - {}
+  egress:
+    - {}
