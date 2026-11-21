@@ -6,6 +6,7 @@ resources:
   - ./internet-egress.yaml
   - ./internal-gateway-ingress.yaml
   - ./ollama-egress.yaml
+  - ./internal-gateway-egress.yaml
   - ./vmrule.yaml
   - ./grafanadashboard.yaml
 configMapGenerator:

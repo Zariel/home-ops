@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: internal-gateway-egress
+spec:
+  description: >-
+    The internal gateway for workloads labelled
+    cbannister.xyz/egress-internal-gateway, typically for OIDC token exchange
+    with Pocket ID at id.cbannister.xyz. This reaches every internal route.
+    The allowance is additive: the workload's own policy decides whether
+    egress is otherwise restricted.
+  endpointSelector:
+    matchLabels:
+      cbannister.xyz/egress-internal-gateway: "true"
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts:
+        - ports:
+            - port: "10443"
+              protocol: TCP
