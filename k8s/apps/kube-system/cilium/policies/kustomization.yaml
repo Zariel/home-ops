@@ -4,3 +4,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./internet-egress.yaml
+  - ./vmrule.yaml
+  - ./grafanadashboard.yaml
+configMapGenerator:
+  - name: network-policy-dashboard
+    namespace: kube-system
+    files:
+      - dashboards/network-policy.json
+generatorOptions:
+  # The GrafanaDashboard references the ConfigMap by name.
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled

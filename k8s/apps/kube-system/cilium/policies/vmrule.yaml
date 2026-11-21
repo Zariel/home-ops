@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vmrule_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: cilium-policy
+  namespace: kube-system
+spec:
+  groups:
+    - name: cilium-policy.rules
+      rules:
+        # POLICY_DENIED means no rule allowed the connection; explicit egressDeny
+        # drops report POLICY_DENY instead. ICMP errors (for example late DNS
+        # replies) are not connections. Requiring drops in 8 of the last 12
+        # five-minute windows ignores probes, one-off retries and rollouts, so
+        # infrequent misses are left to the dashboard.
+        - alert: CiliumPolicyDenied
+          expr: |
+            count_over_time(
+              (
+                sum by (source_namespace, source_app, source, destination_namespace, destination_app, destination, traffic_direction) (
+                  increase(hubble_drop_total{reason="POLICY_DENIED", protocol!~"ICMP.*"}[5m])
+                ) > 0
+              )[1h:5m]
+            ) >= 8
+          keep_firing_for: 1h
+          labels:
+            severity: warning
+            namespace: >-
+              {{ if eq $labels.traffic_direction "ingress" }}{{ $labels.destination_namespace }}{{ else }}{{ $labels.source_namespace }}{{ end }}
+          annotations:
+            summary: >-
+              Cilium is denying {{ $labels.traffic_direction }} traffic from
+              {{ with $labels.source_app }}{{ $labels.source_namespace }}/{{ . }}{{ else }}{{ or $labels.source "an unknown peer" }}{{ end }}
+              to
+              {{ with $labels.destination_app }}{{ $labels.destination_namespace }}/{{ . }}{{ else }}{{ or $labels.destination "an unknown peer" }}{{ end }}
+            description: >-
+              No network policy allows this connection, and drops have continued for
+              most of the last hour. A policy is probably missing a rule for a real
+              dependency or client. Inspect the drops with `hubble observe
+              --verdict DROPPED` (see k8s/OPERATIONS.md) and the Network Policy
+              dashboard, then add an allow rule or an explicit deny.

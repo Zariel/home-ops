@@ -1,0 +1,89 @@
+rule_files:
+  - rules.yaml
+evaluation_interval: 1m
+tests:
+  - name: Sustained missing-rule drops alert after eight windows
+    interval: 1m
+    input_series:
+      - series: hubble_drop_total{reason="POLICY_DENIED", protocol="UDP", source_namespace="default", source_app="plex", destination="reserved:world", traffic_direction="egress", node="k8s-0"}
+        values: 0+1x80
+    alert_rule_test:
+      - eval_time: 35m
+        alertname: CiliumPolicyDenied
+        exp_alerts: []
+      - eval_time: 40m
+        alertname: CiliumPolicyDenied
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              namespace: default
+              source_namespace: default
+              source_app: plex
+              destination: reserved:world
+              traffic_direction: egress
+            exp_annotations:
+              summary: Cilium is denying egress traffic from default/plex to reserved:world
+              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Inspect the drops with `hubble observe --verdict DROPPED` (see k8s/OPERATIONS.md) and the Network Policy dashboard, then add an allow rule or an explicit deny.
+
+  - name: Probes, ICMP errors and explicit denies stay quiet
+    interval: 1m
+    input_series:
+      # A ten-minute test probe.
+      - series: hubble_drop_total{reason="POLICY_DENIED", protocol="TCP", source_namespace="default", source_app="home-assistant", destination_namespace="default", destination_app="sabnzbd", traffic_direction="ingress"}
+        values: 0+5x10 50x50
+      - series: hubble_drop_total{reason="POLICY_DENIED", protocol="ICMPv4", source_namespace="default", source_app="autobrr", destination_namespace="kube-system", destination_app="coredns", traffic_direction="egress"}
+        values: 0+1x60
+      - series: hubble_drop_total{reason="POLICY_DENY", protocol="UDP", source_namespace="default", source_app="plex", destination="reserved:world", traffic_direction="egress"}
+        values: 0+1x60
+    alert_rule_test:
+      - eval_time: 60m
+        alertname: CiliumPolicyDenied
+        exp_alerts: []
+
+  - name: Ingress drops are attributed to the destination namespace and summed across nodes
+    interval: 1m
+    input_series:
+      # Each node reports only part of the drops; together they cover every window.
+      - series: hubble_drop_total{reason="POLICY_DENIED", protocol="TCP", source_namespace="monitoring", source_app="vmagent", destination_namespace="default", destination_app="sabnzbd", traffic_direction="ingress", node="k8s-0"}
+        values: 0+1x20 20x40
+      - series: hubble_drop_total{reason="POLICY_DENIED", protocol="TCP", source_namespace="monitoring", source_app="vmagent", destination_namespace="default", destination_app="sabnzbd", traffic_direction="ingress", node="k8s-1"}
+        values: 0x20 0+1x40
+    alert_rule_test:
+      - eval_time: 60m
+        alertname: CiliumPolicyDenied
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              namespace: default
+              source_namespace: monitoring
+              source_app: vmagent
+              destination_namespace: default
+              destination_app: sabnzbd
+              traffic_direction: ingress
+            exp_annotations:
+              summary: Cilium is denying ingress traffic from monitoring/vmagent to default/sabnzbd
+              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Inspect the drops with `hubble observe --verdict DROPPED` (see k8s/OPERATIONS.md) and the Network Policy dashboard, then add an allow rule or an explicit deny.
+
+  - name: Alert keeps firing for an hour after drops stop, then resolves
+    interval: 1m
+    input_series:
+      - series: hubble_drop_total{reason="POLICY_DENIED", protocol="TCP", source_namespace="default", source_app="jellyfin", destination="reserved:world", traffic_direction="egress"}
+        values: 0+1x60 60x100
+    alert_rule_test:
+      # Fewer than eight windows contain drops from 85m.
+      - eval_time: 100m
+        alertname: CiliumPolicyDenied
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              namespace: default
+              source_namespace: default
+              source_app: jellyfin
+              destination: reserved:world
+              traffic_direction: egress
+            exp_annotations:
+              summary: Cilium is denying egress traffic from default/jellyfin to reserved:world
+              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Inspect the drops with `hubble observe --verdict DROPPED` (see k8s/OPERATIONS.md) and the Network Policy dashboard, then add an allow rule or an explicit deny.
+      - eval_time: 150m
+        alertname: CiliumPolicyDenied
+        exp_alerts: []

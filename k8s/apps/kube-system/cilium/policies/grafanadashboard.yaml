@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: network-policy
+  namespace: kube-system
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 30m
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  configMapRef:
+    name: network-policy-dashboard
+    key: network-policy.json

@@ -1,0 +1,208 @@
+{
+  "title": "Network Policy",
+  "uid": "network-policy",
+  "description": "Workload dependencies from Hubble metrics and Cilium policy drops. Use it to review a workload before writing its policy and to find missing rules afterwards.",
+  "tags": ["cilium", "hubble", "network-policy"],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "time": { "from": "now-7d", "to": "now" },
+  "refresh": "",
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "label": "Data source",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "VictoriaMetrics", "value": "victoriametrics" },
+        "hide": 0
+      },
+      {
+        "name": "namespace",
+        "label": "Namespace",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(hubble_port_distribution_total, source_namespace)",
+        "query": { "query": "label_values(hubble_port_distribution_total, source_namespace)", "refId": "namespace" },
+        "refresh": 2,
+        "sort": 1,
+        "current": { "text": "default", "value": "default" }
+      },
+      {
+        "name": "app",
+        "label": "App",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(hubble_port_distribution_total{source_namespace=\"$namespace\"}, source_app)",
+        "query": { "query": "label_values(hubble_port_distribution_total{source_namespace=\"$namespace\"}, source_app)", "refId": "app" },
+        "refresh": 2,
+        "sort": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "text",
+      "title": "How to read this",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 4 },
+      "options": {
+        "mode": "markdown",
+        "content": "Counts are new connections (TCP SYN, plus UDP/SCTP packets) over the selected time range. Apps are identified by their `app.kubernetes.io/name`, `k8s-app` or `app` label, so components of one app share a name. `source`/`destination` name non-pod peers such as `reserved:host` or `reserved:world`. Internet destinations are not recorded; private (LAN) destinations appear by IP. Long-lived connections opened before the time range, or before metrics began on 2026-11-21, do not appear: confirm clients from configuration before restricting ingress. `POLICY_DENIED` means no rule allowed the connection; `POLICY_DENY` is an explicit deny. See `k8s/OPERATIONS.md` for live inspection with Hubble."
+      }
+    },
+    {
+      "type": "row",
+      "title": "$namespace/$app",
+      "gridPos": { "x": 0, "y": 4, "w": 24, "h": 1 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "table",
+      "title": "Outbound connections",
+      "description": "Connections this app opened to pods and cluster peers, observed on the source node.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 0, "y": 5, "w": 12, "h": 10 },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "format": "table",
+          "expr": "sum by (destination_namespace, destination_app, destination, port, protocol) (increase(hubble_port_distribution_total{traffic_direction=\"egress\", source_namespace=\"$namespace\", source_app=\"$app\"}[$__range])) > 0"
+        }
+      ],
+      "transformations": [
+        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value": "connections" } } }
+      ],
+      "options": { "sortBy": [{ "displayName": "connections", "desc": true }] }
+    },
+    {
+      "type": "table",
+      "title": "Inbound connections",
+      "description": "Connections to this app, observed on the destination node.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 12, "y": 5, "w": 12, "h": 10 },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "format": "table",
+          "expr": "sum by (source_namespace, source_app, source, port, protocol) (increase(hubble_port_distribution_total{traffic_direction=\"ingress\", destination_namespace=\"$namespace\", destination_app=\"$app\"}[$__range])) > 0"
+        }
+      ],
+      "transformations": [
+        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value": "connections" } } }
+      ],
+      "options": { "sortBy": [{ "displayName": "connections", "desc": true }] }
+    },
+    {
+      "type": "table",
+      "title": "LAN destinations",
+      "description": "Connections from this app to private addresses outside the cluster. DROPPED rows were blocked by policy.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 0, "y": 15, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "format": "table",
+          "expr": "sum by (destination_ip, port, protocol, verdict) (increase(hubble_flows_to_world_total{source_namespace=\"$namespace\", source_app=\"$app\"}[$__range])) > 0"
+        }
+      ],
+      "transformations": [
+        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value": "connections" } } }
+      ],
+      "options": { "sortBy": [{ "displayName": "connections", "desc": true }] }
+    },
+    {
+      "type": "table",
+      "title": "Drops involving this app",
+      "description": "Packets Cilium dropped to or from this app.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 12, "y": 15, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "format": "table",
+          "expr": "sum by (traffic_direction, source_namespace, source_app, source, destination_namespace, destination_app, destination, reason, protocol) (increase(hubble_drop_total{source_namespace=\"$namespace\", source_app=\"$app\"}[$__range]) or increase(hubble_drop_total{destination_namespace=\"$namespace\", destination_app=\"$app\"}[$__range])) > 0"
+        }
+      ],
+      "transformations": [
+        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value": "drops" } } }
+      ],
+      "options": { "sortBy": [{ "displayName": "drops", "desc": true }] }
+    },
+    {
+      "type": "timeseries",
+      "title": "Drops involving this app by reason",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 0, "y": 23, "w": 24, "h": 7 },
+      "fieldConfig": { "defaults": { "unit": "pps", "custom": { "drawStyle": "bars", "fillOpacity": 60, "stacking": { "mode": "normal" } } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "legendFormat": "{{reason}} {{protocol}}",
+          "expr": "sum by (reason, protocol) (rate(hubble_drop_total{source_namespace=\"$namespace\", source_app=\"$app\"}[$__rate_interval]) or rate(hubble_drop_total{destination_namespace=\"$namespace\", destination_app=\"$app\"}[$__rate_interval]))"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Cluster",
+      "gridPos": { "x": 0, "y": 30, "w": 24, "h": 1 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Endpoints by policy enforcement",
+      "description": "Pods enforcing policy in each direction. The default-deny goal is zero endpoints with enforcement none.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 0, "y": 31, "w": 8, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "stacking": { "mode": "normal" }, "fillOpacity": 30 } }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "legendFormat": "{{enforcement}}",
+          "expr": "sum by (enforcement) (max by (node, enforcement) (cilium_policy_endpoint_enforcement_status{enforcement=~\"none|ingress|egress|both\"}))"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Sustained missing-rule drops",
+      "description": "Pairs with POLICY_DENIED drops (excluding ICMP) in at least one five-minute window of the last hour, with the number of windows. CiliumPolicyDenied fires at 8 of 12.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 8, "y": 31, "w": 16, "h": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "format": "table",
+          "expr": "count_over_time((sum by (source_namespace, source_app, source, destination_namespace, destination_app, destination, traffic_direction) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[5m])) > 0)[1h:5m])"
+        }
+      ],
+      "transformations": [
+        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value": "windows (of 12)" } } }
+      ],
+      "options": { "sortBy": [{ "displayName": "windows (of 12)", "desc": true }] }
+    },
+    {
+      "type": "timeseries",
+      "title": "Missing-rule drops by source app",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "x": 0, "y": 39, "w": 24, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "pps" }, "overrides": [] },
+      "targets": [
+        {
+          "refId": "A",
+          "legendFormat": "{{traffic_direction}} {{source_namespace}}/{{source_app}}{{source}} → {{destination_namespace}}/{{destination_app}}{{destination}}",
+          "expr": "sum by (traffic_direction, source_namespace, source_app, source, destination_namespace, destination_app, destination) (rate(hubble_drop_total{reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__rate_interval])) > 0"
+        }
+      ]
+    }
+  ]
+}
