@@ -39,7 +39,17 @@ Dedicated controllers can own secrets intrinsic to their lifecycle, such as cert
 
 Internal network access is trusted. External ingress is untrusted, including requests arriving through Cloudflare. Internal tools do not need authentication solely because they expose a web UI. This does not justify public access to internal administration or trusting external identity headers.
 
-Choose internal or external exposure explicitly. Follow the Envoy Gateway and ListenerSet configuration in `apps/network/envoy-gateway/gateways/`. Trace route parent references to the gateway: DNS and hostnames alone do not establish the security boundary. Cloudflared forwards the wildcard domain to the external gateway. The external Envoy pods can reach only Services labelled `cbannister.xyz/external-backend: "true"` in the `default` namespace, so label the backend Service of every external route and give the workload its own ingress and egress policy. Backends in other namespaces also need a selector in `apps/network/envoy-gateway/gateways/external/networkpolicy.yaml`.
+Choose internal or external exposure explicitly. Follow the Envoy Gateway and ListenerSet configuration in `apps/network/envoy-gateway/gateways/`. Trace route parent references to the gateway: DNS and hostnames alone do not establish the security boundary. Cloudflared forwards the wildcard domain to the external gateway. The external Envoy pods can reach only Services labelled `cbannister.xyz/external-backend: "true"` in the `default` namespace, so label the backend Service of every external route. Backends in other namespaces also need a selector in `apps/network/envoy-gateway/gateways/external/networkpolicy.yaml`.
+
+### Workloads handling untrusted traffic
+
+A workload handles untrusted traffic when it is served through the external gateway, accepts internet connections directly, or processes content from untrusted sources. qBittorrent's torrenting port is an example of direct internet exposure. Because internal access is trusted and many internal services have no authentication, a compromised workload of this kind could reach them freely. Give each one a `CiliumNetworkPolicy` with both ingress and egress rules, kept with the application.
+
+Admit ingress only from actual consumers, the gateway that serves the workload, and the `host` entity for kubelet probes. For applications that trust gateway identity headers or exempt source subnets from authentication, such as Wizarr and qBittorrent, this rule is the access control.
+
+Allow egress to DNS, named in-cluster dependencies, and the public internet. Prefer an FQDN allowlist when the destinations are known, as Plex does. Otherwise allow `0.0.0.0/0` through `toCIDRSet`, excepting `10.0.0.0/8`, `100.64.0.0/10`, `169.254.0.0/16`, `172.16.0.0/12` and `192.168.0.0/16`. Do not use `toEntities: [world]` for this: Cilium's `world` entity includes LAN addresses.
+
+Set `automountServiceAccountToken: false` unless the workload calls the Kubernetes API.
 
 Apps requiring accounts must use Pocket ID where supported, including internal apps. Prefer native OIDC so accounts and permissions retain their application meaning. Declare clients through the Pocket ID operator and let it own client credentials; Grafana's `oidc/` unit is an example. Use gateway OIDC when native integration is unsuitable or when it improves security. Gateway admission does not automatically provide application accounts or authorization.
 

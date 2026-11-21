@@ -30,6 +30,19 @@ curl --fail --silent --show-error http://127.0.0.1:9093/api/v2/alerts
 
 These commands run from the repository root. For other direct Kubernetes commands, also set the repository kubeconfig; task wrappers set it automatically. If an endpoint is unavailable, inspect Services, endpoints, pods, and route conditions before assuming credentials are required. Keep query results free of secret values and unnecessary personal data.
 
+## Network policy
+
+Cilium enforces network policy, and Hubble records flows with their policy verdicts. For read-only flow queries, port-forward the relay and run the CLI from nixpkgs:
+
+```sh
+KUBECONFIG="$PWD/kubeconfig" kubectl -n kube-system port-forward service/hubble-relay 4245:80 --address=127.0.0.1
+nix shell nixpkgs#hubble -c hubble observe --server 127.0.0.1:4245 --pod default/<app> --verdict DROPPED --since 10m
+```
+
+A `Policy denied` drop identifies a missing allow rule or an unexpected client. The relay retains only a few minutes of flows, and established connections may produce no new flows during a capture. An empty or short capture therefore does not establish which clients use a workload. Confirm consumers from application configuration or logs before restricting ingress.
+
+To see what a policy selected, run `cilium-dbg policy selectors` in the Cilium agent pod on the endpoint's node; `cilium-dbg bpf policy get <endpoint-id>` shows the realized allow entries. A valid policy status does not prove enforcement. After rollout, connect from the restricted pod to an allowed destination and to a trusted address that should be blocked, and from an unlisted pod that has no egress policy of its own.
+
 ## Incident workflow
 
 1. Establish the symptom and time window. Inspect Flux reconciliation, workload readiness, events, and recent configuration changes.
