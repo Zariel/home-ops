@@ -46,3 +46,10 @@ spec:
         - ports:
             - port: "8081"
               protocol: TCP
+    # The Roon Core's API on the ROON VLAN, routed through eth0.
+    - toCIDR:
+        - 10.1.4.10/32
+      toPorts:
+        - ports:
+            - port: "9330"
+              protocol: TCP
