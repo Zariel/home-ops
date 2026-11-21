@@ -7,10 +7,12 @@ the internal gateway. It has no native Pocket ID OAuth integration; the shared
 require the `netbox:access` permission. The public OAuth client is
 `netbox-mcp`, restricted to the `admin` group.
 
-External Secrets imports `NETBOX_API_TOKEN` from the existing `netbox` 1Password
-item into `netbox-mcp-secret` in the `mcp` namespace. NetBox remains the authority
-for that token's permissions; the MCP server exposes no mutation tools. Rotate
-the credential in NetBox and 1Password together. External Secrets refreshes it
+External Secrets imports `NETBOX_TOKEN` from the `netbox-mcp` 1Password item
+into `netbox-mcp-secret` in the `mcp` namespace. The token is a v2 token for the
+non-superuser NetBox user `netbox-mcp`, whose `netbox-mcp` object permission
+grants every action on every object type except the identity and admin apps.
+NetBox therefore bounds what the server can do and attributes its changes to
+that user. Rotate the credential in NetBox and 1Password together. External Secrets refreshes it
 hourly, and Reloader restarts the server when the Secret changes.
 
 Envoy validates client tokens and removes the Authorization header before
