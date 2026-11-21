@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: onepassword
+  namespace: external-secrets
+spec:
+  # Pod labels select the shared baselines: cbannister.xyz/ingress admits the
+  # internal gateway and kubelet probes; cbannister.xyz/egress grants DNS and
+  # public internet egress to 1Password. The empty egress rule admits nothing
+  # but keeps egress enforced if the label is removed.
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: onepassword
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: external-secrets
+            app.kubernetes.io/name: external-secrets
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - {}

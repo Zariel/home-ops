@@ -6,6 +6,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - httproute.yaml
+  - networkpolicy.yaml
 secretGenerator:
   - name: onepassword-connect-secret
     files:

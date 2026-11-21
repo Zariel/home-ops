@@ -10,6 +10,8 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
         app.kubernetes.io/name: *name
       annotations:
         reloader.stakater.com/auto: "true"
