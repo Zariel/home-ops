@@ -30,3 +30,7 @@ spec:
     - fromEntities:
         - host
       toPorts: *http
+  # Internet egress comes only from the baseline. This empty rule admits
+  # nothing but keeps egress enforced if the label is removed.
+  egress:
+    - {}

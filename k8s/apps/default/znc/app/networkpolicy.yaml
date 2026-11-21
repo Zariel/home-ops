@@ -44,3 +44,7 @@ spec:
         - ports:
             - port: "6697"
               protocol: TCP
+  # Internet egress comes only from the baseline. This empty rule admits
+  # nothing but keeps egress enforced if the label is removed.
+  egress:
+    - {}

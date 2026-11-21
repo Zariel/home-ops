@@ -16,6 +16,10 @@ spec:
   endpointSelector:
     matchLabels:
       app: thelounge
+  # Ingress comes only from the baseline. This empty rule admits nothing but
+  # keeps ingress enforced if the label is removed.
+  ingress:
+    - {}
   egress:
     - toEndpoints:
         - matchLabels:
