@@ -1,0 +1,11 @@
+exclusions:
+  target-instance-rule:
+    reason: Panels select workloads by Hubble namespace and app labels; scrape instances are Cilium agents, not user-facing entities.
+  target-job-rule:
+    reason: Every query uses the single Hubble metrics job; namespace and app labels are the user-facing selectors.
+  template-instance-rule:
+    reason: Namespace and app variables replace scrape-address selectors.
+  template-job-rule:
+    reason: The Hubble metrics job is fixed and not a user-facing selector.
+  template-datasource-rule:
+    reason: DS_PROMETHEUS follows the buroa convention used by the repository's other linted dashboards.

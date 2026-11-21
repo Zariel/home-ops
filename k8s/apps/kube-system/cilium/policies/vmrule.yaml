@@ -38,5 +38,5 @@ spec:
               No network policy allows this connection, and drops have continued for
               most of the last hour. A policy is probably missing a rule for a real
               dependency or client. Inspect the drops with `hubble observe
-              --verdict DROPPED` (see k8s/OPERATIONS.md) and the Network Policy
-              dashboard, then add an allow rule or an explicit deny.
+              --verdict DROPPED` (see k8s/OPERATIONS.md) and the Cilium / Network
+              policy dashboard, then add an allow rule or an explicit deny.
