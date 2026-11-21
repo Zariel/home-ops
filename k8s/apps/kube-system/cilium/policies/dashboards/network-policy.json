@@ -265,7 +265,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "instant": true,
-          "expr": "sum(increase(hubble_drop_total{source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range]) or increase(hubble_drop_total{destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range]))"
+          "expr": "sum(increase(hubble_drop_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range]) or increase(hubble_drop_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range]))"
         }
       ]
     },
@@ -329,7 +329,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "instant": true,
-          "expr": "count(count_over_time((sum by (source_namespace, source_app, source, destination_namespace, destination_app, destination, traffic_direction) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[5m])) > 0)[1h:5m]) >= 8)"
+          "expr": "count(count_over_time((sum by (traffic_direction, source_namespace, source_app, source, destination_namespace, destination_app, destination) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[5m])) > 0)[1h:5m]) >= 8)"
         }
       ]
     },
@@ -381,7 +381,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "instant": true,
-          "expr": "sum(increase(hubble_drop_total{source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENY\"}[$__range]) or increase(hubble_drop_total{destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENY\"}[$__range]))"
+          "expr": "sum(increase(hubble_drop_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENY\"}[$__range]) or increase(hubble_drop_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENY\"}[$__range]))"
         }
       ]
     },
@@ -501,16 +501,16 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "instant": true,
-          "legendFormat": "{{traffic_direction}} {{source_namespace}}/{{source_app}}{{source}} \u2192 {{destination_namespace}}/{{destination_app}}{{destination}}",
-          "expr": "topk(10, sum by (traffic_direction, source_namespace, source_app, source, destination_namespace, destination_app, destination) (increase(hubble_drop_total{source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range]) or increase(hubble_drop_total{destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range])) > 0)"
+          "legendFormat": "{{traffic_direction}} {{src}} \u2192 {{dst}}",
+          "expr": "topk(10, label_replace(label_join(label_replace(label_join(sum by (traffic_direction, source_namespace, source_app, source, destination_namespace, destination_app, destination) (increase(hubble_drop_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range]) or increase(hubble_drop_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__range])) > 0, \"src\", \"/\", \"source_namespace\", \"source_app\"), \"src\", \"$1\", \"source\", \"(.+)\"), \"dst\", \"/\", \"destination_namespace\", \"destination_app\"), \"dst\", \"$1\", \"destination\", \"(.+)\"))"
         }
       ]
     },
     {
       "id": 9,
       "type": "timeseries",
-      "title": "Missing-rule drops by source app",
-      "description": "Hourly connections no policy allowed, excluding ICMP errors",
+      "title": "Missing-rule drops",
+      "description": "Hourly connections no policy allowed, excluding ICMP errors, for the selected apps",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -528,6 +528,10 @@
           "decimals": 0,
           "min": 0,
           "noValue": "No missing-rule drops",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "red"
+          },
           "custom": {
             "drawStyle": "bars",
             "barAlignment": 1,
@@ -541,9 +545,6 @@
               "type": "linear"
             },
             "showPoints": "never"
-          },
-          "color": {
-            "mode": "palette-classic"
           }
         },
         "overrides": []
@@ -566,8 +567,8 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "legendFormat": "{{source_namespace}}/{{source_app}}{{source}}",
-          "expr": "sum by (source_namespace, source_app, source) (increase(hubble_drop_total{source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__interval] offset -$__interval) or increase(hubble_drop_total{destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__interval] offset -$__interval)) > 0"
+          "legendFormat": "Missing-rule drops",
+          "expr": "sum(increase(hubble_drop_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__interval] offset -$__interval) or increase(hubble_drop_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\", reason=\"POLICY_DENIED\", protocol!~\"ICMP.*\"}[$__interval] offset -$__interval)) > 0"
         }
       ]
     },
@@ -635,8 +636,8 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "instant": true,
-          "legendFormat": "{{destination_namespace}}/{{destination_app}}{{destination}}",
-          "expr": "topk(10, sum by (destination_namespace, destination_app, destination) (increase(hubble_port_distribution_total{traffic_direction=\"egress\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range])) > 0)"
+          "legendFormat": "{{peer}}",
+          "expr": "topk(10, label_replace(label_join(sum by (destination_namespace, destination_app, destination) (increase(hubble_port_distribution_total{traffic_direction=\"egress\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range])) > 0, \"peer\", \"/\", \"destination_namespace\", \"destination_app\"), \"peer\", \"$1\", \"destination\", \"(.+)\"))"
         }
       ]
     },
@@ -691,8 +692,8 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "instant": true,
-          "legendFormat": "{{source_namespace}}/{{source_app}}{{source}}",
-          "expr": "topk(10, sum by (source_namespace, source_app, source) (increase(hubble_port_distribution_total{traffic_direction=\"ingress\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range])) > 0)"
+          "legendFormat": "{{peer}}",
+          "expr": "topk(10, label_replace(label_join(sum by (source_namespace, source_app, source) (increase(hubble_port_distribution_total{traffic_direction=\"ingress\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range])) > 0, \"peer\", \"/\", \"source_namespace\", \"source_app\"), \"peer\", \"$1\", \"source\", \"(.+)\"))"
         }
       ]
     },
@@ -712,12 +713,25 @@
         "h": 10
       },
       "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "decimals": 0,
-          "noValue": "No outbound connections"
-        },
-        "overrides": []
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Connections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "showHeader": true,
@@ -755,19 +769,22 @@
             "excludeByName": {
               "Time": true
             },
+            "indexByName": {
+              "source_app": 0,
+              "destination_namespace": 1,
+              "destination_app": 2,
+              "destination": 3,
+              "port": 4,
+              "protocol": 5,
+              "Value": 6
+            },
             "renameByName": {
-              "source_namespace": "Source namespace",
               "source_app": "Source app",
-              "source": "Source identity",
               "destination_namespace": "Destination namespace",
               "destination_app": "Destination app",
               "destination": "Destination identity",
-              "destination_ip": "Destination IP",
-              "traffic_direction": "Direction",
               "port": "Port",
               "protocol": "Protocol",
-              "reason": "Reason",
-              "verdict": "Verdict",
               "Value": "Connections"
             }
           }
@@ -790,12 +807,25 @@
         "h": 10
       },
       "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "decimals": 0,
-          "noValue": "No inbound connections"
-        },
-        "overrides": []
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Connections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "showHeader": true,
@@ -833,19 +863,22 @@
             "excludeByName": {
               "Time": true
             },
+            "indexByName": {
+              "destination_app": 0,
+              "source_namespace": 1,
+              "source_app": 2,
+              "source": 3,
+              "port": 4,
+              "protocol": 5,
+              "Value": 6
+            },
             "renameByName": {
               "source_namespace": "Source namespace",
               "source_app": "Source app",
               "source": "Source identity",
-              "destination_namespace": "Destination namespace",
               "destination_app": "Destination app",
-              "destination": "Destination identity",
-              "destination_ip": "Destination IP",
-              "traffic_direction": "Direction",
               "port": "Port",
               "protocol": "Protocol",
-              "reason": "Reason",
-              "verdict": "Verdict",
               "Value": "Connections"
             }
           }
@@ -880,12 +913,25 @@
             "h": 9
           },
           "fieldConfig": {
-            "defaults": {
-              "unit": "short",
-              "decimals": 0,
-              "noValue": "No LAN connections"
-            },
-            "overrides": []
+            "defaults": {},
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Connections"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  }
+                ]
+              }
+            ]
           },
           "options": {
             "showHeader": true,
@@ -923,18 +969,19 @@
                 "excludeByName": {
                   "Time": true
                 },
+                "indexByName": {
+                  "source_app": 0,
+                  "destination_ip": 1,
+                  "port": 2,
+                  "protocol": 3,
+                  "verdict": 4,
+                  "Value": 5
+                },
                 "renameByName": {
-                  "source_namespace": "Source namespace",
                   "source_app": "Source app",
-                  "source": "Source identity",
-                  "destination_namespace": "Destination namespace",
-                  "destination_app": "Destination app",
-                  "destination": "Destination identity",
-                  "destination_ip": "Destination IP",
-                  "traffic_direction": "Direction",
+                  "destination_ip": "Destination address",
                   "port": "Port",
                   "protocol": "Protocol",
-                  "reason": "Reason",
                   "verdict": "Verdict",
                   "Value": "Connections"
                 }
@@ -976,6 +1023,10 @@
               "unit": "percentunit",
               "min": 0,
               "max": 1,
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "#c4c4c4"
+              },
               "custom": {
                 "drawStyle": "line",
                 "fillOpacity": 50,
@@ -993,8 +1044,8 @@
             "overrides": [
               {
                 "matcher": {
-                  "id": "byName",
-                  "options": "both"
+                  "id": "byRegexp",
+                  "options": "^both$"
                 },
                 "properties": [
                   {
@@ -1008,38 +1059,8 @@
               },
               {
                 "matcher": {
-                  "id": "byName",
-                  "options": "ingress"
-                },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "mode": "fixed",
-                      "fixedColor": "#c4c4c4"
-                    }
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "egress"
-                },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "mode": "fixed",
-                      "fixedColor": "#c4c4c4"
-                    }
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "none"
+                  "id": "byRegexp",
+                  "options": "^none$"
                 },
                 "properties": [
                   {
@@ -1112,6 +1133,10 @@
               "decimals": 0,
               "min": 0,
               "noValue": "No drops",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "#c4c4c4"
+              },
               "custom": {
                 "drawStyle": "bars",
                 "barAlignment": 1,
@@ -1125,12 +1150,40 @@
                   "type": "linear"
                 },
                 "showPoints": "never"
-              },
-              "color": {
-                "mode": "palette-classic"
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "^POLICY_DENIED (TCP|UDP|SCTP)$"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "red"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "^POLICY_DENY "
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#8a8a8a"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "options": {
             "legend": {
@@ -1151,7 +1204,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "legendFormat": "{{reason}} {{protocol}}",
-              "expr": "sum by (reason, protocol) (increase(hubble_drop_total{source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__interval] offset -$__interval) or increase(hubble_drop_total{destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__interval] offset -$__interval)) > 0"
+              "expr": "sum by (reason, protocol) (increase(hubble_drop_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__interval] offset -$__interval) or increase(hubble_drop_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__interval] offset -$__interval)) > 0"
             }
           ]
         },
@@ -1171,12 +1224,25 @@
             "h": 9
           },
           "fieldConfig": {
-            "defaults": {
-              "unit": "short",
-              "decimals": 0,
-              "noValue": "No drops"
-            },
-            "overrides": []
+            "defaults": {},
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Drops"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  }
+                ]
+              }
+            ]
           },
           "options": {
             "showHeader": true,
@@ -1204,7 +1270,7 @@
               },
               "instant": true,
               "format": "table",
-              "expr": "sum by (traffic_direction, source_namespace, source_app, source, destination_namespace, destination_app, destination, reason, protocol) (increase(hubble_drop_total{source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range]) or increase(hubble_drop_total{destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range])) > 0"
+              "expr": "sum by (traffic_direction, source_namespace, source_app, source, destination_namespace, destination_app, destination, reason, protocol) (increase(hubble_drop_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range]) or increase(hubble_drop_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range])) > 0"
             }
           ],
           "transformations": [
@@ -1214,6 +1280,18 @@
                 "excludeByName": {
                   "Time": true
                 },
+                "indexByName": {
+                  "traffic_direction": 0,
+                  "source_namespace": 1,
+                  "source_app": 2,
+                  "source": 3,
+                  "destination_namespace": 4,
+                  "destination_app": 5,
+                  "destination": 6,
+                  "reason": 7,
+                  "protocol": 8,
+                  "Value": 9
+                },
                 "renameByName": {
                   "source_namespace": "Source namespace",
                   "source_app": "Source app",
@@ -1221,12 +1299,9 @@
                   "destination_namespace": "Destination namespace",
                   "destination_app": "Destination app",
                   "destination": "Destination identity",
-                  "destination_ip": "Destination IP",
                   "traffic_direction": "Direction",
-                  "port": "Port",
                   "protocol": "Protocol",
                   "reason": "Reason",
-                  "verdict": "Verdict",
                   "Value": "Drops"
                 }
               }
