@@ -22,7 +22,7 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: network
             app.kubernetes.io/name: envoy
-            gateway.envoyproxy.io/owning-gateway-name: external
+            gateway.envoyproxy.io/owning-gateway-name: internal
             gateway.envoyproxy.io/owning-gateway-namespace: network
       toPorts:
         - ports:

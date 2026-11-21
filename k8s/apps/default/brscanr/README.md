@@ -12,7 +12,7 @@ Hardware validation on 2026-11-01 found:
 - Replaying the platen request's idempotency key returned the same job with HTTP 200 without starting another acquisition.
 - The physical Scan to PC callback still requires an operator button press and confirmation in `/api/status` and `/api/jobs`.
 
-The public route at <https://brscanr.cbannister.xyz> requires Pocket ID membership in `admin`. It deliberately targets the empty `brscanr-pending` Service until hardware validation completes. Envoy protects every HTTP path, including the JSON API and retained PDFs. Authentication must be renewed after the 15-minute access token expires.
+The internal route at <https://brscanr.cbannister.xyz> requires Pocket ID membership in `admin`. It deliberately targets the empty `brscanr-pending` Service until hardware validation completes. Envoy protects every HTTP path, including the JSON API and retained PDFs. Authentication must be renewed after the 15-minute access token expires.
 
 Keep the existing Paperless scanner sidecar and LAN attachment until physical validation succeeds. Then remove the sidecar, its mounts, the trusted-LAN annotation and the Multus dependency. Preserve the Paperless PVC and its retained `scanner-spool` artifacts. Stop the old destination owner and allow its registration lease to expire before reusing its destination name.
 
@@ -26,9 +26,9 @@ After validating authentication, change the HTTPRoute backend to `brscanr:8080` 
 | brscanr | `10.1.2.70:54921/TCP` | Acquire pages |
 | `10.1.2.70` | `10.45.0.25:54925/UDP` | Physical button callback |
 | brscanr | Internal Envoy HTTPS listener | Paperless API |
-| External Envoy | brscanr HTTP Service | Authenticated web access |
+| Internal Envoy | brscanr HTTP Service | Authenticated web access |
 
-The callback Service uses `externalTrafficPolicy: Local` to preserve the printer's source address. Cilium and the application restrict callbacks to that source. Cilium restricts HTTP access to the external gateway and local host probes.
+The callback Service uses `externalTrafficPolicy: Local` to preserve the printer's source address. Cilium and the application restrict callbacks to that source. Cilium restricts HTTP access to the internal gateway and local host probes. The route is internal only; do not attach it to the external gateway.
 
 VyOS `transit-trusted` rule 110 permits the two printer TCP ports from pod networks. Maintain it in `../vyos-config/config-parts/firewall-ipv4-transit.sh`. The existing `trusted-transit` load-balancer rule permits callbacks. The printer's self-signed certificate requires disabling certificate verification only for printer registration; Paperless HTTPS verification remains enabled.
 

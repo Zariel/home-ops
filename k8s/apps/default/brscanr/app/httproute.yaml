@@ -11,7 +11,7 @@ spec:
   hostnames:
     - brscanr.cbannister.xyz
   parentRefs:
-    - name: external-cbannister-xyz
+    - name: internal-cbannister-xyz
       namespace: network
       kind: ListenerSet
       sectionName: https
