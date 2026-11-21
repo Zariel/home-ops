@@ -13,6 +13,7 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
         app: otbr
         app.kubernetes.io/name: otbr
       annotations:

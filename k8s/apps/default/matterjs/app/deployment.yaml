@@ -13,6 +13,8 @@ spec:
   template:
     metadata:
       labels:
+        cbannister.xyz/egress: internet
+        cbannister.xyz/ingress: internal-gateway
         app.kubernetes.io/name: matterjs
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
