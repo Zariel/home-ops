@@ -433,7 +433,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "instant": true,
-          "expr": "sum(increase(hubble_port_distribution_total{traffic_direction=\"egress\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range]))"
+          "expr": "sum(max by (source_namespace, source_app, source, destination_namespace, destination_app, destination, port, protocol) (increase(hubble_port_distribution_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range])))"
         }
       ]
     },
@@ -589,7 +589,7 @@
       "id": 11,
       "type": "bargauge",
       "title": "Outbound connections by peer",
-      "description": "Most-used destinations of the selected apps, excluding internet destinations",
+      "description": "Most-used destinations of the selected apps, excluding internet destinations; counts are approximate",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -637,7 +637,7 @@
           },
           "instant": true,
           "legendFormat": "{{peer}}",
-          "expr": "topk(10, label_replace(label_join(sum by (destination_namespace, destination_app, destination) (increase(hubble_port_distribution_total{traffic_direction=\"egress\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range])) > 0, \"peer\", \"/\", \"destination_namespace\", \"destination_app\"), \"peer\", \"$1\", \"destination\", \"(.+)\"))"
+          "expr": "topk(10, label_replace(label_join(sum by (destination_namespace, destination_app, destination) (max by (source_namespace, source_app, source, destination_namespace, destination_app, destination, port, protocol) (increase(hubble_port_distribution_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range]))) > 0, \"peer\", \"/\", \"destination_namespace\", \"destination_app\"), \"peer\", \"$1\", \"destination\", \"(.+)\"))"
         }
       ]
     },
@@ -645,7 +645,7 @@
       "id": 12,
       "type": "bargauge",
       "title": "Inbound connections by peer",
-      "description": "Most frequent clients of the selected apps, including node probes and internet peers",
+      "description": "Most frequent clients of the selected apps, including node probes and internet peers; counts are approximate",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
@@ -693,7 +693,7 @@
           },
           "instant": true,
           "legendFormat": "{{peer}}",
-          "expr": "topk(10, label_replace(label_join(sum by (source_namespace, source_app, source) (increase(hubble_port_distribution_total{traffic_direction=\"ingress\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range])) > 0, \"peer\", \"/\", \"source_namespace\", \"source_app\"), \"peer\", \"$1\", \"source\", \"(.+)\"))"
+          "expr": "topk(10, label_replace(label_join(sum by (source_namespace, source_app, source) (max by (source_namespace, source_app, source, destination_namespace, destination_app, destination, port, protocol) (increase(hubble_port_distribution_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range]))) > 0, \"peer\", \"/\", \"source_namespace\", \"source_app\"), \"peer\", \"$1\", \"source\", \"(.+)\"))"
         }
       ]
     },
@@ -759,7 +759,7 @@
           },
           "instant": true,
           "format": "table",
-          "expr": "sum by (source_app, destination_namespace, destination_app, destination, port, protocol) (increase(hubble_port_distribution_total{traffic_direction=\"egress\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range])) > 0"
+          "expr": "sum by (source_app, destination_namespace, destination_app, destination, port, protocol) (max by (source_namespace, source_app, source, destination_namespace, destination_app, destination, port, protocol) (increase(hubble_port_distribution_total{traffic_direction!=\"\", source_namespace=~\"$namespace\", source_app=~\"$app\"}[$__range]))) > 0"
         }
       ],
       "transformations": [
@@ -853,7 +853,7 @@
           },
           "instant": true,
           "format": "table",
-          "expr": "sum by (destination_app, source_namespace, source_app, source, port, protocol) (increase(hubble_port_distribution_total{traffic_direction=\"ingress\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range])) > 0"
+          "expr": "sum by (destination_app, source_namespace, source_app, source, port, protocol) (max by (source_namespace, source_app, source, destination_namespace, destination_app, destination, port, protocol) (increase(hubble_port_distribution_total{traffic_direction!=\"\", destination_namespace=~\"$namespace\", destination_app=~\"$app\"}[$__range]))) > 0"
         }
       ],
       "transformations": [
