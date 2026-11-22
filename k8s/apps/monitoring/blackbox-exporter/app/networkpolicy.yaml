@@ -57,11 +57,12 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
-    # ICMP reachability of the NAS, the PDU, PiKVM, the TESmart KVM and Proxmox.
+    # ICMP reachability of the NAS, the console server, the PDU, PiKVM, the TESmart KVM and Proxmox.
     - toCIDR:
         - 10.254.1.101/32
         - 10.1.254.10/32
         - 10.1.254.30/32
+        - 10.1.254.40/32
         - 10.1.254.20/32
         - 10.1.1.31/32
       icmps:
