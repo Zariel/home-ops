@@ -130,6 +130,9 @@ spec:
       - name: netconsole
         containerPort: 6666
         protocol: UDP
+      - name: network-syslog
+        containerPort: 5514
+        protocol: UDP
 
     livenessProbe:
       failureThreshold: 3
@@ -181,6 +184,12 @@ spec:
         - name: netconsole
           port: 6666
           targetPort: 6666
+          protocol: UDP
+        # Network devices (Beefchunk and the OOB devices) send syslog to the
+        # standard port; the container listens unprivileged.
+        - name: network-syslog
+          port: 514
+          targetPort: 5514
           protocol: UDP
 
     # Disable headless service to avoid duplicate exposure and DNS/LB annotations leaking to it

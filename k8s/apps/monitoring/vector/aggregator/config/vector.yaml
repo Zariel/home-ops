@@ -43,6 +43,14 @@ sources:
     mode: tcp
     address: 0.0.0.0:6001
 
+  # Beefchunk and the out-of-band devices (PDU, console server). FastIron can
+  # send syslog only over UDP or TLS, and these logs must not pass through the
+  # VyOS firewall parsing on vyos_syslog.
+  network_syslog:
+    type: syslog
+    mode: udp
+    address: 0.0.0.0:5514
+
   pve_netconsole:
     type: socket
     mode: udp
@@ -246,6 +254,13 @@ transforms:
         .timestamp = now()
       }
 
+  vlogs_network_tag:
+    type: remap
+    inputs:
+      - network_syslog
+    source: |-
+      .source_stream = "network"
+
   vlogs_pve_netconsole_tag:
     type: remap
     inputs:
@@ -265,6 +280,7 @@ transforms:
       - vlogs_katl_tag
       - vlogs_pve_netconsole_tag
       - vlogs_http_tag
+      - vlogs_network_tag
     source: |-
       if !exists(.node) && exists(.node_name) {
         .node = .node_name
