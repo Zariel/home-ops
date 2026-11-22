@@ -41,7 +41,7 @@ spec:
                 - name: PDU_HOST
                   value: pdu.cbannister.casa
                 - name: PDU_ADDRESS
-                  value: 10.1.0.31
+                  value: 10.1.254.30
                 - name: PDU_BOOTSTRAP_SHA256
                   value: 99c8099bc46ac2b0cc6fd334fe8ffd5fcfce5501aabef3f3ce64a5c397af63ec
               resources:

@@ -48,5 +48,5 @@ spec:
             - port: "161"
               protocol: UDP
     - toCIDR:
-        - 10.1.0.31/32
+        - 10.1.254.30/32
       toPorts: *snmp

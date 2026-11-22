@@ -84,7 +84,7 @@ spec:
           auth: ["public_v2"]
         - name: pdu
           module: ["raritan_px2"]
-          target: 10.1.0.31
+          target: 10.1.254.30
           auth: ["public_v2"]
       path: /snmp
       scrapeTimeout: 60s

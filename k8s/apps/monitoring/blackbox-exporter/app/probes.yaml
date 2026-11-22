@@ -12,6 +12,7 @@ spec:
     staticConfig:
       static:
         - nas.cbannister.casa
+        - pdu.cbannister.casa
         - pikvm.cbannister.casa
         - tesmart-kvm.cbannister.casa
         - pve.cbannister.casa
