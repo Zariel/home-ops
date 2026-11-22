@@ -6,6 +6,11 @@ metadata:
   name: forgejo-runner
   namespace: forgejo-system
 spec:
+  # Pod labels select the shared policies listed in k8s/README.md. Each
+  # direction has its own rule, so removing a label cannot open the workload.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: forgejo-runner
@@ -18,4 +23,35 @@ spec:
       toPorts:
         - ports:
             - port: "8081"
+              protocol: TCP
+  egress:
+    # DNS is listed here as well as in the internet baseline, so the runner keeps
+    # resolving while a pod without the label is still running.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # The k8s plugin creates job pods through the API server.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+    # Task polling and logs.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: forgejo-system
+            app.kubernetes.io/name: forgejo
+      toPorts:
+        - ports:
+            - port: "3000"
               protocol: TCP

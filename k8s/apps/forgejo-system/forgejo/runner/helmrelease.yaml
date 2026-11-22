@@ -21,6 +21,8 @@ spec:
         pod:
           labels:
             app.kubernetes.io/component: forgejo-runner
+            # Actions are fetched from data.forgejo.org, which can redirect to GitHub.
+            cbannister.xyz/egress: internet
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
