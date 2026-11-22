@@ -83,10 +83,17 @@ spec:
             configBlock: |-
               pods verified
               fallthrough in-addr.arpa ip6.arpa
+          # BIND is reached over TCP so its replies belong to a tracked connection.
+          # Over UDP, a burst of BIND replies to CoreDNS was dropped as new egress
+          # from the BIND pods.
           - name: forward
             parameters: cbannister.xyz 10.45.0.55
+            configBlock: |-
+              force_tcp
           - name: forward
             parameters: rociobolanos.com 10.45.0.55
+            configBlock: |-
+              force_tcp
           - name: forward
             parameters: . 10.254.253.53
           - name: cache
