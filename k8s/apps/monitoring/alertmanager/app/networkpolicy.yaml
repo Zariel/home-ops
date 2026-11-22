@@ -62,6 +62,27 @@ spec:
             - port: "9094"
               protocol: UDP
   egress:
+    # DNS is listed here as well as in the internet baseline, so peers resolve
+    # while a replica is still running without the baseline label.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # The config reloader reads the generated configuration Secret.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
     # Cluster gossip between the replicas.
     - toEndpoints:
         - *peers
