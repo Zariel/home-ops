@@ -6,9 +6,26 @@ metadata:
   name: cloudflared
   namespace: network
 spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: cloudflared
+  # Cloudflared dials out to Cloudflare; its only listener serves metrics and
+  # readiness.
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &metrics
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *metrics
   egress:
     # Service port 443 is translated to the Envoy pod's HTTPS listener.
     - toEndpoints:
