@@ -93,3 +93,12 @@ spec:
         - ports:
             - port: "32400"
               protocol: TCP
+    # Silo's autoscan webhook.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: silo
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

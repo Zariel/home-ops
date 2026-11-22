@@ -15,7 +15,18 @@ spec:
     matchLabels:
       app.kubernetes.io/name: silo
   ingress:
-    - {}
+    # Sonarr and Radarr call the autoscan webhook after imports.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: sonarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: radarr
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:
