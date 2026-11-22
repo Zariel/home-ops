@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: blackbox-exporter
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-blackbox-exporter
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &scrape
+        - ports:
+            - port: "9115"
+              protocol: TCP
+    # Kubelet probes.
+    - fromEntities:
+        - host
+      toPorts: *scrape
+  # Probe targets from probes.yaml; add new targets here too.
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toCIDR:
+        - 10.254.253.53/32
+      toPorts: &dns-probe
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # 10.45.0.55, the bind LoadBalancer, resolves to the BIND pods.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app: bind
+      toPorts: *dns-probe
+    - toCIDR:
+        - 1.1.1.1/32
+        - 8.8.8.8/32
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # ICMP reachability of the NAS, PiKVM and Proxmox.
+    - toCIDR:
+        - 10.254.1.101/32
+        - 10.1.0.100/32
+        - 10.1.1.31/32
+      icmps:
+        - fields:
+            - type: EchoRequest
+              family: IPv4
