@@ -13,6 +13,9 @@ spec:
     controllers:
       echo:
         strategy: RollingUpdate
+        pod:
+          labels:
+            cbannister.xyz/ingress: internal-gateway
         containers:
           app:
             image:
