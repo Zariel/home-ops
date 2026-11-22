@@ -47,3 +47,12 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
+    # The Seerr request-router plugin submits approved requests and polls their status.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: seerr
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP

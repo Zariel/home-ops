@@ -27,6 +27,10 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app.kubernetes.io/name: maintainerr
+        # Silo forwards approved requests through its Seerr plugin.
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: silo
       toPorts: &http
         - ports:
             - port: "80"
