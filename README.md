@@ -19,7 +19,8 @@ Personal home-ops repo for my homelab. This repository tracks my Kubernetes and 
 
 This homelab is fully L3 routed. Cluster nodes are not on a shared L2 domain.
 
-The [host service addressing policy](docs/host-services.md) reserves
+The host service addressing policy, kept in the infra workspace as
+`docs/host-services.md`, reserves
 `10.5.0.0/16`, with one routed `/26` per host. It also records the staged gateway
 migration and the Kubernetes NTP and monitoring consumer changes.
 
