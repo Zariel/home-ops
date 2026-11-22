@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: spegel
+spec:
+  # Containerd falls back to the upstream registry when the mirror is
+  # unreachable, so a gap here slows pulls rather than breaking them.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: spegel
+  ingress:
+    # Containerd on every node pulls through the spegel-registry NodePort, and
+    # peers fetch content they advertise.
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts: &registry
+        - ports:
+            - port: "5000"
+              protocol: TCP
+    - fromEndpoints:
+        - &peers
+          matchLabels:
+            app.kubernetes.io/name: spegel
+      toPorts: &p2p
+        - ports:
+            - port: "5000"
+              protocol: TCP
+            - port: "5001"
+              protocol: TCP
+            - port: "5001"
+              protocol: UDP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+  egress:
+    # Peer discovery through the spegel-bootstrap headless Service.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - *peers
+      toPorts: *p2p
