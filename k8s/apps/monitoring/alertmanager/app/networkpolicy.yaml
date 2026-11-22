@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: alertmanager
+spec:
+  # Pod labels select the shared policies listed in k8s/README.md. Each
+  # direction has its own rule, so removing a label cannot open the workload.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmalertmanager
+      app.kubernetes.io/instance: alertmanager
+  ingress:
+    # Alert senders and API clients.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - karma
+                - silence-operator
+                - vmagent
+                - vmalert
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app: grafana
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "8435"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
+            - port: "8435"
+              protocol: TCP
+    - fromEndpoints:
+        - &peers
+          matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+            app.kubernetes.io/instance: alertmanager
+      toPorts: &cluster
+        - ports:
+            - port: "9094"
+              protocol: TCP
+            - port: "9094"
+              protocol: UDP
+  egress:
+    # Cluster gossip between the replicas.
+    - toEndpoints:
+        - *peers
+      toPorts: *cluster

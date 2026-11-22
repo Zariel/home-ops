@@ -20,6 +20,11 @@ spec:
       env:
         - name: TZ
           value: Europe/London
+  podMetadata:
+    labels:
+      # Pushover and the healthchecks webhook are on the internet.
+      cbannister.xyz/egress: internet
+      cbannister.xyz/ingress: internal-gateway
   replicaCount: 2
   image:
     repository: quay.io/prometheus/alertmanager
