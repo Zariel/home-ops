@@ -34,8 +34,8 @@ spec:
               value: "8080"
             - name: SMTP_RELAY_SERVER_PORT
               value: "465"
-            - name: SMTP_RELAY_SMTP_PORT
-              value: "25"
+            - name: SMTP_RELAY_SUBMISSION_PORT
+              value: "587"
           envFrom:
             - secretRef:
                 name: smtp-relay-secret
@@ -70,11 +70,15 @@ spec:
           volumeMounts:
             - mountPath: /cache
               name: cache
+            - mountPath: /etc/maddy/tls
+              name: tls
+              readOnly: true
             - mountPath: /data/maddy.conf
               name: config
               readOnly: true
               subPath: maddy.conf
       securityContext:
+        fsGroup: 568
         runAsGroup: 568
         runAsNonRoot: true
         runAsUser: 568
@@ -85,3 +89,7 @@ spec:
             defaultMode: 420
             name: smtp-relay-configmap
           name: config
+        - name: tls
+          secret:
+            secretName: smtp-relay-tls
+            defaultMode: 0440

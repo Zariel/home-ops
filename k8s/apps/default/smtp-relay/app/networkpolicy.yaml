@@ -6,9 +6,9 @@ metadata:
   name: smtp-relay
   namespace: default
 spec:
-  # The relay accepts mail without authentication and sends it with the
-  # operator's Fastmail credentials, so only named senders may reach it and it
-  # may reach only Fastmail's submission port.
+  # The relay sends with the operator's Fastmail credentials. Senders
+  # authenticate as well, but only named senders may reach it, and it may
+  # reach only Fastmail's submission port.
   enableDefaultDeny:
     ingress: true
     egress: true
@@ -20,12 +20,9 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app.kubernetes.io/name: pocket-id
-        - matchLabels:
-            io.kubernetes.pod.namespace: forgejo-system
-            app.kubernetes.io/name: forgejo
       toPorts:
         - ports:
-            - port: "25"
+            - port: "587"
               protocol: TCP
     # Kubelet probes originate on the node hosting the relay.
     - fromEntities:

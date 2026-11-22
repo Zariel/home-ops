@@ -14,10 +14,10 @@ spec:
     - IPv4
   ipFamilyPolicy: SingleStack
   ports:
-    - name: smtp
-      port: 25
+    - name: submission
+      port: 587
       protocol: TCP
-      targetPort: 25
+      targetPort: 587
   selector:
     app.kubernetes.io/component: smtp-relay
     app.kubernetes.io/instance: smtp-relay
