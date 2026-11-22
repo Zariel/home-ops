@@ -10,4 +10,5 @@ resources:
   - ./objectstore.yaml
   - ./podmonitor.yaml
   - ./prometheusrule.yaml
+  - ./networkpolicy.yaml
   - ./scheduledbackup.yaml
