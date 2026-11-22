@@ -87,3 +87,9 @@ spec:
     - toEndpoints:
         - *peers
       toPorts: *cluster
+    # Alertmanager keeps reconnecting to a replaced replica's old address for its
+    # reconnect timeout. CIDR rules match only addresses no live endpoint holds,
+    # so this admits those stale attempts without opening any running pod.
+    - toCIDR:
+        - 172.20.0.0/16
+      toPorts: *cluster
