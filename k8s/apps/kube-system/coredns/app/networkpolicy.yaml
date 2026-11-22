@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: coredns
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      k8s-app: kube-dns
+  ingress:
+    - fromEntities:
+        - all
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9153"
+              protocol: TCP
+    # Liveness and readiness probes.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+            - port: "8181"
+              protocol: TCP
+  # Egress is tightened separately, once ingress enforcement has settled.
+  egress:
+    - toEntities:
+        - all
