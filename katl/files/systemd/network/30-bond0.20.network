@@ -1,9 +1,0 @@
-[Match]
-Name=bond0.20
-
-[Link]
-RequiredForOnline=no
-
-[Network]
-LinkLocalAddressing=no
-IPv6AcceptRA=no
