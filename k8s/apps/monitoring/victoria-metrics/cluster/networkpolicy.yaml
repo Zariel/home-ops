@@ -211,3 +211,40 @@ spec:
         - ports:
             - port: "9093"
               protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vlsingle
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vlsingle
+      app.kubernetes.io/instance: vlogs
+  ingress:
+    # The Vector aggregator writes logs, Grafana queries them, and vmagent
+    # scrapes VictoriaLogs' own metrics.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vector
+            app.kubernetes.io/instance: vector-aggregator
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app: grafana
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &http
+        - ports:
+            - port: "9428"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *http
+  egress:
+    - {}
