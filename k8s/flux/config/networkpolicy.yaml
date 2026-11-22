@@ -6,8 +6,10 @@ metadata:
   name: flux-controllers
   namespace: flux-system
 spec:
-  # Egress stays open until the controllers run with their baseline labels;
-  # it is restricted in a separate change.
+  # The controllers hold cluster-admin rights, so egress within the cluster stays
+  # open: limiting it would add little and could stop Flux applying its own fix.
+  # Source and kustomize controllers reach the internet through their baseline
+  # label; nothing else on the LAN or the internet is reachable.
   enableDefaultDeny:
     ingress: true
     egress: true
@@ -31,7 +33,7 @@ spec:
               protocol: TCP
   egress:
     - toEntities:
-        - all
+        - cluster
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
