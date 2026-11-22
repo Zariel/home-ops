@@ -53,3 +53,11 @@ spec:
         - ports:
             - port: "9330"
               protocol: TCP
+    # The Bluesound players' control API on the ROON VLAN.
+    - toCIDR:
+        - 10.1.4.13/32
+        - 10.1.4.14/32
+      toPorts:
+        - ports:
+            - port: "11000"
+              protocol: TCP
