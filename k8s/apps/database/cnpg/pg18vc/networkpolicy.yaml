@@ -35,7 +35,8 @@ spec:
             - port: "5432"
               protocol: TCP
     # The instance manager's status API, used by the operator and by peer
-    # instances; kubelet probes use the same port.
+    # instances. Kubelet probes and `kubectl cnpg status`, which goes through
+    # the API server's pod proxy, reach it from the nodes.
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: cnpg-system
@@ -48,6 +49,8 @@ spec:
               protocol: TCP
     - fromEntities:
         - host
+        - remote-node
+        - kube-apiserver
       toPorts: *status
     - fromEndpoints:
         - matchLabels:
