@@ -6,9 +6,9 @@ metadata:
   name: smtp-relay
   namespace: default
 spec:
-  # LAN devices send through smtp.cbannister.xyz, the LoadBalancer address, so
-  # SMTP stays open to any client. Egress is limited to the upstream provider's
-  # SMTPS port; the relay reaches nothing else in the cluster or on the LAN.
+  # The relay accepts mail without authentication and sends it with the
+  # operator's Fastmail credentials, so only named senders may reach it and it
+  # may reach only Fastmail's submission port.
   enableDefaultDeny:
     ingress: true
     egress: true
@@ -16,13 +16,18 @@ spec:
     matchLabels:
       app.kubernetes.io/name: smtp-relay
   ingress:
-    - fromEntities:
-        - world
-        - cluster
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: pocket-id
+        - matchLabels:
+            io.kubernetes.pod.namespace: forgejo-system
+            app.kubernetes.io/name: forgejo
       toPorts:
         - ports:
             - port: "25"
               protocol: TCP
+    # Kubelet probes originate on the node hosting the relay.
     - fromEntities:
         - host
       toPorts:
@@ -40,15 +45,12 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
-    # The upstream server is a secret, so the rule names its port, not its host.
-    - toCIDRSet:
-        - cidr: 0.0.0.0/0
-          except:
-            - 10.0.0.0/8
-            - 100.64.0.0/10
-            - 169.254.0.0/16
-            - 172.16.0.0/12
-            - 192.168.0.0/16
+          # The DNS proxy learns the addresses used by the FQDN rule below.
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toFQDNs:
+        - matchName: smtp.fastmail.com
       toPorts:
         - ports:
             - port: "465"

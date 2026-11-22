@@ -28,4 +28,12 @@ spec:
             - port: "1411"
               protocol: TCP
   egress:
-    - {}
+    # Login codes and notifications go out through the cluster mail relay.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: smtp-relay
+      toPorts:
+        - ports:
+            - port: "25"
+              protocol: TCP
