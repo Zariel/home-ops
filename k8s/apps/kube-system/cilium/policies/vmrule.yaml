@@ -9,6 +9,39 @@ spec:
   groups:
     - name: cilium-policy.rules
       rules:
+        # Any unexpected drop, within one window. Every workload has a policy, so
+        # a POLICY_DENIED drop outside ICMP errors means a missing rule or an
+        # unexpected connection. Internet scans of qBittorrent's public torrent
+        # port are excluded. Cilium agent restarts can drop a few replies on
+        # established connections, which fires this once.
+        - alert: CiliumUnexpectedDrop
+          expr: |
+            sum by (source_namespace, source_app, source, destination_namespace, destination_app, destination, traffic_direction) (
+              increase(hubble_drop_total{reason="POLICY_DENIED", protocol!~"ICMP.*"}[5m])
+            ) >= 1
+            unless on (destination_namespace, destination_app, traffic_direction)
+            (
+              sum by (destination_namespace, destination_app, traffic_direction) (
+                hubble_drop_total{destination_namespace="default", destination_app="qbittorrent", traffic_direction="ingress"}
+              )
+            )
+          keep_firing_for: 15m
+          labels:
+            severity: warning
+            namespace: >-
+              {{ if eq $labels.traffic_direction "ingress" }}{{ $labels.destination_namespace }}{{ else }}{{ $labels.source_namespace }}{{ end }}
+          annotations:
+            summary: >-
+              Cilium dropped unexpected {{ $labels.traffic_direction }} traffic from
+              {{ with $labels.source_app }}{{ $labels.source_namespace }}/{{ . }}{{ else }}{{ or $labels.source "an unknown peer" }}{{ end }}
+              to
+              {{ with $labels.destination_app }}{{ $labels.destination_namespace }}/{{ . }}{{ else }}{{ or $labels.destination "an unknown peer" }}{{ end }}
+            description: >-
+              No network policy allowed this connection. Each drop is logged with
+              its pods, addresses and ports; query VictoriaLogs for
+              `message_json.flow.verdict:DROPPED` (see k8s/OPERATIONS.md), then add
+              an allow rule or an explicit deny. In an emergency, label the
+              namespace cbannister.xyz/breakglass=true to admit all its traffic.
         # POLICY_DENIED means no rule allowed the connection; explicit egressDeny
         # drops report POLICY_DENY instead. ICMP errors (for example late DNS
         # replies) are not connections. Requiring drops in 8 of the last 12
