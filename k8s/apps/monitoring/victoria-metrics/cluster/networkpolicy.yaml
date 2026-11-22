@@ -147,3 +147,67 @@ spec:
         - ports:
             - port: "8401"
               protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmalert
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmalert
+      app.kubernetes.io/instance: victoria
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &http
+        - ports:
+            - port: "8080"
+              protocol: TCP
+            - port: "8435"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *http
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Rule queries and state restore.
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmselect
+            app.kubernetes.io/instance: victoria
+      toPorts:
+        - ports:
+            - port: "8481"
+              protocol: TCP
+    # Recording rule results and alert state are remote-written through vmagent.
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "8429"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+            app.kubernetes.io/instance: alertmanager
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
