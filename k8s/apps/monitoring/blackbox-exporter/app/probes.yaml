@@ -13,6 +13,7 @@ spec:
       static:
         - nas.cbannister.casa
         - pikvm.cbannister.casa
+        - tesmart-kvm.cbannister.casa
         - pve.cbannister.casa
 ---
 apiVersion: monitoring.coreos.com/v1
