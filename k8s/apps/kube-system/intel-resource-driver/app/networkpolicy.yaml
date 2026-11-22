@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: intel-gpu-resource-driver
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app: intel-gpu-resource-driver
+  ingress:
+    # Kubelet gRPC health probes.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "51516"
+              protocol: TCP
+  egress:
+    # The DRA driver publishes ResourceSlices.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
