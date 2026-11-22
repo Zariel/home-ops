@@ -1,0 +1,149 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmstorage
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmstorage
+      app.kubernetes.io/instance: victoria
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vminsert
+      toPorts:
+        - ports:
+            - port: "8400"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmselect
+      toPorts:
+        - ports:
+            - port: "8401"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &http
+        - ports:
+            - port: "8482"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *http
+  egress:
+    - {}
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vminsert
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vminsert
+      app.kubernetes.io/instance: victoria
+  ingress:
+    # vmagent remote-writes samples and scrapes vminsert's own metrics.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &http
+        - ports:
+            - port: "8480"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *http
+  egress:
+    # The vmstorage nodes are addressed by their headless Service names.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmstorage
+            app.kubernetes.io/instance: victoria
+      toPorts:
+        - ports:
+            - port: "8400"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmselect
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmselect
+      app.kubernetes.io/instance: victoria
+  ingress:
+    # Query clients: vmalert's rules, Grafana's datasource, and vmagent's scrape
+    # of vmselect's own metrics.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - vmagent
+                - vmalert
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app: grafana
+      toPorts: &http
+        - ports:
+            - port: "8481"
+              protocol: TCP
+    # Kubelet probes and the Ceph dashboard, whose host-networked manager pods
+    # query Prometheus through vmselect.
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts: *http
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmstorage
+            app.kubernetes.io/instance: victoria
+      toPorts:
+        - ports:
+            - port: "8401"
+              protocol: TCP
