@@ -7,6 +7,7 @@ resources:
   - ./internal-gateway-ingress.yaml
   - ./ollama-egress.yaml
   - ./internal-gateway-egress.yaml
+  - ./icmp-errors-ingress.yaml
   - ./vmrule.yaml
   - ./grafanadashboard.yaml
 configMapGenerator:

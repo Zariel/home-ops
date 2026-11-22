@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: icmp-errors-ingress
+spec:
+  description: >-
+    ICMP errors for every pod. Routers report unreachable destinations,
+    expired TTLs and path MTU limits from their own addresses, which ingress
+    policies naming the original peer do not admit; without them connections
+    to an unreachable host wait for a timeout and path MTU discovery fails.
+    The allowance is additive: it enables default-deny for no workload.
+  endpointSelector: {}
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  ingress:
+    - fromEntities:
+        - all
+      icmps:
+        - fields:
+            - family: IPv4
+              type: DestinationUnreachable
+            - family: IPv4
+              type: TimeExceeded
+            - family: IPv6
+              type: DestinationUnreachable
+            - family: IPv6
+              type: PacketTooBig
+            - family: IPv6
+              type: TimeExceeded
