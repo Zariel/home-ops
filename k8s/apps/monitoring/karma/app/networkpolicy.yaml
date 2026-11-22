@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: karma
+spec:
+  # The internal gateway and kubelet probes come from the internal-gateway-ingress
+  # baseline via the pod label cbannister.xyz/ingress.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: karma
+  ingress:
+    - {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmalertmanager
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
