@@ -12,7 +12,7 @@ spec:
   hostnames:
     - silo.cbannister.xyz
   parentRefs:
-    - name: internal-cbannister-xyz
+    - name: external-cbannister-xyz
       namespace: network
       kind: ListenerSet
       sectionName: https

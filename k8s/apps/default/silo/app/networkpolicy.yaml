@@ -15,6 +15,20 @@ spec:
     matchLabels:
       app.kubernetes.io/name: silo
   ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            gateway.envoyproxy.io/owning-gateway-namespace: network
+      toPorts: &http
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    # Kubelet probes originate on the node hosting Silo.
+    - fromEntities:
+        - host
+      toPorts: *http
     # Sonarr and Radarr call the autoscan webhook after imports.
     - fromEndpoints:
         - matchLabels:
@@ -23,10 +37,7 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app: radarr
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
+      toPorts: *http
   egress:
     - toEndpoints:
         - matchLabels:

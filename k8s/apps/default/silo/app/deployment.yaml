@@ -17,7 +17,6 @@ spec:
     metadata:
       labels:
         cbannister.xyz/egress: internet
-        cbannister.xyz/ingress: internal-gateway
         cbannister.xyz/egress-ollama: "true"
         cbannister.xyz/egress-internal-gateway: "true"
         app.kubernetes.io/name: silo
