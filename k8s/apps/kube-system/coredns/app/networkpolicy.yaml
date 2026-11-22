@@ -37,7 +37,28 @@ spec:
               protocol: TCP
             - port: "8181"
               protocol: TCP
-  # Egress is tightened separately, once ingress enforcement has settled.
   egress:
+    # The kubernetes plugin watches Services, EndpointSlices and pods.
     - toEntities:
-        - all
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+    # Forwarders from the Corefile: 10.45.0.55, the bind LoadBalancer, resolves
+    # to the BIND pods; everything else goes to the resolver VIP.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: network
+            app: bind
+      toPorts: &dns
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toCIDR:
+        - 10.254.253.53/32
+      toPorts: *dns
