@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+# Emergency allowance for workloads in namespaces, or pods, labelled
+# cbannister.xyz/breakglass=true: all ingress and egress is admitted. Allow rules
+# combine, so the label opens a workload whatever its own policy says, including
+# under default deny; explicit egressDeny and ingressDeny rules still apply.
+# Labelling needs only kubectl, so it works when Flux cannot reconcile. Remove the
+# label once the policy is fixed in Git.
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: breakglass
+specs:
+  - description: Breakglass for namespaces labelled cbannister.xyz/breakglass=true.
+    endpointSelector:
+      matchLabels:
+        io.cilium.k8s.namespace.labels.cbannister.xyz/breakglass: "true"
+    enableDefaultDeny: &additive
+      ingress: false
+      egress: false
+    ingress: &all-in
+      - fromEntities:
+          - all
+    egress: &all-out
+      - toEntities:
+          - all
+  - description: Breakglass for pods labelled cbannister.xyz/breakglass=true.
+    endpointSelector:
+      matchLabels:
+        cbannister.xyz/breakglass: "true"
+    enableDefaultDeny: *additive
+    ingress: *all-in
+    egress: *all-out

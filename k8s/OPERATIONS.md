@@ -41,6 +41,22 @@ nix shell nixpkgs#hubble -c hubble observe --server 127.0.0.1:4245 --pod default
 
 A `Policy denied` drop identifies a missing allow rule or an unexpected client. The relay retains only a few minutes of flows, and established connections may produce no new flows during a capture. An empty or short capture therefore does not establish which clients use a workload. Confirm consumers from application configuration or logs before restricting ingress.
 
+Every policy drop is also logged. The Cilium agents export `POLICY_DENIED` and `POLICY_DENY` flows to stdout, aggregated every 30 seconds by pod, address, destination port, direction and reason, and Vector ships them to VictoriaLogs. Query them in Grafana's Explore with the VictoriaLogs datasource, for example `message_json.flow.verdict:DROPPED message_json.flow.source.pod_name:home-assistant*`. The fields are under `message_json.flow`, with the number of collapsed flows in `aggregate.ingress_flow_count` or `aggregate.egress_flow_count`. Unlike the relay, this history lasts as long as the logs.
+
+`CiliumUnexpectedDrop` fires within five minutes of any `POLICY_DENIED` drop other than ICMP errors and internet scans of qBittorrent's torrent port. Use the logged flow to decide between an allow rule and an explicit `egressDeny` or `ingressDeny`, which reports `POLICY_DENY` and does not alert. `CiliumPolicyDenied` fires on drops that continue for most of an hour.
+
+### Breakglass
+
+When a policy blocks traffic that must flow now, label the namespace, or a single pod, with `cbannister.xyz/breakglass=true`. The `breakglass` clusterwide policy then admits all of its ingress and egress. Explicit deny rules still apply. Labelling needs only the API server, so it works when Flux cannot reconcile the fix:
+
+```sh
+KUBECONFIG="$PWD/kubeconfig" kubectl label namespace <namespace> cbannister.xyz/breakglass=true
+# After the policy fix is reconciled from Git:
+KUBECONFIG="$PWD/kubeconfig" kubectl label namespace <namespace> cbannister.xyz/breakglass-
+```
+
+Breakglass is an operator action outside GitOps; remove the label as soon as the fix is in Git, and confirm with `kubectl get ns,pods -A -l cbannister.xyz/breakglass` that nothing still carries it.
+
 To see what a policy selected, run `cilium-dbg policy selectors` in the Cilium agent pod on the endpoint's node; `cilium-dbg bpf policy get <endpoint-id>` shows the realized allow entries. A valid policy status does not prove enforcement. After rollout, connect from the restricted pod to an allowed destination and to a trusted address that should be blocked, and from an unlisted pod that has no egress policy of its own.
 
 ## Incident workflow
