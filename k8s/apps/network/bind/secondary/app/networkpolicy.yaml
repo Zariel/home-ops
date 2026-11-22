@@ -1,0 +1,55 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: bind-secondary
+spec:
+  # Authoritative for cbannister.xyz and rociobolanos.com to any client through
+  # the LoadBalancer, and recursive for 10.0.0.0/8 per named.conf.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app: bind
+      role: secondary
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9119"
+              protocol: TCP
+  egress:
+    # Zone transfers and SOA checks against the primary, and NOTIFY replies.
+    - toEndpoints:
+        - matchLabels:
+            app: bind
+      toPorts: &dns
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Recursion for trusted clients.
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 100.64.0.0/10
+            - 169.254.0.0/16
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+      toPorts: *dns
