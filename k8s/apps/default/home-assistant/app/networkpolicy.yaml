@@ -10,8 +10,8 @@ spec:
   # internal gateway and kubelet probes; cbannister.xyz/egress grants DNS and
   # public internet egress for cloud integrations; cbannister.xyz/egress-ollama
   # grants Ollama on ash.
-  # Cilium enforces only on eth0. The Multus interfaces give direct access to
-  # the trusted LAN and IoT networks, where most devices live.
+  # Cilium enforces only on eth0. The IoT Multus interface gives direct access
+  # to the IoT network; Trusted and ROON devices are reached through eth0.
   # Fail closed: removing a baseline label must not open the workload.
   enableDefaultDeny:
     ingress: true
@@ -92,3 +92,15 @@ spec:
             # Brother printer status over SNMP.
             - port: "161"
               protocol: UDP
+  egressDeny:
+    # The printer's mDNS advertisement reaches Home Assistant through the IoT
+    # interface, and each one starts an IPP discovery probe to port 631. The
+    # Brother integration already reports the printer's status, so the probe is
+    # denied explicitly and logged as POLICY_DENY rather than an unexpected drop.
+    # The advertisements stop once the NixOS gateway replaces VyOS.
+    - toCIDR:
+        - 10.1.2.70/32
+      toPorts:
+        - ports:
+            - port: "631"
+              protocol: TCP
