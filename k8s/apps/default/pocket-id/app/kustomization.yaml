@@ -8,5 +8,6 @@ resources:
   - deployment.yaml
   - service.yaml
   - httproute.yaml
+  - httproute-external.yaml
   - backendtlspolicy.yaml
   - networkpolicy.yaml

@@ -15,7 +15,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: pocket-id
   ingress:
-    # The external gateway exchanges SecurityPolicy OIDC tokens directly.
+    # The external gateway serves the public route and exchanges
+    # SecurityPolicy OIDC tokens directly.
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: network
