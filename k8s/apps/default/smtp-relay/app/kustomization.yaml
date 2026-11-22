@@ -6,6 +6,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - externalsecret.yaml
+  - networkpolicy.yaml
 configMapGenerator:
   - name: smtp-relay-configmap
     files:
