@@ -5,3 +5,4 @@ resources:
   - helmrelease.yaml
   - externalsecret.yaml
   - pages-dnsendpoint.yaml
+  - test-dnsendpoint.yaml
