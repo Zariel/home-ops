@@ -54,7 +54,9 @@ spec:
       reloader.stakater.com/auto: "true"
 
     # Keep chart default selector labels; add only non-conflicting labels if needed
-    podLabels: {}
+    podLabels:
+      # init-geoip downloads the GeoIP database from MaxMind at startup.
+      cbannister.xyz/egress: internet
 
     resources:
       requests:
