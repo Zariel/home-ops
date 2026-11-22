@@ -248,3 +248,78 @@ spec:
       toPorts: *http
   egress:
     - {}
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmagent
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmagent
+      app.kubernetes.io/instance: victoria
+  ingress:
+    # vmalert remote-writes rule results; the replicas scrape each other.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - vmagent
+                - vmalert
+      toPorts: &http
+        - ports:
+            - port: "8429"
+              protocol: TCP
+            - port: "8435"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *http
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          # Cilium learns LAN exporter addresses for the FQDN rule from DNS.
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Scrape targets in every namespace and on the nodes, service discovery
+    # through the API server, and remote write to vminsert.
+    - toEntities:
+        - cluster
+    # The DNS VMs' exporters, scraped by address.
+    - toCIDR:
+        - 10.254.53.0/32
+        - 10.254.53.2/32
+        - 10.254.53.4/32
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP
+            - port: "5383"
+              protocol: TCP
+    # Node, SMART and Proxmox exporters on LAN hosts, scraped by name.
+    - toFQDNs:
+        - matchPattern: "*.cbannister.casa"
+      toPorts:
+        - ports:
+            - port: "9100"
+              protocol: TCP
+            - port: "9290"
+              protocol: TCP
+            - port: "9633"
+              protocol: TCP
