@@ -58,6 +58,11 @@ spec:
         openai:
           type: openai
           apiKey: {env: OPENAI_API_KEY}
+      egress:
+        # GHCR redirects OCI image config blobs to its package storage host.
+        allow:
+          - ghcr.io
+          - pkg-containers.githubusercontent.com
       embedding:
         model: openai/text-embedding-3-small
         dims: 1536
