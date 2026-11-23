@@ -58,6 +58,11 @@ spec:
         openai:
           type: openai
           apiKey: {env: OPENAI_API_KEY}
+          pricing:
+            gpt-5.4-mini:
+              input: 0.75
+              output: 4.50
+              cacheRead: 0.075
       egress:
         # GHCR redirects OCI image config blobs to its package storage host.
         allow:
@@ -70,6 +75,15 @@ spec:
         model: openai/gpt-5.4-mini
         # GPT-5.4 mini requires none for tools on Chat Completions.
         effort: "none"
+      confidence:
+        model: openai/gpt-5.4-mini
+        effort: medium
+        gate: false
+      trigger:
+        exclude:
+          # Remove after review jobs have a sandboxed runtime.
+          - name: waiting-for-runner-sandbox
+            expr: "true"
     database:
       owner:
         existingSecret: kritika-owner

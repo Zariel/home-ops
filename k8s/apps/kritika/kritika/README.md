@@ -8,6 +8,11 @@ Install it on selected repositories and enable each repository in Kritika.
 Reviews send pull request and repository context to OpenAI. Kritika also
 sends code chunks from enabled repositories to OpenAI for similar-code indexing.
 
+Automatic PR reviews are paused pending a sandboxed runner runtime. The
+`waiting-for-runner-sandbox` exclusion is the switch to remove after the
+runtime is ready. Manual reviews and default-branch indexing remain
+available. Confidence scores are advisory.
+
 External Secrets reads `OPENAI_API_KEY` from `kritika` and the GitHub App
 credentials from `kritika-github` in the `k8s` 1Password vault. Rotate the
 OpenAI key and GitHub credentials there. Reloader restarts Kritika after
