@@ -48,6 +48,20 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
+          # The DNS proxy learns the addresses used by the FQDN rule below.
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Cloudflare's API at startup, and the management and update services that
+    # back remote log streaming. The tunnel runs without them.
+    - toFQDNs:
+        - matchName: api.cloudflare.com
+        - matchName: management.argotunnel.com
+        - matchName: update.argotunnel.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
     # Cloudflare's global tunnel endpoints, region1 and region2.v2.argotunnel.com;
     # HTTP/2 only needs TCP 7844. Cloudflared resolves them once at startup and
     # redials those addresses for its lifetime, so an FQDN rule stops admitting
