@@ -11,8 +11,9 @@ spec:
       rules:
         # Any unexpected drop, within one window. Every workload has a policy, so
         # a POLICY_DENIED drop outside ICMP errors means a missing rule or an
-        # unexpected connection. Internet scans of qBittorrent's public torrent
-        # port are excluded. Cilium agent restarts can drop a few replies on
+        # unexpected connection. Ingress to qBittorrent is excluded: the drops
+        # seen there are peers sending to the ports of qBittorrent's own
+        # outgoing connections, probably after Cilium has closed them. Cilium agent restarts can drop a few replies on
         # established connections, which fires this once.
         - alert: CiliumUnexpectedDrop
           expr: |

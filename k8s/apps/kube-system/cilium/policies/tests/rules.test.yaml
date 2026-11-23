@@ -111,7 +111,7 @@ tests:
               summary: Cilium dropped unexpected egress traffic from default/home-assistant to reserved:host
               description: No network policy allowed this connection. Each drop is logged with its pods, addresses and ports; query VictoriaLogs for `message_json.flow.verdict:DROPPED` (see k8s/OPERATIONS.md), then add an allow rule or an explicit deny. In an emergency, label the namespace cbannister.xyz/breakglass=true to admit all its traffic.
 
-  - name: Scans of qBittorrent, ICMP errors and explicit denies do not alert
+  - name: qBittorrent peer ingress, ICMP errors and explicit denies do not alert
     interval: 1m
     input_series:
       - series: hubble_drop_total{reason="POLICY_DENIED", protocol="TCP", source="reserved:world", destination_namespace="default", destination_app="qbittorrent", traffic_direction="ingress"}

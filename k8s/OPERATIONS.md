@@ -43,7 +43,7 @@ A `Policy denied` drop identifies a missing allow rule or an unexpected client. 
 
 Every policy drop is also logged. The Cilium agents export `POLICY_DENIED` and `POLICY_DENY` flows to stdout, aggregated every 30 seconds by pod, address, destination port, direction and reason, and Vector ships them to VictoriaLogs. Query them in Grafana's Explore with the VictoriaLogs datasource, for example `message_json.flow.verdict:DROPPED message_json.flow.source.pod_name:home-assistant*`. The fields are under `message_json.flow`, with the number of collapsed flows in `aggregate.ingress_flow_count` or `aggregate.egress_flow_count`. Unlike the relay, this history lasts as long as the logs.
 
-`CiliumUnexpectedDrop` fires within five minutes of any `POLICY_DENIED` drop other than ICMP errors and internet scans of qBittorrent's torrent port. Use the logged flow to decide between an allow rule and an explicit `egressDeny` or `ingressDeny`, which reports `POLICY_DENY` and does not alert. `CiliumPolicyDenied` fires on drops that continue for most of an hour.
+`CiliumUnexpectedDrop` fires within five minutes of any `POLICY_DENIED` drop other than ICMP errors and ingress to qBittorrent, where the drops seen are peers sending to the ports of its own outgoing connections, probably after Cilium has closed them. Use the logged flow to decide between an allow rule and an explicit `egressDeny` or `ingressDeny`, which reports `POLICY_DENY` and does not alert. `CiliumPolicyDenied` fires on drops that continue for most of an hour.
 
 ### Breakglass
 
