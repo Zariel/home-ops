@@ -35,7 +35,7 @@ spec:
               TZ: Europe/London
             image:
               repository: git.erwanleboucher.dev/eleboucher/runner-k8s-plugin
-              tag: 13.2.2
+              tag: 13.3.0
             args:
               - --listen
               - unix:///plugin/forgejo-runner-k8s.sock
