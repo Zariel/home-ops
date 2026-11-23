@@ -63,7 +63,8 @@ spec:
         dims: 1536
       review:
         model: openai/gpt-5.4-mini
-        effort: medium
+        # GPT-5.4 mini requires none for tools on Chat Completions.
+        effort: "none"
     database:
       owner:
         existingSecret: kritika-owner
