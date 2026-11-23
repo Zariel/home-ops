@@ -5,7 +5,8 @@ The dashboard at <https://kritika.cbannister.xyz> uses Pocket ID with the
 `POST /hooks/github` deliveries. The private GitHub App is
 [Kritika for Zariel](https://github.com/apps/kritika-for-zariel).
 Install it on selected repositories and enable each repository in Kritika.
-Reviews send pull request and repository context to OpenAI.
+Reviews send pull request and repository context to OpenAI. Kritika also
+sends code chunks from enabled repositories to OpenAI for similar-code indexing.
 
 External Secrets reads `OPENAI_API_KEY` from `kritika` and the GitHub App
 credentials from `kritika-github` in the `k8s` 1Password vault. Rotate the
