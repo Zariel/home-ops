@@ -104,3 +104,12 @@ spec:
         - ports:
             - port: "631"
               protocol: TCP
+    # Home Assistant sends two UDP packets to port 80 on its default gateway,
+    # the node's Cilium internal address, at startup and hourly after. Nothing
+    # listens there, and the sending integration has not been identified.
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: UDP
