@@ -20,12 +20,15 @@ spec:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Database
       name: kritika
+      namespace: database
     - apiVersion: postgresql.cnpg.io/v1
       kind: DatabaseRole
       name: kritika-owner
+      namespace: database
     - apiVersion: postgresql.cnpg.io/v1
       kind: DatabaseRole
       name: kritika-app
+      namespace: database
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Database
