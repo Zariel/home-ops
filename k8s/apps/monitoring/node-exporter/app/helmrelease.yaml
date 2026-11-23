@@ -74,6 +74,8 @@ spec:
     service:
       labels:
         jobLabel: node-exporter
+    # The chart defaults duplicate the custom filesystem flags below.
+    defaultArgs: []
     extraArgs:
       # Katl bind-mounts /etc/kubernetes from /var; monitor capacity through /var only.
       - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|etc/kubernetes|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
