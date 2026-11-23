@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: kritika
+spec:
+  cluster:
+    name: pg18vc
+  name: kritika
+  owner: kritika_owner
+  databaseReclaimPolicy: retain
+  extensions:
+    - name: vector
+    - name: vchord
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: kritika-owner
+spec:
+  cluster:
+    name: pg18vc
+  name: kritika_owner
+  login: true
+  passwordSecret:
+    name: kritika-owner
+  databaseRoleReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: kritika-app
+spec:
+  cluster:
+    name: pg18vc
+  name: kritika_app
+  login: true
+  passwordSecret:
+    name: kritika-app
+  databaseRoleReclaimPolicy: retain

@@ -1,0 +1,106 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: kritika
+spec:
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.0.125
+  url: oci://ghcr.io/home-operations/charts/kritika
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kritika
+spec:
+  interval: 1h
+  timeout: 5m
+  chartRef:
+    kind: OCIRepository
+    name: kritika
+  postRenderers:
+    - kustomize:
+        patches:
+          # The local server policy limits ingress and cluster egress.
+          # The chart still owns the runner policies and admission rules.
+          - patch: |-
+              $patch: delete
+              apiVersion: cilium.io/v2
+              kind: CiliumNetworkPolicy
+              metadata:
+                name: kritika
+                namespace: kritika
+            target:
+              kind: CiliumNetworkPolicy
+              name: ^kritika$
+  values:
+    config:
+      webUrl: https://kritika.cbannister.xyz
+      auth:
+        oidc:
+          name: Pocket ID
+          issuer: https://id.cbannister.xyz
+          clientId: kritika
+          clientSecret: {env: OIDC_CLIENT_SECRET}
+          scopes: [openid, profile, email, groups]
+          rolesClaim: groups
+          roleMappingExpr: '"admin" in roles ? "admin" : ""'
+      apps:
+        github:
+          accounts: [zariel]
+          clientId: {env: GITHUB_APP_CLIENT_ID}
+          privateKey: {env: GITHUB_APP_PRIVATE_KEY}
+          webhookSecret: {env: GITHUB_APP_WEBHOOK_SECRET}
+      providers:
+        openai:
+          type: openai
+          apiKey: {env: OPENAI_API_KEY}
+      review:
+        model: openai/gpt-5.4-mini
+        effort: medium
+    database:
+      owner:
+        existingSecret: kritika-owner
+      app:
+        existingSecret: kritika-app
+    env:
+      TZ: Europe/London
+      OIDC_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-oidc
+            key: client_secret
+    envFrom:
+      - secretRef:
+          name: kritika-openai
+      - secretRef:
+          name: kritika-github
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+    podLabels:
+      cbannister.xyz/ingress: internal-gateway
+      cbannister.xyz/egress: internet
+      cbannister.xyz/egress-internal-gateway: "true"
+    networkPolicy:
+      type: cilium
+    runner:
+      podTemplate:
+        spec:
+          hostUsers: false
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 1Gi
+          containers:
+            - name: runner
+              env:
+                - name: TZ
+                  value: Europe/London
+    monitoring:
+      serviceMonitor:
+        enabled: true

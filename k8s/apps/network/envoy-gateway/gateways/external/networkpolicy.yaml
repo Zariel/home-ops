@@ -53,6 +53,9 @@ spec:
             selector:
               matchLabels:
                 cbannister.xyz/external-backend: "true"
+        - k8sService:
+            namespace: kritika
+            serviceName: kritika
     # SecurityPolicy OIDC token exchange.
     - toEndpoints:
         - matchLabels:

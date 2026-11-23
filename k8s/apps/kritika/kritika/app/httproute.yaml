@@ -1,0 +1,38 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kritika
+spec:
+  hostnames:
+    - kritika.cbannister.xyz
+  parentRefs:
+    - kind: ListenerSet
+      name: internal-cbannister-xyz
+      namespace: network
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: kritika
+          port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kritika-github-webhook
+spec:
+  hostnames:
+    - kritika-hooks.cbannister.xyz
+  parentRefs:
+    - kind: ListenerSet
+      name: external-cbannister-xyz
+      namespace: network
+      sectionName: https
+  rules:
+    - matches:
+        - method: POST
+          path:
+            type: Exact
+            value: /hooks/github
+      backendRefs:
+        - name: kritika
+          port: 8080

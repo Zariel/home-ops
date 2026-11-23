@@ -6,3 +6,4 @@ components:
   - ../../components/common
 resources:
   - ./cnpg/ks.yaml
+  - ./kritika/ks.yaml

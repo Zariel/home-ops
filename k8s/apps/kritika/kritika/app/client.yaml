@@ -1,0 +1,20 @@
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: kritika
+spec:
+  name: Kritika
+  clientID: kritika
+  instanceSelector:
+    matchLabels:
+      pocketid.internal/instance: pocket-id
+  pkceEnabled: true
+  callbackUrls:
+    - https://kritika.cbannister.xyz/auth/callback/oidc
+  launchUrl: https://kritika.cbannister.xyz
+  allowedUserGroups:
+    - groupName: admin
+  secret:
+    name: kritika-oidc
+  logo:
+    autoGenerate: false

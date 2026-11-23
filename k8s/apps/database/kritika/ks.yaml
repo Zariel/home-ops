@@ -1,0 +1,35 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kritika-database
+spec:
+  dependsOn:
+    - name: pg18vc
+    - name: onepassword-store
+      namespace: external-secrets
+  interval: 1h
+  path: ./k8s/apps/database/kritika/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: database
+  timeout: 5m
+  healthChecks:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Database
+      name: kritika
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: DatabaseRole
+      name: kritika-owner
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: DatabaseRole
+      name: kritika-app
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Database
+      current: has(status.applied) && status.applied && status.observedGeneration == metadata.generation
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: DatabaseRole
+      current: has(status.applied) && status.applied && status.observedGeneration == metadata.generation

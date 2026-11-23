@@ -27,6 +27,10 @@ spec:
                 - netbox
                 - paperless
                 - silo
+        - matchLabels:
+            io.kubernetes.pod.namespace: kritika
+            app.kubernetes.io/name: kritika
+            app.kubernetes.io/instance: kritika
         # Streaming replication and pg_basebackup between instances.
         - matchLabels:
             cnpg.io/cluster: pg18vc
