@@ -6,4 +6,3 @@ resources:
   - iot.yaml
   - thread-infra.yaml
   - matter-controllers.yaml
-  - trusted-lan.yaml

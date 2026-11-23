@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vector-aggregator
+spec:
+  # LAN devices and the Vector agents send through the vector-aggregator
+  # LoadBalancer, and HTTP ingest comes through the internal gateway.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vector
+      app.kubernetes.io/instance: vector-aggregator
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            # Vector sources.
+            - port: "6000"
+              protocol: TCP
+            - port: "6004"
+              protocol: TCP
+            - port: "6005"
+              protocol: TCP
+            # Syslog over TCP and UDP, and the raw UDP socket.
+            - port: "6001"
+              protocol: TCP
+            - port: "5514"
+              protocol: UDP
+            - port: "6666"
+              protocol: UDP
+            # HTTP ingest behind the internal gateway's vector-ingest route.
+            - port: "6006"
+              protocol: TCP
+    # The API, used by kubelet probes.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8686"
+              protocol: TCP
+  egress:
+    # DNS and the log store are listed here as well as reached through the
+    # internet baseline, so a replica still running without the label keeps
+    # shipping logs.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vlsingle
+            app.kubernetes.io/instance: vlogs
+      toPorts:
+        - ports:
+            - port: "9428"
+              protocol: TCP

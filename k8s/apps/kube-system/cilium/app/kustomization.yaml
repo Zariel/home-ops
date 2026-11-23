@@ -5,6 +5,7 @@ labels:
   - pairs:
       app: cilium
 resources:
+  - ./networkpolicy.yaml
   - helmrelease.yaml
   - httproute.yaml
 configMapGenerator:

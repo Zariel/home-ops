@@ -126,6 +126,33 @@ spec:
   values:
     hubble:
       enabled: true
+      # Policy drops are logged on the agent's stdout, where Vector collects them
+      # into VictoriaLogs. Flows that differ only in source port or time are
+      # aggregated every 30s, so a burst becomes one line per flow key.
+      export:
+        static:
+          enabled: true
+          filePath: stdout
+          allowList:
+            - '{"verdict":["DROPPED"],"drop_reason_desc":["POLICY_DENIED","POLICY_DENY"]}'
+          fieldMask: &flowKey
+            - source.namespace
+            - source.pod_name
+            - source.identity
+            - destination.namespace
+            - destination.pod_name
+            - destination.identity
+            - IP.source
+            - IP.destination
+            - l4.TCP.destination_port
+            - l4.UDP.destination_port
+            - l4.ICMPv4.type
+            - traffic_direction
+            - verdict
+            - drop_reason_desc
+            - node_name
+          fieldAggregate: *flowKey
+          aggregationInterval: 30s
       metrics:
         # Dynamic metrics reload without agent restarts and support flow
         # filters. Cilium rejects static metrics alongside them.

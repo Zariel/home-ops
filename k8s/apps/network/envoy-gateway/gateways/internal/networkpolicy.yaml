@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: envoy-internal
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: envoy
+      gateway.envoyproxy.io/owning-gateway-name: internal
+      gateway.envoyproxy.io/owning-gateway-namespace: network
+  ingress:
+    # Listeners behind the internal LoadBalancer: HTTP, Forgejo SSH, and HTTPS
+    # over TCP and QUIC.
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "10080"
+              protocol: TCP
+            - port: "10022"
+              protocol: TCP
+            - port: "10443"
+              protocol: TCP
+            - port: "10443"
+              protocol: UDP
+    # Envoy stats, the shutdown manager and readiness.
+    - fromEntities:
+        - host
+      toPorts: &admin
+        - ports:
+            - port: "19001"
+              protocol: TCP
+            - port: "19002"
+              protocol: TCP
+            - port: "19003"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: *admin
+  egress:
+    # Internal routes reach backends in every namespace, including
+    # host-networked ones, but none outside the cluster.
+    - toEntities:
+        - cluster

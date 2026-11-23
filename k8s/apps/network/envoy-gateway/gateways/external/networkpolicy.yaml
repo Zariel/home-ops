@@ -5,11 +5,44 @@ kind: CiliumNetworkPolicy
 metadata:
   name: envoy-external
 spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: envoy
       gateway.envoyproxy.io/owning-gateway-name: external
       gateway.envoyproxy.io/owning-gateway-namespace: network
+  ingress:
+    # Listeners behind the external LoadBalancer, reached through cloudflared
+    # and directly: HTTP, and HTTPS over TCP and QUIC.
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "10080"
+              protocol: TCP
+            - port: "10443"
+              protocol: TCP
+            - port: "10443"
+              protocol: UDP
+    # Envoy stats, the shutdown manager and readiness.
+    - fromEntities:
+        - host
+      toPorts: &admin
+        - ports:
+            - port: "19001"
+              protocol: TCP
+            - port: "19002"
+              protocol: TCP
+            - port: "19003"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: *admin
   egress:
     # Any namespace can attach routes to the external listener. A backend is
     # reachable only after its Service opts in, so attaching a route alone

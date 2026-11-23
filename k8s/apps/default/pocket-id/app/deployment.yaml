@@ -49,6 +49,9 @@ spec:
               value: /etc/pocket-id/tls/tls.key
             - name: TRUST_PROXY
               value: 172.20.0.0/16
+            # Trust the cluster CA beside the system roots, for the mail relay.
+            - name: SSL_CERT_DIR
+              value: /etc/ssl/certs:/etc/ssl/cluster-ca
             - name: ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
@@ -90,6 +93,9 @@ spec:
             - name: tls
               mountPath: /etc/pocket-id/tls
               readOnly: true
+            - name: cluster-ca
+              mountPath: /etc/ssl/cluster-ca
+              readOnly: true
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -98,3 +104,6 @@ spec:
           secret:
             secretName: pocket-id-tls
             defaultMode: 0440
+        - name: cluster-ca
+          configMap:
+            name: cluster-ca.crt

@@ -14,7 +14,7 @@ import uuid
 
 
 HOST = os.environ.get("PDU_HOST", "pdu.cbannister.casa")
-ADDRESS = os.environ.get("PDU_ADDRESS", "10.1.0.31")
+ADDRESS = os.environ.get("PDU_ADDRESS", "10.1.254.30")
 
 
 def fingerprint(pem):

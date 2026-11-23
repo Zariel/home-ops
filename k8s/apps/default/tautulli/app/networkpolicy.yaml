@@ -19,6 +19,9 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app.kubernetes.io/name: seerr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: maintainerr
       toPorts:
         - ports:
             - port: "80"

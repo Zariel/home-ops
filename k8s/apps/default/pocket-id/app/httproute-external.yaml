@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: pocket-id-external
+  namespace: default
+  annotations:
+    # Internal DNS keeps id.cbannister.xyz on the internal route; the public
+    # record comes from the pocket-id DNSEndpoint.
+    external-dns.kubernetes.io/controller: none
+spec:
+  hostnames:
+    - id.cbannister.xyz
+  parentRefs:
+    - name: external-cbannister-xyz
+      namespace: network
+      kind: ListenerSet
+      sectionName: https
+  rules:
+    # API keys carry full administrative access, so they are accepted only
+    # through the internal route. A header match outranks the plain prefix.
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+          headers:
+            - name: X-API-Key
+              type: RegularExpression
+              value: ".*"
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: gateway.envoyproxy.io
+            kind: HTTPRouteFilter
+            name: pocket-id-reject-api-key
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: pocket-id
+          port: 1411
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/httproutefilter_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: HTTPRouteFilter
+metadata:
+  name: pocket-id-reject-api-key
+  namespace: default
+spec:
+  directResponse:
+    statusCode: 403
+    contentType: text/plain
+    body:
+      type: Inline
+      inline: "API keys are not accepted on this route.\n"
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  # Without a visibility label only the Cloudflare instance publishes this.
+  name: pocket-id
+  namespace: default
+spec:
+  endpoints:
+    - dnsName: id.cbannister.xyz
+      recordType: CNAME
+      targets:
+        - external.cbannister.xyz

@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: silo
   namespace: default
+  labels:
+    cbannister.xyz/external-backend: "true"
 spec:
   selector:
     app.kubernetes.io/name: silo

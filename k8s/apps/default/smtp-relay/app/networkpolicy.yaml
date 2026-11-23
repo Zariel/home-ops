@@ -1,0 +1,54 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: smtp-relay
+  namespace: default
+spec:
+  # The relay sends with the operator's Fastmail credentials. Senders
+  # authenticate as well, but only named senders may reach it, and it may
+  # reach only Fastmail's submission port.
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: smtp-relay
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: pocket-id
+      toPorts:
+        - ports:
+            - port: "587"
+              protocol: TCP
+    # Kubelet probes originate on the node hosting the relay.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          # The DNS proxy learns the addresses used by the FQDN rule below.
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toFQDNs:
+        - matchName: smtp.fastmail.com
+      toPorts:
+        - ports:
+            - port: "465"
+              protocol: TCP

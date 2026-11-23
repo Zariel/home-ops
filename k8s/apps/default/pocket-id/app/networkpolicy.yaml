@@ -15,7 +15,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: pocket-id
   ingress:
-    # The external gateway exchanges SecurityPolicy OIDC tokens directly.
+    # The external gateway serves the public route and exchanges
+    # SecurityPolicy OIDC tokens directly.
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: network
@@ -27,4 +28,12 @@ spec:
             - port: "1411"
               protocol: TCP
   egress:
-    - {}
+    # Login codes and notifications go out through the cluster mail relay.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: smtp-relay
+      toPorts:
+        - ports:
+            - port: "587"
+              protocol: TCP

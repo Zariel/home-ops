@@ -71,6 +71,13 @@ spec:
       strategy:
         type: Recreate
       template:
+        metadata:
+          labels:
+            # Plugins are installed from grafana.com at startup, and login uses
+            # Pocket ID through the internal gateway.
+            cbannister.xyz/egress: internet
+            cbannister.xyz/egress-internal-gateway: "true"
+            cbannister.xyz/ingress: internal-gateway
         spec:
           containers:
             - name: grafana

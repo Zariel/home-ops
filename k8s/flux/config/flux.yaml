@@ -44,6 +44,21 @@ spec:
                       value: Europe/London
       target:
         kind: Deployment
+    # Sources are fetched from GitHub and public OCI registries, and Kustomizations
+    # may reference remote manifests, so these select the internet egress baseline.
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: all
+        spec:
+          template:
+            metadata:
+              labels:
+                cbannister.xyz/egress: internet
+      target:
+        kind: Deployment
+        name: (source-controller|kustomize-controller)
     # Remove image automation and image reflector controllers
     - patch: |
         $patch: delete

@@ -6,9 +6,26 @@ metadata:
   name: cloudflared
   namespace: network
 spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: cloudflared
+  # Cloudflared dials out to Cloudflare; its only listener serves metrics and
+  # readiness.
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &metrics
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts: *metrics
   egress:
     # Service port 443 is translated to the Envoy pod's HTTPS listener.
     - toEndpoints:
@@ -31,15 +48,28 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
-          # The DNS proxy learns the addresses used by the FQDN rules below.
+          # The DNS proxy learns the addresses used by the FQDN rule below.
           rules:
             dns:
               - matchPattern: "*"
-    # Cloudflare's global tunnel endpoints; HTTP/2 only needs TCP 7844.
-    # https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-with-firewall/
+    # Cloudflare's API at startup, and the management and update services that
+    # back remote log streaming. The tunnel runs without them.
     - toFQDNs:
-        - matchName: region1.v2.argotunnel.com
-        - matchName: region2.v2.argotunnel.com
+        - matchName: api.cloudflare.com
+        - matchName: management.argotunnel.com
+        - matchName: update.argotunnel.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # Cloudflare's global tunnel endpoints, region1 and region2.v2.argotunnel.com;
+    # HTTP/2 only needs TCP 7844. Cloudflared resolves them once at startup and
+    # redials those addresses for its lifetime, so an FQDN rule stops admitting
+    # reconnects once the DNS TTL lapses. Each region resolves within one /24.
+    # https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-with-firewall/
+    - toCIDR:
+        - 198.41.192.0/24
+        - 198.41.200.0/24
       toPorts:
         - ports:
             - port: "7844"

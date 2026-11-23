@@ -21,6 +21,8 @@ spec:
         pod:
           labels:
             app.kubernetes.io/component: forgejo-runner
+            # Actions are fetched from data.forgejo.org, which can redirect to GitHub.
+            cbannister.xyz/egress: internet
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
@@ -31,9 +33,11 @@ spec:
           k8s-plugin:
             env:
               TZ: Europe/London
+              # The plugin logs full exec arguments at info level.
+              FORGEJO_RUNNER_LOG_LEVEL: warn
             image:
               repository: git.erwanleboucher.dev/eleboucher/runner-k8s-plugin
-              tag: 13.2.2
+              tag: 13.3.0
             args:
               - --listen
               - unix:///plugin/forgejo-runner-k8s.sock

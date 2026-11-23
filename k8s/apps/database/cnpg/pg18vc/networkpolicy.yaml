@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pg18vc
+  namespace: database
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      cnpg.io/cluster: pg18vc
+  ingress:
+    # Applications with a database on this cluster. Each lists pg18vc in its
+    # own egress policy; add new clients to both.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - immich
+                - jellystat
+                - netbox
+                - paperless
+                - silo
+        # Streaming replication and pg_basebackup between instances.
+        - matchLabels:
+            cnpg.io/cluster: pg18vc
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    # The instance manager's status API, used by the operator and by peer
+    # instances. Kubelet probes and `kubectl cnpg status`, which goes through
+    # the API server's pod proxy, reach it from the nodes.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: cnpg-system
+            app.kubernetes.io/name: cloudnative-pg
+        - matchLabels:
+            cnpg.io/cluster: pg18vc
+      toPorts: &status
+        - ports:
+            - port: "8000"
+              protocol: TCP
+    - fromEntities:
+        - host
+        - remote-node
+        - kube-apiserver
+      toPorts: *status
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts:
+        - ports:
+            - port: "9187"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # The instance manager watches the Cluster and reports status.
+    - toEntities:
+        - kube-apiserver
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: pg18vc
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+            - port: "8000"
+              protocol: TCP
+    # WAL archiving and base backups to the pg18vc-nas-rustfs object store.
+    - toCIDR:
+        - 10.254.1.101/32
+      toPorts:
+        - ports:
+            - port: "30292"
+              protocol: TCP

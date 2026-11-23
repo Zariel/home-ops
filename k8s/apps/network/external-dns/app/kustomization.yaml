@@ -5,3 +5,4 @@ namespace: network
 resources:
   - ./dnsendpoint-crd.yaml
   - ./auth.yaml
+  - ./networkpolicy.yaml

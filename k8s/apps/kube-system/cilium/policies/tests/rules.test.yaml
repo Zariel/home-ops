@@ -23,7 +23,7 @@ tests:
               traffic_direction: egress
             exp_annotations:
               summary: Cilium is denying egress traffic from default/plex to reserved:world
-              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Inspect the drops with `hubble observe --verdict DROPPED` (see k8s/OPERATIONS.md) and the Cilium / Network policy dashboard, then add an allow rule or an explicit deny.
+              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Each drop is logged with its pods, addresses and ports; query VictoriaLogs for `message_json.flow.verdict:DROPPED` (see k8s/OPERATIONS.md), then add an allow rule or an explicit deny. In an emergency, label the namespace cbannister.xyz/breakglass=true to admit all its traffic.
 
   - name: Probes, ICMP errors and explicit denies stay quiet
     interval: 1m
@@ -62,7 +62,7 @@ tests:
               traffic_direction: ingress
             exp_annotations:
               summary: Cilium is denying ingress traffic from monitoring/vmagent to default/sabnzbd
-              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Inspect the drops with `hubble observe --verdict DROPPED` (see k8s/OPERATIONS.md) and the Cilium / Network policy dashboard, then add an allow rule or an explicit deny.
+              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Each drop is logged with its pods, addresses and ports; query VictoriaLogs for `message_json.flow.verdict:DROPPED` (see k8s/OPERATIONS.md), then add an allow rule or an explicit deny. In an emergency, label the namespace cbannister.xyz/breakglass=true to admit all its traffic.
 
   - name: Alert keeps firing for an hour after drops stop, then resolves
     interval: 1m
@@ -83,7 +83,7 @@ tests:
               traffic_direction: egress
             exp_annotations:
               summary: Cilium is denying egress traffic from default/jellyfin to reserved:world
-              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Inspect the drops with `hubble observe --verdict DROPPED` (see k8s/OPERATIONS.md) and the Cilium / Network policy dashboard, then add an allow rule or an explicit deny.
+              description: No network policy allows this connection, and drops have continued for most of the last hour. A policy is probably missing a rule for a real dependency or client. Each drop is logged with its pods, addresses and ports; query VictoriaLogs for `message_json.flow.verdict:DROPPED` (see k8s/OPERATIONS.md), then add an allow rule or an explicit deny. In an emergency, label the namespace cbannister.xyz/breakglass=true to admit all its traffic.
       - eval_time: 150m
         alertname: CiliumPolicyDenied
         exp_alerts: []

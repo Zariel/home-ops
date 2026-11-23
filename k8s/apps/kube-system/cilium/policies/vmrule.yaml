@@ -13,7 +13,7 @@ spec:
         # drops report POLICY_DENY instead. ICMP errors (for example late DNS
         # replies) are not connections. Requiring drops in 8 of the last 12
         # five-minute windows ignores probes, one-off retries and rollouts, so
-        # infrequent misses are left to the dashboard.
+        # infrequent misses are left to the drop logs and the dashboard.
         - alert: CiliumPolicyDenied
           expr: |
             count_over_time(
@@ -37,6 +37,8 @@ spec:
             description: >-
               No network policy allows this connection, and drops have continued for
               most of the last hour. A policy is probably missing a rule for a real
-              dependency or client. Inspect the drops with `hubble observe
-              --verdict DROPPED` (see k8s/OPERATIONS.md) and the Cilium / Network
-              policy dashboard, then add an allow rule or an explicit deny.
+              dependency or client. Each drop is logged with its pods, addresses and
+              ports; query VictoriaLogs for `message_json.flow.verdict:DROPPED` (see
+              k8s/OPERATIONS.md), then add an allow rule or an explicit deny. In an
+              emergency, label the namespace cbannister.xyz/breakglass=true to admit
+              all its traffic.

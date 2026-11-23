@@ -31,9 +31,9 @@ the singleton applications' `Recreate` deployment strategy during migration.
 OTBR uses `thread-infra` at `fd74:f571:d3bd:1060::2/64`; Matter.js uses
 `matter-controllers` at `fd74:f571:d3bd:1061::2/64`. Both addresses are
 allocated in NetBox. Their PVCs, Thread dataset, Matter fabric and existing
-MAC addresses are retained. Home Assistant keeps its existing IoT/trusted
-attachments and reaches the controller through its Kubernetes Service; its
-former IoT RA/RIO learning is disabled.
+MAC addresses are retained. Home Assistant keeps its IoT attachment and
+reaches the controller through its Kubernetes Service; its former IoT RA/RIO
+learning is disabled.
 
 VyOS learns `/64` RIOs only on VLAN 1100 and only from OTBR's retained
 `0a:92:17:bd:44:6e` / `fe80::892:17ff:febd:446e` identity. It ignores PIOs,

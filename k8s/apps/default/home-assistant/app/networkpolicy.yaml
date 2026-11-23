@@ -10,8 +10,8 @@ spec:
   # internal gateway and kubelet probes; cbannister.xyz/egress grants DNS and
   # public internet egress for cloud integrations; cbannister.xyz/egress-ollama
   # grants Ollama on ash.
-  # Cilium enforces only on eth0. The Multus interfaces give direct access to
-  # the trusted LAN and IoT networks, where most devices live.
+  # Cilium enforces only on eth0. The IoT Multus interface gives direct access
+  # to the IoT network; Trusted and ROON devices are reached through eth0.
   # Fail closed: removing a baseline label must not open the workload.
   enableDefaultDeny:
     ingress: true
@@ -53,3 +53,63 @@ spec:
         - ports:
             - port: "9330"
               protocol: TCP
+    # The Bluesound players' control API on the ROON VLAN.
+    - toCIDR:
+        - 10.1.4.13/32
+        - 10.1.4.14/32
+      toPorts:
+        - ports:
+            - port: "11000"
+              protocol: TCP
+    # Trusted LAN devices, routed through eth0.
+    - toCIDR:
+        - 10.1.2.53/32
+      toPorts:
+        - ports:
+            # Anthem A/V control.
+            - port: "14999"
+              protocol: TCP
+    - toCIDR:
+        - 10.1.2.54/32
+      toPorts:
+        - ports:
+            # Kodi JSON-RPC over HTTP and WebSocket.
+            - port: "8080"
+              protocol: TCP
+            - port: "9090"
+              protocol: TCP
+    - toCIDR:
+        - 10.1.2.56/32
+      toPorts:
+        - ports:
+            # Unfolded Circle remote API.
+            - port: "80"
+              protocol: TCP
+    - toCIDR:
+        - 10.1.2.70/32
+      toPorts:
+        - ports:
+            # Brother printer status over SNMP.
+            - port: "161"
+              protocol: UDP
+  egressDeny:
+    # The printer's mDNS advertisement reaches Home Assistant through the IoT
+    # interface, and each one starts an IPP discovery probe to port 631. The
+    # Brother integration already reports the printer's status, so the probe is
+    # denied explicitly and logged as POLICY_DENY rather than an unexpected drop.
+    # The advertisements stop once the NixOS gateway replaces VyOS.
+    - toCIDR:
+        - 10.1.2.70/32
+      toPorts:
+        - ports:
+            - port: "631"
+              protocol: TCP
+    # Home Assistant sends two UDP packets to port 80 on its default gateway,
+    # the node's Cilium internal address, at startup and hourly after. Nothing
+    # listens there, and the sending integration has not been identified.
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: UDP

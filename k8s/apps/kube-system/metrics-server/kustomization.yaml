@@ -5,4 +5,5 @@ commonLabels:
   app: metrics-server
 namespace: kube-system
 resources:
+  - ./networkpolicy.yaml
   - helmrelease.yaml

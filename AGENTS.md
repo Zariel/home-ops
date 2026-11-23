@@ -14,7 +14,7 @@
 
 ## Common Commands
 - List tasks: `task`
-- Build the Matchbox PXE bundle: `task katl:matchbox:bundle`; publishing it with `task katl:matchbox:push destination=<path>` serves auto-install profiles and needs operator direction.
+- Build the Matchbox PXE bundle: `task katl:matchbox:bundle`; publishing it with `task katl:matchbox:push destination=<path>` serves auto-install profiles, which can erase disks, so it needs operator direction.
 - Validate Katl configuration: `task katl:validate`
 
 Prefer task wrappers so repository paths, `KUBECONFIG`, and `SOPS_AGE_KEY_FILE` are set consistently.
@@ -38,15 +38,15 @@ Prefer task wrappers so repository paths, `KUBECONFIG`, and `SOPS_AGE_KEY_FILE` 
 
 ## Git and Pull Requests
 - Use `jj` when `.jj` exists; otherwise use Git. Preserve unrelated changes and keep one logical change per commit.
-- Create or amend commits only when requested. Pass complete messages through stdin and pipe them through `format-commit-message`; never pass escaped multiline messages as arguments.
+- Agents may commit and push validated changes without asking; see Cluster and Operational Safety for the steps that still need the operator. Pass complete messages through stdin and pipe them through `format-commit-message`; never pass escaped multiline messages as arguments.
 - Prefer conventional titles such as `fix(container): update image`; use present tense and a concrete scope.
 - PR descriptions should cover impact, validation, rollout or rollback, and required secret/configuration changes.
 
 ## Cluster and Operational Safety
 - The Kubernetes cluster is available through `kubectl`. Use read-only queries by default.
 - Persistent Kubernetes changes belong in Git and are applied by Flux. Do not use `kubectl apply`, `edit`, `patch`, or `delete` to bypass GitOps unless the operator explicitly requests it.
-- Agents may run `flux reconcile` and observe the rollout without separate operator approval.
+- Agents may roll out their changes without asking: push, run `flux reconcile`, and verify the result. Ask the operator first only when a step could destroy data, such as deleting a PVC, volume, database or backup, removing a stateful workload, or rewriting published history.
 - Use Grafana metrics and logs and Alertmanager alerts as incident evidence; see [observability operations](k8s/OPERATIONS.md). Read-only investigation does not authorize silences, alert changes, or dashboard writes.
 - `kubectl node-shell -x -n kube-system <node>` creates a privileged pod with host access; use it only with explicit operator direction.
-- Agents may edit and validate Katl configuration, but must not install, apply, upgrade, wipe, reboot, or bootstrap nodes without explicit operator direction.
+- Agents may apply Katl configuration, upgrade and reboot nodes one at a time, checking that Ceph and the cluster are healthy before moving on. Installing, wiping or bootstrapping nodes and publishing the Matchbox bundle can erase disks, so they need explicit operator direction.
 - `task rook:reset` destroys Ceph data and disk contents. Never run it unless the operator explicitly requests it and the exact nodes and disk have been verified.

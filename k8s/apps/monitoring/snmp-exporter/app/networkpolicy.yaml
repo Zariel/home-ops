@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: snmp-exporter
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-snmp-exporter
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: vmagent
+      toPorts: &scrape
+        - ports:
+            - port: "9116"
+              protocol: TCP
+    # Kubelet probes.
+    - fromEntities:
+        - host
+      toPorts: *scrape
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          # Cilium learns the switch's address for the FQDN rule from DNS.
+          rules:
+            dns:
+              - matchPattern: "*"
+    # SNMP polling of the targets in the HelmRelease: the core switch by name,
+    # whose management address is being moved, and the Raritan PDU.
+    - toFQDNs:
+        - matchName: beefchunk.cbannister.casa
+      toPorts: &snmp
+        - ports:
+            - port: "161"
+              protocol: UDP
+    - toCIDR:
+        - 10.1.254.30/32
+      toPorts: *snmp

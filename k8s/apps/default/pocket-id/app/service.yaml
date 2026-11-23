@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: pocket-id
   namespace: default
+  labels:
+    cbannister.xyz/external-backend: "true"
 spec:
   selector:
     app.kubernetes.io/name: pocket-id
