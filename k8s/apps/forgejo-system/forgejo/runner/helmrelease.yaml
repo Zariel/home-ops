@@ -33,6 +33,8 @@ spec:
           k8s-plugin:
             env:
               TZ: Europe/London
+              # The plugin logs full exec arguments at info level.
+              FORGEJO_RUNNER_LOG_LEVEL: warn
             image:
               repository: git.erwanleboucher.dev/eleboucher/runner-k8s-plugin
               tag: 13.3.0
