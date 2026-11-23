@@ -83,6 +83,8 @@ spec:
         - matchName: me.plexapp.com
         - matchName: resources-cdn.plexapp.com
         - matchName: image.tmdb.org
+        # TV show theme music.
+        - matchName: tvthemes.plexapp.com
       toPorts:
         - ports:
             - port: "443"
@@ -94,9 +96,11 @@ spec:
         - ports:
             - port: "80"
               protocol: TCP
-  # Plex sends SSDP discovery to 239.255.255.250:1900 even with DLNA disabled;
-  # multicast cannot leave the pod network. An explicit deny reports these
-  # drops as POLICY_DENY, distinct from POLICY_DENIED for a missing allow.
+  # Plex sends SSDP discovery to 239.255.255.250:1900 even with DLNA disabled,
+  # and a limited broadcast to UDP 65001 at startup; neither can leave the pod
+  # network. An explicit deny reports these drops as POLICY_DENY, distinct
+  # from POLICY_DENIED for a missing allow.
   egressDeny:
     - toCIDR:
         - 224.0.0.0/4
+        - 255.255.255.255/32
