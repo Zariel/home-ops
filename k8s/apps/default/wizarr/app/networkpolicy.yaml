@@ -43,3 +43,11 @@ spec:
         - ports:
             - port: "8096"
               protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: plex
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP

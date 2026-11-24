@@ -10,7 +10,7 @@ The `wizarr` SecurityPolicy protects the default HTTPRoute, including `/login`, 
 
 Wizarr's proxy SSO uses its built-in administrator identity. Pocket ID groups control admission to administration; they are not synchronized into Wizarr or Jellyfin. Use `/logout` to clear the gateway session. Your Pocket ID browser session is separate.
 
-The ingress policy allows only the external Envoy pods and hosting node to reach TCP `5690`. Keep that restriction in place when `DISABLE_BUILTIN_AUTH` is enabled: Wizarr trusts requests that reach its login endpoint. A Kubernetes port-forward bypasses gateway authentication and is reserved for operators with cluster access. Outbound connections are limited to DNS, Jellyfin and the public internet.
+The ingress policy allows only the external Envoy pods and hosting node to reach TCP `5690`. Keep that restriction in place when `DISABLE_BUILTIN_AUTH` is enabled: Wizarr trusts requests that reach its login endpoint. A Kubernetes port-forward bypasses gateway authentication and is reserved for operators with cluster access. Outbound connections are limited to DNS, Jellyfin, Plex, and the public internet.
 
 ## Invite viewers
 
@@ -22,6 +22,8 @@ Sign in at the public hostname, then add Jellyfin in Settings:
 | Internal URL | `http://jellyfin.default.svc.cluster.local:8096` |
 | External URL | `https://jellyfin.cbannister.xyz` |
 | API key | A dedicated key created in Jellyfin's administrator dashboard |
+
+For Plex, use `http://plex.default.svc.cluster.local:32400` as the internal URL.
 
 Scan and select the required libraries. Keep downloads and Live TV disabled unless needed, and hide new users from login screens. Create a single-use invitation with a short link expiry. Set a membership duration only when viewer access should also expire.
 
