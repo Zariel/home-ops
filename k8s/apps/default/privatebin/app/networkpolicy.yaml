@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: privatebin
+spec:
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: privatebin
+  # Ingress comes from the internal-gateway-ingress baseline. The app only
+  # uses local storage and does not need outbound connections.
+  ingress:
+    - {}
+  egress:
+    - {}

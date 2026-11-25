@@ -43,3 +43,4 @@ resources:
   - ./brscanr/ks.yaml
   - ./paperless-gpt/ks.yaml
   - ./speedtest-tracker/ks.yaml
+  - ./privatebin/ks.yaml
