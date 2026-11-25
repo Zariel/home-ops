@@ -21,7 +21,7 @@ spec:
   postBuild:
     substitute:
       APP: silo
-      VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_CAPACITY: 50Gi
   path: ./k8s/apps/default/silo/app
   prune: true
   retryInterval: 2m
