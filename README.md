@@ -61,3 +61,8 @@ Loopbacks live in `10.254.254.0/24` and are carved by role:
 - 2x Samsung PM983 3.8TB U.2 (L2ARC)
 - 2x Samsung PM963 960GB U.2 + M.2 (metadata)
 - 128GB RAM
+
+TrueNAS only serves the LAN, so its `net.ipv4.tcp_congestion_control` sysctl
+tunable (System → Advanced Settings → Sysctl) is `cubic`. The tunable lives in
+the TrueNAS configuration, not in this repository. Cluster nodes choose
+[congestion control per route](katl/README.md#retained-configuration).

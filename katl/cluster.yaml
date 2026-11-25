@@ -131,6 +131,16 @@ spec:
 
                   [Route]
                   Gateway=10.254.1.0
+
+                  [Route]
+                  Destination=10.0.0.0/8
+                  Gateway=10.254.1.0
+                  TCPCongestionControlAlgorithm=cubic
+
+                  [Route]
+                  Destination=172.16.0.0/12
+                  Gateway=10.254.1.0
+                  TCPCongestionControlAlgorithm=cubic
               - path: /etc/systemd/network/20-bond1.network.d/50-address.conf
                 content: |
                   [Network]
@@ -141,8 +151,15 @@ spec:
                   Table=100
               - path: /etc/systemd/network/30-bond0.300.network.d/50-address.conf
                 content: |
-                  [Network]
+                  [Address]
                   Address=10.254.3.1/29
+                  AddPrefixRoute=no
+
+                  [Route]
+                  Destination=10.254.3.0/29
+                  PreferredSource=10.254.3.1
+                  Scope=link
+                  TCPCongestionControlAlgorithm=cubic
     - name: k8s-1
       controlPlane: true
       management:
@@ -170,6 +187,16 @@ spec:
 
                   [Route]
                   Gateway=10.254.1.2
+
+                  [Route]
+                  Destination=10.0.0.0/8
+                  Gateway=10.254.1.2
+                  TCPCongestionControlAlgorithm=cubic
+
+                  [Route]
+                  Destination=172.16.0.0/12
+                  Gateway=10.254.1.2
+                  TCPCongestionControlAlgorithm=cubic
               - path: /etc/systemd/network/20-bond1.network.d/50-address.conf
                 content: |
                   [Network]
@@ -180,8 +207,15 @@ spec:
                   Table=100
               - path: /etc/systemd/network/30-bond0.300.network.d/50-address.conf
                 content: |
-                  [Network]
+                  [Address]
                   Address=10.254.3.2/29
+                  AddPrefixRoute=no
+
+                  [Route]
+                  Destination=10.254.3.0/29
+                  PreferredSource=10.254.3.2
+                  Scope=link
+                  TCPCongestionControlAlgorithm=cubic
     - name: k8s-2
       controlPlane: true
       management:
@@ -209,6 +243,16 @@ spec:
 
                   [Route]
                   Gateway=10.254.1.4
+
+                  [Route]
+                  Destination=10.0.0.0/8
+                  Gateway=10.254.1.4
+                  TCPCongestionControlAlgorithm=cubic
+
+                  [Route]
+                  Destination=172.16.0.0/12
+                  Gateway=10.254.1.4
+                  TCPCongestionControlAlgorithm=cubic
               - path: /etc/systemd/network/20-bond1.network.d/50-address.conf
                 content: |
                   [Network]
@@ -219,6 +263,13 @@ spec:
                   Table=100
               - path: /etc/systemd/network/30-bond0.300.network.d/50-address.conf
                 content: |
-                  [Network]
+                  [Address]
                   Address=10.254.3.3/29
+                  AddPrefixRoute=no
+
+                  [Route]
+                  Destination=10.254.3.0/29
+                  PreferredSource=10.254.3.3
+                  Scope=link
+                  TCPCongestionControlAlgorithm=cubic
   managementAuthentication: mtls

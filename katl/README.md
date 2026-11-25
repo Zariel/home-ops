@@ -34,6 +34,17 @@ match the PCI slots implied by the existing predictable interface names; verify
 those slots and the generated names from the installer before committing to a
 bare-metal install.
 
+TCP congestion control follows the route. The per-node drop-ins send
+`10.0.0.0/8` and `172.16.0.0/12` through the node's transit gateway and define
+the Ceph `/29`, all with `TCPCongestionControlAlgorithm=cubic`;
+`AddPrefixRoute=no` leaves networkd as the only owner of the Ceph route. The
+global default stays BBR, which Cilium's bandwidth manager maintains. The WAN
+default route and every pod network namespace use it, including qBittorrent's.
+Route settings apply only to host sockets, such as Ceph, etcd, the API server
+and NFS mounts, so pod connections use BBR even to LAN destinations.
+Same-node connections use the local routing table and also keep BBR. Existing
+connections keep their algorithm until they reconnect.
+
 Katl also owns Mellanox interrupt coalescing through the two `.link` files.
 The enabled `mellanox-queue-tuning.service` depends on both physical NIC devices
 and waits for networkd to configure them, without requiring carrier or IP
