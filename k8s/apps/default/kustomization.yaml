@@ -42,5 +42,4 @@ resources:
   - ./paperless/ks.yaml
   - ./brscanr/ks.yaml
   - ./paperless-gpt/ks.yaml
-  - ./pdm/ks.yaml
   - ./speedtest-tracker/ks.yaml
