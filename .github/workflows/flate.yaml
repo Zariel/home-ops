@@ -48,7 +48,7 @@ jobs:
         id: flate
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.changed_files }}
-          FLATE_ALLOW_MISSING_SECRETS: "true"
+          FLATE_ALLOW_MISSING_KINDS: Secret
           FLATE_PATH: ./k8s/flux/config
         run: |-
           set -o pipefail
