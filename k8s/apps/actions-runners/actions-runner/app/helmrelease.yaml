@@ -25,6 +25,8 @@ spec:
   chartRef:
     kind: OCIRepository
     name: actions-runner
+  # Enable registration after the image is pullable and GitHub restricts the pool to trusted workflows.
+  suspend: true
   values:
     githubConfigUrl: https://github.com/katl-dev/katl
     githubConfigSecret: actions-runner-github-app
