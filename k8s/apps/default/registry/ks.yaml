@@ -16,6 +16,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 20Gi
+      VOLSYNC_SOURCE_CACHE_CAPACITY: 20Gi
       VOLSYNC_CACHE_CAPACITY: 10Gi
   dependsOn:
     - name: rook-ceph-cluster

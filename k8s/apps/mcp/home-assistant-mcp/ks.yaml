@@ -28,6 +28,7 @@ spec:
       MCP_SCOPE: home-assistant:access
       MCP_DISPLAY_NAME: Home Assistant MCP
       VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_SOURCE_CACHE_CAPACITY: 1Gi
       VOLSYNC_PUID: "999"
       VOLSYNC_PGID: "999"
   prune: true

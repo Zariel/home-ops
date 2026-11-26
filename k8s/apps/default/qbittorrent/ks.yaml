@@ -17,6 +17,7 @@ spec:
       APP: *app
       VOLSYNC_CACHE_CAPACITY: 5Gi
       VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_SOURCE_CACHE_CAPACITY: 10Gi
   dependsOn:
     - name: onepassword-store
       namespace: external-secrets

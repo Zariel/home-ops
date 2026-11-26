@@ -24,6 +24,7 @@ spec:
       APP: *name
       VOLSYNC_CACHE_CAPACITY: 25Gi
       VOLSYNC_CAPACITY: 50Gi
+      VOLSYNC_SOURCE_CACHE_CAPACITY: 50Gi
   prune: true
   sourceRef:
     kind: GitRepository

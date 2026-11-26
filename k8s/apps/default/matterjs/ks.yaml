@@ -29,6 +29,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_SOURCE_CACHE_CAPACITY: 1Gi
       VOLSYNC_PUID: "0"
       VOLSYNC_PGID: "0"
   prune: true

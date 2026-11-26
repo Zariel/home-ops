@@ -24,6 +24,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_SOURCE_CACHE_CAPACITY: 1Gi
   prune: true
   sourceRef:
     kind: GitRepository
