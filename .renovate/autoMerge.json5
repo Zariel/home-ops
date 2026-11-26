@@ -66,6 +66,7 @@
         "docker"
       ],
       "automerge": false,
+      "addLabels": ["do-not-merge"],
       "matchPackageNames": [
         "ghcr.io/home-operations/qbittorrent",
         "ghcr.io/home-operations/qbittorrent-libtorrentv1"
