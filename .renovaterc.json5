@@ -13,6 +13,7 @@
     ':semanticCommits',
     ':timezone(Europe/London)',
   ],
+  stopUpdatingLabel: 'do-not-merge',
   suppressNotifications: [
     'prEditedNotification',
     'prIgnoreNotification',
