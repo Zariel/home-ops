@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flare-database
+spec:
+  dependsOn:
+    - name: pg18vc
+    - name: onepassword-store
+      namespace: external-secrets
+  interval: 1h
+  path: ./k8s/apps/database/flare/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: database
+  timeout: 5m
+  healthChecks:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Database
+      name: flare
+      namespace: database
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: DatabaseRole
+      name: flare
+      namespace: database
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Database
+      current: has(status.applied) && status.applied && status.observedGeneration == metadata.generation
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: DatabaseRole
+      current: has(status.applied) && status.applied && status.observedGeneration == metadata.generation

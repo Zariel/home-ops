@@ -44,3 +44,4 @@ resources:
   - ./paperless-gpt/ks.yaml
   - ./speedtest-tracker/ks.yaml
   - ./privatebin/ks.yaml
+  - ./flare/ks.yaml

@@ -1,0 +1,24 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: flare
+spec:
+  cluster:
+    name: pg18vc
+  name: flare
+  owner: flare
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: flare
+spec:
+  cluster:
+    name: pg18vc
+  name: flare
+  login: true
+  passwordSecret:
+    name: flare-db
+  databaseRoleReclaimPolicy: retain

@@ -7,3 +7,4 @@ components:
 resources:
   - ./cnpg/ks.yaml
   - ./kritika/ks.yaml
+  - ./flare/ks.yaml
