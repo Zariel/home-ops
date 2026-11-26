@@ -70,10 +70,10 @@ Envoy injects the backend credential after JWT validation and authorization.
 A server that supports a bearer token should require `token` from
 `${APP}-gateway-credential`, so a request that bypasses the gateway is rejected
 even if the ingress policy is missing. Grafana MCP (`MCP_GRAFANA_SERVER_TOKEN`)
-and NetBox MCP (`MCP_AUTH_TOKEN`) do. UniFi MCP has no caller authentication,
-and Home Assistant MCP only supports a secret path, so both rely on the ingress
-policy and ignore the injected header. Their startup warnings about
-unauthenticated HTTP are expected.
+and NetBox MCP (`MCP_AUTH_TOKEN`) do. UniFi MCP and Proxmox VE MCP have no
+caller authentication, and Home Assistant MCP only supports a secret path, so
+all three rely on the ingress policy and ignore the injected header. Their
+startup warnings about unauthenticated HTTP are expected.
 
 A ListenerSet-level policy would apply the same static audiences and permissions
 to every attached route. The component shares the configuration while preserving

@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: proxmox-mcp
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: proxmox-mcp
+  interval: 1h
+  driftDetection:
+    mode: enabled
+  values:
+    controllers:
+      proxmox-mcp:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/samik081/mcp-pve
+              tag: 0.11.0@sha256:65947dd392ef4ee3240c831ae762197791b1a2de04506fa01a8dd0d4d3be6a44
+            ports:
+              - name: http
+                containerPort: 3000
+            env:
+              TZ: Europe/London
+              PVE_BASE_URL: https://pve.cbannister.casa:8006
+              PVE_VERIFY_SSL: "true"
+              # The API token's pool ACLs bound what agents can change; the
+              # tier and categories only keep unrelated tools out of the list.
+              PVE_ACCESS_TIER: full
+              PVE_CATEGORIES: nodes,qemu,storage,tasks,pools,backup
+              PVE_TOOL_BLACKLIST: pve_create_qemu_vm,pve_clone_qemu_vm,pve_delete_qemu_vm
+              MCP_TRANSPORT: http
+              MCP_HOST: 0.0.0.0
+              MCP_PORT: "3000"
+              # Internal endpoint; Envoy validates Pocket ID access tokens.
+              MCP_ALLOWED_HOSTS: localhost,127.0.0.1,${APP}.cbannister.xyz
+            envFrom:
+              - secretRef:
+                  name: proxmox-mcp-secret
+            probes:
+              liveness:
+                enabled: true
+                type: TCP
+              readiness:
+                enabled: true
+                type: TCP
+              startup:
+                enabled: true
+                type: TCP
+                spec:
+                  periodSeconds: 5
+                  failureThreshold: 60
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: proxmox-mcp
+        ports:
+          http:
+            port: 80
+            targetPort: http
+    persistence:
+      tmp:
+        type: emptyDir

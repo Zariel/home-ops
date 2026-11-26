@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: proxmox-mcp
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: proxmox-mcp
+      app.kubernetes.io/instance: proxmox-mcp
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # The Proxmox API runs outside Kubernetes and is reached by its DNS name.
+    - toFQDNs:
+        - matchName: pve.cbannister.casa
+      toPorts:
+        - ports:
+            - port: "8006"
+              protocol: TCP
