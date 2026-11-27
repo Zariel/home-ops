@@ -33,7 +33,7 @@ spec:
   grafanaCom:
     # renovate: depName="VictoriaMetrics - vmagent"
     id: 12683
-    revision: 43
+    revision: 44
   variables:
     - name: ds
       value: victoriametrics
