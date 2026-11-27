@@ -39,6 +39,7 @@ spec:
                 - seerr
                 - maintainerr
                 - wizarr
+                - watchstate
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app: radarr
