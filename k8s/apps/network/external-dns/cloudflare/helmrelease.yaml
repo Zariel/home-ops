@@ -53,7 +53,9 @@ spec:
       - --cloudflare-proxied
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
-      - --exclude-record-types=HTTPS
+      # Cluster IPv6 addresses are ULA, which Cloudflare cannot reach as an
+      # origin, so AAAA records stay out of public zones.
+      - --exclude-record-types=HTTPS,AAAA
       - --gateway-name=external
       - --zone-id-filter=$(CF_ZONE_ID)
       - --zone-id-filter=$(CF_ROCIOBOLANOS_COM_ZONE_ID)
