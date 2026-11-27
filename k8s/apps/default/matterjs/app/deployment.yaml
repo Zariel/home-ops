@@ -43,7 +43,6 @@ spec:
             - --storage-path=/data
             - --primary-interface=net1
             - --log-level=debug
-            - --ble-proxy
           env:
             - name: TZ
               value: "Europe/London"
