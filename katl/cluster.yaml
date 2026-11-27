@@ -181,6 +181,12 @@ spec:
           units:
             - name: bluetooth.service
               enable: true
+              dropIns:
+                - name: 10-immutable-etc.conf
+                  content: |
+                    [Service]
+                    # BlueZ uses its compiled defaults on the immutable host.
+                    ConfigurationDirectory=
       install:
         systemDisk:
           byID: /dev/disk/by-id/nvme-eui.34333530541060910025384300000001
