@@ -164,8 +164,23 @@ spec:
       controlPlane: true
       management:
         address: 10.254.1.3
+      kernel:
+        # A node-level command line replaces the defaults.
+        commandLine:
+          - init_on_alloc=0
+          - init_on_free=0
+          - intel_iommu=on
+          - iommu=pt
+          - mitigations=off
+          - apparmor=0
+          - security=none
       kubernetes:
         address: 10.254.1.3
+      systemExtensions:
+        - bundle: ghcr.io/zariel/home-ops/hollywoo-bluetooth@sha256:8c80746736e0a6b7c2024311b91fd1d45cabd59c9d68559be55c70a52eaa9456
+          units:
+            - name: bluetooth.service
+              enable: true
       install:
         systemDisk:
           byID: /dev/disk/by-id/nvme-eui.34333530541060910025384300000001
@@ -177,6 +192,7 @@ spec:
                 byID: /dev/disk/by-id/nvme-eui.343335304ea058240025384100000001
             wipe: true
       hostConfiguration:
+        maskedUnits: []
         fileSets:
           addresses:
             files:

@@ -58,12 +58,19 @@ effect on the next boot.
 Static `/etc/hosts` entries preserve resolution of the three node names.
 DNS uses `10.254.253.53`; Katl's native unit management enables
 systemd-timesyncd, which uses `10.1.254.1`, the core switch's address on
-the OOB network, reached directly over each node's point-to-point link. It also masks
-`bluetooth.service`, while the kernel command line prevents the Bluetooth
-drivers from loading. CPU sysfs settings, network sysctls, hugepages, udev
+the OOB network, reached directly over each node's point-to-point link. The defaults
+mask `bluetooth.service` and prevent the Bluetooth drivers from loading. `k8s-1`
+enables Bluetooth through a pinned system extension with BlueZ and MediaTek
+firmware. CPU sysfs settings, network sysctls, hugepages, udev
 permissions for ZBT2, NFS options, containerd options, kubelet settings,
 control-plane resources, scheduler policy, and API audit policy are retained.
 SSH authorizes the current `chris@gaming` public key; review it before install.
+
+The Bluetooth extension is built by `bluetooth/build-sysext.sh` using
+`bsdtar` and `mksquashfs`. Compile the configuration with `katlctl config
+bundle` and registry credentials that can read the private GHCR extension.
+Apply the compiled bundle to deliver the extension without node registry
+credentials.
 
 The native kubeadm configuration disables kube-proxy and CoreDNS installation;
 GitOps retains Cilium and CoreDNS ownership. The shared `host` file set supplies
