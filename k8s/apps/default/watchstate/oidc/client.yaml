@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/pocketid.internal/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: watchstate
+spec:
+  name: WatchState
+  clientID: watchstate
+  instanceSelector:
+    matchLabels:
+      pocketid.internal/instance: pocket-id
+  pkceEnabled: true
+  callbackUrls:
+    - https://watchstate.cbannister.xyz/v1/api/system/auth/oidc/callback
+  launchUrl: https://watchstate.cbannister.xyz
+  # WatchState signs every OIDC login in as its single system user without
+  # checking claims, so this group is the only authorization.
+  allowedUserGroups:
+    - groupName: admin
+  accessTokenDurationMinutes: 15
+  secret:
+    name: watchstate-oidc
+    keys:
+      clientSecret: client-secret
+  logo:
+    autoGenerate: false

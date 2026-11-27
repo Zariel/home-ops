@@ -3,6 +3,26 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: watchstate-oidc
+  namespace: default
+spec:
+  dependsOn:
+    - name: pocket-id-instance
+  interval: 1h
+  path: ./k8s/apps/default/watchstate/oidc
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: default
+  timeout: 5m
+  wait: true
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: &app watchstate
   namespace: &namespace default
 spec:
@@ -12,6 +32,7 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: watchstate-oidc
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync

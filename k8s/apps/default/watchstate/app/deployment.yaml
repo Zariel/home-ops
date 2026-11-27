@@ -4,6 +4,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: watchstate
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -16,6 +18,8 @@ spec:
       labels:
         # plex.tv issues the per-user Plex tokens WatchState writes with.
         cbannister.xyz/egress: internet
+        # WatchState exchanges OIDC codes with Pocket ID at id.cbannister.xyz.
+        cbannister.xyz/egress-internal-gateway: "true"
         cbannister.xyz/ingress: internal-gateway
         app.kubernetes.io/name: watchstate
     spec:
@@ -29,9 +33,51 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        # WatchState reads OIDC settings only from /config/config/config.yaml,
+        # and nothing else writes that file, so this container owns it.
+        - name: oidc-config
+          image: &image ghcr.io/arabcoders/watchstate:v1.11.0@sha256:8d70d906f7cc30b35187072db6593b5205758fea77506e2bc3be47ae02bcbf5b
+          command: [/bin/sh, -ec]
+          args:
+            - |
+              mkdir -p /config/config
+              umask 077
+              cat > /config/config/config.yaml <<YAML
+              auth:
+                oidc:
+                  issuer: '$OIDC_ISSUER'
+                  client_id: '$OIDC_CLIENT_ID'
+                  client_secret: '$OIDC_CLIENT_SECRET'
+                  redirect_uri: 'https://watchstate.cbannister.xyz/v1/api/system/auth/oidc/callback'
+              YAML
+          env:
+            - name: OIDC_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  name: watchstate-oidc
+                  key: issuer_url
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: watchstate-oidc
+                  key: client_id
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: watchstate-oidc
+                  key: client-secret
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: app
-          image: ghcr.io/arabcoders/watchstate:v1.11.0@sha256:8d70d906f7cc30b35187072db6593b5205758fea77506e2bc3be47ae02bcbf5b
+          image: *image
           env:
             - name: WS_TZ
               value: Europe/London
