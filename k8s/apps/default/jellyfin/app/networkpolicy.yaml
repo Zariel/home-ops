@@ -38,9 +38,6 @@ spec:
             app.kubernetes.io/name: jellystat
         - matchLabels:
             io.kubernetes.pod.namespace: default
-            app.kubernetes.io/name: watchstate
-        - matchLabels:
-            io.kubernetes.pod.namespace: default
             app: radarr
       toPorts:
         - ports:
