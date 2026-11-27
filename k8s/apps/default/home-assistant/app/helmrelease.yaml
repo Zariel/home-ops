@@ -69,6 +69,8 @@ spec:
             value: "1"
     service:
       app:
+        # Keep the established name now that the release has two Services.
+        forceRename: "{{ .Release.Name }}"
         ports:
           http:
             appProtocol: kubernetes.io/ws
@@ -92,6 +94,10 @@ spec:
             namespace: network
             kind: ListenerSet
             sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 8123
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
