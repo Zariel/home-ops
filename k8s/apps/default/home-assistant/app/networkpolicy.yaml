@@ -29,6 +29,15 @@ spec:
         - ports:
             - port: "8123"
               protocol: TCP
+    # OTBR's relay sidecar delivers its border agent's mDNS records.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: otbr
+      toPorts:
+        - ports:
+            - port: "5353"
+              protocol: UDP
   egress:
     - toEndpoints:
         - matchLabels:

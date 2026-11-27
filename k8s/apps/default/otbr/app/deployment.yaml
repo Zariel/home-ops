@@ -78,6 +78,28 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: config
+        # Home Assistant finds border routers only through mDNS, which cannot
+        # leave the Thread link, so the relay sends OTBR's border agent
+        # records to Home Assistant over the pod network.
+        - name: mdns-unicast-relay
+          image: ghcr.io/zariel/mdns-unicast-relay:0.1.0@sha256:b6fc1540cb7423373fe6b14e8f121fe2f006fdfc66648bc46f96dab20d3346b5
+          args:
+            - -interface=net1
+            - -service=_meshcop._udp.local
+            - -target=home-assistant-mdns.default.svc.cluster.local:5353
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 1m
+            limits:
+              memory: 32Mi
       securityContext:
         sysctls:
           - name: net.ipv6.conf.all.forwarding

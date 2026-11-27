@@ -1,11 +1,5 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/k8s.cni.cncf.io/networkattachmentdefinition_v1.json
-# IPv6 on this attachment is link-local only, and exists solely so Home
-# Assistant receives OTBR's _meshcop._udp mDNS adverts, which the gateway
-# reflects from the IPv6-only Thread VLAN over IPv6 only. Nothing should use
-# it for traffic. The IoT VLAN sends RAs, so tuning clears RA and SLAAC
-# learning during CNI setup, before the link solicits a router; pod sysctls
-# apply too late to stop a default route that bypasses network policy.
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
@@ -22,13 +16,6 @@ spec:
           "mode": "bridge",
           "ipam": {
             "type": "static"
-          }
-        },
-        {
-          "type": "tuning",
-          "sysctl": {
-            "net.ipv6.conf.IFNAME.accept_ra": "0",
-            "net.ipv6.conf.IFNAME.autoconf": "0"
           }
         }
       ]
