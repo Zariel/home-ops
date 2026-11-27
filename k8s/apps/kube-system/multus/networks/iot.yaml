@@ -1,5 +1,9 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/k8s.cni.cncf.io/networkattachmentdefinition_v1.json
+# The IoT VLAN sends RAs, so attachments stay link-local for IPv6: tuning
+# clears RA and SLAAC learning during CNI setup, before the link solicits a
+# router, so no default route can bypass network policy. Link-local IPv6
+# still receives mDNS the gateway reflects from the IPv6-only Thread VLAN.
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
@@ -16,6 +20,13 @@ spec:
           "mode": "bridge",
           "ipam": {
             "type": "static"
+          }
+        },
+        {
+          "type": "tuning",
+          "sysctl": {
+            "net.ipv6.conf.IFNAME.accept_ra": "0",
+            "net.ipv6.conf.IFNAME.autoconf": "0"
           }
         }
       ]

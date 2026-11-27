@@ -62,10 +62,6 @@ spec:
             value: "0"
           - name: net.ipv6.conf.all.forwarding
             value: "0"
-          # Matter and Thread run in their own pods, so the IoT interface is
-          # IPv4-only and cannot carry a default route around network policy.
-          - name: net.ipv6.conf.iot0.disable_ipv6
-            value: "1"
     service:
       app:
         ports:
