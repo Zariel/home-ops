@@ -8,3 +8,16 @@ devices:
         paths:
           - path: /dev/zbt2
             mountPath: /dev/ttyACM0
+  - name: bluetooth
+    groups:
+      - count: 1
+        paths:
+          # The bus exists without a Bluetooth adapter. Require a registered
+          # HCI controller before advertising a seat on the node.
+          - path: /sys/class/bluetooth/hci0
+            mountPath: /run/host-bluetooth/hci0
+            type: Mount
+            readOnly: true
+          - path: /run/dbus/system_bus_socket
+            type: Mount
+            readOnly: true

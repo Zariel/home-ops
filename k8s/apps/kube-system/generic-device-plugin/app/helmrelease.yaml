@@ -60,6 +60,13 @@ spec:
         hostPath: /dev
         globalMounts:
           - path: /dev
+      system-bus:
+        type: hostPath
+        hostPath: /run/dbus/system_bus_socket
+        hostPathType: Socket
+        globalMounts:
+          - path: /run/dbus/system_bus_socket
+            readOnly: true
       device-plugin:
         type: hostPath
         hostPath: /var/lib/kubelet/device-plugins

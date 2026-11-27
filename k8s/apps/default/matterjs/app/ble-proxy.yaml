@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matter-ble-proxy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: matter-ble-proxy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: matter-ble-proxy
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: proxy
+          image: ghcr.io/matter-js/matterjs-server:1.6.1@sha256:5591f9f65926ca4b13b34cfd9c9888cb9d9ee9f147fe0b04c8e025cbeeee0eb7
+          command: [node, /app/node_modules/@matter-server/ble-proxy/dist/esm/example/noble-ble-proxy.js]
+          args:
+            - --server
+            - ws://matter-server.default.svc.cluster.local/ble
+            - --hci-id
+            - "0"
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: NOBLE_BINDINGS
+              value: dbus
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          # The reference client does not reconnect. Check its only TCP
+          # connection so kubelet replaces it after a Matter.js restart.
+          livenessProbe:
+            exec: &connectionCheck
+              command:
+                - sh
+                - -c
+                - >-
+                  awk '$4 == "01" && $3 ~ /:(0050|15CC)$/ { connected = 1 }
+                  END { exit !connected }' /proc/net/tcp /proc/net/tcp6
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          readinessProbe:
+            exec: *connectionCheck
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+              kernel.org/bluetooth: 1
