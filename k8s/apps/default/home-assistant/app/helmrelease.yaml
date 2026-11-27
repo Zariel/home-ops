@@ -43,6 +43,8 @@ spec:
         cbannister.xyz/egress-ollama: "true"
         cbannister.xyz/ingress: internal-gateway
       annotations:
+        # iot0 also has an IPv6 link-local address, solely so the Thread
+        # integration hears OTBR's mDNS adverts; see the iot attachment.
         k8s.v1.cni.cncf.io/networks: |-
           [{
             "name": "iot",
