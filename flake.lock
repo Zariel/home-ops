@@ -25,16 +25,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1795689170,
-        "narHash": "sha256-ouzdt3zsYc4laRUZK/p0ysI5u71dXkklWYJYb831t18=",
+        "lastModified": 1795758051,
+        "narHash": "sha256-T6gZFl4nH1d9ImjJCZa3mON0Xn3dl5nGlMnIGQV7Qac=",
         "owner": "katl-dev",
         "repo": "katl",
-        "rev": "41220f902074b0a82b3ced05e9de5fe274b882c5",
+        "rev": "6db39c2435f1f4bed4c48c365c5e8b643033ffd9",
         "type": "github"
       },
       "original": {
         "owner": "katl-dev",
-        "ref": "v2026.11.5",
+        "ref": "v2026.11.6",
         "repo": "katl",
         "type": "github"
       }
