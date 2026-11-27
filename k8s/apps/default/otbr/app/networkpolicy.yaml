@@ -32,3 +32,12 @@ spec:
               protocol: TCP
   egress:
     - {}
+    # The mdns-unicast-relay sidecar delivers the border agent's records.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: home-assistant
+      toPorts:
+        - ports:
+            - port: "5353"
+              protocol: UDP
