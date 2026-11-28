@@ -9,6 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: silo
   dependsOn:
+    - name: common
     - name: pg18vc
       namespace: database
     - name: onepassword-store

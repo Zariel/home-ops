@@ -23,6 +23,10 @@ spec:
     spec:
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 120
+      # Shares the iGPU with Plex and Jellyfin, so Silo runs on the claim's node.
+      resourceClaims:
+        - name: gpu
+          resourceClaimName: transcode-gpu
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -86,6 +90,8 @@ spec:
               memory: 512Mi
             limits:
               memory: 4Gi
+            claims:
+              - name: gpu
           # Migrations run before the HTTP listener and may take up to 20 minutes.
           startupProbe:
             httpGet:

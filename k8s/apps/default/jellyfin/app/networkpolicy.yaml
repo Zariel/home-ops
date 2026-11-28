@@ -39,6 +39,9 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: default
             app: radarr
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: silo
       toPorts:
         - ports:
             - port: "8096"
@@ -50,7 +53,15 @@ spec:
         - ports:
             - port: "8096"
               protocol: TCP
-  # Internet egress comes only from the baseline. This empty rule admits
-  # nothing but keeps egress enforced if the label is removed.
+  # Internet egress comes from the baseline; this policy adds only cluster
+  # destinations.
   egress:
-    - {}
+    # The Webhook plugin reports playback to Silo's watch-state sync.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: silo
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

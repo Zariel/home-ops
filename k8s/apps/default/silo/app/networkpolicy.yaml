@@ -38,7 +38,30 @@ spec:
             io.kubernetes.pod.namespace: default
             app: radarr
       toPorts: *http
+    # Jellyfin's Webhook plugin reports playback for Silo's watch-state sync.
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: jellyfin
+      toPorts: *http
   egress:
+    # History import reads watch history from Plex and Jellyfin.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: plex
+      toPorts:
+        - ports:
+            - port: "32400"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
+            app: jellyfin
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: database

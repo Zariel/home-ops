@@ -46,7 +46,7 @@ The pod CIDR is trusted for forwarded headers. Ingress is limited to the externa
 
 ## Shared transcoding GPU
 
-The `common` Flux Kustomization owns `default/transcode-gpu`. Plex, Jellyfin, and Immich microservices reference that same ResourceClaim, so they share one iGPU and run on its selected node. The claim does not divide or guarantee GPU throughput. Immich machine learning retains its own allocation; the DRM exporter uses administrative access.
+The `common` Flux Kustomization owns `default/transcode-gpu`. Plex, Jellyfin, Silo, and Immich microservices reference that same ResourceClaim, so they share one iGPU and run on its selected node. The claim does not divide or guarantee GPU throughput. Immich machine learning retains its own allocation; the DRM exporter uses administrative access.
 
 The shared claim retains its node allocation across pod restarts. Node replacement or permanent node failure requires an operator-planned claim replacement after stopping its consumers; ordinary pod rescheduling does not move the allocation to another node.
 
