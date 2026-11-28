@@ -32,17 +32,17 @@ Verify a viewer can sign in and play media at the public hostname, then stop the
 
 ## Isolation and storage
 
-The container runs as UID/GID `568`, drops all capabilities, uses the runtime seccomp profile, has a read-only root filesystem, and receives no Kubernetes service-account token. Only the external Envoy pods, Sonarr, Radarr, Wizarr, and the hosting node can reach TCP `8096`; discovery ports and direct LAN ingress are not exposed.
+The container runs as UID/GID `568`, drops all capabilities, uses the runtime seccomp profile, has a read-only root filesystem, and receives no Kubernetes service-account token. Only the external Envoy pods, Sonarr, Radarr, Wizarr, Jellystat, Silo, and the hosting node can reach TCP `8096`; discovery ports and direct LAN ingress are not exposed.
 
 Sonarr and Radarr can send library-update notifications to `http://jellyfin.default.svc.cluster.local:8096` using a Jellyfin API key. The network policy grants connectivity; Jellyfin still authenticates API requests.
 
 Wizarr can use the same internal URL with its own Jellyfin API key to manage invitations. Set its public Jellyfin URL to `https://jellyfin.cbannister.xyz` for viewers.
 
-Outbound connections are limited to DNS and the public internet; the network policy blocks the cluster, the LAN and both gateways. Administrators can install plugins and change provider settings through the dashboard. Plugins and their settings are writable under `/config/plugins` on the `jellyfin` Ceph PVC and persist across pod replacements. Jellyfin manages provider configuration defaults.
+Outbound connections are limited to DNS, the public internet and Silo on TCP `8080`, where the Webhook plugin reports playback for Silo's watch-state sync; the network policy blocks the rest of the cluster, the LAN and both gateways. Administrators can install plugins and change provider settings through the dashboard. Plugins and their settings are writable under `/config/plugins` on the `jellyfin` Ceph PVC and persist across pod replacements. Jellyfin manages provider configuration defaults.
 
 Jellyfin manages its configuration in the `jellyfin` Ceph PVC, backed up through the shared VolSync component. Configure new installations through the dashboard; no init container seeds or overwrites settings. Cache, logs, temporary files, and transcoding output are disposable and size-limited. Media mounts are read-only at both the NFS volume and container mount.
 
-The pod CIDR is trusted for forwarded headers. Ingress is limited to the external gateway, the hosting node, and the trusted Sonarr, Radarr, and Wizarr automation clients. Review proxy trust before allowing additional callers. The shared Envoy access-log format removes query strings, which can contain media-client tokens. Authentication and password-reset requests share a limit of 20 requests per minute per Envoy replica; playback requests are outside that limit.
+The pod CIDR is trusted for forwarded headers. Ingress is limited to the external gateway, the hosting node, and the trusted Sonarr, Radarr, Wizarr, Jellystat and Silo clients. Review proxy trust before allowing additional callers. The shared Envoy access-log format removes query strings, which can contain media-client tokens. Authentication and password-reset requests share a limit of 20 requests per minute per Envoy replica; playback requests are outside that limit.
 
 ## Shared transcoding GPU
 
