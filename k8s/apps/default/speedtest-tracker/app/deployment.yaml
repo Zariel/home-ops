@@ -28,7 +28,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: app
-          image: lscr.io/linuxserver/speedtest-tracker:1.15.1@sha256:132d35a355474be17822e2ff3df4866407187ca978a768935fea06f52ae24493
+          image: lscr.io/linuxserver/speedtest-tracker:1.15.2@sha256:5b9532220c558055a999bee20b190adc5a17c6fdbdc81b7af44538773899ae59
           env:
             - name: TZ
               value: Europe/London
