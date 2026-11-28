@@ -7,6 +7,8 @@ config="$root/katl/cluster.yaml"
 version=${1:-}
 silences="$root/.taskfiles/Katl/silences.yaml"
 silences_applied=false
+lock_name=katl-upgrade-lock
+lock_namespace=monitoring
 lock_uid=
 
 if [[ ! $version =~ ^[0-9]{4}\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
@@ -18,30 +20,77 @@ for command in kubectl kubectl-cnpg jq yq; do
   command -v "$command" >/dev/null || { echo "Missing $command" >&2; exit 1; }
 done
 
+kubectl_retry() (
+  local input='' output stderr attempt status
+  local transient='connection refused|connection reset|connection closed|broken pipe
+i/o timeout|TLS handshake timeout|context deadline exceeded|Client\.Timeout exceeded
+no route to host|network is unreachable|temporary failure in name resolution
+server is currently unable to handle|ServiceUnavailable|TooManyRequests|Gateway Timeout|Bad Gateway
+the server was unable to return a response|etcdserver: (request timed out|leader changed|no leader)
+(^|[[:space:]:])EOF($|[[:space:]])'
+  if [[ $1 == --stdin ]]; then
+    input=$2
+    shift 2
+  fi
+  if [[ $1 == cnpg ]]; then
+    set -- "$@" --request-timeout=30s
+  else
+    set -- --request-timeout=30s "$@"
+  fi
+  stderr=$(mktemp) || return 1
+  trap 'rm -f -- "$stderr"' EXIT
+
+  for attempt in 1 2 3 4; do
+    # Replay the same input and discard partial stdout from failed requests.
+    if output=$(command kubectl "$@" <<<"$input" 2>"$stderr"); then
+      cat "$stderr" >&2
+      if [[ -n $output ]]; then printf '%s\n' "$output"; fi
+      return 0
+    else
+      status=$?
+    fi
+    cat "$stderr" >&2
+    if ((attempt == 4)) || ! grep -Eiq "$transient" "$stderr"; then
+      return "$status"
+    fi
+    printf 'Retrying kubectl after a transient API error (attempt %d/4)\n' "$((attempt + 1))" >&2
+    sleep "$((2 ** (attempt - 1)))" || return 1
+  done
+)
+
 silence_alerts() {
-  local duration=$1 valid_until
+  local duration=$1 valid_until manifest
   valid_until=$(jq -nr --argjson duration "$duration" \
     'now + $duration | strftime("%Y-%m-%dT%H:%M:%SZ")') || return 1
+  manifest=$(SILENCE_VALID_UNTIL="$valid_until" yq \
+    '.metadata.annotations."valid-until" = strenv(SILENCE_VALID_UNTIL)' "$silences") || return 1
   # Attempt cleanup even if apply fails after creating the resource.
   silences_applied=true
-  SILENCE_VALID_UNTIL="$valid_until" yq \
-    '.metadata.annotations."valid-until" = strenv(SILENCE_VALID_UNTIL)' "$silences" \
-    | kubectl apply --request-timeout=30s -f - || return 1
+  kubectl_retry --stdin "$manifest" apply -f -
+}
+
+release_lock() {
+  local precondition remaining
+  # UID preconditions prevent releasing a replacement lock owned by another run.
+  precondition=$(jq -nc --arg uid "$lock_uid" \
+    '{apiVersion: "v1", kind: "DeleteOptions", preconditions: {uid: $uid}}') || return 1
+  if kubectl_retry --stdin "$precondition" delete \
+    --raw "/api/v1/namespaces/$lock_namespace/configmaps/$lock_name" -f - >/dev/null; then
+    return 0
+  fi
+  # A lost DELETE response can leave the retry reporting NotFound.
+  remaining=$(kubectl_retry -n "$lock_namespace" get configmap "$lock_name" --ignore-not-found -o name) || return 1
+  [[ -z $remaining ]]
 }
 
 finish() {
   local result=$?
   if [[ $silences_applied == true && $result != 0 ]]; then
-    kubectl delete --ignore-not-found --timeout=2m -f "$silences" || result=1
+    kubectl_retry delete --ignore-not-found --timeout=2m -f "$silences" || result=1
   fi
-  if [[ -n $lock_uid ]]; then
-    # UID preconditions prevent releasing a replacement lock owned by another run.
-    if ! jq -nc --arg uid "$lock_uid" '{apiVersion: "v1", kind: "DeleteOptions", preconditions: {uid: $uid}}' \
-      | kubectl delete --raw /api/v1/namespaces/monitoring/configmaps/katl-upgrade-lock \
-        --request-timeout=30s -f - >/dev/null; then
-      echo 'Failed to release monitoring/katl-upgrade-lock; inspect it before retrying.' >&2
-      result=1
-    fi
+  if [[ -n $lock_uid ]] && ! release_lock; then
+    echo 'Failed to release monitoring/katl-upgrade-lock; inspect it before retrying.' >&2
+    result=1
   fi
   exit "$result"
 }
@@ -58,16 +107,16 @@ fi
 healthy() {
   local ceph cnpg backups namespace name primary streaming expected status
 
-  ceph=$(kubectl get cephclusters.ceph.rook.io -A -o json) || return 1
+  ceph=$(kubectl_retry get cephclusters.ceph.rook.io -A -o json) || return 1
   jq -e '(.items | length) > 0 and all(.items[]; .status.phase == "Ready" and .status.ceph.health == "HEALTH_OK")' <<<"$ceph" >/dev/null || return 1
 
   # The CephCluster status can lag behind Ceph itself after an OSD restarts.
   while IFS=$'\t' read -r namespace name; do
-    status=$(kubectl -n "$namespace" exec deploy/rook-ceph-tools -- ceph status --format json) || return 1
+    status=$(kubectl_retry -n "$namespace" exec deploy/rook-ceph-tools -- ceph status --format json) || return 1
     jq -e '.health.status == "HEALTH_OK" and .osdmap.num_osds > 0 and .osdmap.num_up_osds == .osdmap.num_osds and .osdmap.num_in_osds == .osdmap.num_osds and .pgmap.num_pgs > 0 and (all(.pgmap.pgs_by_state[]; .state_name == "active+clean"))' <<<"$status" >/dev/null || return 1
   done < <(jq -r '.items[] | [.metadata.namespace, .metadata.name] | @tsv' <<<"$ceph")
 
-  cnpg=$(kubectl get clusters.postgresql.cnpg.io -A -o json) || return 1
+  cnpg=$(kubectl_retry get clusters.postgresql.cnpg.io -A -o json) || return 1
   jq -e '(.items | length) > 0 and all(.items[];
     .status.phase == "Cluster in healthy state" and
     .status.readyInstances == .spec.instances and
@@ -79,7 +128,7 @@ healthy() {
       any(.status.conditions[]; .type == "LastBackupSucceeded" and .status == "True")
     else true end))' <<<"$cnpg" >/dev/null || return 1
 
-  backups=$(kubectl get backups.postgresql.cnpg.io -A -o json) || return 1
+  backups=$(kubectl_retry get backups.postgresql.cnpg.io -A -o json) || return 1
   jq -e --argjson clusters "$cnpg" '.items as $backups | all(
     $clusters.items[] | select(any(.spec.plugins[]?; .isWALArchiver == true));
     . as $cluster | any($backups[];
@@ -90,7 +139,7 @@ healthy() {
 
   while IFS=$'\t' read -r namespace name primary; do
     # CNPG readiness alone does not establish that its replicas are streaming.
-    streaming=$(kubectl -n "$namespace" exec "$primary" -c postgres -- \
+    streaming=$(kubectl_retry -n "$namespace" exec "$primary" -c postgres -- \
       psql -X -U postgres -d postgres -Atqc \
       "SELECT coalesce(string_agg(application_name, ',' ORDER BY application_name), '') FROM pg_stat_replication WHERE state = 'streaming' AND replay_lsn IS NOT NULL AND pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn) <= 16777216") || return 1
     expected=$(jq -r --arg name "$name" --arg namespace "$namespace" \
@@ -105,8 +154,8 @@ wait_healthy() {
   until healthy; do
     if ((SECONDS >= deadline)); then
       echo 'Timed out waiting for Ceph and CNPG health; stopping before the next node.' >&2
-      kubectl get cephclusters.ceph.rook.io -A >&2 || true
-      kubectl get clusters.postgresql.cnpg.io -A >&2 || true
+      kubectl_retry get cephclusters.ceph.rook.io -A >&2 || true
+      kubectl_retry get clusters.postgresql.cnpg.io -A >&2 || true
       return 1
     fi
     ((attempts += 1))
@@ -125,15 +174,15 @@ wait_primary() {
       return 1
     fi
     sleep 5
-    current=$(kubectl -n "$namespace" get cluster "$name" -o jsonpath='{.status.currentPrimary}') || return 1
+    current=$(kubectl_retry -n "$namespace" get cluster "$name" -o jsonpath='{.status.currentPrimary}') || return 1
   done
 }
 
 switch_primary() {
   local node=$1 clusters namespace name primary candidate pods
-  clusters=$(kubectl get clusters.postgresql.cnpg.io -A -o json)
+  clusters=$(kubectl_retry get clusters.postgresql.cnpg.io -A -o json)
   while IFS=$'\t' read -r namespace name primary; do
-    pods=$(kubectl -n "$namespace" get pods -l "cnpg.io/cluster=$name" -o json)
+    pods=$(kubectl_retry -n "$namespace" get pods -l "cnpg.io/cluster=$name" -o json)
     if ! jq -e --arg primary "$primary" \
       'any(.items[]; .metadata.name == $primary)' <<<"$pods" >/dev/null; then
       echo "Primary pod $primary is missing from $namespace/$name" >&2
@@ -152,7 +201,7 @@ switch_primary() {
     fi
 
     echo "Switching $namespace/$name primary from $primary to $candidate"
-    kubectl cnpg promote "$name" "$candidate" -n "$namespace"
+    kubectl_retry cnpg promote "$name" "$candidate" -n "$namespace"
     wait_primary "$namespace" "$name" "$candidate"
     wait_healthy
   done < <(jq -r '.items[] | [.metadata.namespace, .metadata.name, .status.currentPrimary] | @tsv' <<<"$clusters")
@@ -160,31 +209,32 @@ switch_primary() {
 
 # Validate every upgrade while all nodes and workloads are still available.
 # Kubernetes create is atomic across clients; never steal a lock based on age.
-if ! lock_uid=$(kubectl -n monitoring create configmap katl-upgrade-lock \
+read -r run_id </proc/sys/kernel/random/uuid
+if ! lock_uid=$(kubectl_retry -n "$lock_namespace" create configmap "$lock_name" \
   --from-literal="holder=${USER:-operator}@$(hostname):$$" --from-literal="version=$version" \
-  -o 'jsonpath={.metadata.uid}' --request-timeout=30s); then
-  echo 'Could not acquire monitoring/katl-upgrade-lock. Check for another run or a stale lock.' >&2
-  exit 1
-fi
-if [[ -z $lock_uid ]]; then
-  echo 'Lock creation returned no UID; inspect monitoring/katl-upgrade-lock before retrying.' >&2
-  exit 1
+  --from-literal="run-id=$run_id" -o 'jsonpath={.metadata.uid}') || [[ -z $lock_uid ]]; then
+  # Only recover a create that the API accepted from this invocation.
+  if ! lock=$(kubectl_retry -n "$lock_namespace" get configmap "$lock_name" -o json) ||
+    ! lock_uid=$(jq -er --arg run_id "$run_id" 'select(.data["run-id"] == $run_id) | .metadata.uid | strings | select(length > 0)' <<<"$lock"); then
+    echo 'Could not acquire monitoring/katl-upgrade-lock. Check for another run or a stale lock.' >&2
+    exit 1
+  fi
 fi
 
 upgrade_nodes=()
 for node in "${nodes[@]}"; do
-  node_state=$(kubectl get "node/$node" -o json)
+  node_state=$(kubectl_retry get "node/$node" -o json)
   installed_os=$(jq -er '.status.nodeInfo.osImage' <<<"$node_state")
+  if ! jq -e '.spec.unschedulable != true' <<<"$node_state" >/dev/null; then
+    echo "$node is cordoned; inspect and recover it before upgrading the cluster." >&2
+    exit 1
+  fi
   if [[ $installed_os == "KatlOS $version" ]]; then
     echo "Skipping $node: already running KatlOS $version"
     continue
   fi
 
-  kubectl wait "node/$node" --for=condition=Ready --timeout=30s
-  if ! jq -e '.spec.unschedulable != true' <<<"$node_state" >/dev/null; then
-    echo "$node is cordoned; inspect and recover it before upgrading the cluster." >&2
-    exit 1
-  fi
+  kubectl_retry wait "node/$node" --for=condition=Ready --timeout=30s
   "$katlctl" node upgrade "$node" --version "$version" --config "$config" --plan
   upgrade_nodes+=("$node")
 done
@@ -202,11 +252,11 @@ for node in "${upgrade_nodes[@]}"; do
   switch_primary "$node"
   # A switchover can take time; renew again before draining the node.
   silence_alerts 7200
-  kubectl drain "$node" --ignore-daemonsets --delete-emptydir-data --force --timeout=20m
+  kubectl_retry drain "$node" --ignore-daemonsets --delete-emptydir-data --force --timeout=20m
   # Leave a failed node cordoned so the next node cannot be touched accidentally.
   "$katlctl" node upgrade "$node" --version "$version" --config "$config" --timeout=30m
-  kubectl uncordon "$node"
-  kubectl wait "node/$node" --for=condition=Ready --timeout=15m
+  kubectl_retry uncordon "$node"
+  kubectl_retry wait "node/$node" --for=condition=Ready --timeout=15m
   wait_healthy
 done
 

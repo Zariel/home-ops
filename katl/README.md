@@ -213,8 +213,9 @@ mutate nodes. Review minor-version upgrade constraints and apply through Katl.
 OS upgrades remain operator-driven; there is no automatic in-cluster OS upgrader.
 
 `katl:cluster:upgrade` uses the CLI from the Katl flake input and upgrades to
-the explicitly supplied release. Nodes whose reported OS image already matches
-the target release are skipped before planning, primary switchovers, or drains.
+the explicitly supplied release. Preflight stops if a node is cordoned, even if
+its reported OS image already matches the target release. The task skips
+schedulable nodes that already run the target release.
 It plans all remaining nodes before starting, then
 checks every CephCluster and CNPG Cluster before each node and after recovery.
 The checks require Ceph `HEALTH_OK`, all OSDs up and in, clean placement groups,
@@ -225,6 +226,11 @@ of the primary. If the next node hosts a CNPG primary, the task uses
 The development shell includes that plugin. A failed upgrade leaves its node
 cordoned and stops the run; inspect and recover it before retrying. The workflow
 requires the Rook toolbox deployment in each Ceph cluster namespace.
+
+Each `kubectl` command uses a 30-second API request timeout. The task retries
+transient connection and API errors up to three times with exponential backoff.
+If an upgrade leaves a node cordoned, check its Katl status and storage, then
+uncordon it once it is safe to resume scheduling.
 
 Before each primary switchover or drain, the cluster task applies the
 `katl-upgrade` `Silence` in `.taskfiles/Katl/silences.yaml` for

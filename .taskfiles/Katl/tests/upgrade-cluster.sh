@@ -6,6 +6,7 @@ test_dir=$(mktemp -d)
 trap 'rm -rf -- "$test_dir"' EXIT
 export TEST_DIR="$test_dir"
 TEST_YQ=$(command -v yq)
+real_sleep=$(command -v sleep)
 export TEST_YQ
 export PATH="$test_dir/bin:$PATH"
 mkdir "$test_dir/bin"
@@ -45,26 +46,67 @@ EOF
 cat >"$test_dir/bin/kubectl" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
+if [[ $1 == cnpg ]]; then
+  [[ ${*: -1} == --request-timeout=30s ]]
+  set -- "${@:1:$#-1}"
+else
+  [[ $1 == --request-timeout=30s ]]
+  shift
+fi
 case "$*" in
   '-n monitoring create configmap katl-upgrade-lock '*)
-    mkdir "$TEST_DIR/lock" || exit 1
+    mkdir "$TEST_DIR/lock" 2>/dev/null || {
+      echo 'Error from server (AlreadyExists): configmap already exists' >&2
+      exit 1
+    }
     echo test-lock-uid >"$TEST_DIR/lock/uid"
+    for arg; do
+      if [[ $arg == --from-literal=run-id=* ]]; then
+        echo "${arg#--from-literal=run-id=}" >"$TEST_DIR/lock/run-id"
+      fi
+    done
     echo 'lock acquire' >>"$TEST_DIR/actions"
     if [[ -e $TEST_DIR/replace-lock ]]; then
       echo replacement-owner >"$TEST_DIR/lock/uid"
     fi
+    if [[ -e $TEST_DIR/lost-create-response ]]; then
+      echo 'Post "https://api.example": EOF' >&2
+      exit 1
+    fi
     echo test-lock-uid
+    ;;
+  '-n monitoring get configmap katl-upgrade-lock -o json')
+    jq -nc --arg uid "$(cat "$TEST_DIR/lock/uid")" --arg run_id "$(cat "$TEST_DIR/lock/run-id" 2>/dev/null || true)" \
+      '{metadata:{uid:$uid},data:{"run-id":$run_id}}'
+    ;;
+  '-n monitoring get configmap katl-upgrade-lock --ignore-not-found -o name')
+    if [[ -d $TEST_DIR/lock ]]; then echo configmap/katl-upgrade-lock; fi
     ;;
   'delete --raw /api/v1/namespaces/monitoring/configmaps/katl-upgrade-lock '*)
     uid=$(jq -er '.preconditions.uid')
+    if [[ ! -d $TEST_DIR/lock ]]; then
+      echo 'Error from server (NotFound): configmap not found' >&2
+      exit 1
+    fi
     [[ $(cat "$TEST_DIR/lock/uid") == "$uid" ]] || exit 1
     rm -r "$TEST_DIR/lock"
     echo 'lock release' >>"$TEST_DIR/actions"
+    if [[ -e $TEST_DIR/lost-delete-response ]]; then
+      echo 'Delete "https://api.example": EOF' >&2
+      exit 1
+    fi
     ;;
   'get node/'*)
-    [[ ! -e $TEST_DIR/fail ]] || exit 1
-    version=$(cat "$TEST_DIR/version-${2#node/}")
-    printf '{"spec":{},"status":{"nodeInfo":{"osImage":"KatlOS %s"}}}\n' "$version"
+    if [[ -e $TEST_DIR/fail ]]; then
+      echo 'forbidden' >>"$TEST_DIR/rejected"
+      echo 'Error from server (Forbidden): nodes is forbidden' >&2
+      exit 1
+    fi
+    node=${2#node/}
+    version=$(cat "$TEST_DIR/version-$node")
+    cordoned=false
+    if [[ -e $TEST_DIR/cordoned-$node ]]; then cordoned=true; fi
+    printf '{"spec":{"unschedulable":%s},"status":{"nodeInfo":{"osImage":"KatlOS %s"}}}\n' "$cordoned" "$version"
     ;;
   'get cephclusters.ceph.rook.io -A -o json')
     echo '{"items":[{"metadata":{"namespace":"rook-ceph","name":"ceph"},"status":{"phase":"Ready","ceph":{"health":"HEALTH_OK"}}}]}'
@@ -81,7 +123,7 @@ case "$*" in
     echo '{"items":[{"metadata":{"name":"db-1"},"spec":{"nodeName":"database-worker"}}]}'
     ;;
   'wait '*) ;;
-  'apply --request-timeout=30s -f -')
+  'apply -f -')
     payload=$("$TEST_YQ" -o=json -I=0 '.' | jq -s .)
     jq -e 'length == 1 and all(.[];
       .apiVersion == "observability.giantswarm.io/v1alpha2" and
@@ -92,6 +134,16 @@ case "$*" in
         value:"PostgresReplicationMissing|etcdHighNumberOfLeaderChanges"},
         {name:"namespace",matchType:"=~",value:"database|kube-system"}]' <<<"$payload" >/dev/null
     duration=$(jq -r '((.[0].metadata.annotations["valid-until"] | fromdateiso8601) - now) / 60 | round' <<<"$payload")
+    if [[ -e $TEST_DIR/retry-apply ]]; then
+      mv "$TEST_DIR/retry-apply" "$TEST_DIR/retry-apply-input"
+      echo "$payload" >"$TEST_DIR/retry-apply-input"
+      echo 'Unable to connect to the server: connection reset by peer' >&2
+      exit 1
+    fi
+    if [[ -e $TEST_DIR/retry-apply-input ]]; then
+      cmp "$TEST_DIR/retry-apply-input" <(echo "$payload")
+      rm "$TEST_DIR/retry-apply-input"
+    fi
     echo "silence apply $duration" >>"$TEST_DIR/actions"
     echo "$payload" >"$TEST_DIR/silence"
     count=$(cat "$TEST_DIR/apply-count")
@@ -104,7 +156,16 @@ case "$*" in
     echo 'silence delete' >>"$TEST_DIR/actions"
     rm -f "$TEST_DIR/silence"
     ;;
-  'drain '*|'uncordon '*|'cnpg '*) echo "kubectl $*" >>"$TEST_DIR/actions" ;;
+  'uncordon '*)
+    if [[ -e $TEST_DIR/retry-uncordon || -e $TEST_DIR/fail-uncordon ]]; then
+      rm -f "$TEST_DIR/retry-uncordon"
+      echo 'uncordon transport error' >>"$TEST_DIR/actions"
+      echo 'Unable to connect to the server: dial tcp: connect: connection refused' >&2
+      exit 1
+    fi
+    echo "kubectl $*" >>"$TEST_DIR/actions"
+    ;;
+  'drain '*|'cnpg '*) echo "kubectl $*" >>"$TEST_DIR/actions" ;;
   *) echo "Unexpected kubectl call: $*" >&2; exit 1 ;;
 esac
 EOF
@@ -115,6 +176,10 @@ exit 1
 EOF
 cat >"$test_dir/bin/sleep" <<'EOF'
 #!/usr/bin/env bash
+if [[ -e $TEST_DIR/allow-retries && $1 =~ ^(1|2|4)$ ]]; then
+  echo "retry delay $1" >>"$TEST_DIR/retries"
+  exit 0
+fi
 echo "Unexpected sleep: $*" >&2
 exit 1
 EOF
@@ -122,6 +187,7 @@ chmod +x "$test_dir/bin/"*
 
 reset_run() {
   : >"$test_dir/actions"
+  : >"$test_dir/retries"
   echo 0 >"$test_dir/apply-count"
   echo 0 >"$test_dir/fail-apply-number"
 }
@@ -208,6 +274,7 @@ touch "$test_dir/fail"
 expect_failure
 diff -u "$test_dir/noop" "$test_dir/actions"
 cmp "$test_dir/prior-silence" "$test_dir/silence"
+test "$(wc -l <"$test_dir/rejected")" -eq 1
 
 # Rejected upgrade plans must not cancel a previous successful run's grace period.
 rm "$test_dir/fail"
@@ -217,6 +284,41 @@ expect_failure 2026.10.3
 assert_count 0 '^silence '
 cmp "$test_dir/prior-silence" "$test_dir/silence"
 rm "$test_dir/reject-plan"
+
+# The retry path replays request bodies and recovers lost lock responses.
+reset_run
+touch "$test_dir/allow-retries" "$test_dir/lost-create-response" "$test_dir/lost-delete-response" \
+  "$test_dir/retry-apply" "$test_dir/retry-uncordon"
+echo 2026.10.10 >"$test_dir/version-k8s-1"
+bash "$root/.taskfiles/Katl/scripts/upgrade-cluster.sh" 2026.10.2
+assert_count 1 '^lock acquire$'
+assert_count 1 '^lock release$'
+assert_count 1 '^upgrade k8s-1$'
+assert_count 1 '^kubectl uncordon k8s-1$'
+assert_count 2 '^silence apply 120$'
+test "$(wc -l <"$test_dir/retries")" -eq 4
+test ! -d "$test_dir/lock"
+test ! -e "$test_dir/retry-apply-input"
+rm "$test_dir/lost-create-response" "$test_dir/lost-delete-response"
+
+# Persistent transport failures stop at the retry limit without advancing nodes.
+reset_run
+touch "$test_dir/fail-uncordon"
+echo 2026.10.10 >"$test_dir/version-k8s-1"
+echo 2026.10.10 >"$test_dir/version-k8s-2"
+expect_failure 2026.10.2
+assert_count 4 '^uncordon transport error$'
+assert_count 1 '^upgrade k8s-1$'
+assert_count 0 '^upgrade k8s-2$'
+test "$(wc -l <"$test_dir/retries")" -eq 3
+rm "$test_dir/fail-uncordon" "$test_dir/allow-retries"
+
+# A retry must surface a cordoned node even when the installed version matches.
+reset_run
+touch "$test_dir/cordoned-k8s-1"
+expect_failure 2026.10.2
+diff -u "$test_dir/noop" "$test_dir/actions"
+rm "$test_dir/cordoned-k8s-1"
 
 # Silence creation must succeed before any drain or node upgrade.
 for node in k8s-0 k8s-2; do echo 2026.10.1 >"$test_dir/version-$node"; done
@@ -290,7 +392,7 @@ bash "$root/.taskfiles/Katl/scripts/upgrade-cluster.sh" 2026.10.1 &
 first_run=$!
 for ((attempt = 0; attempt < 200; attempt++)); do
   [[ ! -e $test_dir/upgrade-started ]] || break
-  /bin/sleep 0.05
+  "$real_sleep" 0.05
 done
 test -e "$test_dir/upgrade-started"
 cp "$test_dir/actions" "$test_dir/first-actions"
