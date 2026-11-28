@@ -48,7 +48,6 @@ spec:
           nfs:
             server: nas.cbannister.casa
             path: /mnt/bighorse/arr
-            readOnly: true
       containers:
         - name: plex
           image: ghcr.io/home-operations/plex:1.43.5.11079@sha256:06ef0fc23e9af9bbaf284c3f27972f94e703d13d6f745edeb6818fcbebf6c673
@@ -88,10 +87,11 @@ spec:
               mountPath: /config/Library/Application Support/Plex Media Server/Logs
             - name: cache
               mountPath: /config/Library/Application Support/Plex Media Server/Cache
+            # Writable so Plex can delete media that Sonarr and Radarr no longer
+            # track, which is the only way Maintainerr can remove it.
             - name: arr-media
               mountPath: /data/media
               subPath: media/
-              readOnly: true
             - name: arr-media
               mountPath: /data/media/sports/tennis
               subPath: downloads/torrents/complete/sports/tennis
